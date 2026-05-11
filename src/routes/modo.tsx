@@ -6,13 +6,13 @@ export const Route = createFileRoute("/modo")({
   head: () => ({
     meta: [
       { title: "Elegí tu situación — PayRank" },
-      { name: "description", content: "Cuatro modos de diagnóstico salarial. Elegí el tuyo." },
+      { name: "description", content: "Cuatro situaciones de diagnóstico salarial. Elegí la tuya." },
     ],
   }),
   component: ModoSelector,
 });
 
-const modos = [
+const situaciones = [
   {
     id: "A",
     titulo: "Quiero saber si me pagan en forma competitiva",
@@ -20,7 +20,7 @@ const modos = [
   },
   {
     id: "B",
-    titulo: "Quiero revisar mi situación con mi empleador",
+    titulo: "Quiero pedir un aumento o una revisión salarial",
     descripcion: "Tu PayRank puede mostrar una brecha entre tu alcance real y lo que te pagan. Te damos los argumentos y el script para esa conversación.",
   },
   {
@@ -31,7 +31,7 @@ const modos = [
   {
     id: "D",
     titulo: "Quiero dar mi próximo salto de carrera",
-    descripcion: "Tu PayRank te muestra dónde estás hoy, qué skills aumentan tu valor y qué necesitás demostrar para llegar al siguiente nivel.",
+    descripcion: "Tu PayRank te muestra dónde estás hoy, qué habilidades aumentan tu valor y qué necesitás demostrar para llegar al siguiente nivel.",
   },
 ];
 
@@ -47,25 +47,19 @@ function ModoSelector() {
             ¿Qué querés hacer <span className="font-display-italic">hoy</span>?
           </h1>
           <p className="font-body text-base md:text-lg text-piedra max-w-2xl mb-14">
-            Elegí tu situación. El diagnóstico se adapta exactamente a lo que necesitás.
+            Elegí tu situación. Tu PayRank se adapta exactamente a lo que necesitás.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {modos.map((m) => (
+            {situaciones.map((s) => (
               <Link
-                key={m.id}
+                key={s.id}
                 to="/modo"
-                className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)]"
+                className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col"
               >
-                <div className="flex items-start justify-between mb-8">
-                  <span className="font-ui text-[10px] text-piedra">Modo {m.id}</span>
-                  <span className="font-display-italic text-3xl text-niebla group-hover:text-real transition-colors">
-                    {m.id}
-                  </span>
-                </div>
-                <h2 className="font-display text-2xl md:text-3xl mb-3">{m.titulo}</h2>
-                <p className="font-body text-piedra leading-relaxed mb-8">{m.descripcion}</p>
-                <span className="font-ui text-[11px] inline-flex items-center gap-2 text-tinta">
+                <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">{s.titulo}</h2>
+                <p className="font-body text-piedra leading-relaxed mb-10">{s.descripcion}</p>
+                <span className="mt-auto font-ui text-[11px] inline-flex items-center gap-2 text-tinta border-t border-niebla pt-4 group-hover:border-tinta transition-colors">
                   Continuar <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
                 </span>
               </Link>
