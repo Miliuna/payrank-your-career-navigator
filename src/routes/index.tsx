@@ -78,12 +78,12 @@ function Landing() {
             to="/modo"
             className="inline-flex items-center gap-3 bg-hueso text-tinta px-8 py-4 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
           >
-            HACER MI PAYRANK
+            OBTENER MI PAYRANK
             <span aria-hidden>→</span>
           </Link>
 
           <p className="mt-10 font-body text-sm text-hueso/50 max-w-xl">
-            Metodología con criterio compensológico real. No crowdsourcing. No datos de job boards.
+            La información que cambia la conversación.
           </p>
         </div>
       </section>
@@ -143,19 +143,25 @@ function Landing() {
       <section id="metodologia" className="bg-hueso text-tinta px-5 md:px-10 pb-24">
         <div className="mx-auto max-w-4xl border-t border-niebla pt-20">
           <p className="font-ui text-[10px] text-piedra mb-4">Metodología</p>
-          <h2 className="font-display text-3xl md:text-5xl mb-8">
-            Esto <span className="font-display-italic">no</span> es una calculadora.
+          <h2 className="font-display text-3xl md:text-5xl mb-10">
+            Esto no es una calculadora.
           </h2>
-          <div className="grid md:grid-cols-2 gap-10 font-body text-piedra leading-relaxed">
+          <div className="font-body text-piedra leading-relaxed space-y-8 max-w-2xl">
             <p>
-              Las empresas tienen acceso a encuestas salariales que cuestan miles de dólares.
-              Sus empleados negocian sin esa información. PayRank democratiza ese conocimiento
-              con criterio compensológico real para tu industria, nivel y país.
+              Existe un número exacto para tu puesto, tu industria y tu momento.
+              Un número que el mercado ya definió. Que existe independientemente
+              de lo que te pagan hoy o de lo que vas a negociar mañana.
+            </p>
+            <p className="font-display-italic text-3xl md:text-5xl text-tinta my-12 md:my-16 leading-tight">
+              PayRank te lo dice.
             </p>
             <p>
-              No usamos datos de job boards. No usamos promedios de internet. Aplicamos
-              ajustes por alcance regional, liderazgo, interacción con C-Level, idiomas y
-              adopción de IA — los mismos que aplican los compensólogos profesionales.
+              No con promedios de internet. Con el mismo rigor con el que se
+              construyen las encuestas de compensaciones globales — ajustado a tu
+              alcance, tu nivel y tu país.
+            </p>
+            <p>
+              Para que la próxima conversación ocurra con información real de tu lado.
             </p>
           </div>
         </div>
