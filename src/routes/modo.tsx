@@ -15,23 +15,23 @@ export const Route = createFileRoute("/modo")({
 const modos = [
   {
     id: "A",
-    titulo: "Sé cuánto valgo",
-    descripcion: "Trabajás y querés conocer tu valor real en el mercado.",
+    titulo: "Quiero saber si me pagan en forma competitiva",
+    descripcion: "Analizamos tu perfil completo y te decimos exactamente dónde quedás en el mercado — con datos reales, no promedios de internet.",
   },
   {
     id: "B",
-    titulo: "Quiero un aumento",
-    descripcion: "Tenés una conversación por delante con tu jefe. Necesitás argumentos reales.",
+    titulo: "Quiero revisar mi situación con mi empleador",
+    descripcion: "Tu PayRank puede mostrar una brecha entre tu alcance real y lo que te pagan. Te damos los argumentos y el script para esa conversación.",
   },
   {
     id: "C",
-    titulo: "Tengo una entrevista",
-    descripcion: "Estás en un proceso de selección y necesitás saber cuánto pedir.",
+    titulo: "Tengo una oferta o entrevista",
+    descripcion: "Sabé exactamente cuánto pedir, cómo fundamentarlo y qué decir cuando te pregunten cuánto querés ganar.",
   },
   {
     id: "D",
-    titulo: "Construyo mi carrera",
-    descripcion: "Querés reposicionarte en el mercado y maximizar tu valor.",
+    titulo: "Quiero dar mi próximo salto de carrera",
+    descripcion: "Tu PayRank te muestra dónde estás hoy, qué skills aumentan tu valor y qué necesitás demostrar para llegar al siguiente nivel.",
   },
 ];
 
