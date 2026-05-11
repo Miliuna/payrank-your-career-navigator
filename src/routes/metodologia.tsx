@@ -6,7 +6,7 @@ export const Route = createFileRoute("/metodologia")({
   head: () => ({
     meta: [
       { title: "Metodología — PayRank" },
-      { name: "description", content: "Criterio compensológico real para tu industria, nivel y país. No crowdsourcing." },
+      { name: "description", content: "Existe un número exacto para tu puesto, tu industria y tu momento. PayRank te lo dice." },
     ],
   }),
   component: Metodologia,
@@ -14,31 +14,34 @@ export const Route = createFileRoute("/metodologia")({
 
 function Metodologia() {
   return (
-    <div className="min-h-screen bg-hueso text-tinta">
+    <div className="min-h-screen bg-tinta text-hueso">
       <SiteHeader />
       <section className="pt-32 md:pt-44 pb-24 md:pb-32 px-5 md:px-10">
-        <div className="mx-auto max-w-3xl">
-          <p className="font-ui text-[10px] text-piedra mb-6">Metodología</p>
+        <div className="mx-auto" style={{ maxWidth: "680px" }}>
+          <p className="font-ui text-[10px] text-niebla mb-6">Metodología</p>
           <h1 className="font-display text-4xl md:text-6xl mb-12 leading-tight">
-            Esto <span className="font-display-italic">no</span> es una calculadora.
+            Esto no es una calculadora.
           </h1>
-          <div className="space-y-7 font-body text-base md:text-lg text-piedra leading-relaxed">
-            <p>
-              Las empresas tienen acceso a encuestas salariales que cuestan miles de dólares.
-              Sus empleados negocian sin esa información. PayRank democratiza ese conocimiento — con
-              criterio compensológico real para tu industria, nivel y país.
-            </p>
-            <p>
-              No usamos datos de job boards. No usamos promedios de internet. Aplicamos los mismos
-              ajustes que usan los compensólogos profesionales: alcance regional, liderazgo de equipo,
-              interacción con C-Level, idiomas requeridos y adopción de IA en el rol.
-            </p>
-            <p>
-              Creemos que las empresas deben pagar por lo que exigen. Y que los profesionales tienen
-              el derecho de cobrar por lo que entregan — sin importar su género, origen o trayectoria.
-              PayRank existe para que esa conversación ocurra con datos reales de los dos lados de la mesa.
-            </p>
-          </div>
+
+          <p className="font-body text-base md:text-lg text-hueso/90 leading-relaxed mb-16 md:mb-20">
+            Existe un número exacto para tu puesto, tu industria y tu momento.
+            Un número que el mercado ya definió. Que existe independientemente
+            de lo que te pagan hoy o de lo que vas a negociar mañana.
+          </p>
+
+          <p className="font-display-italic text-5xl md:text-7xl text-hueso text-center my-20 md:my-28 leading-tight">
+            PayRank te lo dice.
+          </p>
+
+          <p className="font-body text-base md:text-lg text-hueso/90 leading-relaxed mb-10">
+            No con promedios de internet. Con el mismo rigor con el que se
+            construyen las encuestas de compensaciones globales — ajustado a tu
+            alcance, tu nivel y tu país.
+          </p>
+
+          <p className="font-body text-base md:text-lg text-hueso/90 leading-relaxed">
+            Para que la próxima conversación ocurra con información real de tu lado.
+          </p>
         </div>
       </section>
       <SiteFooter />
