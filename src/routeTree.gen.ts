@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ModoRouteImport } from './routes/modo'
+import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ModoRoute = ModoRouteImport.update({
   id: '/modo',
   path: '/modo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MetodologiaRoute = MetodologiaRouteImport.update({
+  id: '/metodologia',
+  path: '/metodologia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/modo'
+  fullPaths: '/' | '/metodologia' | '/modo'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/modo'
-  id: '__root__' | '/' | '/modo'
+  to: '/' | '/metodologia' | '/modo'
+  id: '__root__' | '/' | '/metodologia' | '/modo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MetodologiaRoute: typeof MetodologiaRoute
   ModoRoute: typeof ModoRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/modo'
       fullPath: '/modo'
       preLoaderRoute: typeof ModoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/metodologia': {
+      id: '/metodologia'
+      path: '/metodologia'
+      fullPath: '/metodologia'
+      preLoaderRoute: typeof MetodologiaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,8 +87,19 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MetodologiaRoute: MetodologiaRoute,
   ModoRoute: ModoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

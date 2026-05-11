@@ -9,8 +9,13 @@ export function SiteHeader() {
           <Logo />
         </Link>
         <nav className="flex items-center gap-6 md:gap-10 font-ui text-[10px] md:text-[11px] text-hueso/80">
-          <a href="#metodologia" className="hover:text-hueso transition-colors">Metodología</a>
-          <a href="#precios" className="hover:text-hueso transition-colors">Precios</a>
+          <Link to="/metodologia" className="hover:text-hueso transition-colors">Metodología</Link>
+          <a href="/#precios" className="hover:text-hueso transition-colors">Planes</a>
+          <span className="flex items-center gap-2 text-hueso/60">
+            <span className="text-hueso underline underline-offset-4">ES</span>
+            <span aria-hidden>·</span>
+            <button className="hover:text-hueso transition-colors" type="button">EN</button>
+          </span>
         </nav>
       </div>
     </header>
