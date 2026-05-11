@@ -15,31 +15,31 @@ export const Route = createFileRoute("/")({
 });
 
 const preguntas = [
-  "Lo que sabés hacer tiene un precio exacto en el mercado. ¿Sabés cuál es el tuyo?",
-  "Tu experiencia y tu trayectoria pueden valer más de lo que te pagan. O exactamente lo que te pagan. Necesitás saberlo.",
+  "Tu experiencia y tu trayectoria pueden valer más de lo que te pagan. Necesitás saberlo.",
+  "Todos los puestos tienen un valor de mercado. ¿Sabés cuánto vale el tuyo?",
   "Puede existir una brecha de género en tu industria que te está costando dinero cada mes sin que lo sepas.",
   "Con el número correcto y los argumentos correctos, la conversación que tenés por delante cambia completamente.",
 ];
 
 const planes = [
   {
-    nombre: "Diagnóstico único",
+    nombre: "GO",
     precio: "USD 29",
-    descripcion: "1 diagnóstico de cualquier modo. Sin vencimiento.",
+    descripcion: "1 PayRank de cualquier tipo. Sin vencimiento.",
     plan: "unico" as const,
   },
   {
-    nombre: "Pack de 3",
+    nombre: "PLUS",
     precio: "USD 69",
-    descripcion: "3 diagnósticos de cualquier modo. Sin vencimiento. Ahorro del 20%.",
+    descripcion: "3 PayRank de cualquier tipo. Sin vencimiento. Ahorro del 20%.",
     plan: "pack3" as const,
-    badge: "Más elegido",
+    badge: "MÁS ELEGIDO",
   },
   {
-    nombre: "Anual",
+    nombre: "PRO",
     precio: "USD 99",
     sufijo: "/año",
-    descripcion: "Diagnósticos ilimitados durante 12 meses + alertas de movimiento de mercado en tu industria.",
+    descripcion: "PayRank ilimitados durante 12 meses + alertas de movimiento de mercado en tu industria.",
     plan: "anual" as const,
   },
 ];
@@ -68,7 +68,7 @@ function Landing() {
           <ul className="space-y-4 mb-14 max-w-2xl">
             {preguntas.map((p) => (
               <li key={p} className="flex items-start gap-4 font-body text-base md:text-lg text-hueso/85">
-                <span className="mt-2 size-1.5 rounded-full bg-real shrink-0" />
+                <span className="mt-2 size-1.5 rounded-full bg-hueso shrink-0" />
                 <span>{p}</span>
               </li>
             ))}
@@ -91,13 +91,10 @@ function Landing() {
       {/* Precios */}
       <section id="precios" className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <p className="font-ui text-[10px] text-piedra mb-4">Precios</p>
-          <h2 className="font-display text-3xl md:text-5xl mb-3">
-            Elegí cómo querés <span className="font-display-italic">empezar</span>
+          <p className="font-ui text-[10px] text-piedra mb-4">Planes</p>
+          <h2 className="font-display text-3xl md:text-5xl mb-14">
+            Elegí tu <span className="font-display-italic">PayRank</span>
           </h2>
-          <p className="font-body text-piedra mb-14 max-w-xl">
-            El precio se determina por tu país de facturación, no por el país del diagnóstico.
-          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {planes.map((plan) => {
