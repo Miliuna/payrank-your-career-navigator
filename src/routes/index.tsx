@@ -15,10 +15,10 @@ export const Route = createFileRoute("/")({
 });
 
 const preguntas = [
-  "¿Cuál es tu remuneración pretendida?",
-  "¿Cuánto paga el mercado por una posición como la tuya?",
-  "¿Existe brecha salarial de género en tu rol?",
-  "¿Cómo negociar un aumento con argumentos reales?",
+  "Lo que sabés hacer tiene un precio exacto en el mercado. ¿Sabés cuál es el tuyo?",
+  "Tu experiencia y tu trayectoria pueden valer más de lo que te pagan. O exactamente lo que te pagan. Necesitás saberlo.",
+  "Puede existir una brecha de género en tu industria que te está costando dinero cada mes sin que lo sepas.",
+  "Con el número correcto y los argumentos correctos, la conversación que tenés por delante cambia completamente.",
 ];
 
 const planes = [
@@ -53,16 +53,16 @@ function Landing() {
       <section className="pt-32 md:pt-44 pb-24 md:pb-36 px-5 md:px-10">
         <div className="mx-auto max-w-4xl">
           <p className="font-ui text-[10px] md:text-[11px] text-hueso/60 mb-8">
-            Salary Intelligence · Global
+            PROFESSIONAL INTELLIGENCE · TU VALOR EN EL MERCADO
           </p>
           <h1 className="font-display text-[2.75rem] leading-[1.05] md:text-7xl md:leading-[1.02] tracking-tight text-hueso mb-8">
-            ¿Cuánto vale<br />
-            <span className="font-display-italic">tu puesto</span> hoy<br />
-            en el mercado?
+            ¿Cuánto <span className="font-display-italic">valés</span><br />
+            realmente en<br />
+            el mercado?
           </h1>
           <p className="font-body text-lg md:text-xl text-hueso/70 max-w-2xl mb-14 leading-relaxed">
-            La información que las empresas siempre tuvieron y los profesionales nunca.
-            Diagnóstico salarial con criterio real de mercado.
+            No solo tu puesto. Tu experiencia, tus habilidades, tu trayectoria y tu potencial.
+            Todo tiene un valor en el mercado. PayRank te lo dice — y te muestra qué hacer con esa información.
           </p>
 
           <ul className="space-y-4 mb-14 max-w-2xl">
@@ -78,7 +78,7 @@ function Landing() {
             to="/modo"
             className="inline-flex items-center gap-3 bg-hueso text-tinta px-8 py-4 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
           >
-            Comenzar mi diagnóstico
+            HACER MI PAYRANK
             <span aria-hidden>→</span>
           </Link>
 
