@@ -35,7 +35,7 @@ function docsForModo(modo: Modo): DocConfig[] {
   return [
     { key: "cv", titulo: "CV o perfil de LinkedIn", recomendado: true, permiteUrl: true },
     { key: "descriptivo", titulo: "Descriptivo de puesto", recomendado: false },
-    { key: "recibo", titulo: "Recibo de sueldo o liquidación de haberes", recomendado: false },
+    { key: "recibo", titulo: "Recibo de sueldo, liquidación o contrato profesional", recomendado: false },
   ];
 }
 
