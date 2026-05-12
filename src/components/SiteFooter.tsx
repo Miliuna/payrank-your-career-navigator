@@ -6,7 +6,7 @@ export function SiteFooter() {
           © 2026 PayRank LLC · Todos los derechos reservados ·{" "}
           <a href="/politica-privacidad" className="hover:text-hueso transition-colors">Política de Privacidad</a>
           {" · "}
-          <a href="#" className="hover:text-hueso transition-colors">Términos y Condiciones</a>
+          <a href="/terminos-condiciones" className="hover:text-hueso transition-colors">Términos y Condiciones</a>
         </p>
       </div>
     </footer>
