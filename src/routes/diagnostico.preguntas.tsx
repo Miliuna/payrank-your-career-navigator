@@ -66,7 +66,7 @@ function isValid(step: number, r: ReturnType<typeof useDiagnostico>["state"]["re
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
     case 1: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
     case 2: return !!r.tipoEmpresa;
-    case 3: return !!r.nivel;
+    case 3: return !!r.nivel && (r.nivel !== "Otro" || !!r.nivelOtro?.trim());
     case 4: return !!r.alcance;
     case 5: return !!r.personasACargo;
     case 6: return ((r.funciones?.length ?? 0) > 0) || !!r.funcionesTexto?.trim();
@@ -103,7 +103,7 @@ function renderStep(
     case 0: return <P1Pais r={r} setR={setR} />;
     case 1: return <P2Industria r={r} setR={setR} />;
     case 2: return <P3TipoEmpresa r={r} setR={setR} />;
-    case 3: return <SimpleCards title="¿Cuál es tu nivel jerárquico?" options={NIVELES} value={r.nivel} onChange={(v) => setR({ nivel: v })} />;
+    case 3: return <P4Nivel r={r} setR={setR} />;
     case 4: return <SimpleCards title="¿Cuál es el alcance de tu rol?" options={ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
     case 5: return <SimpleCards title="¿Tenés personas a cargo?" options={PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
     case 6: return <P7Funciones r={r} setR={setR} />;
@@ -232,6 +232,34 @@ function P2Industria({ r, setR }: Props) {
 
 function P3TipoEmpresa({ r, setR }: Props) {
   return <SimpleCards title="¿En qué tipo de empresa trabajás?" options={TIPOS_EMPRESA} value={r.tipoEmpresa} onChange={(v) => setR({ tipoEmpresa: v })} />;
+}
+
+function P4Nivel({ r, setR }: Props) {
+  return (
+    <>
+      <QuestionTitle>¿Cuál es tu nivel jerárquico?</QuestionTitle>
+      <QuestionHint>
+        Si ninguna opción te representa, elegí "Otro" y describilo en tus palabras.
+      </QuestionHint>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {NIVELES.map((opt) => (
+          <CardOption key={opt} selected={r.nivel === opt} onClick={() => setR({ nivel: opt })}>
+            {opt}
+          </CardOption>
+        ))}
+      </div>
+      {r.nivel === "Otro" && (
+        <div className="mt-6">
+          <TextInput
+            placeholder="Especificá tu nivel"
+            value={r.nivelOtro ?? ""}
+            onChange={(e) => setR({ nivelOtro: e.target.value })}
+            autoFocus
+          />
+        </div>
+      )}
+    </>
+  );
 }
 
 function P7Funciones({ r, setR }: Props) {
@@ -379,6 +407,11 @@ function P13Certificaciones({ r, setR }: Props) {
   return (
     <>
       <QuestionTitle>¿Tenés certificaciones profesionales?</QuestionTitle>
+      <QuestionHint>
+        Contá certificaciones formales con examen o acreditación de un organismo
+        reconocido (ej: PMP, AWS Certified, CFA, Scrum Master, Google Analytics,
+        SHRM, CPA). No incluyas cursos cortos sin examen ni capacitaciones internas.
+      </QuestionHint>
       {r.sinCertificaciones ? (
         <div className="border border-hueso/20 p-5 text-hueso/70 font-body">
           No tenés certificaciones relevantes.
@@ -580,19 +613,28 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
   label: string; valor?: number; moneda?: string;
   onValor: (v: number | undefined) => void; onMoneda: (m: string) => void;
 }) {
+  const formatted = valor != null ? new Intl.NumberFormat("es-AR").format(valor) : "";
+  const handleChange = (raw: string) => {
+    // Solo dígitos: ignoramos puntos, comas y cualquier separador. Sin decimales.
+    const digits = raw.replace(/\D/g, "");
+    if (!digits) { onValor(undefined); return; }
+    onValor(Number(digits));
+  };
   return (
     <div>
       <p className="font-body text-base text-hueso mb-3">{label}</p>
       <div className="flex gap-3 items-end">
         <div className="flex-1">
           <TextInput
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={0}
             placeholder="0"
-            value={valor ?? ""}
-            onChange={(e) => onValor(e.target.value ? Number(e.target.value) : undefined)}
+            value={formatted}
+            onChange={(e) => handleChange(e.target.value)}
           />
+          <p className="font-body text-[11px] text-hueso/40 mt-1">
+            Ingresá un número entero, sin decimales. Los puntos los agregamos automáticamente.
+          </p>
         </div>
         <div>
           <select
@@ -610,7 +652,40 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
 }
 
 function P16Beneficios({ r, setR }: Props) {
-  return <MultiCards title="¿Qué beneficios recibís?" hint="Seleccioná todos los que apliquen." options={BENEFICIOS} value={r.beneficios} onChange={(v) => setR({ beneficios: v })} />;
+  const sel = r.beneficios ?? [];
+  const NINGUNO = "Ninguno de los anteriores";
+  const toggle = (opt: string) => {
+    if (opt === NINGUNO) {
+      setR({ beneficios: sel.includes(NINGUNO) ? [] : [NINGUNO], beneficiosOtro: "" });
+      return;
+    }
+    const without = sel.filter((x) => x !== NINGUNO);
+    if (without.includes(opt)) setR({ beneficios: without.filter((x) => x !== opt) });
+    else setR({ beneficios: [...without, opt] });
+  };
+  return (
+    <>
+      <QuestionTitle>¿Qué beneficios recibís?</QuestionTitle>
+      <QuestionHint>Seleccioná todos los que apliquen.</QuestionHint>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {BENEFICIOS.map((opt) => (
+          <CardOption key={opt} selected={sel.includes(opt)} onClick={() => toggle(opt)}>
+            {opt}
+          </CardOption>
+        ))}
+      </div>
+      {sel.includes("Otro") && (
+        <div className="mt-6">
+          <TextInput
+            placeholder="Especificá el/los beneficios"
+            value={r.beneficiosOtro ?? ""}
+            onChange={(e) => setR({ beneficiosOtro: e.target.value })}
+            autoFocus
+          />
+        </div>
+      )}
+    </>
+  );
 }
 
 function P17Descripcion({ r, setR }: Props) {
@@ -635,9 +710,10 @@ function P18Genero({ r, setR }: Props) {
     <>
       <QuestionTitle>Análisis de brecha de género</QuestionTitle>
       <QuestionHint>
-        ¿Querés incluir el análisis de brecha salarial de género en tu PayRank?
-        La información se usa exclusivamente para este cálculo y se almacena de
-        forma anonimizada.
+        El análisis compara tu compensación con la de tu mismo puesto, nivel,
+        industria y país, segmentado por género — sirve para cualquier identidad,
+        no solo para mujeres. La información se usa exclusivamente para este
+        cálculo y se almacena de forma anonimizada.
       </QuestionHint>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {GENEROS.map((g) => (
