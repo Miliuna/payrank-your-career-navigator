@@ -106,9 +106,9 @@ export const BENEFICIOS = [
   "Obra social/Seguro médico", "Bono anual", "Auto corporativo",
   "Celular corporativo", "Home office/Trabajo remoto", "Viáticos",
   "Capacitación paga por la empresa", "Stock options/Equity",
-  "Comedor o ticket alimentario", "Días adicionales de vacaciones",
+  "Comedor o ticket alimentario", "Días extra de vacaciones",
   "Seguro de vida", "Plan de retiro complementario",
-  "Ninguno de los anteriores",
+  "Otro", "Ninguno de los anteriores",
 ];
 
 export const GENEROS = [
