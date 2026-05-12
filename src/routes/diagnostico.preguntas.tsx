@@ -66,7 +66,7 @@ function isValid(step: number, r: ReturnType<typeof useDiagnostico>["state"]["re
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
     case 1: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
     case 2: return !!r.tipoEmpresa;
-    case 3: return !!r.nivel;
+    case 3: return !!r.nivel && (r.nivel !== "Otro" || !!r.nivelOtro?.trim());
     case 4: return !!r.alcance;
     case 5: return !!r.personasACargo;
     case 6: return ((r.funciones?.length ?? 0) > 0) || !!r.funcionesTexto?.trim();
