@@ -77,9 +77,16 @@ function InferenciaPage() {
         <h1 className="font-display text-3xl md:text-4xl mb-3 text-hueso leading-tight">
           Esto es lo que <span className="font-display-italic">inferimos</span> sobre el alcance real de tu rol
         </h1>
-        <p className="font-body text-hueso/60 mb-10">
+        <p className="font-body text-hueso/60 mb-6">
           Esta inferencia impacta directamente en tu diagnóstico. Si algo no refleja tu situación real, corregilo ahora.
         </p>
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/diagnostico/preguntas" })}
+          className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline mb-10"
+        >
+          ← Volver y editar respuestas anteriores
+        </button>
 
         <div className="space-y-5">
           {dimensiones.map((d) => (
