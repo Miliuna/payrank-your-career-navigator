@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useDiagnostico } from "@/lib/diagnostico/store";
+import type { Modo, Plan } from "@/lib/diagnostico/types";
+
+type Search = { plan?: Plan };
 
 export const Route = createFileRoute("/modo")({
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    plan: (s.plan === "unico" || s.plan === "pack3" || s.plan === "anual") ? s.plan : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Elegí tu situación — PayRank" },
@@ -12,7 +19,7 @@ export const Route = createFileRoute("/modo")({
   component: ModoSelector,
 });
 
-const situaciones = [
+const situaciones: { id: Modo; titulo: string; descripcion: string }[] = [
   {
     id: "A",
     titulo: "Quiero saber si me pagan en forma competitiva",
@@ -36,6 +43,8 @@ const situaciones = [
 ];
 
 function ModoSelector() {
+  const { plan } = Route.useSearch();
+  const { setState } = useDiagnostico();
   return (
     <div className="min-h-screen bg-hueso text-tinta">
       <SiteHeader />
@@ -54,7 +63,15 @@ function ModoSelector() {
             {situaciones.map((s) => (
               <Link
                 key={s.id}
-                to="/modo"
+                to="/diagnostico/upload"
+                search={{ modo: s.id }}
+                onClick={() => {
+                  setState((st) => ({
+                    ...st,
+                    modo: s.id,
+                    plan: plan ?? st.plan,
+                  }));
+                }}
                 className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col"
               >
                 <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">{s.titulo}</h2>
