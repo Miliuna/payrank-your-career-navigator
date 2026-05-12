@@ -29,7 +29,7 @@ export const TIPOS_EMPRESA = [
 export const NIVELES = [
   "Junior/Analista", "Semi-senior", "Senior/Especialista",
   "Manager/Líder de equipo", "Senior Manager/Gerente",
-  "Director/Head", "C-Level/VP",
+  "Director/Head", "C-Level/VP", "Otro",
 ];
 
 export const ALCANCES = ["Local (un país)", "Regional (varios países)", "Global"];
