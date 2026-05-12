@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TerminosCondicionesRouteImport } from './routes/terminos-condiciones'
 import { Route as PoliticaPrivacidadRouteImport } from './routes/politica-privacidad'
 import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
@@ -18,6 +19,11 @@ import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.p
 import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
 
+const TerminosCondicionesRoute = TerminosCondicionesRouteImport.update({
+  id: '/terminos-condiciones',
+  path: '/terminos-condiciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PoliticaPrivacidadRoute = PoliticaPrivacidadRouteImport.update({
   id: '/politica-privacidad',
   path: '/politica-privacidad',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
+  '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
+  '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
+  '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/metodologia'
     | '/modo'
     | '/politica-privacidad'
+    | '/terminos-condiciones'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/metodologia'
     | '/modo'
     | '/politica-privacidad'
+    | '/terminos-condiciones'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/metodologia'
     | '/modo'
     | '/politica-privacidad'
+    | '/terminos-condiciones'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   MetodologiaRoute: typeof MetodologiaRoute
   ModoRoute: typeof ModoRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
+  TerminosCondicionesRoute: typeof TerminosCondicionesRoute
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
   DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
@@ -136,6 +149,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terminos-condiciones': {
+      id: '/terminos-condiciones'
+      path: '/terminos-condiciones'
+      fullPath: '/terminos-condiciones'
+      preLoaderRoute: typeof TerminosCondicionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/politica-privacidad': {
       id: '/politica-privacidad'
       path: '/politica-privacidad'
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   MetodologiaRoute: MetodologiaRoute,
   ModoRoute: ModoRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
+  TerminosCondicionesRoute: TerminosCondicionesRoute,
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
   DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
@@ -208,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
