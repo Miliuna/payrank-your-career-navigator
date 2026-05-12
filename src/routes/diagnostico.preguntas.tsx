@@ -408,9 +408,10 @@ function P13Certificaciones({ r, setR }: Props) {
     <>
       <QuestionTitle>¿Tenés certificaciones profesionales?</QuestionTitle>
       <QuestionHint>
-        Contá certificaciones formales con examen o acreditación de un organismo
-        reconocido (ej: PMP, AWS Certified, CFA, Scrum Master, Google Analytics,
-        SHRM, CPA). No incluyas cursos cortos sin examen ni capacitaciones internas.
+        Cuentan como certificaciones formales aquellas que incluyen examen o
+        acreditación de un organismo reconocido (ej: PMP, AWS Certified, CFA,
+        Scrum Master, Google Analytics, SHRM, CPA). No incluyas cursos cortos
+        sin examen ni capacitaciones internas.
       </QuestionHint>
       {r.sinCertificaciones ? (
         <div className="border border-hueso/20 p-5 text-hueso/70 font-body">
