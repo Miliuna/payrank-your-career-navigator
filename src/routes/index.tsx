@@ -104,50 +104,110 @@ function Landing() {
       {/* Precios */}
       <section id="precios" className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <p className="font-ui text-[10px] text-piedra mb-4">Planes</p>
+          <p className="font-ui text-[10px] text-piedra mb-4">PLANES</p>
           <h2 className="font-display text-3xl md:text-5xl mb-14">
             Elegí tu <span className="font-display-italic">PayRank</span>
           </h2>
 
+          {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {planes.map((plan) => {
-              const destacada = plan.plan === "pack3";
+              const d = plan.destacada;
               return (
                 <div
                   key={plan.plan}
-                  className={`relative flex flex-col p-7 md:p-8 ${
-                    destacada
-                      ? "bg-tinta text-hueso"
-                      : "bg-card text-tinta border border-niebla"
+                  className={`relative flex flex-col p-7 md:p-9 ${
+                    d ? "bg-tinta text-hueso" : "bg-hueso text-tinta border border-niebla"
                   }`}
                 >
                   {plan.badge && (
-                    <span className="absolute top-5 right-5 font-ui text-[9px] text-hueso/70 border border-hueso/30 px-2 py-1">
+                    <span
+                      className="absolute -top-3 left-7 font-ui text-[9px] text-hueso px-3 py-1"
+                      style={{ backgroundColor: "#2E4A6E" }}
+                    >
                       {plan.badge}
                     </span>
                   )}
-                  <p className="font-ui text-[10px] mb-6 opacity-70">{plan.nombre}</p>
-                  <div className="mb-6">
-                    <span className="font-display text-5xl">{plan.precio}</span>
+                  <p className={`font-ui text-[11px] mb-8 ${d ? "text-hueso/70" : "text-piedra"}`}>
+                    {plan.nombre}
+                  </p>
+                  <div className="mb-5 flex items-baseline gap-2">
+                    <span className={`font-display text-5xl md:text-6xl ${d ? "text-hueso" : "text-tinta"}`}>
+                      {plan.precio}
+                    </span>
                     {plan.sufijo && (
-                      <span className="font-body text-base opacity-70">{plan.sufijo}</span>
+                      <span className={`font-body text-sm ${d ? "text-hueso/70" : "text-piedra"}`}>
+                        {plan.sufijo}
+                      </span>
                     )}
                   </div>
-                  <p className={`font-body text-sm mb-10 leading-relaxed ${destacada ? "text-hueso/70" : "text-piedra"}`}>
+                  <p className={`font-display-italic text-base mb-6 ${d ? "text-hueso" : "text-tinta"}`}>
+                    {plan.italic}
+                  </p>
+                  <p className={`font-body text-sm leading-relaxed mb-10 whitespace-pre-line ${d ? "text-hueso/80" : "text-piedra"}`}>
                     {plan.descripcion}
                   </p>
                   <Link
                     to="/modo"
                     search={{ plan: plan.plan }}
-                    className={`mt-auto inline-flex items-center justify-between font-ui text-[11px] py-3 border-t ${
-                      destacada ? "border-hueso/20 hover:border-hueso/60" : "border-niebla hover:border-tinta"
-                    } transition-colors`}
+                    className={`mt-auto inline-flex items-center justify-between font-ui text-[11px] px-5 py-3 transition-colors ${
+                      d
+                        ? "bg-hueso text-tinta hover:bg-hueso/90"
+                        : "bg-tinta text-hueso hover:bg-tinta/90"
+                    }`}
                   >
-                    Comenzar <span aria-hidden>→</span>
+                    {plan.cta}
+                    <span aria-hidden>→</span>
                   </Link>
                 </div>
               );
             })}
+          </div>
+
+          {/* Tabla comparativa */}
+          <div className="mt-24 border-t border-niebla pt-16">
+            <p className="font-ui text-[10px] text-piedra mb-8">EN DETALLE</p>
+            <div className="overflow-x-auto">
+              <table className="w-full font-body text-sm">
+                <thead>
+                  <tr className="border-b border-niebla">
+                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-piedra w-1/3"></th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-tinta">GO</th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-tinta">PLUS</th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-tinta">PRO</th>
+                  </tr>
+                </thead>
+                <tbody className="text-tinta">
+                  <tr className="border-b border-niebla/60">
+                    <td className="py-4 pr-4 text-piedra">Precio</td>
+                    <td className="py-4 px-4">USD 29</td>
+                    <td className="py-4 px-4">USD 69</td>
+                    <td className="py-4 px-4">USD 99/año</td>
+                  </tr>
+                  <tr className="border-b border-niebla/60">
+                    <td className="py-4 pr-4 text-piedra">PayRank incluidos</td>
+                    <td className="py-4 px-4">1</td>
+                    <td className="py-4 px-4">3</td>
+                    <td className="py-4 px-4">Ilimitados por 12 meses</td>
+                  </tr>
+                  <tr className="border-b border-niebla/60">
+                    <td className="py-4 pr-4 text-piedra">Análisis completo</td>
+                    <td className="py-4 px-4">✓</td>
+                    <td className="py-4 px-4">✓</td>
+                    <td className="py-4 px-4">✓</td>
+                  </tr>
+                  <tr>
+                    <td className="py-4 pr-4 text-piedra">Alertas cuando tu mercado se mueve</td>
+                    <td className="py-4 px-4 text-piedra">—</td>
+                    <td className="py-4 px-4 text-piedra">—</td>
+                    <td className="py-4 px-4">✓</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="font-display-italic text-base text-piedra mt-8 max-w-2xl">
+              La mayoría de quienes están en búsqueda activa o atravesando una negociación terminan necesitando más de un PayRank. El plan PLUS está diseñado para eso.
+            </p>
           </div>
         </div>
       </section>
