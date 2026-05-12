@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { DiagnosticoProvider } from "@/lib/diagnostico/store";
 
 function NotFoundComponent() {
   return (
@@ -113,7 +114,9 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <DiagnosticoProvider>
+        <Outlet />
+      </DiagnosticoProvider>
     </QueryClientProvider>
   );
 }
