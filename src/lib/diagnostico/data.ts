@@ -45,7 +45,8 @@ export const FUNCIONES = [
   "Gestión de personas", "Presupuesto/P&L", "Estrategia", "Operaciones",
   "Ventas/Comercial", "Marketing", "Tecnología/Producto", "RRHH/Talento",
   "Finanzas/Contabilidad", "Legal/Compliance", "Proyectos/PMO",
-  "Innovación/I+D", "Atención al cliente", "Otra",
+  "Project Management", "Desarrollo de software/Web", "Diseño/UX",
+  "Data/Analytics", "Innovación/I+D", "Atención al cliente", "Otra",
 ];
 
 export const INTERACCIONES = [
