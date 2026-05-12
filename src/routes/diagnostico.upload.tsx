@@ -175,36 +175,63 @@ function DocUpload({ doc }: { doc: DocConfig }) {
       )}
 
       {tab === "file" && (
-        <div
-          onDragOver={(e) => { e.preventDefault(); setDraggingOver(true); }}
-          onDragLeave={() => setDraggingOver(false)}
-          onDrop={onDrop}
-          onClick={() => fileInputRef.current?.click()}
-          className={cn(
-            "border border-dashed cursor-pointer text-center py-8 px-4 transition-colors",
-            draggingOver ? "border-hueso bg-hueso/5" : "border-hueso/25 hover:border-hueso/60",
-          )}
-        >
-          <p className="font-body text-sm text-hueso/70">
-            {fileName ? (
-              <>
-                Cargado: <span className="text-hueso">{fileName}</span>
-              </>
-            ) : (
-              <>Arrastrá un PDF, Word o TXT acá, o hacé click para seleccionar.</>
+        <>
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDraggingOver(true); }}
+            onDragLeave={() => setDraggingOver(false)}
+            onDrop={onDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={cn(
+              "border border-dashed cursor-pointer text-center py-8 px-4 transition-colors",
+              draggingOver ? "border-hueso bg-hueso/5" : "border-hueso/25 hover:border-hueso/60",
             )}
-          </p>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) handleFile(f);
-            }}
-          />
-        </div>
+          >
+            <p className="font-body text-sm text-hueso/70">
+              {fileName ? (
+                <>
+                  Cargado: <span className="text-hueso">{fileName}</span>
+                </>
+              ) : (
+                <>Podés arrastrar tu archivo (PDF, Word o TXT) acá, o hacé click para seleccionarlo.</>
+              )}
+            </p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleFile(f);
+              }}
+            />
+          </div>
+          {fileName && (
+            <div className="flex gap-4 mt-3">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDoc({ [fileNameKey]: undefined, [textKey]: undefined } as never);
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }}
+                className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline"
+              >
+                Quitar archivo
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
+                className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline"
+              >
+                Reemplazar
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {tab === "text" && (
