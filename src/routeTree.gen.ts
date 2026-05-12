@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PoliticaPrivacidadRouteImport } from './routes/politica-privacidad'
 import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.p
 import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
 
+const PoliticaPrivacidadRoute = PoliticaPrivacidadRouteImport.update({
+  id: '/politica-privacidad',
+  path: '/politica-privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModoRoute = ModoRouteImport.update({
   id: '/modo',
   path: '/modo',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/politica-privacidad'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/politica-privacidad'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/politica-privacidad'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MetodologiaRoute: typeof MetodologiaRoute
   ModoRoute: typeof ModoRoute
+  PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
   DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
@@ -123,6 +136,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/politica-privacidad': {
+      id: '/politica-privacidad'
+      path: '/politica-privacidad'
+      fullPath: '/politica-privacidad'
+      preLoaderRoute: typeof PoliticaPrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modo': {
       id: '/modo'
       path: '/modo'
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MetodologiaRoute: MetodologiaRoute,
   ModoRoute: ModoRoute,
+  PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
   DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
