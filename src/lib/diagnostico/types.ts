@@ -65,6 +65,7 @@ export type Respuestas = {
   monedaAnterior?: string;
   tiempoSinTrabajo?: string;
   beneficios?: string[];
+  beneficiosOtro?: string;
   descripcionPuesto?: string;
   genero?: string;
   email?: string;
