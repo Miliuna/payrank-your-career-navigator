@@ -14,6 +14,8 @@ import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DiagnosticoUploadRouteImport } from './routes/diagnostico.upload'
 import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.preguntas'
+import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
+import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
 
 const ModoRoute = ModoRouteImport.update({
   id: '/modo',
@@ -40,11 +42,23 @@ const DiagnosticoPreguntasRoute = DiagnosticoPreguntasRouteImport.update({
   path: '/diagnostico/preguntas',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosticoPerfilRoute = DiagnosticoPerfilRouteImport.update({
+  id: '/diagnostico/perfil',
+  path: '/diagnostico/perfil',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosticoInferenciaRoute = DiagnosticoInferenciaRouteImport.update({
+  id: '/diagnostico/inferencia',
+  path: '/diagnostico/inferencia',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
+  '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
@@ -52,6 +66,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
+  '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
@@ -60,6 +76,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
+  '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
@@ -69,6 +87,8 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/diagnostico/inferencia'
+    | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
     | '/diagnostico/upload'
   fileRoutesByTo: FileRoutesByTo
@@ -76,6 +96,8 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/diagnostico/inferencia'
+    | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
     | '/diagnostico/upload'
   id:
@@ -83,6 +105,8 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/diagnostico/inferencia'
+    | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
     | '/diagnostico/upload'
   fileRoutesById: FileRoutesById
@@ -91,6 +115,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MetodologiaRoute: typeof MetodologiaRoute
   ModoRoute: typeof ModoRoute
+  DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
+  DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
   DiagnosticoUploadRoute: typeof DiagnosticoUploadRoute
 }
@@ -132,6 +158,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoPreguntasRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnostico/perfil': {
+      id: '/diagnostico/perfil'
+      path: '/diagnostico/perfil'
+      fullPath: '/diagnostico/perfil'
+      preLoaderRoute: typeof DiagnosticoPerfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostico/inferencia': {
+      id: '/diagnostico/inferencia'
+      path: '/diagnostico/inferencia'
+      fullPath: '/diagnostico/inferencia'
+      preLoaderRoute: typeof DiagnosticoInferenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -139,6 +179,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MetodologiaRoute: MetodologiaRoute,
   ModoRoute: ModoRoute,
+  DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
+  DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
   DiagnosticoUploadRoute: DiagnosticoUploadRoute,
 }
