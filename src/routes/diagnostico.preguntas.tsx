@@ -103,7 +103,7 @@ function renderStep(
     case 0: return <P1Pais r={r} setR={setR} />;
     case 1: return <P2Industria r={r} setR={setR} />;
     case 2: return <P3TipoEmpresa r={r} setR={setR} />;
-    case 3: return <SimpleCards title="¿Cuál es tu nivel jerárquico?" options={NIVELES} value={r.nivel} onChange={(v) => setR({ nivel: v })} />;
+    case 3: return <P4Nivel r={r} setR={setR} />;
     case 4: return <SimpleCards title="¿Cuál es el alcance de tu rol?" options={ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
     case 5: return <SimpleCards title="¿Tenés personas a cargo?" options={PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
     case 6: return <P7Funciones r={r} setR={setR} />;
