@@ -234,6 +234,34 @@ function P3TipoEmpresa({ r, setR }: Props) {
   return <SimpleCards title="¿En qué tipo de empresa trabajás?" options={TIPOS_EMPRESA} value={r.tipoEmpresa} onChange={(v) => setR({ tipoEmpresa: v })} />;
 }
 
+function P4Nivel({ r, setR }: Props) {
+  return (
+    <>
+      <QuestionTitle>¿Cuál es tu nivel jerárquico?</QuestionTitle>
+      <QuestionHint>
+        Si ninguna opción te representa, elegí "Otro" y describilo en tus palabras.
+      </QuestionHint>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {NIVELES.map((opt) => (
+          <CardOption key={opt} selected={r.nivel === opt} onClick={() => setR({ nivel: opt })}>
+            {opt}
+          </CardOption>
+        ))}
+      </div>
+      {r.nivel === "Otro" && (
+        <div className="mt-6">
+          <TextInput
+            placeholder="Especificá tu nivel"
+            value={r.nivelOtro ?? ""}
+            onChange={(e) => setR({ nivelOtro: e.target.value })}
+            autoFocus
+          />
+        </div>
+      )}
+    </>
+  );
+}
+
 function P7Funciones({ r, setR }: Props) {
   const sel = r.funciones ?? [];
   const toggle = (opt: string) => {
