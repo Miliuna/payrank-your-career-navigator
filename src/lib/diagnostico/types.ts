@@ -39,6 +39,7 @@ export type Respuestas = {
   industriaOtra?: string;
   tipoEmpresa?: string;
   nivel?: string;
+  nivelOtro?: string;
   alcance?: string;
   personasACargo?: string;
   funciones?: string[];
