@@ -710,9 +710,10 @@ function P18Genero({ r, setR }: Props) {
     <>
       <QuestionTitle>Análisis de brecha de género</QuestionTitle>
       <QuestionHint>
-        ¿Querés incluir el análisis de brecha salarial de género en tu PayRank?
-        La información se usa exclusivamente para este cálculo y se almacena de
-        forma anonimizada.
+        El análisis compara tu compensación con la de tu mismo puesto, nivel,
+        industria y país, segmentado por género — sirve para cualquier identidad,
+        no solo para mujeres. La información se usa exclusivamente para este
+        cálculo y se almacena de forma anonimizada.
       </QuestionHint>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {GENEROS.map((g) => (
