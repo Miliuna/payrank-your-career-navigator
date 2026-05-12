@@ -43,6 +43,8 @@ const situaciones: { id: Modo; titulo: string; descripcion: string }[] = [
 ];
 
 function ModoSelector() {
+  const { plan } = Route.useSearch();
+  const { setState } = useDiagnostico();
   return (
     <div className="min-h-screen bg-hueso text-tinta">
       <SiteHeader />
@@ -61,7 +63,15 @@ function ModoSelector() {
             {situaciones.map((s) => (
               <Link
                 key={s.id}
-                to="/modo"
+                to="/diagnostico/upload"
+                search={{ modo: s.id }}
+                onClick={() => {
+                  setState((st) => ({
+                    ...st,
+                    modo: s.id,
+                    plan: plan ?? st.plan,
+                  }));
+                }}
                 className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col"
               >
                 <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">{s.titulo}</h2>
