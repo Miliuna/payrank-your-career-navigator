@@ -608,19 +608,28 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
   label: string; valor?: number; moneda?: string;
   onValor: (v: number | undefined) => void; onMoneda: (m: string) => void;
 }) {
+  const formatted = valor != null ? new Intl.NumberFormat("es-AR").format(valor) : "";
+  const handleChange = (raw: string) => {
+    // Solo dígitos: ignoramos puntos, comas y cualquier separador. Sin decimales.
+    const digits = raw.replace(/\D/g, "");
+    if (!digits) { onValor(undefined); return; }
+    onValor(Number(digits));
+  };
   return (
     <div>
       <p className="font-body text-base text-hueso mb-3">{label}</p>
       <div className="flex gap-3 items-end">
         <div className="flex-1">
           <TextInput
-            type="number"
+            type="text"
             inputMode="numeric"
-            min={0}
             placeholder="0"
-            value={valor ?? ""}
-            onChange={(e) => onValor(e.target.value ? Number(e.target.value) : undefined)}
+            value={formatted}
+            onChange={(e) => handleChange(e.target.value)}
           />
+          <p className="font-body text-[11px] text-hueso/40 mt-1">
+            Ingresá un número entero, sin decimales. Los puntos los agregamos automáticamente.
+          </p>
         </div>
         <div>
           <select
@@ -638,7 +647,40 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
 }
 
 function P16Beneficios({ r, setR }: Props) {
-  return <MultiCards title="¿Qué beneficios recibís?" hint="Seleccioná todos los que apliquen." options={BENEFICIOS} value={r.beneficios} onChange={(v) => setR({ beneficios: v })} />;
+  const sel = r.beneficios ?? [];
+  const NINGUNO = "Ninguno de los anteriores";
+  const toggle = (opt: string) => {
+    if (opt === NINGUNO) {
+      setR({ beneficios: sel.includes(NINGUNO) ? [] : [NINGUNO], beneficiosOtro: "" });
+      return;
+    }
+    const without = sel.filter((x) => x !== NINGUNO);
+    if (without.includes(opt)) setR({ beneficios: without.filter((x) => x !== opt) });
+    else setR({ beneficios: [...without, opt] });
+  };
+  return (
+    <>
+      <QuestionTitle>¿Qué beneficios recibís?</QuestionTitle>
+      <QuestionHint>Seleccioná todos los que apliquen.</QuestionHint>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {BENEFICIOS.map((opt) => (
+          <CardOption key={opt} selected={sel.includes(opt)} onClick={() => toggle(opt)}>
+            {opt}
+          </CardOption>
+        ))}
+      </div>
+      {sel.includes("Otro") && (
+        <div className="mt-6">
+          <TextInput
+            placeholder="Especificá el/los beneficios"
+            value={r.beneficiosOtro ?? ""}
+            onChange={(e) => setR({ beneficiosOtro: e.target.value })}
+            autoFocus
+          />
+        </div>
+      )}
+    </>
+  );
 }
 
 function P17Descripcion({ r, setR }: Props) {
