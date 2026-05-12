@@ -1,8 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useDiagnostico } from "@/lib/diagnostico/store";
+import type { Modo, Plan } from "@/lib/diagnostico/types";
+
+type Search = { plan?: Plan };
 
 export const Route = createFileRoute("/modo")({
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    plan: (s.plan === "unico" || s.plan === "pack3" || s.plan === "anual") ? s.plan : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Elegí tu situación — PayRank" },
@@ -12,7 +19,7 @@ export const Route = createFileRoute("/modo")({
   component: ModoSelector,
 });
 
-const situaciones = [
+const situaciones: { id: Modo; titulo: string; descripcion: string }[] = [
   {
     id: "A",
     titulo: "Quiero saber si me pagan en forma competitiva",
