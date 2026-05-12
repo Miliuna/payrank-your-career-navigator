@@ -25,22 +25,35 @@ const planes = [
   {
     nombre: "GO",
     precio: "USD 29",
-    descripcion: "1 PayRank de cualquier tipo. Sin vencimiento.",
+    sufijo: undefined as string | undefined,
+    italic: "Para cuando tenés una conversación puntual por delante.",
+    descripcion: "Un PayRank completo. Sin vencimiento.",
+    cta: "EMPEZAR CON GO",
     plan: "unico" as const,
+    destacada: false,
   },
   {
     nombre: "PLUS",
     precio: "USD 69",
-    descripcion: "3 PayRank de cualquier tipo. Sin vencimiento. Ahorro del 20%.",
+    sufijo: undefined as string | undefined,
+    italic: "Para cuando estás en movimiento.",
+    descripcion:
+      "Tres PayRank completos. Sin vencimiento.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
+    cta: "EMPEZAR CON PLUS",
     plan: "pack3" as const,
+    destacada: true,
     badge: "MÁS ELEGIDO",
   },
   {
     nombre: "PRO",
     precio: "USD 99",
     sufijo: "/año",
-    descripcion: "PayRank ilimitados durante 12 meses + alertas de movimiento de mercado en tu industria.",
+    italic: "Para quien quiere que PayRank lo acompañe.",
+    descripcion:
+      "PayRank ilimitados durante 12 meses. Más alertas cuando tu mercado se mueva — para que nunca negocies con información vieja.",
+    cta: "EMPEZAR CON PRO",
     plan: "anual" as const,
+    destacada: false,
   },
 ];
 
