@@ -51,7 +51,7 @@ function UploadPage() {
     }
   }, [search.modo, state.modo, setState]);
 
-  const modo = search.modo ?? state.modo;
+  const modo: Modo = search.modo ?? state.modo;
   const docs = docsForModo(modo);
 
   const handleContinue = () => {
