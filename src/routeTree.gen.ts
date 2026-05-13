@@ -15,9 +15,11 @@ import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DiagnosticoUploadRouteImport } from './routes/diagnostico.upload'
+import { Route as DiagnosticoProcesandoRouteImport } from './routes/diagnostico.procesando'
 import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.preguntas'
 import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
+import { Route as DiagnosticoIdRouteImport } from './routes/diagnostico.$id'
 
 const TerminosCondicionesRoute = TerminosCondicionesRouteImport.update({
   id: '/terminos-condiciones',
@@ -49,6 +51,11 @@ const DiagnosticoUploadRoute = DiagnosticoUploadRouteImport.update({
   path: '/diagnostico/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosticoProcesandoRoute = DiagnosticoProcesandoRouteImport.update({
+  id: '/diagnostico/procesando',
+  path: '/diagnostico/procesando',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiagnosticoPreguntasRoute = DiagnosticoPreguntasRouteImport.update({
   id: '/diagnostico/preguntas',
   path: '/diagnostico/preguntas',
@@ -64,6 +71,11 @@ const DiagnosticoInferenciaRoute = DiagnosticoInferenciaRouteImport.update({
   path: '/diagnostico/inferencia',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosticoIdRoute = DiagnosticoIdRouteImport.update({
+  id: '/diagnostico/$id',
+  path: '/diagnostico/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -71,9 +83,11 @@ export interface FileRoutesByFullPath {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
+  '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
 export interface FileRoutesByTo {
@@ -82,9 +96,11 @@ export interface FileRoutesByTo {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
+  '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
 export interface FileRoutesById {
@@ -94,9 +110,11 @@ export interface FileRoutesById {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
+  '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
 export interface FileRouteTypes {
@@ -107,9 +125,11 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
+    | '/diagnostico/procesando'
     | '/diagnostico/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -118,9 +138,11 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
+    | '/diagnostico/procesando'
     | '/diagnostico/upload'
   id:
     | '__root__'
@@ -129,9 +151,11 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
+    | '/diagnostico/procesando'
     | '/diagnostico/upload'
   fileRoutesById: FileRoutesById
 }
@@ -141,9 +165,11 @@ export interface RootRouteChildren {
   ModoRoute: typeof ModoRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
+  DiagnosticoIdRoute: typeof DiagnosticoIdRoute
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
   DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
+  DiagnosticoProcesandoRoute: typeof DiagnosticoProcesandoRoute
   DiagnosticoUploadRoute: typeof DiagnosticoUploadRoute
 }
 
@@ -191,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnostico/procesando': {
+      id: '/diagnostico/procesando'
+      path: '/diagnostico/procesando'
+      fullPath: '/diagnostico/procesando'
+      preLoaderRoute: typeof DiagnosticoProcesandoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/diagnostico/preguntas': {
       id: '/diagnostico/preguntas'
       path: '/diagnostico/preguntas'
@@ -212,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoInferenciaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnostico/$id': {
+      id: '/diagnostico/$id'
+      path: '/diagnostico/$id'
+      fullPath: '/diagnostico/$id'
+      preLoaderRoute: typeof DiagnosticoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -221,21 +261,13 @@ const rootRouteChildren: RootRouteChildren = {
   ModoRoute: ModoRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
+  DiagnosticoIdRoute: DiagnosticoIdRoute,
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
   DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
+  DiagnosticoProcesandoRoute: DiagnosticoProcesandoRoute,
   DiagnosticoUploadRoute: DiagnosticoUploadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

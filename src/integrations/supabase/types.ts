@@ -14,7 +14,153 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      diagnosticos: {
+        Row: {
+          ajustes_inferencia: Json | null
+          alcance: string | null
+          anos_experiencia_industria: string | null
+          anos_experiencia_total: string | null
+          anos_puesto_actual: string | null
+          beneficios: string[] | null
+          certificaciones: string[] | null
+          created_at: string
+          enps_feedback: string | null
+          enps_score: number | null
+          equipo: string | null
+          es_dato_seed: boolean
+          formacion: string[] | null
+          frecuencia_ia: string | null
+          funciones: string[] | null
+          genero: string | null
+          herramientas_ia: Json | null
+          id: string
+          idiomas: Json | null
+          industria: string | null
+          inferencia_validada: boolean
+          inferencia_valuacion: Json | null
+          interaccion_clevel: string | null
+          link_unico: string
+          linkedin_url: string | null
+          mail: string | null
+          modo: string | null
+          moneda_actual: string | null
+          monto_pagado_usd: number | null
+          nivel: string | null
+          nivel_confianza: string | null
+          pago_confirmado: boolean
+          pais_rol: string | null
+          pdf_enviado: boolean
+          plan_elegido: string | null
+          puesto_descripcion: string | null
+          resultado_json: Json | null
+          salario_actual: number | null
+          salario_tipo: string | null
+          situacion_laboral: string | null
+          stripe_payment_id: string | null
+          tipo_empresa: string | null
+          tipo_usuario: string
+          updated_at: string
+          uso_ia: string[] | null
+          whatsapp: string | null
+        }
+        Insert: {
+          ajustes_inferencia?: Json | null
+          alcance?: string | null
+          anos_experiencia_industria?: string | null
+          anos_experiencia_total?: string | null
+          anos_puesto_actual?: string | null
+          beneficios?: string[] | null
+          certificaciones?: string[] | null
+          created_at?: string
+          enps_feedback?: string | null
+          enps_score?: number | null
+          equipo?: string | null
+          es_dato_seed?: boolean
+          formacion?: string[] | null
+          frecuencia_ia?: string | null
+          funciones?: string[] | null
+          genero?: string | null
+          herramientas_ia?: Json | null
+          id?: string
+          idiomas?: Json | null
+          industria?: string | null
+          inferencia_validada?: boolean
+          inferencia_valuacion?: Json | null
+          interaccion_clevel?: string | null
+          link_unico?: string
+          linkedin_url?: string | null
+          mail?: string | null
+          modo?: string | null
+          moneda_actual?: string | null
+          monto_pagado_usd?: number | null
+          nivel?: string | null
+          nivel_confianza?: string | null
+          pago_confirmado?: boolean
+          pais_rol?: string | null
+          pdf_enviado?: boolean
+          plan_elegido?: string | null
+          puesto_descripcion?: string | null
+          resultado_json?: Json | null
+          salario_actual?: number | null
+          salario_tipo?: string | null
+          situacion_laboral?: string | null
+          stripe_payment_id?: string | null
+          tipo_empresa?: string | null
+          tipo_usuario?: string
+          updated_at?: string
+          uso_ia?: string[] | null
+          whatsapp?: string | null
+        }
+        Update: {
+          ajustes_inferencia?: Json | null
+          alcance?: string | null
+          anos_experiencia_industria?: string | null
+          anos_experiencia_total?: string | null
+          anos_puesto_actual?: string | null
+          beneficios?: string[] | null
+          certificaciones?: string[] | null
+          created_at?: string
+          enps_feedback?: string | null
+          enps_score?: number | null
+          equipo?: string | null
+          es_dato_seed?: boolean
+          formacion?: string[] | null
+          frecuencia_ia?: string | null
+          funciones?: string[] | null
+          genero?: string | null
+          herramientas_ia?: Json | null
+          id?: string
+          idiomas?: Json | null
+          industria?: string | null
+          inferencia_validada?: boolean
+          inferencia_valuacion?: Json | null
+          interaccion_clevel?: string | null
+          link_unico?: string
+          linkedin_url?: string | null
+          mail?: string | null
+          modo?: string | null
+          moneda_actual?: string | null
+          monto_pagado_usd?: number | null
+          nivel?: string | null
+          nivel_confianza?: string | null
+          pago_confirmado?: boolean
+          pais_rol?: string | null
+          pdf_enviado?: boolean
+          plan_elegido?: string | null
+          puesto_descripcion?: string | null
+          resultado_json?: Json | null
+          salario_actual?: number | null
+          salario_tipo?: string | null
+          situacion_laboral?: string | null
+          stripe_payment_id?: string | null
+          tipo_empresa?: string | null
+          tipo_usuario?: string
+          updated_at?: string
+          uso_ia?: string[] | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

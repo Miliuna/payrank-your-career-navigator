@@ -1,8 +1,10 @@
 import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { TITULOS_MODO } from "@/lib/diagnostico/data";
+import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 
 export const Route = createFileRoute("/diagnostico/perfil")({
   head: () => ({ meta: [{ title: "Confirmá tu perfil — PayRank" }] }),
@@ -13,13 +15,39 @@ function PerfilPage() {
   const navigate = useNavigate();
   const { state } = useDiagnostico();
   const r = state.respuestas;
+  const create = useServerFn(createDiagnostico);
+  const simulate = useServerFn(simulatePayment);
+  const [busy, setBusy] = React.useState(false);
+  const [err, setErr] = React.useState<string | null>(null);
+
+  const isDev = import.meta.env.DEV;
 
   const back = () => navigate({ to: "/diagnostico/inferencia" });
   const next = () => {
-    // PR2 mounts the legal/payment/processing flow on these routes.
-    // For now, point users at the inference page so they don't dead-end.
     alert("Próximo paso: consentimientos legales y pago. Se habilita en la próxima entrega.");
   };
+
+  const simulateAndGenerate = async () => {
+    setBusy(true);
+    setErr(null);
+    try {
+      const created = await create({
+        data: {
+          modo: state.modo,
+          plan: state.plan,
+          respuestas: state.respuestas as Record<string, unknown>,
+          inferencia: state.inferencia,
+          inferenciaValidada: state.inferenciaValidada,
+        },
+      });
+      await simulate({ data: { id: created.id } });
+      navigate({ to: "/diagnostico/procesando", search: { id: created.id } });
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Error desconocido");
+      setBusy(false);
+    }
+  };
+
 
   const dash = "—";
 
@@ -117,6 +145,24 @@ function PerfilPage() {
             Quiero corregir algo
           </button>
         </div>
+
+        {isDev && (
+          <div className="mt-8 border border-dashed border-hueso/30 p-5">
+            <p className="font-ui text-[10px] text-hueso/50 mb-2">MODO DESARROLLO</p>
+            <p className="font-body text-sm text-hueso/70 mb-4">
+              Saltá el paywall: simulá un pago confirmado y generá el PayRank ahora.
+            </p>
+            <button
+              type="button"
+              onClick={simulateAndGenerate}
+              disabled={busy}
+              className="inline-flex items-center justify-center bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
+            >
+              {busy ? "Generando…" : "Simular pago y generar PayRank"}
+            </button>
+            {err && <p className="mt-3 text-xs text-red-300/90 font-body">{err}</p>}
+          </div>
+        )}
       </StepFade>
     </DiagnosticoShell>
   );
