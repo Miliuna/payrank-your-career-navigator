@@ -17,7 +17,167 @@ import {
   MONEDAS, NIVELES, NIVELES_IDIOMA, PAISES, PERSONAS_A_CARGO, SITUACIONES,
   TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA,
 } from "@/lib/diagnostico/data";
-import type { Idioma } from "@/lib/diagnostico/types";
+import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
+
+// ───────────── Helpers de extracción ─────────────
+
+function asString(v: unknown): string | null {
+  if (v == null) return null;
+  if (typeof v === "string") return v.trim() || null;
+  if (typeof v === "number") return String(v);
+  return null;
+}
+function asArrayStr(v: unknown): string[] | null {
+  if (!Array.isArray(v)) return null;
+  const out = v.map((x) => (typeof x === "string" ? x.trim() : "")).filter(Boolean);
+  return out.length ? out : null;
+}
+function findOption(opts: readonly string[], val: string | null): string | null {
+  if (!val) return null;
+  const lower = val.toLowerCase();
+  return opts.find((o) => o.toLowerCase() === lower)
+    ?? opts.find((o) => o.toLowerCase().includes(lower) || lower.includes(o.toLowerCase()))
+    ?? null;
+}
+
+/** Mapea el JSON extraído por la IA a parciales de Respuestas */
+function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  const industria = findOption(INDUSTRIAS, asString(d.industria_inferida));
+  if (industria) out.industria = industria;
+  const tipoEmp = findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
+  if (tipoEmp) out.tipoEmpresa = tipoEmp;
+  const nivel = findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
+  if (nivel) out.nivel = nivel;
+  const alcance = findOption(ALCANCES, asString(d.alcance_inferido));
+  if (alcance) out.alcance = alcance;
+  const equipo = findOption(PERSONAS_A_CARGO, asString(d.equipo_inferido));
+  if (equipo) out.personasACargo = equipo;
+  const expTot = findOption(EXP_TOTAL, asString(d.anos_experiencia_total_inferidos));
+  if (expTot) out.expTotal = expTot;
+  const expInd = findOption(EXP_INDUSTRIA, asString(d.anos_experiencia_industria_inferidos));
+  if (expInd) out.expIndustria = expInd;
+
+  const funcs = asArrayStr(d.funciones_inferidas);
+  if (funcs) {
+    const matched = funcs.map((f) => findOption(FUNCIONES, f) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.funciones = Array.from(new Set(matched));
+    else out.funcionesTexto = funcs.join(", ");
+  }
+
+  const form = asArrayStr(d.formacion);
+  if (form) {
+    const matched = form.map((f) => findOption(FORMACIONES, f) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.formacion = Array.from(new Set(matched));
+  }
+
+  const certs = asArrayStr(d.certificaciones);
+  if (certs) out.certificaciones = certs;
+
+  const idiomas = Array.isArray(d.idiomas) ? d.idiomas : null;
+  if (idiomas && idiomas.length) {
+    const list: Idioma[] = idiomas.map((i) => {
+      if (typeof i === "string") return { idioma: i, nivel: "" };
+      return {
+        idioma: typeof i.idioma === "string" ? i.idioma : "",
+        nivel: (NIVELES_IDIOMA.find((n) => n.toLowerCase() === (i.nivel ?? "").toLowerCase()) ?? "") as Idioma["nivel"],
+        certificacion: typeof i.certificacion === "string" ? i.certificacion : undefined,
+      };
+    }).filter((i) => i.idioma);
+    if (list.length) out.idiomas = list;
+  }
+
+  const ia = asArrayStr(d.herramientas_ia_inferidas);
+  if (ia) {
+    const matched = ia.map((t) => findOption(HERRAMIENTAS_IA, t) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.herramientasIA = Array.from(new Set(matched));
+  }
+
+  const salario = typeof d.salario_actual_inferido === "number"
+    ? d.salario_actual_inferido
+    : (typeof d.salario_actual_inferido === "string" ? Number(d.salario_actual_inferido.replace(/\D/g, "")) : null);
+  if (salario && Number.isFinite(salario) && salario > 0) out.salario = salario;
+  const moneda = findOption(MONEDAS, asString(d.moneda_inferida));
+  if (moneda) out.moneda = moneda;
+  const tipoSal = asString(d.tipo_salario_inferido);
+  if (tipoSal) {
+    const lower = tipoSal.toLowerCase();
+    if (lower.includes("bruto")) out.brutoNeto = "bruto";
+    else if (lower.includes("neto")) out.brutoNeto = "neto";
+  }
+
+  const beneficios = asArrayStr(d.beneficios_inferidos);
+  if (beneficios) {
+    const matched = beneficios.map((b) => findOption(BENEFICIOS, b) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.beneficios = Array.from(new Set(matched));
+  }
+
+  const titulo = asString(d.titulo_puesto);
+  if (titulo) out.descripcionPuesto = titulo;
+
+  return out;
+}
+
+const STEP_TITULO: Record<number, string> = {
+  1: "¿En qué industria trabajás?",
+  2: "¿En qué tipo de empresa trabajás?",
+  3: "¿Cuál es tu nivel jerárquico?",
+  4: "¿Cuál es el alcance de tu rol?",
+  5: "¿Tenés personas a cargo?",
+  6: "¿Qué funciones forman parte de tu trabajo?",
+  8: "¿Qué idiomas usás en tu trabajo?",
+  9: "¿Cuántos años de experiencia total tenés?",
+  10: "¿Cuántos años de experiencia tenés en esta industria?",
+  11: "¿Cuál es tu formación?",
+  12: "¿Tenés certificaciones profesionales?",
+  13: "¿Qué herramientas de IA usás?",
+  14: "¿Cuál es tu compensación actual?",
+  15: "¿Qué beneficios recibís?",
+  16: "Tu puesto",
+};
+
+function tieneExtraccion(step: number, d: DatosExtraidos): boolean {
+  return !!resumenExtraccion(step, d);
+}
+
+function resumenExtraccion(step: number, d: DatosExtraidos): { titulo: string; valor: string } | null {
+  const titulo = STEP_TITULO[step] ?? "";
+  const v = (() => {
+    switch (step) {
+      case 1: return findOption(INDUSTRIAS, asString(d.industria_inferida));
+      case 2: return findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
+      case 3: return findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
+      case 4: return findOption(ALCANCES, asString(d.alcance_inferido));
+      case 5: return findOption(PERSONAS_A_CARGO, asString(d.equipo_inferido));
+      case 6: {
+        const arr = asArrayStr(d.funciones_inferidas);
+        return arr ? arr.slice(0, 6).join(" · ") : null;
+      }
+      case 8: {
+        const arr = Array.isArray(d.idiomas) ? d.idiomas : null;
+        if (!arr || !arr.length) return null;
+        return arr.map((i) => typeof i === "string" ? i : `${i.idioma ?? ""}${i.nivel ? ` (${i.nivel})` : ""}`).filter(Boolean).join(" · ");
+      }
+      case 9: return asString(d.anos_experiencia_total_inferidos);
+      case 10: return asString(d.anos_experiencia_industria_inferidos);
+      case 11: { const a = asArrayStr(d.formacion); return a ? a.join(" · ") : null; }
+      case 12: { const a = asArrayStr(d.certificaciones); return a ? a.join(" · ") : null; }
+      case 13: { const a = asArrayStr(d.herramientas_ia_inferidas); return a ? a.join(" · ") : null; }
+      case 14: {
+        const sal = d.salario_actual_inferido;
+        const mon = asString(d.moneda_inferida);
+        const tipo = asString(d.tipo_salario_inferido);
+        if (!sal || !mon) return null;
+        return `${mon} ${typeof sal === "number" ? sal.toLocaleString("es-AR") : sal}${tipo ? ` (${tipo})` : ""}`;
+      }
+      case 15: { const a = asArrayStr(d.beneficios_inferidos); return a ? a.join(" · ") : null; }
+      case 16: return asString(d.titulo_puesto);
+      default: return null;
+    }
+  })();
+  return v ? { titulo, valor: v } : null;
+}
+
 
 export const Route = createFileRoute("/diagnostico/preguntas")({
   head: () => ({ meta: [{ title: "Preguntas — PayRank" }] }),
