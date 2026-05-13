@@ -17,7 +17,168 @@ import {
   MONEDAS, NIVELES, NIVELES_IDIOMA, PAISES, PERSONAS_A_CARGO, SITUACIONES,
   TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA,
 } from "@/lib/diagnostico/data";
-import type { Idioma } from "@/lib/diagnostico/types";
+import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
+
+// ───────────── Helpers de extracción ─────────────
+
+function asString(v: unknown): string | null {
+  if (v == null) return null;
+  if (typeof v === "string") return v.trim() || null;
+  if (typeof v === "number") return String(v);
+  return null;
+}
+function asArrayStr(v: unknown): string[] | null {
+  if (!Array.isArray(v)) return null;
+  const out = v.map((x) => (typeof x === "string" ? x.trim() : "")).filter(Boolean);
+  return out.length ? out : null;
+}
+function findOption(opts: readonly string[], val: string | null): string | null {
+  if (!val) return null;
+  const lower = val.toLowerCase();
+  return opts.find((o) => o.toLowerCase() === lower)
+    ?? opts.find((o) => o.toLowerCase().includes(lower) || lower.includes(o.toLowerCase()))
+    ?? null;
+}
+
+/** Mapea el JSON extraído por la IA a parciales de Respuestas */
+function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  const industria = findOption(INDUSTRIAS, asString(d.industria_inferida));
+  if (industria) out.industria = industria;
+  const tipoEmp = findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
+  if (tipoEmp) out.tipoEmpresa = tipoEmp;
+  const nivel = findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
+  if (nivel) out.nivel = nivel;
+  const alcance = findOption(ALCANCES, asString(d.alcance_inferido));
+  if (alcance) out.alcance = alcance;
+  const equipo = findOption(PERSONAS_A_CARGO, asString(d.equipo_inferido));
+  if (equipo) out.personasACargo = equipo;
+  const expTot = findOption(EXP_TOTAL, asString(d.anos_experiencia_total_inferidos));
+  if (expTot) out.expTotal = expTot;
+  const expInd = findOption(EXP_INDUSTRIA, asString(d.anos_experiencia_industria_inferidos));
+  if (expInd) out.expIndustria = expInd;
+
+  const funcs = asArrayStr(d.funciones_inferidas);
+  if (funcs) {
+    const matched = funcs.map((f) => findOption(FUNCIONES, f) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.funciones = Array.from(new Set(matched));
+    else out.funcionesTexto = funcs.join(", ");
+  }
+
+  const form = asArrayStr(d.formacion);
+  if (form) {
+    const matched = form.map((f) => findOption(FORMACIONES, f) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.formacion = Array.from(new Set(matched));
+  }
+
+  const certs = asArrayStr(d.certificaciones);
+  if (certs) out.certificaciones = certs;
+
+  const idiomas = Array.isArray(d.idiomas) ? d.idiomas : null;
+  if (idiomas && idiomas.length) {
+    const list: Idioma[] = idiomas.map((i): Idioma => {
+      if (typeof i === "string") return { idioma: i, nivel: "" };
+      const lvl = NIVELES_IDIOMA.find((n) => n.toLowerCase() === (i.nivel ?? "").toLowerCase());
+      return {
+        idioma: typeof i.idioma === "string" ? i.idioma : "",
+        nivel: (lvl ?? "") as Idioma["nivel"],
+        certificacion: typeof i.certificacion === "string" ? i.certificacion : undefined,
+      };
+    }).filter((i) => i.idioma);
+    if (list.length) out.idiomas = list;
+  }
+
+  const ia = asArrayStr(d.herramientas_ia_inferidas);
+  if (ia) {
+    const matched = ia.map((t) => findOption(HERRAMIENTAS_IA, t) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.herramientasIA = Array.from(new Set(matched));
+  }
+
+  const salario = typeof d.salario_actual_inferido === "number"
+    ? d.salario_actual_inferido
+    : (typeof d.salario_actual_inferido === "string" ? Number(d.salario_actual_inferido.replace(/\D/g, "")) : null);
+  if (salario && Number.isFinite(salario) && salario > 0) out.salario = salario;
+  const moneda = findOption(MONEDAS, asString(d.moneda_inferida));
+  if (moneda) out.moneda = moneda;
+  const tipoSal = asString(d.tipo_salario_inferido);
+  if (tipoSal) {
+    const lower = tipoSal.toLowerCase();
+    if (lower.includes("bruto")) out.brutoNeto = "bruto";
+    else if (lower.includes("neto")) out.brutoNeto = "neto";
+  }
+
+  const beneficios = asArrayStr(d.beneficios_inferidos);
+  if (beneficios) {
+    const matched = beneficios.map((b) => findOption(BENEFICIOS, b) ?? null).filter(Boolean) as string[];
+    if (matched.length) out.beneficios = Array.from(new Set(matched));
+  }
+
+  const titulo = asString(d.titulo_puesto);
+  if (titulo) out.descripcionPuesto = titulo;
+
+  return out;
+}
+
+const STEP_TITULO: Record<number, string> = {
+  1: "¿En qué industria trabajás?",
+  2: "¿En qué tipo de empresa trabajás?",
+  3: "¿Cuál es tu nivel jerárquico?",
+  4: "¿Cuál es el alcance de tu rol?",
+  5: "¿Tenés personas a cargo?",
+  6: "¿Qué funciones forman parte de tu trabajo?",
+  8: "¿Qué idiomas usás en tu trabajo?",
+  9: "¿Cuántos años de experiencia total tenés?",
+  10: "¿Cuántos años de experiencia tenés en esta industria?",
+  11: "¿Cuál es tu formación?",
+  12: "¿Tenés certificaciones profesionales?",
+  13: "¿Qué herramientas de IA usás?",
+  14: "¿Cuál es tu compensación actual?",
+  15: "¿Qué beneficios recibís?",
+  16: "Tu puesto",
+};
+
+function tieneExtraccion(step: number, d: DatosExtraidos): boolean {
+  return !!resumenExtraccion(step, d);
+}
+
+function resumenExtraccion(step: number, d: DatosExtraidos): { titulo: string; valor: string } | null {
+  const titulo = STEP_TITULO[step] ?? "";
+  const v = (() => {
+    switch (step) {
+      case 1: return findOption(INDUSTRIAS, asString(d.industria_inferida));
+      case 2: return findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
+      case 3: return findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
+      case 4: return findOption(ALCANCES, asString(d.alcance_inferido));
+      case 5: return findOption(PERSONAS_A_CARGO, asString(d.equipo_inferido));
+      case 6: {
+        const arr = asArrayStr(d.funciones_inferidas);
+        return arr ? arr.slice(0, 6).join(" · ") : null;
+      }
+      case 8: {
+        const arr = Array.isArray(d.idiomas) ? d.idiomas : null;
+        if (!arr || !arr.length) return null;
+        return arr.map((i) => typeof i === "string" ? i : `${i.idioma ?? ""}${i.nivel ? ` (${i.nivel})` : ""}`).filter(Boolean).join(" · ");
+      }
+      case 9: return asString(d.anos_experiencia_total_inferidos);
+      case 10: return asString(d.anos_experiencia_industria_inferidos);
+      case 11: { const a = asArrayStr(d.formacion); return a ? a.join(" · ") : null; }
+      case 12: { const a = asArrayStr(d.certificaciones); return a ? a.join(" · ") : null; }
+      case 13: { const a = asArrayStr(d.herramientas_ia_inferidas); return a ? a.join(" · ") : null; }
+      case 14: {
+        const sal = d.salario_actual_inferido;
+        const mon = asString(d.moneda_inferida);
+        const tipo = asString(d.tipo_salario_inferido);
+        if (!sal || !mon) return null;
+        return `${mon} ${typeof sal === "number" ? sal.toLocaleString("es-AR") : sal}${tipo ? ` (${tipo})` : ""}`;
+      }
+      case 15: { const a = asArrayStr(d.beneficios_inferidos); return a ? a.join(" · ") : null; }
+      case 16: return asString(d.titulo_puesto);
+      default: return null;
+    }
+  })();
+  return v ? { titulo, valor: v } : null;
+}
+
 
 export const Route = createFileRoute("/diagnostico/preguntas")({
   head: () => ({ meta: [{ title: "Preguntas — PayRank" }] }),
@@ -26,15 +187,40 @@ export const Route = createFileRoute("/diagnostico/preguntas")({
 
 const TOTAL = 19;
 
+// Mapa de pasos que pueden pre-completarse desde el documento
+const EXTRACTABLE_STEPS = new Set([1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+
 function PreguntasPage() {
   const navigate = useNavigate();
   const { state, setState } = useDiagnostico();
   const [step, setStep] = React.useState(0); // 0..18
+  const appliedRef = React.useRef(false);
 
   const r = state.respuestas;
   const setR = (patch: Partial<typeof r>) => {
     setState((s) => ({ ...s, respuestas: { ...s.respuestas, ...patch } }));
   };
+
+  const datos = state.datosExtraidos ?? null;
+  const hasDoc = !!datos;
+  const overrides = React.useMemo(() => new Set(state.pasosOverride ?? []), [state.pasosOverride]);
+
+  // Pre-cargar respuestas desde extracción una sola vez al entrar
+  React.useEffect(() => {
+    if (appliedRef.current || !datos) return;
+    appliedRef.current = true;
+    setState((s) => ({ ...s, respuestas: { ...s.respuestas, ...mapExtraccionAResp(datos) } }));
+  }, [datos, setState]);
+
+  // Pasos pendientes (en modo documento) = pasos sin extracción válida o forzados a override
+  const pendientes = React.useMemo(() => {
+    if (!hasDoc) return null;
+    const arr: number[] = [];
+    for (let i = 0; i < TOTAL; i++) {
+      if (!EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
+    }
+    return arr;
+  }, [hasDoc, datos, overrides]);
 
   const next = () => {
     if (step < TOTAL - 1) setStep(step + 1);
@@ -45,19 +231,90 @@ function PreguntasPage() {
     else navigate({ to: "/diagnostico/upload" });
   };
 
-  const progress = Math.round(((step + 1) / TOTAL) * 50) + 10; // map to 10–60% global progress
+  const onCorrecto = () => next();
+  const onCambiar = () => {
+    setState((s) => ({
+      ...s,
+      pasosOverride: Array.from(new Set([...(s.pasosOverride ?? []), step])),
+    }));
+  };
+
   const valid = isValid(step, r);
+  const extraccionTexto = hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step)
+    ? resumenExtraccion(step, datos!)
+    : null;
+
+  // Cabecera de progreso
+  const progressHeader = hasDoc && pendientes
+    ? (() => {
+        const idx = pendientes.indexOf(step);
+        const totalPend = pendientes.length;
+        if (idx >= 0) return `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
+        return `CAMPO CONFIRMADO`;
+      })()
+    : `PREGUNTA ${step + 1} DE ${TOTAL}`;
+
+  const pct = hasDoc && pendientes && pendientes.length > 0
+    ? Math.round(((Math.max(pendientes.indexOf(step), 0) + 1) / pendientes.length) * 50) + 10
+    : Math.round(((step + 1) / TOTAL) * 50) + 10;
 
   return (
-    <DiagnosticoShell step={2} progress={progress}>
-      <p className="font-ui text-[10px] text-hueso/45 mb-3">
-        PREGUNTA {step + 1} DE {TOTAL}
-      </p>
+    <DiagnosticoShell step={2} progress={pct}>
+      <p className="font-ui text-[10px] text-hueso/45 mb-3">{progressHeader}</p>
       <StepFade k={step}>
-        {renderStep(step, r, setR)}
+        {extraccionTexto ? (
+          <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} />
+        ) : (
+          renderStep(step, r, setR)
+        )}
       </StepFade>
-      <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />
+      {!extraccionTexto && <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />}
+      {extraccionTexto && (
+        <div className="mt-8">
+          <button
+            type="button"
+            onClick={back}
+            className="font-ui text-[10px] text-hueso/55 hover:text-hueso underline underline-offset-4"
+          >
+            ← Volver
+          </button>
+        </div>
+      )}
     </DiagnosticoShell>
+  );
+}
+
+function ConfirmCard({ texto, onCorrecto, onCambiar }: {
+  texto: { titulo: string; valor: string };
+  onCorrecto: () => void;
+  onCambiar: () => void;
+}) {
+  return (
+    <div>
+      <p className="font-body text-base text-hueso/60 mb-3">{texto.titulo}</p>
+      <p className="font-ui text-[10px] text-hueso/45 mb-3">ENCONTRÉ EN TU DOCUMENTO</p>
+      <div className="border border-hueso/20 bg-hueso/[0.03] p-6 mb-8">
+        <p className="font-display text-2xl md:text-3xl text-hueso leading-snug whitespace-pre-line">
+          {texto.valor}
+        </p>
+      </div>
+      <div className="flex flex-col md:flex-row gap-3">
+        <button
+          type="button"
+          onClick={onCorrecto}
+          className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
+        >
+          ✓ Correcto · continuá <span aria-hidden>→</span>
+        </button>
+        <button
+          type="button"
+          onClick={onCambiar}
+          className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
+        >
+          Cambiar
+        </button>
+      </div>
+    </div>
   );
 }
 

@@ -72,6 +72,29 @@ export type Respuestas = {
   whatsapp?: string;
 };
 
+export type DatosExtraidos = {
+  nombre_inferido?: string | null;
+  titulo_puesto?: string | null;
+  nivel_jerarquico_inferido?: string | null;
+  industria_inferida?: string | null;
+  tipo_empresa_inferida?: string | null;
+  anos_experiencia_total_inferidos?: string | number | null;
+  anos_experiencia_industria_inferidos?: string | number | null;
+  formacion?: string[] | null;
+  certificaciones?: string[] | null;
+  idiomas?: Array<{ idioma?: string; nivel?: string; certificacion?: string } | string> | null;
+  funciones_inferidas?: string[] | null;
+  alcance_inferido?: string | null;
+  equipo_inferido?: string | null;
+  herramientas_ia_inferidas?: string[] | null;
+  salario_actual_inferido?: number | string | null;
+  moneda_inferida?: string | null;
+  tipo_salario_inferido?: string | null;
+  beneficios_inferidos?: string[] | null;
+  linkedin_url?: string | null;
+  [k: string]: unknown;
+};
+
 export type DiagnosticoState = {
   modo: Modo;
   plan: Plan;
@@ -79,4 +102,7 @@ export type DiagnosticoState = {
   respuestas: Respuestas;
   inferencia?: Inferencia;
   inferenciaValidada: boolean;
+  datosExtraidos?: DatosExtraidos | null;
+  // Set of step indices the user explicitly chose to "Cambiar" (override extracted)
+  pasosOverride?: number[];
 };
