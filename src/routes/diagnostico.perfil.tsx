@@ -170,14 +170,6 @@ function PerfilPage() {
         )}
 
         {err && !isDev && <p className="mt-3 text-xs text-red-300/90 font-body">{err}</p>}
-          <button
-            type="button"
-            onClick={back}
-            className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
-          >
-            Quiero corregir algo
-          </button>
-        </div>
 
         {isDev && (
           <div className="mt-8 border border-dashed border-hueso/30 p-5">
