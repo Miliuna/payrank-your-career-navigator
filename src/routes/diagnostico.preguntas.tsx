@@ -26,15 +26,40 @@ export const Route = createFileRoute("/diagnostico/preguntas")({
 
 const TOTAL = 19;
 
+// Mapa de pasos que pueden pre-completarse desde el documento
+const EXTRACTABLE_STEPS = new Set([1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+
 function PreguntasPage() {
   const navigate = useNavigate();
   const { state, setState } = useDiagnostico();
   const [step, setStep] = React.useState(0); // 0..18
+  const appliedRef = React.useRef(false);
 
   const r = state.respuestas;
   const setR = (patch: Partial<typeof r>) => {
     setState((s) => ({ ...s, respuestas: { ...s.respuestas, ...patch } }));
   };
+
+  const datos = state.datosExtraidos ?? null;
+  const hasDoc = !!datos;
+  const overrides = React.useMemo(() => new Set(state.pasosOverride ?? []), [state.pasosOverride]);
+
+  // Pre-cargar respuestas desde extracción una sola vez al entrar
+  React.useEffect(() => {
+    if (appliedRef.current || !datos) return;
+    appliedRef.current = true;
+    setState((s) => ({ ...s, respuestas: { ...s.respuestas, ...mapExtraccionAResp(datos) } }));
+  }, [datos, setState]);
+
+  // Pasos pendientes (en modo documento) = pasos sin extracción válida o forzados a override
+  const pendientes = React.useMemo(() => {
+    if (!hasDoc) return null;
+    const arr: number[] = [];
+    for (let i = 0; i < TOTAL; i++) {
+      if (!EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
+    }
+    return arr;
+  }, [hasDoc, datos, overrides]);
 
   const next = () => {
     if (step < TOTAL - 1) setStep(step + 1);
@@ -45,19 +70,90 @@ function PreguntasPage() {
     else navigate({ to: "/diagnostico/upload" });
   };
 
-  const progress = Math.round(((step + 1) / TOTAL) * 50) + 10; // map to 10–60% global progress
+  const onCorrecto = () => next();
+  const onCambiar = () => {
+    setState((s) => ({
+      ...s,
+      pasosOverride: Array.from(new Set([...(s.pasosOverride ?? []), step])),
+    }));
+  };
+
   const valid = isValid(step, r);
+  const extraccionTexto = hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step)
+    ? resumenExtraccion(step, datos!)
+    : null;
+
+  // Cabecera de progreso
+  const progressHeader = hasDoc && pendientes
+    ? (() => {
+        const idx = pendientes.indexOf(step);
+        const totalPend = pendientes.length;
+        if (idx >= 0) return `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
+        return `CAMPO CONFIRMADO`;
+      })()
+    : `PREGUNTA ${step + 1} DE ${TOTAL}`;
+
+  const pct = hasDoc && pendientes && pendientes.length > 0
+    ? Math.round(((Math.max(pendientes.indexOf(step), 0) + 1) / pendientes.length) * 50) + 10
+    : Math.round(((step + 1) / TOTAL) * 50) + 10;
 
   return (
-    <DiagnosticoShell step={2} progress={progress}>
-      <p className="font-ui text-[10px] text-hueso/45 mb-3">
-        PREGUNTA {step + 1} DE {TOTAL}
-      </p>
+    <DiagnosticoShell step={2} progress={pct}>
+      <p className="font-ui text-[10px] text-hueso/45 mb-3">{progressHeader}</p>
       <StepFade k={step}>
-        {renderStep(step, r, setR)}
+        {extraccionTexto ? (
+          <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} />
+        ) : (
+          renderStep(step, r, setR)
+        )}
       </StepFade>
-      <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />
+      {!extraccionTexto && <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />}
+      {extraccionTexto && (
+        <div className="mt-8">
+          <button
+            type="button"
+            onClick={back}
+            className="font-ui text-[10px] text-hueso/55 hover:text-hueso underline underline-offset-4"
+          >
+            ← Volver
+          </button>
+        </div>
+      )}
     </DiagnosticoShell>
+  );
+}
+
+function ConfirmCard({ texto, onCorrecto, onCambiar }: {
+  texto: { titulo: string; valor: string };
+  onCorrecto: () => void;
+  onCambiar: () => void;
+}) {
+  return (
+    <div>
+      <p className="font-body text-base text-hueso/60 mb-3">{texto.titulo}</p>
+      <p className="font-ui text-[10px] text-hueso/45 mb-3">ENCONTRÉ EN TU DOCUMENTO</p>
+      <div className="border border-hueso/20 bg-hueso/[0.03] p-6 mb-8">
+        <p className="font-display text-2xl md:text-3xl text-hueso leading-snug whitespace-pre-line">
+          {texto.valor}
+        </p>
+      </div>
+      <div className="flex flex-col md:flex-row gap-3">
+        <button
+          type="button"
+          onClick={onCorrecto}
+          className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
+        >
+          ✓ Correcto · continuá <span aria-hidden>→</span>
+        </button>
+        <button
+          type="button"
+          onClick={onCambiar}
+          className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
+        >
+          Cambiar
+        </button>
+      </div>
+    </div>
   );
 }
 
