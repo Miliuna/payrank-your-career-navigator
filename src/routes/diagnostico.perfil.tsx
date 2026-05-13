@@ -145,6 +145,24 @@ function PerfilPage() {
             Quiero corregir algo
           </button>
         </div>
+
+        {isDev && (
+          <div className="mt-8 border border-dashed border-hueso/30 p-5">
+            <p className="font-ui text-[10px] text-hueso/50 mb-2">MODO DESARROLLO</p>
+            <p className="font-body text-sm text-hueso/70 mb-4">
+              Saltá el paywall: simulá un pago confirmado y generá el PayRank ahora.
+            </p>
+            <button
+              type="button"
+              onClick={simulateAndGenerate}
+              disabled={busy}
+              className="inline-flex items-center justify-center bg-azul-real text-hueso px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
+            >
+              {busy ? "Generando…" : "Simular pago y generar PayRank"}
+            </button>
+            {err && <p className="mt-3 text-xs text-red-300/90 font-body">{err}</p>}
+          </div>
+        )}
       </StepFade>
     </DiagnosticoShell>
   );
