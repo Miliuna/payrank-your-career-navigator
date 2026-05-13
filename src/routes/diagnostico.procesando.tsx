@@ -2,7 +2,6 @@ import * as React from "react";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { generateDiagnostico } from "@/lib/diagnostico/diagnostico.functions";
 
 const searchSchema = z.object({ id: z.string().uuid() });
@@ -12,14 +11,6 @@ export const Route = createFileRoute("/diagnostico/procesando")({
   validateSearch: (s) => searchSchema.parse(s),
   component: ProcesandoPage,
 });
-
-const MENSAJES = [
-  "Analizando tu perfil compensológico…",
-  "Cruzando con benchmarks de mercado…",
-  "Aplicando ajustes por industria, alcance e idiomas…",
-  "Calibrando el nivel de confianza…",
-  "Redactando tu PayRank…",
-];
 
 function ProcesandoPage() {
   const navigate = useNavigate();
