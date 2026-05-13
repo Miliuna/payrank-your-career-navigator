@@ -1,0 +1,209 @@
+import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { SYSTEM_PROMPT, buildUserPrompt } from "./prompt";
+
+const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
+const MODEL = "claude-sonnet-4-5";
+
+// ---------- Crear diagnóstico desde el state del cliente ----------
+
+const createDiagnosticoSchema = z.object({
+  modo: z.string().optional(),
+  plan: z.string().optional(),
+  respuestas: z.record(z.string(), z.unknown()).optional(),
+  inferencia: z.unknown().optional(),
+  inferenciaValidada: z.boolean().optional(),
+  documentos: z.record(z.string(), z.unknown()).optional(),
+});
+
+function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
+  const r = (input.respuestas ?? {}) as Record<string, unknown>;
+  const pais = r.pais === "Otro" ? r.paisOtro : r.pais;
+  const industria = r.industria === "Otra" ? r.industriaOtra : r.industria;
+  const nivel = r.nivel === "Otro" ? r.nivelOtro : r.nivel;
+  const funciones = Array.isArray(r.funciones) ? (r.funciones as string[]) : null;
+
+  const salario = typeof r.salario === "number" ? r.salario
+    : typeof r.salarioAnterior === "number" ? r.salarioAnterior
+    : null;
+  const moneda = (r.moneda as string) ?? (r.monedaAnterior as string) ?? null;
+
+  return {
+    tipo_usuario: "pago",
+    modo: input.modo ?? null,
+    plan_elegido: input.plan ?? null,
+    pais_rol: (pais as string) ?? null,
+    industria: (industria as string) ?? null,
+    tipo_empresa: (r.tipoEmpresa as string) ?? null,
+    nivel: (nivel as string) ?? null,
+    alcance: (r.alcance as string) ?? null,
+    funciones,
+    equipo: (r.personasACargo as string) ?? null,
+    interaccion_clevel: (r.interaccion as string) ?? null,
+    idiomas: r.sinIdiomas ? null : (r.idiomas ?? null),
+    anos_experiencia_total: (r.expTotal as string) ?? null,
+    anos_experiencia_industria: (r.expIndustria as string) ?? null,
+    anos_puesto_actual: null,
+    formacion: Array.isArray(r.formacion) ? (r.formacion as string[]) : null,
+    certificaciones: r.sinCertificaciones ? [] : (Array.isArray(r.certificaciones) ? (r.certificaciones as string[]) : null),
+    herramientas_ia: Array.isArray(r.herramientasIA) ? r.herramientasIA : null,
+    frecuencia_ia: (r.frecuenciaIA as string) ?? null,
+    uso_ia: Array.isArray(r.usoIA) ? (r.usoIA as string[]) : null,
+    situacion_laboral: (r.situacion as string) ?? null,
+    salario_actual: salario,
+    moneda_actual: moneda,
+    salario_tipo: (r.brutoNeto as string) ?? null,
+    beneficios: Array.isArray(r.beneficios) ? (r.beneficios as string[]) : null,
+    puesto_descripcion: (r.descripcionPuesto as string) ?? (r.funcionesTexto as string) ?? null,
+    linkedin_url: null,
+    genero: (r.genero as string) ?? null,
+    mail: (r.email as string) ?? null,
+    whatsapp: (r.whatsapp as string) ?? null,
+    inferencia_valuacion: (input.inferencia as object) ?? null,
+    inferencia_validada: input.inferenciaValidada ?? false,
+  };
+}
+
+export const createDiagnostico = createServerFn({ method: "POST" })
+  .inputValidator((input) => createDiagnosticoSchema.parse(input))
+  .handler(async ({ data }) => {
+    const row = mapStateToRow(data);
+    const { data: created, error } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .insert(row as never)
+      .select("id, link_unico")
+      .single();
+    if (error) {
+      console.error("[createDiagnostico] insert error:", error);
+      throw new Error(error.message);
+    }
+    return created as { id: string; link_unico: string };
+  });
+
+// ---------- Simular pago (solo dev) ----------
+
+export const simulatePayment = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("Simulación de pago deshabilitada en producción");
+    }
+    const { error } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .update({ pago_confirmado: true, monto_pagado_usd: 0 } as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ---------- Llamada a Anthropic ----------
+
+async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("ANTHROPIC_API_KEY no configurada");
+
+  const res = await fetch(ANTHROPIC_URL, {
+    method: "POST",
+    headers: {
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 4000,
+      temperature: 0,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+    }),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Anthropic ${res.status}: ${txt.slice(0, 500)}`);
+  }
+  const json = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
+  const text = json.content?.find((c) => c.type === "text")?.text ?? "";
+  return text;
+}
+
+function tryParseJson(text: string): unknown | null {
+  try {
+    return JSON.parse(text);
+  } catch {
+    // intentar extraer un bloque JSON
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) {
+      try { return JSON.parse(match[0]); } catch { /* noop */ }
+    }
+    return null;
+  }
+}
+
+// ---------- Generar diagnóstico ----------
+
+export const generateDiagnostico = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { data: row, error } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .select("*")
+      .eq("id", data.id)
+      .single();
+    if (error || !row) throw new Error(error?.message ?? "Diagnóstico no encontrado");
+
+    const record = row as Record<string, unknown>;
+    if (!record.pago_confirmado) {
+      throw new Error("El pago no está confirmado para este diagnóstico");
+    }
+
+    // Si ya fue generado, devolverlo tal cual (idempotencia)
+    if (record.resultado_json) {
+      return { id: record.id as string, link_unico: record.link_unico as string };
+    }
+
+    const userPrompt = buildUserPrompt(record);
+
+    let parsed: unknown | null = null;
+    let lastRaw = "";
+    for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
+      try {
+        lastRaw = await callAnthropic(SYSTEM_PROMPT, userPrompt);
+        parsed = tryParseJson(lastRaw);
+      } catch (e) {
+        console.error(`[generateDiagnostico] intento ${attempt + 1} falló:`, e);
+      }
+    }
+
+    if (!parsed) {
+      throw new Error(`Anthropic no devolvió JSON válido. Raw: ${lastRaw.slice(0, 300)}`);
+    }
+
+    const nivelConfianza = (parsed as Record<string, unknown>).nivel_confianza;
+
+    const { error: upErr } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .update({
+        resultado_json: parsed,
+        nivel_confianza: typeof nivelConfianza === "string" ? nivelConfianza : null,
+      } as never)
+      .eq("id", data.id);
+    if (upErr) throw new Error(upErr.message);
+
+    return { id: record.id as string, link_unico: record.link_unico as string };
+  });
+
+// ---------- Obtener diagnóstico por id ----------
+
+export const getDiagnostico = createServerFn({ method: "GET" })
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { data: row, error } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .select("*")
+      .eq("id", data.id)
+      .single();
+    if (error || !row) throw new Error(error?.message ?? "Diagnóstico no encontrado");
+    return row as Record<string, unknown>;
+  });
