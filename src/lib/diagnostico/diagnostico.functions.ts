@@ -64,6 +64,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     whatsapp: (r.whatsapp as string) ?? null,
     inferencia_valuacion: (input.inferencia as object) ?? null,
     inferencia_validada: input.inferenciaValidada ?? false,
+    datos_extraidos_documento: (input.datosExtraidos as object | null) ?? null,
   };
 }
 
