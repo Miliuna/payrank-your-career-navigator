@@ -277,3 +277,103 @@ export const getDiagnostico = createServerFn({ method: "GET" })
   });
 
 type Json = string | number | boolean | null | { [k: string]: Json } | Json[];
+
+// ---------- Extracción de datos desde documento subido ----------
+
+const EXTRACT_SYSTEM = `Extraé todos los datos profesionales y de compensación que encuentres en este documento. Respondé ÚNICAMENTE con JSON válido sin texto adicional.`;
+
+const EXTRACT_USER_INSTRUCTIONS = `Extraé estos campos si están presentes:
+- nombre_inferido
+- titulo_puesto
+- nivel_jerarquico_inferido
+- industria_inferida
+- tipo_empresa_inferida
+- anos_experiencia_total_inferidos
+- anos_experiencia_industria_inferidos
+- formacion (array)
+- certificaciones (array)
+- idiomas (array con nivel si figura)
+- funciones_inferidas (array)
+- alcance_inferido
+- equipo_inferido
+- herramientas_ia_inferidas (array)
+- salario_actual_inferido
+- moneda_inferida
+- tipo_salario_inferido (bruto/neto)
+- beneficios_inferidos (array)
+- linkedin_url (si figura)
+
+Para cada campo que NO puedas inferir con certeza del documento, devolvé null.
+No inventes datos que no están explícitamente en el documento.
+Respondé un único objeto JSON, sin markdown ni explicaciones.`;
+
+const extractInputSchema = z.union([
+  z.object({
+    kind: z.literal("text"),
+    text: z.string().min(1).max(200_000),
+  }),
+  z.object({
+    kind: z.literal("pdf"),
+    base64: z.string().min(1).max(20_000_000),
+  }),
+]);
+
+export const extractFromDocument = createServerFn({ method: "POST" })
+  .inputValidator((input) => extractInputSchema.parse(input))
+  .handler(async ({ data }) => {
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) throw new Error("ANTHROPIC_API_KEY no configurada");
+
+    const userContent =
+      data.kind === "text"
+        ? [
+            { type: "text", text: `Documento:\n\n${data.text.slice(0, 100_000)}` },
+            { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
+          ]
+        : [
+            {
+              type: "document",
+              source: {
+                type: "base64",
+                media_type: "application/pdf",
+                data: data.base64,
+              },
+            },
+            { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
+          ];
+
+    const res = await fetch(ANTHROPIC_URL, {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 1000,
+        temperature: 0,
+        system: EXTRACT_SYSTEM,
+        messages: [{ role: "user", content: userContent }],
+      }),
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`Anthropic ${res.status}: ${txt.slice(0, 500)}`);
+    }
+    const json = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
+    const text = json.content?.find((c) => c.type === "text")?.text ?? "";
+
+    let parsed: Record<string, unknown> | null = null;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) {
+        try { parsed = JSON.parse(match[0]); } catch { /* noop */ }
+      }
+    }
+    if (!parsed) throw new Error("La extracción no devolvió JSON válido");
+    return parsed;
+  });
