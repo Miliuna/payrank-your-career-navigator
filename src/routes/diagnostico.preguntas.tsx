@@ -76,11 +76,12 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
 
   const idiomas = Array.isArray(d.idiomas) ? d.idiomas : null;
   if (idiomas && idiomas.length) {
-    const list: Idioma[] = idiomas.map((i) => {
+    const list: Idioma[] = idiomas.map((i): Idioma => {
       if (typeof i === "string") return { idioma: i, nivel: "" };
+      const lvl = NIVELES_IDIOMA.find((n) => n.toLowerCase() === (i.nivel ?? "").toLowerCase());
       return {
         idioma: typeof i.idioma === "string" ? i.idioma : "",
-        nivel: (NIVELES_IDIOMA.find((n) => n.toLowerCase() === (i.nivel ?? "").toLowerCase()) ?? "") as Idioma["nivel"],
+        nivel: (lvl ?? "") as Idioma["nivel"],
         certificacion: typeof i.certificacion === "string" ? i.certificacion : undefined,
       };
     }).filter((i) => i.idioma);
