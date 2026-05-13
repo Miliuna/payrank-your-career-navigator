@@ -156,7 +156,7 @@ function PerfilPage() {
               type="button"
               onClick={simulateAndGenerate}
               disabled={busy}
-              className="inline-flex items-center justify-center bg-azul-real text-hueso px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
+              className="inline-flex items-center justify-center bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
             >
               {busy ? "Generando…" : "Simular pago y generar PayRank"}
             </button>
