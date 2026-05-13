@@ -16,6 +16,7 @@ const createDiagnosticoSchema = z.object({
   inferenciaValidada: z.boolean().optional(),
   documentos: z.record(z.string(), z.unknown()).optional(),
   betaToken: z.string().min(1).max(128).optional(),
+  datosExtraidos: z.record(z.string(), z.unknown()).nullable().optional(),
 });
 
 function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
