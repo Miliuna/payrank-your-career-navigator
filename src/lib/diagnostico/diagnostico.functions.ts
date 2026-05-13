@@ -375,5 +375,5 @@ export const extractFromDocument = createServerFn({ method: "POST" })
       }
     }
     if (!parsed) throw new Error("La extracción no devolvió JSON válido");
-    return parsed;
+    return JSON.parse(JSON.stringify(parsed)) as Json;
   });
