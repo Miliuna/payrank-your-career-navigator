@@ -206,5 +206,6 @@ export const getDiagnostico = createServerFn({ method: "GET" })
       .single();
     if (error || !row) throw new Error(error?.message ?? "Diagnóstico no encontrado");
     // Round-trip via JSON to satisfy serializable return constraint
-    return JSON.parse(JSON.stringify(row)) as Record<string, unknown>;
+    // Round-trip via JSON to satisfy serializable return constraint
+    return JSON.parse(JSON.stringify(row)) as { [k: string]: unknown };
   });
