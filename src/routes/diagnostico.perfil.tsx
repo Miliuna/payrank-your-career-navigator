@@ -21,13 +21,17 @@ function PerfilPage() {
   const [err, setErr] = React.useState<string | null>(null);
 
   const isDev = import.meta.env.DEV;
+  const [betaToken, setBetaToken] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setBetaToken(window.localStorage.getItem("payrank.betaToken"));
+    }
+  }, []);
 
   const back = () => navigate({ to: "/diagnostico/inferencia" });
-  const next = () => {
-    alert("Próximo paso: consentimientos legales y pago. Se habilita en la próxima entrega.");
-  };
 
-  const simulateAndGenerate = async () => {
+  const generate = async (opts: { useBeta: boolean }) => {
     setBusy(true);
     setErr(null);
     try {
@@ -38,15 +42,27 @@ function PerfilPage() {
           respuestas: state.respuestas as Record<string, unknown>,
           inferencia: state.inferencia,
           inferenciaValidada: state.inferenciaValidada,
+          ...(opts.useBeta && betaToken ? { betaToken } : {}),
         },
       });
-      await simulate({ data: { id: created.id } });
+      if (!opts.useBeta || !betaToken) {
+        await simulate({ data: { id: created.id } });
+      }
       navigate({ to: "/diagnostico/procesando", search: { id: created.id } });
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
   };
+
+  const next = () => {
+    if (betaToken) {
+      void generate({ useBeta: true });
+      return;
+    }
+    alert("Próximo paso: consentimientos legales y pago. Se habilita en la próxima entrega.");
+  };
+  const simulateAndGenerate = () => generate({ useBeta: false });
 
 
   const dash = "—";
