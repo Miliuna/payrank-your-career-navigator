@@ -69,7 +69,30 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
 export const createDiagnostico = createServerFn({ method: "POST" })
   .inputValidator((input) => createDiagnosticoSchema.parse(input))
   .handler(async ({ data }) => {
-    const row = mapStateToRow(data);
+    const row = mapStateToRow(data) as Record<string, unknown>;
+
+    // Si vino con beta token, validar y marcar como beta_gratuito + pago_confirmado
+    if (data.betaToken) {
+      const { data: tok, error: tokErr } = await supabaseAdmin
+        .from("beta_tokens" as never)
+        .select("id, token, usado_count, max_usos, activo")
+        .eq("token", data.betaToken)
+        .maybeSingle();
+      if (tokErr) throw new Error(tokErr.message);
+      const t = tok as { id: string; usado_count: number; max_usos: number; activo: boolean } | null;
+      if (!t || !t.activo) throw new Error("Token beta inválido");
+      if (t.usado_count >= t.max_usos) throw new Error("Token beta agotado");
+
+      row.tipo_usuario = "beta_gratuito";
+      row.pago_confirmado = true;
+      row.monto_pagado_usd = 0;
+
+      await supabaseAdmin
+        .from("beta_tokens" as never)
+        .update({ usado_count: t.usado_count + 1 } as never)
+        .eq("id", t.id);
+    }
+
     const { data: created, error } = await supabaseAdmin
       .from("diagnosticos" as never)
       .insert(row as never)
@@ -82,7 +105,7 @@ export const createDiagnostico = createServerFn({ method: "POST" })
     return created as { id: string; link_unico: string };
   });
 
-// ---------- Simular pago (solo dev) ----------
+// ---------- Simular pago (solo dev) — marca como beta_gratuito ----------
 
 export const simulatePayment = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
@@ -92,7 +115,11 @@ export const simulatePayment = createServerFn({ method: "POST" })
     }
     const { error } = await supabaseAdmin
       .from("diagnosticos" as never)
-      .update({ pago_confirmado: true, monto_pagado_usd: 0 } as never)
+      .update({
+        pago_confirmado: true,
+        monto_pagado_usd: 0,
+        tipo_usuario: "beta_gratuito",
+      } as never)
       .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
