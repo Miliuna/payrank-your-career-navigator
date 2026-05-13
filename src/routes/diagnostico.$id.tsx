@@ -141,7 +141,7 @@ function ResultadoPage() {
             <Card dark>
               <Eyebrow>DISCREPANCIA TÍTULO / FUNCIONES</Eyebrow>
               <P>{str(s1.descripcion_discrepancia)}</P>
-              {s1.nivel_real_inferido && (
+              {!!s1.nivel_real_inferido && (
                 <p className="mt-3 font-body text-sm text-hueso/70">
                   Nivel real inferido: <span className="text-hueso">{str(s1.nivel_real_inferido)}</span>
                 </p>
@@ -262,7 +262,7 @@ function ResultadoPage() {
 
           <P>{str(s3.analisis_compensacion)}</P>
 
-          {s3.alerta_compensacion_variable && (
+          {!!s3.alerta_compensacion_variable && (
             <Card dark>
               <Eyebrow>ALERTA · COMPENSACIÓN VARIABLE</Eyebrow>
               <P>{str(s3.alerta_compensacion_variable)}</P>
@@ -307,9 +307,9 @@ function ResultadoPage() {
                 </div>
               )}
 
-              {s4.contexto_especifico && <P>{str(s4.contexto_especifico)}</P>}
+              {!!s4.contexto_especifico && <P>{str(s4.contexto_especifico)}</P>}
 
-              {s4.argumento_negociacion && (
+              {!!s4.argumento_negociacion && (
                 <Card>
                   <Eyebrow>ARGUMENTO DE NEGOCIACIÓN</Eyebrow>
                   <P>{str(s4.argumento_negociacion)}</P>
@@ -320,7 +320,7 @@ function ResultadoPage() {
         )}
 
         {/* mensaje_si_hombre */}
-        {!bool(s4.incluir) && s4.mensaje_si_hombre && (
+        {!bool(s4.incluir) && !!s4.mensaje_si_hombre && (
           <Card>
             <Eyebrow>NOTA</Eyebrow>
             <P muted>{str(s4.mensaje_si_hombre)}</P>
@@ -346,7 +346,7 @@ function ResultadoPage() {
 
           <P muted>{str(s5.explicacion_floor_ceiling)}</P>
 
-          {s5.respuesta_antes_de_conocer_rol && (
+          {!!s5.respuesta_antes_de_conocer_rol && (
             <Card dark>
               <Eyebrow>SI TE PREGUNTAN ANTES DE CONOCER EL ROL</Eyebrow>
               <P>{str(s5.respuesta_antes_de_conocer_rol)}</P>
@@ -491,7 +491,7 @@ function ResultadoPage() {
             <KV k="Tiempo realista" v={<span className="font-display">{str(s8.tiempo_realista)}</span>} />
           </Card>
 
-          {s8.analisis_cv && (
+          {!!s8.analisis_cv && (
             <Card dark>
               <Eyebrow>ANÁLISIS DE TU CV</Eyebrow>
               <P>{str(s8.analisis_cv)}</P>
@@ -508,7 +508,7 @@ function ResultadoPage() {
                     <p className="font-body text-hueso/65 italic mb-3">{str(a.antes, "—")}</p>
                     <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Después</p>
                     <p className="font-body text-hueso mb-3">{str(a.despues, "—")}</p>
-                    {a.impacto_estimado && (
+                    {!!a.impacto_estimado && (
                       <p className="font-body text-xs text-hueso/55">Impacto: {str(a.impacto_estimado)}</p>
                     )}
                   </Card>
@@ -535,7 +535,7 @@ function ResultadoPage() {
                 <KV k="Facturación objetivo P75" v={str(fl.facturacion_objetivo_p75)} />
               </Card>
 
-              {fl.alerta_monotributo && (
+              {!!fl.alerta_monotributo && (
                 <Card dark>
                   <Eyebrow>ALERTA · MONOTRIBUTO</Eyebrow>
                   <P>{str(fl.alerta_monotributo)}</P>
