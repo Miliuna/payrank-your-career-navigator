@@ -20,6 +20,7 @@ import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.p
 import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
 import { Route as DiagnosticoIdRouteImport } from './routes/diagnostico.$id'
+import { Route as BetaTokenRouteImport } from './routes/beta.$token'
 
 const TerminosCondicionesRoute = TerminosCondicionesRouteImport.update({
   id: '/terminos-condiciones',
@@ -76,6 +77,11 @@ const DiagnosticoIdRoute = DiagnosticoIdRouteImport.update({
   path: '/diagnostico/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BetaTokenRoute = BetaTokenRouteImport.update({
+  id: '/beta/$token',
+  path: '/beta/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/beta/$token'
     | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/beta/$token'
     | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/beta/$token'
     | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   ModoRoute: typeof ModoRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
+  BetaTokenRoute: typeof BetaTokenRoute
   DiagnosticoIdRoute: typeof DiagnosticoIdRoute
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
   DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
@@ -252,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/beta/$token': {
+      id: '/beta/$token'
+      path: '/beta/$token'
+      fullPath: '/beta/$token'
+      preLoaderRoute: typeof BetaTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModoRoute: ModoRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
+  BetaTokenRoute: BetaTokenRoute,
   DiagnosticoIdRoute: DiagnosticoIdRoute,
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
   DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
@@ -271,3 +292,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
