@@ -125,6 +125,41 @@ export const simulatePayment = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------- Confirmar acceso beta (consume token) ----------
+
+export const confirmBetaAccess = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z.object({ id: z.string().uuid(), token: z.string().min(1).max(128) }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { data: tok, error: tokErr } = await supabaseAdmin
+      .from("beta_tokens" as never)
+      .select("id, usado_count, max_usos, activo")
+      .eq("token", data.token)
+      .maybeSingle();
+    if (tokErr) throw new Error(tokErr.message);
+    const t = tok as { id: string; usado_count: number; max_usos: number; activo: boolean } | null;
+    if (!t || !t.activo) throw new Error("Token beta inválido");
+    if (t.usado_count >= t.max_usos) throw new Error("Token beta agotado");
+
+    const { error } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .update({
+        pago_confirmado: true,
+        monto_pagado_usd: 0,
+        tipo_usuario: "beta_gratuito",
+      } as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+
+    await supabaseAdmin
+      .from("beta_tokens" as never)
+      .update({ usado_count: t.usado_count + 1 } as never)
+      .eq("id", t.id);
+
+    return { ok: true };
+  });
+
 // ---------- Llamada a Anthropic ----------
 
 async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<string> {
