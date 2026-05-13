@@ -15,6 +15,7 @@ import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DiagnosticoUploadRouteImport } from './routes/diagnostico.upload'
+import { Route as DiagnosticoProcesandoRouteImport } from './routes/diagnostico.procesando'
 import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.preguntas'
 import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
@@ -49,6 +50,11 @@ const DiagnosticoUploadRoute = DiagnosticoUploadRouteImport.update({
   path: '/diagnostico/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosticoProcesandoRoute = DiagnosticoProcesandoRouteImport.update({
+  id: '/diagnostico/procesando',
+  path: '/diagnostico/procesando',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiagnosticoPreguntasRoute = DiagnosticoPreguntasRouteImport.update({
   id: '/diagnostico/preguntas',
   path: '/diagnostico/preguntas',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
+  '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
 export interface FileRoutesByTo {
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
+  '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
 export interface FileRoutesById {
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
+  '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
+    | '/diagnostico/procesando'
     | '/diagnostico/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,6 +131,7 @@ export interface FileRouteTypes {
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
+    | '/diagnostico/procesando'
     | '/diagnostico/upload'
   id:
     | '__root__'
@@ -132,6 +143,7 @@ export interface FileRouteTypes {
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
+    | '/diagnostico/procesando'
     | '/diagnostico/upload'
   fileRoutesById: FileRoutesById
 }
@@ -144,6 +156,7 @@ export interface RootRouteChildren {
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
   DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
+  DiagnosticoProcesandoRoute: typeof DiagnosticoProcesandoRoute
   DiagnosticoUploadRoute: typeof DiagnosticoUploadRoute
 }
 
@@ -191,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnostico/procesando': {
+      id: '/diagnostico/procesando'
+      path: '/diagnostico/procesando'
+      fullPath: '/diagnostico/procesando'
+      preLoaderRoute: typeof DiagnosticoProcesandoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/diagnostico/preguntas': {
       id: '/diagnostico/preguntas'
       path: '/diagnostico/preguntas'
@@ -224,8 +244,19 @@ const rootRouteChildren: RootRouteChildren = {
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
   DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
+  DiagnosticoProcesandoRoute: DiagnosticoProcesandoRoute,
   DiagnosticoUploadRoute: DiagnosticoUploadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
