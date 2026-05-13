@@ -18,7 +18,9 @@ import { Route as DiagnosticoUploadRouteImport } from './routes/diagnostico.uplo
 import { Route as DiagnosticoProcesandoRouteImport } from './routes/diagnostico.procesando'
 import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.preguntas'
 import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
+import { Route as DiagnosticoPaywallRouteImport } from './routes/diagnostico.paywall'
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
+import { Route as DiagnosticoConsentimientosRouteImport } from './routes/diagnostico.consentimientos'
 import { Route as DiagnosticoIdRouteImport } from './routes/diagnostico.$id'
 import { Route as BetaTokenRouteImport } from './routes/beta.$token'
 
@@ -67,11 +69,22 @@ const DiagnosticoPerfilRoute = DiagnosticoPerfilRouteImport.update({
   path: '/diagnostico/perfil',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosticoPaywallRoute = DiagnosticoPaywallRouteImport.update({
+  id: '/diagnostico/paywall',
+  path: '/diagnostico/paywall',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiagnosticoInferenciaRoute = DiagnosticoInferenciaRouteImport.update({
   id: '/diagnostico/inferencia',
   path: '/diagnostico/inferencia',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosticoConsentimientosRoute =
+  DiagnosticoConsentimientosRouteImport.update({
+    id: '/diagnostico/consentimientos',
+    path: '/diagnostico/consentimientos',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DiagnosticoIdRoute = DiagnosticoIdRouteImport.update({
   id: '/diagnostico/$id',
   path: '/diagnostico/$id',
@@ -91,7 +104,9 @@ export interface FileRoutesByFullPath {
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
+  '/diagnostico/consentimientos': typeof DiagnosticoConsentimientosRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
+  '/diagnostico/paywall': typeof DiagnosticoPaywallRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
@@ -105,7 +120,9 @@ export interface FileRoutesByTo {
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
+  '/diagnostico/consentimientos': typeof DiagnosticoConsentimientosRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
+  '/diagnostico/paywall': typeof DiagnosticoPaywallRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
@@ -120,7 +137,9 @@ export interface FileRoutesById {
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
+  '/diagnostico/consentimientos': typeof DiagnosticoConsentimientosRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
+  '/diagnostico/paywall': typeof DiagnosticoPaywallRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
@@ -136,7 +155,9 @@ export interface FileRouteTypes {
     | '/terminos-condiciones'
     | '/beta/$token'
     | '/diagnostico/$id'
+    | '/diagnostico/consentimientos'
     | '/diagnostico/inferencia'
+    | '/diagnostico/paywall'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
@@ -150,7 +171,9 @@ export interface FileRouteTypes {
     | '/terminos-condiciones'
     | '/beta/$token'
     | '/diagnostico/$id'
+    | '/diagnostico/consentimientos'
     | '/diagnostico/inferencia'
+    | '/diagnostico/paywall'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
@@ -164,7 +187,9 @@ export interface FileRouteTypes {
     | '/terminos-condiciones'
     | '/beta/$token'
     | '/diagnostico/$id'
+    | '/diagnostico/consentimientos'
     | '/diagnostico/inferencia'
+    | '/diagnostico/paywall'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
@@ -179,7 +204,9 @@ export interface RootRouteChildren {
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
   BetaTokenRoute: typeof BetaTokenRoute
   DiagnosticoIdRoute: typeof DiagnosticoIdRoute
+  DiagnosticoConsentimientosRoute: typeof DiagnosticoConsentimientosRoute
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
+  DiagnosticoPaywallRoute: typeof DiagnosticoPaywallRoute
   DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
   DiagnosticoProcesandoRoute: typeof DiagnosticoProcesandoRoute
@@ -251,11 +278,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoPerfilRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnostico/paywall': {
+      id: '/diagnostico/paywall'
+      path: '/diagnostico/paywall'
+      fullPath: '/diagnostico/paywall'
+      preLoaderRoute: typeof DiagnosticoPaywallRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/diagnostico/inferencia': {
       id: '/diagnostico/inferencia'
       path: '/diagnostico/inferencia'
       fullPath: '/diagnostico/inferencia'
       preLoaderRoute: typeof DiagnosticoInferenciaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostico/consentimientos': {
+      id: '/diagnostico/consentimientos'
+      path: '/diagnostico/consentimientos'
+      fullPath: '/diagnostico/consentimientos'
+      preLoaderRoute: typeof DiagnosticoConsentimientosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diagnostico/$id': {
@@ -283,7 +324,9 @@ const rootRouteChildren: RootRouteChildren = {
   TerminosCondicionesRoute: TerminosCondicionesRoute,
   BetaTokenRoute: BetaTokenRoute,
   DiagnosticoIdRoute: DiagnosticoIdRoute,
+  DiagnosticoConsentimientosRoute: DiagnosticoConsentimientosRoute,
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
+  DiagnosticoPaywallRoute: DiagnosticoPaywallRoute,
   DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
   DiagnosticoProcesandoRoute: DiagnosticoProcesandoRoute,

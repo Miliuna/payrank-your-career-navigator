@@ -31,7 +31,8 @@ function PerfilPage() {
 
   const back = () => navigate({ to: "/diagnostico/inferencia" });
 
-  const generate = async (opts: { useBeta: boolean }) => {
+  // Crea el diagnóstico (sin marcarlo pagado) y lleva a consentimientos
+  const next = async () => {
     setBusy(true);
     setErr(null);
     try {
@@ -42,27 +43,36 @@ function PerfilPage() {
           respuestas: state.respuestas as Record<string, unknown>,
           inferencia: state.inferencia,
           inferenciaValidada: state.inferenciaValidada,
-          ...(opts.useBeta && betaToken ? { betaToken } : {}),
         },
       });
-      if (!opts.useBeta || !betaToken) {
-        await simulate({ data: { id: created.id } });
-      }
-      navigate({ to: "/diagnostico/procesando", search: { id: created.id } });
+      navigate({ to: "/diagnostico/consentimientos", search: { id: created.id } });
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
   };
 
-  const next = () => {
-    if (betaToken) {
-      void generate({ useBeta: true });
-      return;
+  // DEV ONLY — crea y simula pago directo
+  const simulateAndGenerate = async () => {
+    setBusy(true);
+    setErr(null);
+    try {
+      const created = await create({
+        data: {
+          modo: state.modo,
+          plan: state.plan,
+          respuestas: state.respuestas as Record<string, unknown>,
+          inferencia: state.inferencia,
+          inferenciaValidada: state.inferenciaValidada,
+        },
+      });
+      await simulate({ data: { id: created.id } });
+      navigate({ to: "/diagnostico/procesando", search: { id: created.id } });
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Error desconocido");
+      setBusy(false);
     }
-    alert("Próximo paso: consentimientos legales y pago. Se habilita en la próxima entrega.");
   };
-  const simulateAndGenerate = () => generate({ useBeta: false });
 
 
   const dash = "—";
