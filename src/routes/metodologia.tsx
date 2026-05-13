@@ -175,6 +175,12 @@ function Metodologia() {
         </div>
       </section>
 
+      <section className="bg-hueso py-8 px-5 md:px-10 border-t border-niebla">
+        <p className="font-body text-xs text-piedra text-center" style={{ fontWeight: 300 }}>
+          PayRank LLC · 30 N Gould St, STE R, Sheridan, Wyoming 82801, USA · hello@payrank.co
+        </p>
+      </section>
+
       <SiteFooter />
     </div>
   );

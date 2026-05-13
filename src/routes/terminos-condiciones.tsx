@@ -150,14 +150,21 @@ function TerminosCondiciones() {
           <P>
             Estos términos se rigen por las leyes del Estado de Wyoming,
             Estados Unidos, donde está constituida PayRank LLC.
+            <br />
+            30 N Gould St, STE R, Sheridan, Wyoming 82801, USA
           </P>
 
           <SectionTitle>10 — Contacto</SectionTitle>
+          <P>Para consultas sobre estos términos:</P>
           <P>
-            Para consultas sobre estos términos:{" "}
-            <span className="text-piedra">[CONTACT_EMAIL_PENDING]</span>
+            <a href="mailto:hello@payrank.co" className="underline">hello@payrank.co</a>
+            <br />
+            PayRank LLC
+            <br />
+            30 N Gould St, STE R
+            <br />
+            Sheridan, Wyoming 82801, USA
           </P>
-          <P>PayRank LLC</P>
         </article>
       </main>
       <SiteFooter />

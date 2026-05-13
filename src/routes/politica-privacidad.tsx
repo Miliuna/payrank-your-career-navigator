@@ -120,7 +120,7 @@ function PoliticaPrivacidad() {
           />
           <P>
             Para ejercer cualquiera de estos derechos, escribinos a:{" "}
-            <span className="text-piedra">[CONTACT_EMAIL_PENDING]</span>
+            <a href="mailto:hello@payrank.co" className="underline">hello@payrank.co</a>
           </P>
 
           <SectionTitle>7 — Usuarios en la Unión Europea</SectionTitle>
@@ -145,11 +145,16 @@ function PoliticaPrivacidad() {
           </P>
 
           <SectionTitle>10 — Contacto</SectionTitle>
+          <P>Para cualquier consulta sobre privacidad:</P>
           <P>
-            Para cualquier consulta sobre privacidad:{" "}
-            <span className="text-piedra">[CONTACT_EMAIL_PENDING]</span>
+            <a href="mailto:hello@payrank.co" className="underline">hello@payrank.co</a>
+            <br />
+            PayRank LLC
+            <br />
+            30 N Gould St, STE R
+            <br />
+            Sheridan, Wyoming 82801, USA
           </P>
-          <P>PayRank LLC</P>
         </article>
       </main>
       <SiteFooter />

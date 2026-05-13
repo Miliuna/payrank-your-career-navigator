@@ -741,7 +741,7 @@ function P19Contacto({ r, setR }: Props) {
             onChange={(e) => setR({ email: e.target.value })}
           />
           <p className="font-body text-xs text-hueso/45 mt-2">
-            Para recibir tu PayRank completo y acceder a tu reporte en cualquier momento.
+            Para recibir tu PayRank completo y acceder a tu reporte en cualquier momento. Ante cualquier consulta escribinos a hello@payrank.co
           </p>
         </div>
         <div>
