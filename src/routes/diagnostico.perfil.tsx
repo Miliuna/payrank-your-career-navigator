@@ -43,6 +43,7 @@ function PerfilPage() {
           respuestas: state.respuestas as Record<string, unknown>,
           inferencia: state.inferencia,
           inferenciaValidada: state.inferenciaValidada,
+          datosExtraidos: (state.datosExtraidos ?? null) as Record<string, unknown> | null,
         },
       });
       navigate({ to: "/diagnostico/consentimientos", search: { id: created.id } });
@@ -64,6 +65,7 @@ function PerfilPage() {
           respuestas: state.respuestas as Record<string, unknown>,
           inferencia: state.inferencia,
           inferenciaValidada: state.inferenciaValidada,
+          datosExtraidos: (state.datosExtraidos ?? null) as Record<string, unknown> | null,
         },
       });
       await simulate({ data: { id: created.id } });
