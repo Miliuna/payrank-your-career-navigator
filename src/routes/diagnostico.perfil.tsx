@@ -21,13 +21,17 @@ function PerfilPage() {
   const [err, setErr] = React.useState<string | null>(null);
 
   const isDev = import.meta.env.DEV;
+  const [betaToken, setBetaToken] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setBetaToken(window.localStorage.getItem("payrank.betaToken"));
+    }
+  }, []);
 
   const back = () => navigate({ to: "/diagnostico/inferencia" });
-  const next = () => {
-    alert("Próximo paso: consentimientos legales y pago. Se habilita en la próxima entrega.");
-  };
 
-  const simulateAndGenerate = async () => {
+  const generate = async (opts: { useBeta: boolean }) => {
     setBusy(true);
     setErr(null);
     try {
@@ -38,15 +42,27 @@ function PerfilPage() {
           respuestas: state.respuestas as Record<string, unknown>,
           inferencia: state.inferencia,
           inferenciaValidada: state.inferenciaValidada,
+          ...(opts.useBeta && betaToken ? { betaToken } : {}),
         },
       });
-      await simulate({ data: { id: created.id } });
+      if (!opts.useBeta || !betaToken) {
+        await simulate({ data: { id: created.id } });
+      }
       navigate({ to: "/diagnostico/procesando", search: { id: created.id } });
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
   };
+
+  const next = () => {
+    if (betaToken) {
+      void generate({ useBeta: true });
+      return;
+    }
+    alert("Próximo paso: consentimientos legales y pago. Se habilita en la próxima entrega.");
+  };
+  const simulateAndGenerate = () => generate({ useBeta: false });
 
 
   const dash = "—";
@@ -133,9 +149,10 @@ function PerfilPage() {
           <button
             type="button"
             onClick={next}
-            className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
+            disabled={busy}
+            className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
           >
-            Sí, es correcto — continuá <span aria-hidden>→</span>
+            {busy ? "Generando…" : betaToken ? "Generar mi PayRank (acceso beta)" : <>Sí, es correcto — continuá <span aria-hidden>→</span></>}
           </button>
           <button
             type="button"
@@ -145,6 +162,14 @@ function PerfilPage() {
             Quiero corregir algo
           </button>
         </div>
+
+        {betaToken && (
+          <p className="mt-4 font-ui text-[10px] text-hueso/55 tracking-wider uppercase">
+            Acceso beta activo · token {betaToken.slice(0, 8)}…
+          </p>
+        )}
+
+        {err && !isDev && <p className="mt-3 text-xs text-red-300/90 font-body">{err}</p>}
 
         {isDev && (
           <div className="mt-8 border border-dashed border-hueso/30 p-5">

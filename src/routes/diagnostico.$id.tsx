@@ -10,13 +10,80 @@ export const Route = createFileRoute("/diagnostico/$id")({
   component: ResultadoPage,
 });
 
-type Rango = { min?: number; max?: number; moneda?: string };
+// ---------- helpers ----------
 
-function fmtRango(r: Rango | undefined): string {
-  if (!r || r.min == null || r.max == null) return "—";
-  const moneda = r.moneda ?? "USD";
-  return `${moneda} ${r.min.toLocaleString("en-US")} – ${r.max.toLocaleString("en-US")}`;
+type R = Record<string, unknown>;
+const get = (o: unknown, k: string): unknown =>
+  o && typeof o === "object" ? (o as R)[k] : undefined;
+const str = (v: unknown, fb = "—"): string => {
+  if (v === null || v === undefined || v === "") return fb;
+  return typeof v === "string" ? v : String(v);
+};
+const arr = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
+const bool = (v: unknown): boolean => v === true;
+
+// ---------- UI primitives ----------
+
+function Eyebrow({ children }: { children: React.ReactNode }) {
+  return <p className="font-ui text-[10px] tracking-[0.18em] text-hueso/45 mb-3">{children}</p>;
 }
+function H2({ children }: { children: React.ReactNode }) {
+  return <h2 className="font-display text-3xl md:text-4xl text-hueso leading-tight">{children}</h2>;
+}
+function P({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) {
+  return (
+    <p className={`font-body leading-relaxed ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
+      {children}
+    </p>
+  );
+}
+function Card({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
+  return (
+    <div className={`border border-hueso/15 p-5 md:p-6 ${dark ? "bg-hueso/[0.04]" : ""}`}>
+      {children}
+    </div>
+  );
+}
+function Section({ children }: { children: React.ReactNode }) {
+  return <section className="space-y-5">{children}</section>;
+}
+function Divider() {
+  return <div className="border-t border-hueso/10" />;
+}
+function KV({ k, v }: { k: string; v: React.ReactNode }) {
+  return (
+    <div className="flex justify-between gap-4 py-2 border-b border-hueso/10 last:border-0">
+      <span className="font-ui text-[11px] text-hueso/55 uppercase tracking-wider">{k}</span>
+      <span className="font-body text-sm text-hueso text-right">{v}</span>
+    </div>
+  );
+}
+function Badge({ kind, children }: { kind: "bajo" | "en" | "sobre" | "neutral"; children: React.ReactNode }) {
+  const cls =
+    kind === "sobre"
+      ? "bg-hueso text-tinta"
+      : kind === "en"
+      ? "border border-hueso/40 text-hueso"
+      : kind === "bajo"
+      ? "border border-red-300/60 text-red-200"
+      : "border border-hueso/30 text-hueso/80";
+  return (
+    <span className={`inline-flex items-center px-3 py-1 font-ui text-[10px] tracking-widest uppercase ${cls}`}>
+      {children}
+    </span>
+  );
+}
+
+function posKind(p: string | undefined): "bajo" | "en" | "sobre" | "neutral" {
+  if (!p) return "neutral";
+  const x = p.toLowerCase();
+  if (x.includes("bajo")) return "bajo";
+  if (x.includes("sobre") || x.includes("encima")) return "sobre";
+  if (x.includes("en mercado") || x.includes("en rango")) return "en";
+  return "neutral";
+}
+
+// ---------- Page ----------
 
 function ResultadoPage() {
   const { id } = Route.useParams();
@@ -33,28 +100,26 @@ function ResultadoPage() {
       </div>
     );
   }
-
   if (error || !data) {
     return (
       <div className="min-h-screen bg-tinta text-hueso flex items-center justify-center px-6">
-        <p className="font-body text-hueso/70 text-center">
-          No encontramos este PayRank.
-        </p>
+        <p className="font-body text-hueso/70 text-center">No encontramos este PayRank.</p>
       </div>
     );
   }
 
-  const row = data as Record<string, unknown>;
-  const resultado = (row.resultado_json as Record<string, unknown>) ?? {};
-  const rangoActual = resultado.rango_actual as Rango | undefined;
-  const rangoMercado = resultado.rango_mercado as Rango | undefined;
-  const posicionamiento = resultado.posicionamiento as string | undefined;
-  const nivelConfianza = (resultado.nivel_confianza as string) ?? (row.nivel_confianza as string);
-  const justifConfianza = resultado.justificacion_confianza as string | undefined;
-  const positivos = (resultado.factores_positivos as string[]) ?? [];
-  const negativos = (resultado.factores_negativos as string[]) ?? [];
-  const recomendaciones = (resultado.recomendaciones as string[]) ?? [];
-  const resumen = resultado.resumen_ejecutivo as string | undefined;
+  const row = data as R;
+  const res = (row.resultado_json as R) ?? {};
+
+  const s1 = (res.seccion_1 as R) ?? {};
+  const s2 = (res.seccion_2 as R) ?? {};
+  const s3 = (res.seccion_3 as R) ?? {};
+  const s4 = (res.seccion_4 as R) ?? {};
+  const s5 = (res.seccion_5 as R) ?? {};
+  const s6 = (res.seccion_6 as R) ?? {};
+  const s7 = (res.seccion_7 as R) ?? {};
+  const s8 = (res.seccion_8 as R) ?? {};
+  const fl = (res.freelance as R) ?? {};
 
   return (
     <div className="min-h-screen bg-tinta text-hueso">
@@ -65,77 +130,419 @@ function ResultadoPage() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-5 md:px-8 py-12 md:py-20 space-y-16">
-        <section>
-          <p className="font-ui text-[10px] text-hueso/45 mb-3">TU PAYRANK</p>
-          <h1 className="font-display text-4xl md:text-6xl leading-tight mb-6">
-            Tu rango de mercado
-          </h1>
-          <div className="grid md:grid-cols-2 gap-6 mt-8">
-            <div className="border border-hueso/15 p-6">
-              <p className="font-ui text-[10px] text-hueso/50 mb-2">SALARIO ACTUAL</p>
-              <p className="font-display text-2xl">{fmtRango(rangoActual)}</p>
+      <main className="mx-auto max-w-4xl px-5 md:px-8 py-12 md:py-20 space-y-20">
+        {/* SECCIÓN 1 */}
+        <Section>
+          <Eyebrow>01 · TU PERFIL</Eyebrow>
+          <H2>Quién sos en el mercado</H2>
+          <P>{str(s1.descripcion_perfil)}</P>
+
+          {bool(s1.discrepancia_detectada) && (
+            <Card dark>
+              <Eyebrow>DISCREPANCIA TÍTULO / FUNCIONES</Eyebrow>
+              <P>{str(s1.descripcion_discrepancia)}</P>
+              {!!s1.nivel_real_inferido && (
+                <p className="mt-3 font-body text-sm text-hueso/70">
+                  Nivel real inferido: <span className="text-hueso">{str(s1.nivel_real_inferido)}</span>
+                </p>
+              )}
+            </Card>
+          )}
+
+          <Card>
+            <KV k="Nivel de confianza" v={str(s1.nivel_confianza)} />
+            <KV k="Justificación" v={<span className="text-hueso/80">{str(s1.justificacion_confianza)}</span>} />
+          </Card>
+        </Section>
+
+        <Divider />
+
+        {/* SECCIÓN 2 */}
+        <Section>
+          <Eyebrow>02 · EL NÚMERO</Eyebrow>
+          <H2>Cuánto valés hoy en el mercado</H2>
+
+          <p className="font-display text-3xl md:text-4xl text-hueso">{str(s2.rango_texto)}</p>
+          <P>{str(s2.porcentaje_gana_mas)}</P>
+
+          <div className="flex items-center gap-3 flex-wrap">
+            <Badge kind={posKind(s2.posicionamiento as string)}>{str(s2.posicionamiento)}</Badge>
+            <span className="font-ui text-[10px] text-hueso/50 uppercase tracking-widest">
+              Compa-ratio · {str(s2.compa_ratio)}
+            </span>
+          </div>
+          <P muted>{str(s2.interpretacion_compa_ratio)}</P>
+
+          {bool(s2.erosion_salarial_detectada) && (
+            <Card dark>
+              <Eyebrow>EROSIÓN SALARIAL</Eyebrow>
+              <P>{str(s2.descripcion_erosion)}</P>
+            </Card>
+          )}
+
+          <P>{str(s2.diagnostico_especifico)}</P>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card>
+              <Eyebrow>RANGO LOCAL · {str(s2.moneda_local)}</Eyebrow>
+              <KV k="P25" v={str(s2.p25_local)} />
+              <KV k="P50" v={str(s2.p50_local)} />
+              <KV k="P75" v={str(s2.p75_local)} />
+              <KV k="P90" v={str(s2.p90_local)} />
+              <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
+            </Card>
+            <Card>
+              <Eyebrow>RANGO USD</Eyebrow>
+              <KV k="P25" v={str(s2.p25_usd)} />
+              <KV k="P50" v={str(s2.p50_usd)} />
+              <KV k="P75" v={str(s2.p75_usd)} />
+              <KV k="P90" v={str(s2.p90_usd)} />
+              <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
+            </Card>
+          </div>
+
+          <Card>
+            <KV k="SBTA usuario" v={str(s2.sbta_usuario)} />
+            <KV k="SBTA P50 mercado" v={str(s2.sbta_p50_mercado)} />
+            <KV k="Bono target" v={`${str(s2.bono_target_porcentaje)} · ${str(s2.bono_target_mensual_local)}/mes`} />
+            <KV k="Benchmark usado" v={str(s2.benchmark_referencia_usado)} />
+          </Card>
+
+          {arr<string>(s2.ajustes_aplicados).length > 0 && (
+            <div>
+              <Eyebrow>AJUSTES APLICADOS</Eyebrow>
+              <ul className="space-y-1">
+                {arr<string>(s2.ajustes_aplicados).map((a, i) => (
+                  <li key={i} className="font-body text-sm text-hueso/80">— {a}</li>
+                ))}
+              </ul>
             </div>
-            <div className="border border-hueso/15 p-6">
-              <p className="font-ui text-[10px] text-hueso/50 mb-2">RANGO DE MERCADO</p>
-              <p className="font-display text-2xl">{fmtRango(rangoMercado)}</p>
+          )}
+        </Section>
+
+        <Divider />
+
+        {/* SECCIÓN 3 */}
+        <Section>
+          <Eyebrow>03 · COMPENSACIÓN TOTAL</Eyebrow>
+          <H2>Tu paquete completo, valorizado</H2>
+
+          <div className="overflow-x-auto border border-hueso/15">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-hueso/[0.04] text-left">
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Componente</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Tuyo</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Mercado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {arr<R>(s3.tabla_compensacion).map((c, i) => (
+                  <tr key={i} className="border-t border-hueso/10 align-top">
+                    <td className="px-4 py-3">
+                      <div className="font-body text-hueso">{str(c.componente)}</div>
+                      <div className="font-body text-xs text-hueso/55 mt-1">{str(c.descripcion, "")}</div>
+                    </td>
+                    <td className="px-4 py-3 font-body text-hueso/85">{str(c.valor_mensual_local)}</td>
+                    <td className="px-4 py-3 font-body text-hueso/65">{str(c.mercado_tipico_local)}</td>
+                  </tr>
+                ))}
+                <tr className="border-t border-hueso/30 bg-hueso/[0.03]">
+                  <td className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/70">Total</td>
+                  <td className="px-4 py-3 font-display text-hueso">{str(s3.total_compensacion_local)}</td>
+                  <td className="px-4 py-3 font-display text-hueso/80">{str(s3.total_mercado_tipico_local)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <Badge kind={posKind(s3.posicionamiento_compensacion_total as string)}>
+            {str(s3.posicionamiento_compensacion_total)}
+          </Badge>
+
+          <P>{str(s3.analisis_compensacion)}</P>
+
+          {!!s3.alerta_compensacion_variable && (
+            <Card dark>
+              <Eyebrow>ALERTA · COMPENSACIÓN VARIABLE</Eyebrow>
+              <P>{str(s3.alerta_compensacion_variable)}</P>
+            </Card>
+          )}
+
+          {arr<string>(s3.beneficios_faltantes).length > 0 && (
+            <div>
+              <Eyebrow>BENEFICIOS QUE TE FALTAN</Eyebrow>
+              <ul className="space-y-1">
+                {arr<string>(s3.beneficios_faltantes).map((b, i) => (
+                  <li key={i} className="font-body text-sm text-hueso/80">— {b}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Section>
+
+        {/* SECCIÓN 4 — solo si incluir */}
+        {bool(s4.incluir) && (
+          <>
+            <Divider />
+            <Section>
+              <Eyebrow>04 · BRECHA DE GÉNERO</Eyebrow>
+              <H2>Lo que el mercado te debe</H2>
+
+              <Card dark>
+                <KV k="Brecha %" v={str(s4.brecha_porcentaje)} />
+                <KV k="Brecha mensual" v={<span className="font-display">{str(s4.brecha_mensual_local)}</span>} />
+                <KV k="Brecha anual" v={<span className="font-display">{str(s4.brecha_anual_local)}</span>} />
+                <KV k="Nivel" v={str(s4.nivel_jerarquico_brecha)} />
+              </Card>
+
+              {arr<string>(s4.factores_amplificadores).length > 0 && (
+                <div>
+                  <Eyebrow>FACTORES QUE AMPLÍAN LA BRECHA</Eyebrow>
+                  <ul className="space-y-1">
+                    {arr<string>(s4.factores_amplificadores).map((f, i) => (
+                      <li key={i} className="font-body text-sm text-hueso/80">— {f}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {!!s4.contexto_especifico && <P>{str(s4.contexto_especifico)}</P>}
+
+              {!!s4.argumento_negociacion && (
+                <Card>
+                  <Eyebrow>ARGUMENTO DE NEGOCIACIÓN</Eyebrow>
+                  <P>{str(s4.argumento_negociacion)}</P>
+                </Card>
+              )}
+            </Section>
+          </>
+        )}
+
+        {/* mensaje_si_hombre */}
+        {!bool(s4.incluir) && !!s4.mensaje_si_hombre && (
+          <Card>
+            <Eyebrow>NOTA</Eyebrow>
+            <P muted>{str(s4.mensaje_si_hombre)}</P>
+          </Card>
+        )}
+
+        <Divider />
+
+        {/* SECCIÓN 5 */}
+        <Section>
+          <Eyebrow>05 · CUÁNTO PEDIR</Eyebrow>
+          <H2>Tu pretensión salarial</H2>
+
+          <div className="text-center py-6">
+            <p className="font-display text-5xl md:text-6xl text-hueso">{str(s5.pretension_recomendada_local)}</p>
+            <p className="font-body text-hueso/55 mt-2">{str(s5.pretension_recomendada_usd)}</p>
+          </div>
+
+          <Card>
+            <KV k="Floor (mínimo aceptable)" v={str(s5.floor_local)} />
+            <KV k="Ceiling (techo)" v={str(s5.ceiling_local)} />
+          </Card>
+
+          <P muted>{str(s5.explicacion_floor_ceiling)}</P>
+
+          {!!s5.respuesta_antes_de_conocer_rol && (
+            <Card dark>
+              <Eyebrow>SI TE PREGUNTAN ANTES DE CONOCER EL ROL</Eyebrow>
+              <P>{str(s5.respuesta_antes_de_conocer_rol)}</P>
+            </Card>
+          )}
+
+          <div className="space-y-4">
+            <div>
+              <Eyebrow>ARGUMENTO 1 · MERCADO</Eyebrow>
+              <P>{str(s5.argumento_1_mercado)}</P>
+            </div>
+            <div>
+              <Eyebrow>ARGUMENTO 2 · ALCANCE REAL</Eyebrow>
+              <P>{str(s5.argumento_2_alcance_real)}</P>
+            </div>
+            <div>
+              <Eyebrow>ARGUMENTO 3 · CONTEXTO</Eyebrow>
+              <P>{str(s5.argumento_3_contexto)}</P>
             </div>
           </div>
-          {posicionamiento && (
-            <p className="mt-6 font-body text-hueso/75">
-              Posicionamiento: <span className="text-hueso">{posicionamiento}</span>
-            </p>
+        </Section>
+
+        <Divider />
+
+        {/* SECCIÓN 6 */}
+        <Section>
+          <Eyebrow>06 · SCRIPTS DE NEGOCIACIÓN</Eyebrow>
+          <H2>Las palabras exactas</H2>
+
+          <Card dark>
+            <Eyebrow>HABLAR CON TU JEFE</Eyebrow>
+            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed">{str(s6.script_jefe)}</p>
+          </Card>
+
+          <Card dark>
+            <Eyebrow>HABLAR CON UN RECRUITER</Eyebrow>
+            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed">{str(s6.script_recruiter)}</p>
+          </Card>
+
+          <Eyebrow>OBJECIONES Y RESPUESTAS</Eyebrow>
+          {[s6.objecion_1, s6.objecion_2, s6.objecion_3].filter(Boolean).map((o, i) => {
+            const obj = o as R;
+            return (
+              <Card key={i}>
+                <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-2">Objeción {i + 1}</p>
+                <p className="font-body text-hueso italic mb-3">"{str(obj.objecion)}"</p>
+                <p className="font-body text-hueso/80">{str(obj.respuesta)}</p>
+              </Card>
+            );
+          })}
+        </Section>
+
+        <Divider />
+
+        {/* SECCIÓN 7 */}
+        <Section>
+          <Eyebrow>07 · SKILLS E IA</Eyebrow>
+          <H2>Lo que mueve la aguja</H2>
+
+          <div className="overflow-x-auto border border-hueso/15">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-hueso/[0.04] text-left">
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Skill</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Estado</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Impacto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {arr<R>(s7.skills_impacto).map((s, i) => (
+                  <tr key={i} className="border-t border-hueso/10 align-top">
+                    <td className="px-4 py-3">
+                      <div className="font-body text-hueso">{str(s.skill)}</div>
+                      <div className="font-body text-xs text-hueso/55 mt-1">{str(s.razon_de_mercado, "")}</div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {str(s.estado) === "tiene" ? (
+                        <Badge kind="sobre">Tenés</Badge>
+                      ) : (
+                        <Badge kind="bajo">Falta</Badge>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 font-display text-hueso">{str(s.impacto_porcentaje)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div>
+            <Eyebrow>IMPACTO DE IA EN TU PERFIL</Eyebrow>
+            <P>{str(s7.impacto_ia_especifico)}</P>
+          </div>
+
+          {arr<string>(s7.herramientas_ia_recomendadas).length > 0 && (
+            <div>
+              <Eyebrow>HERRAMIENTAS RECOMENDADAS</Eyebrow>
+              <ul className="space-y-1">
+                {arr<string>(s7.herramientas_ia_recomendadas).map((h, i) => (
+                  <li key={i} className="font-body text-sm text-hueso/80">— {h}</li>
+                ))}
+              </ul>
+            </div>
           )}
-        </section>
+        </Section>
 
-        {nivelConfianza && (
-          <section className="border border-hueso/15 p-6">
-            <p className="font-ui text-[10px] text-hueso/50 mb-2">NIVEL DE CONFIANZA</p>
-            <p className="font-display text-2xl mb-2">{nivelConfianza}</p>
-            {justifConfianza && (
-              <p className="font-body text-hueso/70 text-sm leading-relaxed">{justifConfianza}</p>
-            )}
-          </section>
-        )}
+        <Divider />
 
-        {resumen && (
-          <section>
-            <p className="font-ui text-[10px] text-hueso/45 mb-3">RESUMEN EJECUTIVO</p>
-            <p className="font-body text-hueso/85 text-lg leading-relaxed whitespace-pre-wrap">{resumen}</p>
-          </section>
-        )}
+        {/* SECCIÓN 8 */}
+        <Section>
+          <Eyebrow>08 · HOJA DE RUTA</Eyebrow>
+          <H2>Tu próximo nivel</H2>
 
-        {positivos.length > 0 && (
-          <section>
-            <p className="font-ui text-[10px] text-hueso/45 mb-3">FACTORES A FAVOR</p>
-            <ul className="space-y-2">
-              {positivos.map((f, i) => (
-                <li key={i} className="font-body text-hueso/80">— {f}</li>
+          <P>{str(s8.lectura_progresion)}</P>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <Card>
+              <Eyebrow>HOY</Eyebrow>
+              <p className="font-display text-2xl text-hueso">{str(s8.nivel_actual)}</p>
+            </Card>
+            <Card dark>
+              <Eyebrow>SIGUIENTE</Eyebrow>
+              <p className="font-display text-2xl text-hueso">{str(s8.nivel_siguiente)}</p>
+              <p className="font-body text-sm text-hueso/70 mt-2">{str(s8.rango_nivel_siguiente_local)}</p>
+              <p className="font-body text-xs text-hueso/55 mt-1">Salto: {str(s8.diferencia_porcentual_salto)}</p>
+            </Card>
+          </div>
+
+          <div>
+            <Eyebrow>CRITERIOS PARA EL SALTO</Eyebrow>
+            <div className="space-y-3">
+              {arr<R>(s8.criterios_para_el_salto).map((c, i) => (
+                <Card key={i}>
+                  <p className="font-body text-hueso mb-2">{str(c.criterio)}</p>
+                  <p className="font-body text-sm text-hueso/65">{str(c.estrategia_concreta)}</p>
+                </Card>
               ))}
-            </ul>
-          </section>
-        )}
+            </div>
+          </div>
 
-        {negativos.length > 0 && (
-          <section>
-            <p className="font-ui text-[10px] text-hueso/45 mb-3">FACTORES EN CONTRA</p>
-            <ul className="space-y-2">
-              {negativos.map((f, i) => (
-                <li key={i} className="font-body text-hueso/80">— {f}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+          <Card>
+            <KV k="Tiempo realista" v={<span className="font-display">{str(s8.tiempo_realista)}</span>} />
+          </Card>
 
-        {recomendaciones.length > 0 && (
-          <section>
-            <p className="font-ui text-[10px] text-hueso/45 mb-3">RECOMENDACIONES</p>
-            <ul className="space-y-2">
-              {recomendaciones.map((r, i) => (
-                <li key={i} className="font-body text-hueso/80">— {r}</li>
-              ))}
-            </ul>
-          </section>
+          {!!s8.analisis_cv && (
+            <Card dark>
+              <Eyebrow>ANÁLISIS DE TU CV</Eyebrow>
+              <P>{str(s8.analisis_cv)}</P>
+            </Card>
+          )}
+
+          {arr<R>(s8.ajustes_cv).length > 0 && (
+            <div>
+              <Eyebrow>AJUSTES SUGERIDOS</Eyebrow>
+              <div className="space-y-3">
+                {arr<R>(s8.ajustes_cv).map((a, i) => (
+                  <Card key={i}>
+                    <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Antes</p>
+                    <p className="font-body text-hueso/65 italic mb-3">{str(a.antes, "—")}</p>
+                    <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Después</p>
+                    <p className="font-body text-hueso mb-3">{str(a.despues, "—")}</p>
+                    {!!a.impacto_estimado && (
+                      <p className="font-body text-xs text-hueso/55">Impacto: {str(a.impacto_estimado)}</p>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+        </Section>
+
+        {/* FREELANCE */}
+        {bool(fl.aplica) && (
+          <>
+            <Divider />
+            <Section>
+              <Eyebrow>FREELANCE / INDEPENDIENTE</Eyebrow>
+              <H2>Tu valor por hora</H2>
+
+              <Card>
+                <KV k="Factor de equivalencia" v={str(fl.factor_equivalencia_usado)} />
+                <KV k="Equivalente en relación de dependencia" v={str(fl.equivalente_relacion_dependencia)} />
+                <KV k="Valor hora recomendado" v={<span className="font-display">{str(fl.valor_hora_recomendado)}</span>} />
+                <KV k="Horas facturables/mes" v={str(fl.horas_facturables_estimadas)} />
+                <KV k="Facturación objetivo P50" v={str(fl.facturacion_objetivo_p50)} />
+                <KV k="Facturación objetivo P75" v={str(fl.facturacion_objetivo_p75)} />
+              </Card>
+
+              {!!fl.alerta_monotributo && (
+                <Card dark>
+                  <Eyebrow>ALERTA · MONOTRIBUTO</Eyebrow>
+                  <P>{str(fl.alerta_monotributo)}</P>
+                </Card>
+              )}
+            </Section>
+          </>
         )}
 
         <section className="pt-12 border-t border-hueso/10 text-xs text-hueso/40 font-body">

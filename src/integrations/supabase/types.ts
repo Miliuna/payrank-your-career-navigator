@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      beta_tokens: {
+        Row: {
+          activo: boolean
+          created_at: string
+          id: string
+          max_usos: number
+          nota: string | null
+          token: string
+          updated_at: string
+          usado_count: number
+        }
+        Insert: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          max_usos?: number
+          nota?: string | null
+          token: string
+          updated_at?: string
+          usado_count?: number
+        }
+        Update: {
+          activo?: boolean
+          created_at?: string
+          id?: string
+          max_usos?: number
+          nota?: string | null
+          token?: string
+          updated_at?: string
+          usado_count?: number
+        }
+        Relationships: []
+      }
       diagnosticos: {
         Row: {
           ajustes_inferencia: Json | null
