@@ -149,10 +149,27 @@ function PerfilPage() {
           <button
             type="button"
             onClick={next}
-            className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
+            disabled={busy}
+            className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
           >
-            Sí, es correcto — continuá <span aria-hidden>→</span>
+            {busy ? "Generando…" : betaToken ? "Generar mi PayRank (acceso beta)" : <>Sí, es correcto — continuá <span aria-hidden>→</span></>}
           </button>
+          <button
+            type="button"
+            onClick={back}
+            className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
+          >
+            Quiero corregir algo
+          </button>
+        </div>
+
+        {betaToken && (
+          <p className="mt-4 font-ui text-[10px] text-hueso/55 tracking-wider uppercase">
+            Acceso beta activo · token {betaToken.slice(0, 8)}…
+          </p>
+        )}
+
+        {err && !isDev && <p className="mt-3 text-xs text-red-300/90 font-body">{err}</p>}
           <button
             type="button"
             onClick={back}
