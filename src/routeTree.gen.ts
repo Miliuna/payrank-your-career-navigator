@@ -19,6 +19,7 @@ import { Route as DiagnosticoProcesandoRouteImport } from './routes/diagnostico.
 import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.preguntas'
 import { Route as DiagnosticoPerfilRouteImport } from './routes/diagnostico.perfil'
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
+import { Route as DiagnosticoIdRouteImport } from './routes/diagnostico.$id'
 
 const TerminosCondicionesRoute = TerminosCondicionesRouteImport.update({
   id: '/terminos-condiciones',
@@ -70,6 +71,11 @@ const DiagnosticoInferenciaRoute = DiagnosticoInferenciaRouteImport.update({
   path: '/diagnostico/inferencia',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DiagnosticoIdRoute = DiagnosticoIdRouteImport.update({
+  id: '/diagnostico/$id',
+  path: '/diagnostico/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/modo': typeof ModoRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
+  '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
   '/diagnostico/perfil': typeof DiagnosticoPerfilRoute
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/modo'
     | '/politica-privacidad'
     | '/terminos-condiciones'
+    | '/diagnostico/$id'
     | '/diagnostico/inferencia'
     | '/diagnostico/perfil'
     | '/diagnostico/preguntas'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   ModoRoute: typeof ModoRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
+  DiagnosticoIdRoute: typeof DiagnosticoIdRoute
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
   DiagnosticoPerfilRoute: typeof DiagnosticoPerfilRoute
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
@@ -232,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoInferenciaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/diagnostico/$id': {
+      id: '/diagnostico/$id'
+      path: '/diagnostico/$id'
+      fullPath: '/diagnostico/$id'
+      preLoaderRoute: typeof DiagnosticoIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModoRoute: ModoRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
+  DiagnosticoIdRoute: DiagnosticoIdRoute,
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
   DiagnosticoPerfilRoute: DiagnosticoPerfilRoute,
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
