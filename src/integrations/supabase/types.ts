@@ -57,6 +57,7 @@ export type Database = {
           beneficios: string[] | null
           certificaciones: string[] | null
           created_at: string
+          datos_extraidos_documento: Json | null
           enps_feedback: string | null
           enps_score: number | null
           equipo: string | null
@@ -105,6 +106,7 @@ export type Database = {
           beneficios?: string[] | null
           certificaciones?: string[] | null
           created_at?: string
+          datos_extraidos_documento?: Json | null
           enps_feedback?: string | null
           enps_score?: number | null
           equipo?: string | null
@@ -153,6 +155,7 @@ export type Database = {
           beneficios?: string[] | null
           certificaciones?: string[] | null
           created_at?: string
+          datos_extraidos_documento?: Json | null
           enps_feedback?: string | null
           enps_score?: number | null
           equipo?: string | null
