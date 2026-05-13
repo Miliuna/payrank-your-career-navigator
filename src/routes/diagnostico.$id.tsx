@@ -44,11 +44,12 @@ function ResultadoPage() {
     );
   }
 
-  const resultado = (data.resultado_json as Record<string, unknown>) ?? {};
+  const row = data as Record<string, unknown>;
+  const resultado = (row.resultado_json as Record<string, unknown>) ?? {};
   const rangoActual = resultado.rango_actual as Rango | undefined;
   const rangoMercado = resultado.rango_mercado as Rango | undefined;
   const posicionamiento = resultado.posicionamiento as string | undefined;
-  const nivelConfianza = (resultado.nivel_confianza as string) ?? (data.nivel_confianza as string);
+  const nivelConfianza = (resultado.nivel_confianza as string) ?? (row.nivel_confianza as string);
   const justifConfianza = resultado.justificacion_confianza as string | undefined;
   const positivos = (resultado.factores_positivos as string[]) ?? [];
   const negativos = (resultado.factores_negativos as string[]) ?? [];
