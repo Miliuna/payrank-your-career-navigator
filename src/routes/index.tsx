@@ -91,7 +91,7 @@ function Landing() {
             to="/modo"
             className="inline-flex items-center gap-3 bg-hueso text-tinta px-8 py-4 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
           >
-            OBTENER MI PAYRANK
+            HACER MI PAYRANK
             <span aria-hidden>→</span>
           </Link>
 
