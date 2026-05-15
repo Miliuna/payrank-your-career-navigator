@@ -127,18 +127,27 @@ function UploadPage() {
     setBusy(true);
     setExtractError(false);
     try {
-      // Concatenar texto de todos los documentos. Si todos son texto, una sola llamada.
-      // Si hay PDFs, los combinamos enviando texto extraído vía base64 individualmente
-      // y juntando en un único string. Para simplicidad: convertimos cada PDF en un
-      // bloque marcado y mandamos como texto si es legible; de lo contrario base64.
+      // Estrategia: extraer texto en el cliente (incluso de PDFs vía pdf.js)
+      // y enviar SOLO texto al backend, para mantenerse bajo el rate limit
+      // de Tier 1 de Anthropic (30k tokens/min). Fallback: base64 truncado.
       const textoBlocks: string[] = [];
-      const pdfBlocks: { name: string; base64: string }[] = [];
+      const pdfFallbacks: { name: string; base64: string }[] = [];
 
       for (const f of files) {
         const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
         if (isPdf) {
-          const b64 = await fileToBase64Local(f);
-          pdfBlocks.push({ name: f.name, base64: b64 });
+          try {
+            const txt = await extractPdfText(f);
+            if (txt && txt.length > 50) {
+              textoBlocks.push(`=== Documento: ${f.name} ===\n${txt}`);
+            } else {
+              throw new Error("PDF sin texto extraíble");
+            }
+          } catch (err) {
+            console.warn(`[upload] PDF.js falló para ${f.name}, usando base64 truncado:`, err);
+            const b64 = await fileToBase64Local(f);
+            pdfFallbacks.push({ name: f.name, base64: b64 });
+          }
         } else {
           const txt = await f.text();
           textoBlocks.push(`=== Documento: ${f.name} ===\n${txt}`);
@@ -147,21 +156,21 @@ function UploadPage() {
 
       let extracted: DatosExtraidos;
 
-      if (pdfBlocks.length === 0) {
-        // Solo texto — una sola llamada concatenada
+      if (pdfFallbacks.length === 0) {
+        // Caso ideal: todo extraído como texto, una sola llamada.
         const concatenated = textoBlocks.join("\n\n");
         extracted = (await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos;
-      } else if (pdfBlocks.length === 1 && textoBlocks.length === 0) {
-        extracted = (await extract({ data: { kind: "pdf", base64: pdfBlocks[0].base64 } })) as DatosExtraidos;
       } else {
-        // Mix: hacer múltiples extracciones y mergear (Anthropic acepta solo un PDF por llamada en este wrapper).
+        // Mix con fallback a base64: múltiples extracciones y merge.
         const results: DatosExtraidos[] = [];
         if (textoBlocks.length > 0) {
           const concatenated = textoBlocks.join("\n\n");
           results.push((await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos);
         }
-        for (const p of pdfBlocks) {
-          results.push((await extract({ data: { kind: "pdf", base64: p.base64 } })) as DatosExtraidos);
+        for (const p of pdfFallbacks) {
+          // Truncar base64 a ~15.000 chars (≈ primeras páginas) para acotar tokens.
+          const b64Truncated = p.base64.slice(0, 15_000);
+          results.push((await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos);
         }
         extracted = mergeExtractions(results);
       }
