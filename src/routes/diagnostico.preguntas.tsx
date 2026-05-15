@@ -733,13 +733,23 @@ function P14HerramientasIA({ r, setR }: Props) {
     <>
       <QuestionTitle>¿Qué herramientas de IA usás en tu trabajo?</QuestionTitle>
       <QuestionHint>Seleccioná todas las que apliquen.</QuestionHint>
-      <div className="flex flex-wrap gap-2 mb-10">
+      <div className="flex flex-wrap gap-2 mb-6">
         {HERRAMIENTAS_IA.map((t) => (
           <ChipOption key={t} selected={tools.includes(t)} onClick={() => toggleTool(t)}>
             {t}
           </ChipOption>
         ))}
       </div>
+      {tools.includes("Otra") && (
+        <div className="mb-10 animate-in fade-in duration-300">
+          <TextInput
+            placeholder="Especificá acá"
+            value={r.herramientasIAOtra ?? ""}
+            onChange={(e) => setR({ herramientasIAOtra: e.target.value })}
+            autoFocus
+          />
+        </div>
+      )}
 
       <div className="border-t border-hueso/10 pt-8 mb-10">
         <h2 className="font-display text-2xl mb-5 text-hueso">¿Con qué frecuencia las usás?</h2>
