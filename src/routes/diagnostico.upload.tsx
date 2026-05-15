@@ -228,6 +228,30 @@ function UploadPage() {
             <li key={it} className="font-body text-sm text-hueso/75">· {it}</li>
           ))}
         </ul>
+
+        <div className="mt-6 max-w-2xl">
+          <label htmlFor="linkedin-url" className="font-ui text-[10px] text-hueso/50 mb-2 block uppercase tracking-wider">
+            O pegá la URL de tu perfil de LinkedIn
+          </label>
+          <input
+            id="linkedin-url"
+            type="url"
+            inputMode="url"
+            placeholder="https://linkedin.com/in/tu-perfil"
+            value={linkedin}
+            onChange={(e) => setLinkedin(e.target.value)}
+            disabled={busy}
+            className={cn(
+              "w-full bg-transparent border-b outline-none font-body text-base text-hueso placeholder:text-hueso/30 py-3 transition-colors disabled:opacity-50",
+              linkedinTouched && !linkedinValid ? "border-red-400/70" : "border-hueso/30 focus:border-hueso",
+            )}
+          />
+          {linkedinTouched && !linkedinValid && (
+            <p className="mt-2 font-body text-xs text-red-300/90">
+              Pegá una URL válida que empiece con linkedin.com
+            </p>
+          )}
+        </div>
       </div>
 
       {extractError ? (
