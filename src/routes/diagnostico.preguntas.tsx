@@ -1030,6 +1030,21 @@ function P18Genero({ r, setR }: Props) {
 }
 
 function P19Contacto({ r, setR }: Props) {
+  const paisSel = r.pais === "Otro" ? r.paisOtro : r.pais;
+  const phonePlaceholder = ((): string => {
+    switch ((paisSel ?? "").toLowerCase()) {
+      case "argentina": return "+54 9 11 XXXX XXXX";
+      case "méxico":
+      case "mexico": return "+52 1 55 XXXX XXXX";
+      case "chile": return "+56 9 XXXX XXXX";
+      case "colombia": return "+57 3XX XXX XXXX";
+      case "españa":
+      case "espana": return "+34 6XX XXX XXX";
+      case "estados unidos":
+      case "usa": return "+1 (XXX) XXX-XXXX";
+      default: return "+[código] número";
+    }
+  })();
   return (
     <>
       <QuestionTitle>¿Cómo te contactamos?</QuestionTitle>
@@ -1050,7 +1065,7 @@ function P19Contacto({ r, setR }: Props) {
           <p className="font-ui text-[10px] text-hueso/50 mb-3">WHATSAPP (OPCIONAL)</p>
           <TextInput
             type="tel"
-            placeholder="+54 9 11 1234 5678"
+            placeholder={phonePlaceholder}
             value={r.whatsapp ?? ""}
             onChange={(e) => setR({ whatsapp: e.target.value })}
           />
