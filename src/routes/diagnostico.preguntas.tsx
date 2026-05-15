@@ -338,6 +338,7 @@ function isValid(step: number, r: ReturnType<typeof useDiagnostico>["state"]["re
       if (!r.situacion) return false;
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
       if (r.situacion === "freelance") return !!r.salario && !!r.moneda;
+      if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
       // busqueda
       if (r.trabajaActualmente === "si") return !!r.salario && !!r.moneda;
       if (r.trabajaActualmente === "no") return !!r.salarioAnterior && !!r.monedaAnterior && !!r.tiempoSinTrabajo;
