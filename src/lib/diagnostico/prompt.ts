@@ -166,6 +166,13 @@ P50 = P50 mercado ÷ factor equivalencia
 P75 = P75 mercado ÷ factor equivalencia
 Para Argentina: alertar si la facturación recomendada se aproxima al tope de monotributo — recomendar consulta con contador.
 
+CONTRACTORS (CONTRATO DE SERVICIOS CON UNA EMPRESA):
+Misma lógica que freelance para la equivalencia a relación de dependencia, con un ajuste:
+si el contractor trabaja 40 horas fijas semanales para un solo cliente, el factor de equivalencia es × 0.75
+(mejor que freelance estándar porque tiene mayor estabilidad y generalmente cobra en USD).
+Si trabaja menos de 40h fijas semanales o por proyecto, usar el factor estándar de freelance del país.
+Si cobra en USD/moneda extranjera, declararlo como ventaja real frente a la opción local equivalente.
+
 CONSULTORES QUE PRESTAN SERVICIOS A EMPRESAS:
 Billing rates de referencia del mercado de consultoría global actualizado a 2026:
 Junior/Analista firma global: USD 106/hora
