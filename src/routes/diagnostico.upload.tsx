@@ -74,6 +74,9 @@ function UploadPage() {
   const [extractError, setExtractError] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [draggingOver, setDraggingOver] = React.useState(false);
+  const [linkedin, setLinkedin] = React.useState<string>(state.respuestas.linkedinUrl ?? "");
+  const linkedinValid = !linkedin.trim() || /^(https?:\/\/)?(www\.)?linkedin\.com\//i.test(linkedin.trim());
+  const linkedinTouched = linkedin.trim().length > 0;
 
   React.useEffect(() => {
     if (search.modo && search.modo !== state.modo) {
