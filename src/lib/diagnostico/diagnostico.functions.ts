@@ -321,8 +321,8 @@ const extractInputSchema = z.union([
 export const extractFromDocument = createServerFn({ method: "POST" })
   .inputValidator((input) => extractInputSchema.parse(input))
   .handler(async ({ data }) => {
-    const lovableKey = process.env.LOVABLE_API_KEY;
-    if (!lovableKey) throw new Error("LOVABLE_API_KEY no configurada");
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) throw new Error("ANTHROPIC_API_KEY no configurada");
 
     const userContent =
       data.kind === "text"
@@ -331,36 +331,34 @@ export const extractFromDocument = createServerFn({ method: "POST" })
           ]
         : [
             {
-              type: "image_url",
-              image_url: { url: `data:application/pdf;base64,${data.base64}` },
+              type: "document",
+              source: { type: "base64", media_type: "application/pdf", data: data.base64 },
             },
             { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
           ];
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const res = await fetch(ANTHROPIC_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${lovableKey}`,
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "claude-sonnet-4-5",
+        max_tokens: 1000,
         temperature: 0,
-        max_tokens: 1500,
-        response_format: { type: "json_object" },
-        messages: [
-          { role: "system", content: EXTRACT_SYSTEM },
-          { role: "user", content: userContent },
-        ],
+        system: EXTRACT_SYSTEM,
+        messages: [{ role: "user", content: userContent }],
       }),
     });
 
     if (!res.ok) {
       const txt = await res.text();
-      throw new Error(`Lovable AI ${res.status}: ${txt.slice(0, 500)}`);
+      throw new Error(`Anthropic ${res.status}: ${txt.slice(0, 500)}`);
     }
-    const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
-    const text = json.choices?.[0]?.message?.content ?? "";
+    const json = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
+    const text = json.content?.find((c) => c.type === "text")?.text ?? "";
 
     let parsed: Record<string, unknown> | null = null;
     try {
