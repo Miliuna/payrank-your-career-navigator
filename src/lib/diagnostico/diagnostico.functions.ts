@@ -350,8 +350,9 @@ const extractInputSchema = z.union([
 export const extractFromDocument = createServerFn({ method: "POST" })
   .inputValidator((input) => extractInputSchema.parse(input))
   .handler(async ({ data }) => {
-    // Límite temporal por rate limit de Anthropic Tier 1 (subir a 80k tpm en Tier 2).
-    const TEXT_MAX_CHARS = 8_000;
+    // Límite temporal por rate limit de Anthropic Tier 1 (30k tpm).
+    // En Tier 2 (≥USD 40 acumulados, 80k tpm) se puede subir.
+    const TEXT_MAX_CHARS = 6_000;
     const PDF_MAX_TOKENS = 800;
     const TEXT_MAX_TOKENS = 1000;
 
