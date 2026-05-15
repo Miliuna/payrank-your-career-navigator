@@ -450,9 +450,9 @@ function P1Pais({ r, setR }: Props) {
         ))}
       </div>
       {r.pais === "Otro" && (
-        <div className="mt-6">
+        <div className="mt-6 animate-in fade-in duration-300">
           <TextInput
-            placeholder="Especificá tu país"
+            placeholder="Especificá acá"
             value={r.paisOtro ?? ""}
             onChange={(e) => setR({ paisOtro: e.target.value })}
             autoFocus
