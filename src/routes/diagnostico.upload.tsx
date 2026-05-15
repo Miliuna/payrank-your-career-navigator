@@ -6,6 +6,7 @@ import { useDiagnostico } from "@/lib/diagnostico/store";
 import type { Modo, DatosExtraidos } from "@/lib/diagnostico/types";
 import { TITULOS_MODO } from "@/lib/diagnostico/data";
 import { extractFromDocument } from "@/lib/diagnostico/diagnostico.functions";
+import { extractPdfText } from "@/lib/diagnostico/pdf-text";
 import { cn } from "@/lib/utils";
 
 type Search = { modo?: Modo };
