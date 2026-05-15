@@ -360,14 +360,15 @@ function UploadPage() {
             se procesan para extraer datos y no se almacenan como archivo.
           </p>
 
-          {files.length > 0 && !busy && (
+          {(files.length > 0 || (linkedinTouched && linkedinValid)) && !busy && (
             <div className="mt-8">
               <button
                 type="button"
                 onClick={procesar}
-                className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso"
+                disabled={linkedinTouched && !linkedinValid}
+                className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso disabled:opacity-50"
               >
-                PROCESAR DOCUMENTOS →
+                {files.length > 0 ? "PROCESAR DOCUMENTOS →" : "CONTINUAR CON LINKEDIN →"}
               </button>
             </div>
           )}
