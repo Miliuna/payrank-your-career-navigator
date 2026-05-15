@@ -309,7 +309,9 @@ type Json = string | number | boolean | null | { [k: string]: Json } | Json[];
 
 const EXTRACT_SYSTEM = `Extraé todos los datos profesionales y de compensación que encuentres en este documento. Respondé ÚNICAMENTE con JSON válido sin texto adicional.`;
 
-const EXTRACT_USER_INSTRUCTIONS = `Extraé estos campos si están presentes:
+const EXTRACT_USER_INSTRUCTIONS = `El documento puede estar truncado. Extraé toda la información disponible del fragmento recibido.
+
+Extraé estos campos si están presentes:
 - nombre_inferido
 - titulo_puesto
 - nivel_jerarquico_inferido
@@ -348,8 +350,9 @@ const extractInputSchema = z.union([
 export const extractFromDocument = createServerFn({ method: "POST" })
   .inputValidator((input) => extractInputSchema.parse(input))
   .handler(async ({ data }) => {
-    // Límite temporal por rate limit de Anthropic Tier 1 (subir a 80k tpm en Tier 2).
-    const TEXT_MAX_CHARS = 8_000;
+    // Límite temporal por rate limit de Anthropic Tier 1 (30k tpm).
+    // En Tier 2 (≥USD 40 acumulados, 80k tpm) se puede subir.
+    const TEXT_MAX_CHARS = 6_000;
     const PDF_MAX_TOKENS = 800;
     const TEXT_MAX_TOKENS = 1000;
 
