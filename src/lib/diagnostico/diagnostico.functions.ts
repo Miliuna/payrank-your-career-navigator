@@ -348,23 +348,37 @@ const extractInputSchema = z.union([
 export const extractFromDocument = createServerFn({ method: "POST" })
   .inputValidator((input) => extractInputSchema.parse(input))
   .handler(async ({ data }) => {
-    const userContent =
-      data.kind === "text"
-        ? [
-            { type: "text", text: `Documento:\n\n${data.text.slice(0, 100_000)}\n\n${EXTRACT_USER_INSTRUCTIONS}` },
-          ]
-        : [
-            {
-              type: "document",
-              source: { type: "base64", media_type: "application/pdf", data: data.base64 },
-            },
-            { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
-          ];
+    // Límite temporal por rate limit de Anthropic Tier 1 (subir a 80k tpm en Tier 2).
+    const TEXT_MAX_CHARS = 8_000;
+    const PDF_MAX_TOKENS = 800;
+    const TEXT_MAX_TOKENS = 1000;
+
+    let userContent;
+    let maxTokens: number;
+    if (data.kind === "text") {
+      const truncated =
+        data.text.length > TEXT_MAX_CHARS
+          ? data.text.slice(0, TEXT_MAX_CHARS) + "\n\n[documento truncado por longitud]"
+          : data.text;
+      userContent = [
+        { type: "text", text: `Documento:\n\n${truncated}\n\n${EXTRACT_USER_INSTRUCTIONS}` },
+      ];
+      maxTokens = TEXT_MAX_TOKENS;
+    } else {
+      userContent = [
+        {
+          type: "document",
+          source: { type: "base64", media_type: "application/pdf", data: data.base64 },
+        },
+        { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
+      ];
+      maxTokens = PDF_MAX_TOKENS;
+    }
 
     const res = await fetchAnthropicWithRetry(
       {
         model: "claude-sonnet-4-5",
-        max_tokens: 1000,
+        max_tokens: maxTokens,
         temperature: 0,
         system: EXTRACT_SYSTEM,
         messages: [{ role: "user", content: userContent }],
