@@ -4,8 +4,7 @@
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 
 // Desactivar worker para simplificar (corre en main thread; ok para CVs cortos).
-// @ts-expect-error pdfjs typing
-pdfjsLib.GlobalWorkerOptions.workerSrc = "";
+(pdfjsLib as { GlobalWorkerOptions: { workerSrc: string } }).GlobalWorkerOptions.workerSrc = "";
 
 export async function extractPdfText(file: File): Promise<string> {
   const buf = await file.arrayBuffer();
