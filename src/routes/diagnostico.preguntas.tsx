@@ -865,6 +865,7 @@ function P15Situacion({ r, setR }: Props) {
         </div>
       )}
 
+      {r.situacion === "busqueda" && (
         <div className="border-t border-hueso/10 pt-8 space-y-6">
           <div>
             <p className="font-body text-base text-hueso mb-3">
