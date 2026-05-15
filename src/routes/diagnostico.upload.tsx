@@ -126,15 +126,24 @@ function UploadPage() {
     });
 
   const procesar = async () => {
-    if (files.length === 0 || busy) return;
+    if (busy) return;
+    if (files.length === 0 && !linkedinTouched) return;
+    if (linkedinTouched && !linkedinValid) return;
     setBusy(true);
     setExtractError(false);
     try {
-      // Estrategia: extraer texto en el cliente (incluso de PDFs vía pdf.js)
-      // y enviar SOLO texto al backend, para mantenerse bajo el rate limit
-      // de Tier 1 de Anthropic (30k tokens/min). Fallback: base64 truncado.
+      const linkedinUrl = linkedin.trim();
+      // Persist LinkedIn URL to state immediately
+      if (linkedinUrl) {
+        setState((s) => ({ ...s, respuestas: { ...s.respuestas, linkedinUrl } }));
+      }
+
       const textoBlocks: string[] = [];
       const pdfFallbacks: { name: string; base64: string }[] = [];
+
+      if (linkedinUrl) {
+        textoBlocks.push(`LinkedIn URL: ${linkedinUrl}`);
+      }
 
       for (const f of files) {
         const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
@@ -157,21 +166,30 @@ function UploadPage() {
         }
       }
 
+      // Si solo hay LinkedIn URL sin documentos, no podemos extraer mucho:
+      // saltamos la extracción y pasamos al formulario manual con la URL ya guardada.
+      if (files.length === 0 && linkedinUrl) {
+        setState((s) => ({
+          ...s,
+          datosExtraidos: null,
+          pasosOverride: [],
+        }));
+        navigate({ to: "/diagnostico/preguntas" });
+        return;
+      }
+
       let extracted: DatosExtraidos;
 
       if (pdfFallbacks.length === 0) {
-        // Caso ideal: todo extraído como texto, una sola llamada.
         const concatenated = textoBlocks.join("\n\n");
         extracted = (await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos;
       } else {
-        // Mix con fallback a base64: múltiples extracciones y merge.
         const results: DatosExtraidos[] = [];
         if (textoBlocks.length > 0) {
           const concatenated = textoBlocks.join("\n\n");
           results.push((await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos);
         }
         for (const p of pdfFallbacks) {
-          // Truncar base64 a ~15.000 chars (≈ primeras páginas) para acotar tokens.
           const b64Truncated = p.base64.slice(0, 15_000);
           results.push((await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos);
         }
@@ -182,7 +200,7 @@ function UploadPage() {
         ...s,
         datosExtraidos: extracted,
         pasosOverride: [],
-        documentos: { ...s.documentos, cvNombre: files.map((f) => f.name).join(", ") },
+        documentos: { ...s.documentos, cvNombre: files.map((f) => f.name).join(", "), linkedinUrl: linkedinUrl || undefined },
       }));
       navigate({ to: "/diagnostico/preguntas" });
     } catch (e) {
