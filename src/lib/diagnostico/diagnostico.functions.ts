@@ -348,9 +348,6 @@ const extractInputSchema = z.union([
 export const extractFromDocument = createServerFn({ method: "POST" })
   .inputValidator((input) => extractInputSchema.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) throw new Error("ANTHROPIC_API_KEY no configurada");
-
     const userContent =
       data.kind === "text"
         ? [
@@ -364,21 +361,16 @@ export const extractFromDocument = createServerFn({ method: "POST" })
             { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
           ];
 
-    const res = await fetch(ANTHROPIC_URL, {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
+    const res = await fetchAnthropicWithRetry(
+      {
         model: "claude-sonnet-4-5",
         max_tokens: 1000,
         temperature: 0,
         system: EXTRACT_SYSTEM,
         messages: [{ role: "user", content: userContent }],
-      }),
-    });
+      },
+      [3000, 5000],
+    );
 
     if (!res.ok) {
       const txt = await res.text();
