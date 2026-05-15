@@ -782,19 +782,25 @@ function P15Situacion({ r, setR }: Props) {
       <QuestionTitle>¿Cuál es tu situación laboral actual?</QuestionTitle>
       <div className="grid grid-cols-1 gap-3 mb-8">
         {SITUACIONES.map((s) => (
-          <CardOption
-            key={s.id}
-            selected={r.situacion === s.id}
-            onClick={() => setR({
-              situacion: s.id,
-              // reset campos dependientes
-              salario: undefined, moneda: undefined, brutoNeto: undefined,
-              trabajaActualmente: undefined, salarioAnterior: undefined,
-              monedaAnterior: undefined, tiempoSinTrabajo: undefined,
-            })}
-          >
-            {s.label}
-          </CardOption>
+          <div key={s.id}>
+            <CardOption
+              selected={r.situacion === s.id}
+              onClick={() => setR({
+                situacion: s.id,
+                salario: undefined, moneda: undefined, brutoNeto: undefined,
+                trabajaActualmente: undefined, salarioAnterior: undefined,
+                monedaAnterior: undefined, tiempoSinTrabajo: undefined,
+                contractorHoras: undefined, contractorPago: undefined,
+              })}
+            >
+              {s.label}
+            </CardOption>
+            {s.descripcion && r.situacion === s.id && (
+              <p className="mt-2 ml-1 font-body text-xs text-hueso/55 leading-relaxed animate-in fade-in duration-300">
+                {s.descripcion}
+              </p>
+            )}
+          </div>
         ))}
       </div>
 
