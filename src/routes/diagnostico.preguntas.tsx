@@ -837,7 +837,34 @@ function P15Situacion({ r, setR }: Props) {
         </div>
       )}
 
-      {r.situacion === "busqueda" && (
+      {r.situacion === "contractor" && (
+        <div className="border-t border-hueso/10 pt-8 space-y-6 animate-in fade-in duration-300">
+          <div>
+            <p className="font-body text-base text-hueso mb-3">¿Tu contrato establece una cantidad fija de horas semanales?</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <CardOption selected={r.contractorHoras === "40h"} onClick={() => setR({ contractorHoras: "40h" })}>Sí, 40 horas</CardOption>
+              <CardOption selected={r.contractorHoras === "menos40"} onClick={() => setR({ contractorHoras: "menos40" })}>Sí, menos de 40 horas</CardOption>
+              <CardOption selected={r.contractorHoras === "proyecto"} onClick={() => setR({ contractorHoras: "proyecto" })}>No, es por proyecto</CardOption>
+            </div>
+          </div>
+          <div>
+            <p className="font-body text-base text-hueso mb-3">¿Cómo recibís tu pago?</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <CardOption selected={r.contractorPago === "usd"} onClick={() => setR({ contractorPago: "usd" })}>En USD o moneda extranjera</CardOption>
+              <CardOption selected={r.contractorPago === "local"} onClick={() => setR({ contractorPago: "local" })}>En moneda local</CardOption>
+              <CardOption selected={r.contractorPago === "mixto"} onClick={() => setR({ contractorPago: "mixto" })}>Mixto</CardOption>
+            </div>
+          </div>
+          <SalarioInput
+            label="¿Cuánto cobrás mensualmente?"
+            valor={r.salario}
+            moneda={r.moneda}
+            onValor={(v) => setR({ salario: v })}
+            onMoneda={(m) => setR({ moneda: m })}
+          />
+        </div>
+      )}
+
         <div className="border-t border-hueso/10 pt-8 space-y-6">
           <div>
             <p className="font-body text-base text-hueso mb-3">
