@@ -321,49 +321,46 @@ const extractInputSchema = z.union([
 export const extractFromDocument = createServerFn({ method: "POST" })
   .inputValidator((input) => extractInputSchema.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (!apiKey) throw new Error("ANTHROPIC_API_KEY no configurada");
+    const lovableKey = process.env.LOVABLE_API_KEY;
+    if (!lovableKey) throw new Error("LOVABLE_API_KEY no configurada");
 
     const userContent =
       data.kind === "text"
         ? [
-            { type: "text", text: `Documento:\n\n${data.text.slice(0, 100_000)}` },
-            { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
+            { type: "text", text: `Documento:\n\n${data.text.slice(0, 100_000)}\n\n${EXTRACT_USER_INSTRUCTIONS}` },
           ]
         : [
             {
-              type: "document",
-              source: {
-                type: "base64",
-                media_type: "application/pdf",
-                data: data.base64,
-              },
+              type: "image_url",
+              image_url: { url: `data:application/pdf;base64,${data.base64}` },
             },
             { type: "text", text: EXTRACT_USER_INSTRUCTIONS },
           ];
 
-    const res = await fetch(ANTHROPIC_URL, {
+    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${lovableKey}`,
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 1000,
+        model: "google/gemini-3-flash-preview",
         temperature: 0,
-        system: EXTRACT_SYSTEM,
-        messages: [{ role: "user", content: userContent }],
+        max_tokens: 1500,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: EXTRACT_SYSTEM },
+          { role: "user", content: userContent },
+        ],
       }),
     });
 
     if (!res.ok) {
       const txt = await res.text();
-      throw new Error(`Anthropic ${res.status}: ${txt.slice(0, 500)}`);
+      throw new Error(`Lovable AI ${res.status}: ${txt.slice(0, 500)}`);
     }
-    const json = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
-    const text = json.content?.find((c) => c.type === "text")?.text ?? "";
+    const json = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
+    const text = json.choices?.[0]?.message?.content ?? "";
 
     let parsed: Record<string, unknown> | null = null;
     try {
