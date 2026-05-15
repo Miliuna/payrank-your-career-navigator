@@ -164,25 +164,52 @@ export const confirmBetaAccess = createServerFn({ method: "POST" })
 
 // ---------- Llamada a Anthropic ----------
 
-async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<string> {
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/**
+ * Llama a Anthropic con reintentos automáticos en caso de 529 (overloaded_error).
+ * delays define las esperas entre intentos. La cantidad de intentos es delays.length + 1.
+ */
+async function fetchAnthropicWithRetry(
+  body: Record<string, unknown>,
+  delaysMs: number[],
+): Promise<Response> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error("ANTHROPIC_API_KEY no configurada");
 
-  const res = await fetch(ANTHROPIC_URL, {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
+  let lastRes: Response | null = null;
+  for (let attempt = 0; attempt <= delaysMs.length; attempt++) {
+    const res = await fetch(ANTHROPIC_URL, {
+      method: "POST",
+      headers: {
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    if (res.status !== 529) return res;
+    lastRes = res;
+    const wait = delaysMs[attempt];
+    if (wait != null) {
+      console.warn(`[anthropic] 529 overloaded, intento ${attempt + 1}, esperando ${wait}ms`);
+      await sleep(wait);
+    }
+  }
+  return lastRes!;
+}
+
+async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<string> {
+  const res = await fetchAnthropicWithRetry(
+    {
       model: MODEL,
       max_tokens: 4000,
       temperature: 0,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
-    }),
-  });
+    },
+    [3000, 5000, 8000],
+  );
 
   if (!res.ok) {
     const txt = await res.text();
