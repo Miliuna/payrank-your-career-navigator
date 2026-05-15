@@ -309,7 +309,9 @@ type Json = string | number | boolean | null | { [k: string]: Json } | Json[];
 
 const EXTRACT_SYSTEM = `Extraé todos los datos profesionales y de compensación que encuentres en este documento. Respondé ÚNICAMENTE con JSON válido sin texto adicional.`;
 
-const EXTRACT_USER_INSTRUCTIONS = `Extraé estos campos si están presentes:
+const EXTRACT_USER_INSTRUCTIONS = `El documento puede estar truncado. Extraé toda la información disponible del fragmento recibido.
+
+Extraé estos campos si están presentes:
 - nombre_inferido
 - titulo_puesto
 - nivel_jerarquico_inferido
