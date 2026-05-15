@@ -56,7 +56,7 @@ export type Respuestas = {
   herramientasIA?: string[];
   frecuenciaIA?: string;
   usoIA?: string[];
-  situacion?: "empleado" | "busqueda" | "freelance";
+  situacion?: "empleado" | "busqueda" | "freelance" | "contractor";
   salario?: number;
   moneda?: string;
   brutoNeto?: "bruto" | "neto";
@@ -70,6 +70,11 @@ export type Respuestas = {
   genero?: string;
   email?: string;
   whatsapp?: string;
+  linkedinUrl?: string;
+  herramientasIAOtra?: string;
+  // Contractor sub-flow
+  contractorHoras?: "40h" | "menos40" | "proyecto";
+  contractorPago?: "usd" | "local" | "mixto";
 };
 
 export type DatosExtraidos = {
