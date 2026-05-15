@@ -91,9 +91,14 @@ export const USOS_IA = [
 ];
 
 export const SITUACIONES = [
-  { id: "empleado", label: "Estoy empleado/a actualmente" },
-  { id: "busqueda", label: "Estoy en búsqueda activa" },
-  { id: "freelance", label: "Soy freelance o consultor/a independiente" },
+  { id: "empleado", label: "Estoy empleado/a actualmente", descripcion: "" },
+  { id: "busqueda", label: "Estoy en búsqueda activa", descripcion: "" },
+  { id: "freelance", label: "Soy freelance o consultor/a independiente", descripcion: "" },
+  {
+    id: "contractor",
+    label: "Trabajo como contractor o bajo contrato de servicios",
+    descripcion: "Tenés un contrato con una empresa (generalmente internacional) con horas fijas semanales, pero sin relación de dependencia formal local.",
+  },
 ] as const;
 
 export const MONEDAS = ["ARS", "USD", "MXN", "CLP", "COP", "EUR", "Otra"];

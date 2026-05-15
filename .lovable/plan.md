@@ -1,75 +1,57 @@
-## Alcance
 
-Reemplazar el flujo actual del formulario por la versión definitiva: 8 pantallas, 19 preguntas, validación de inferencia con IA, paywall y guardado en backend.
+## Plan de 6 ajustes
 
-## Bloqueos antes de empezar
+### 1. Campo URL de LinkedIn en upload
+- En `src/routes/diagnostico.upload.tsx`, agregar bajo lista de docs sugeridos:
+  - Label "O PEGÁ LA URL DE TU PERFIL DE LINKEDIN" (font-ui)
+  - Input con placeholder `https://linkedin.com/in/tu-perfil`
+  - Validar que empiece con `linkedin.com` o `https://linkedin.com`
+- Al continuar:
+  - Guardar URL en `state.respuestas.linkedinUrl` (extender tipo en `types.ts`)
+  - Al armar `extractFromDocument`: anteponer `LinkedIn URL: <url>\n\n` al texto
+  - En `createDiagnostico` server-fn: persistir `linkedin_url` en Supabase
+- URL **+** PDF: ambos se procesan; si solo URL, se procesa solo URL.
 
-1. **Stripe**: las claves siguen pendientes. Recomendación → activar **Lovable Payments con Stripe** (no requiere que vos tengas cuenta de Stripe ni pegues claves). Avisame y lo activo. Mientras tanto, construyo el Paso 6 con un placeholder funcional ("Pagar — pendiente de configuración") y se enchufa en el momento.
-2. **Modelo Anthropic**: pediste `claude-sonnet-4-6`, ese identificador no existe. Voy a usar `claude-sonnet-4-5` (último Sonnet 4.x). Si querés otro, decimelo.
-3. **WhatsApp**: solo se guarda en Supabase para envío posterior. No se envía nada en este sprint.
-4. **Plan elegido (GO/PLUS/PRO)**: hoy no hay selector de plan en `/`. Voy a leerlo de query string `?plan=go|plus|pro` y default GO. Si querés selector visible, lo agregamos aparte.
+### 2. Campo "Especificá acá" en cada "Otra/Otro"
+Auditar `diagnostico.preguntas.tsx`. Donde existe opción Otra/Otro y aún no hay subcampo:
+- Industria: ya tiene `industriaOtra`. Verificar animación fadeIn.
+- País: ya tiene `paisOtro`.
+- Funciones: ya tiene `funcionesOtra`.
+- Idiomas → "Otro idioma": agregar input.
+- Formación, Certificaciones, Beneficios, Herramientas IA: agregar input "Otra" donde aplique.
+- Crear pequeño componente `<OtroInput show value onChange />` con `animate-in fade-in duration-300`.
 
-## Arquitectura
+### 3. Contractor como cuarta situación laboral
+- `data.ts` / `types.ts`: agregar `'contractor'` a tipo `Situacion` y a opciones de la pregunta.
+- `diagnostico.preguntas.tsx`: agregar card con descripción y sub-flujo:
+  - Horas semanales: `40h | <40h | por proyecto` → `respuestas.contractorHoras`
+  - Modalidad de pago: `USD | local | mixto` → `respuestas.contractorPago`
+  - Monto mensual + moneda (reusar campos `salario` / `moneda`)
+- `prompt.ts`: en sección de equivalencia salarial, agregar regla:
+  - contractor con 40h fijas y un solo cliente → factor × 0.75 (vs freelance default).
+- `diagnostico.functions.ts` (createDiagnostico): persistir en `situacion_laboral='contractor'` y mapear sub-campos.
 
-```text
-/modo                     (existente — entrada)
-/diagnostico/upload       Paso 1 — upload de documentos
-/diagnostico/preguntas    Paso 2 — chat conversacional (19 preguntas)
-/diagnostico/inferencia   Paso 3 — validar inferencia de valuación
-/diagnostico/perfil       Paso 4 — validación final del perfil
-/diagnostico/legal        Paso 5 — consentimientos
-/diagnostico/pago         Paso 6 — paywall + Stripe
-/diagnostico/procesando   Paso 7 — loading + llamada a Anthropic
-/diagnostico/[id]         Resultado (link único compartible)
-```
+### 4. Teléfono con formato por país
+- En `diagnostico.consentimientos.tsx` (donde está WhatsApp): leer `state.respuestas.pais` y derivar placeholder.
+- Mapping: AR `+54 9 11 XXXX XXXX` · MX `+52 1 55 XXXX XXXX` · CL `+56 9 XXXX XXXX` · CO `+57 3XX XXX XXXX` · ES `+34 6XX XXX XXX` · US `+1 (XXX) XXX-XXXX` · default `+[código] número`.
+- Si ya existe, dejar comentario confirmando.
 
-Estado del flujo en `localStorage` + zustand hasta el Paso 6. Después del pago, todo se persiste en Supabase y se navega por id de diagnóstico.
+### 5. Botón landing ya NO va a paywall
+- `src/routes/index.tsx`: cambiar destino del CTA principal "HACER MI PAYRANK" a `/modo` (selección de situación). Auditar todos los CTAs de landing.
 
-## Backend (Supabase)
+### 6. Reporte no se genera (CRÍTICO)
+Investigar y arreglar la cadena:
+- Paywall (`diagnostico.paywall.tsx`): `confirmBetaAccess(id, token)` → navigate `/diagnostico/procesando?id=...`. Verificar que setea `pago_confirmado=true` en Supabase.
+- Procesando (`diagnostico.procesando.tsx`): `generateDiagnostico({id})` → en éxito navigate `/diagnostico/$id`.
+- `generateDiagnostico` en `diagnostico.functions.ts`: leer fila, llamar Anthropic con prompt v2.0, guardar `resultado_json`, retornar `{id}`.
+- Detalle (`diagnostico.$id.tsx`): leer `resultado_json` y renderizar.
+- Probar end-to-end con token `beta-001-payrank` vía `stack_modern--invoke-server-function` o creando una fila de prueba.
 
-Tabla `diagnosticos` con todos los campos del brief + RLS:
-- Lectura pública por `id` (link compartible) o por `user_id` si está autenticado
-- Insert solo desde server function autenticada vía service role tras pago confirmado
+### Archivos a editar
+- `src/lib/diagnostico/types.ts`, `data.ts`, `store.tsx`, `prompt.ts`, `diagnostico.functions.ts`
+- `src/routes/diagnostico.upload.tsx`, `diagnostico.preguntas.tsx`, `diagnostico.consentimientos.tsx`, `diagnostico.paywall.tsx`, `diagnostico.procesando.tsx`, `index.tsx`
+- (posiblemente) `diagnostico.$id.tsx`
+- 1 nueva migración Supabase para columna `linkedin_url` si no existe (verificar primero — ya existe en schema).
 
-Tabla `documentos_upload` temporal (solo metadata + texto extraído, no archivos).
-
-Server functions:
-- `extractDocument` → parsea PDF/Word con `pdf-parse` o similar y devuelve texto plano
-- `inferProfile` → llama a Anthropic para pre-completar y para inferir las 5 dimensiones de valuación
-- `generateDiagnostico` → llamada final a Anthropic, guarda en `diagnosticos`, dispara mail con Resend
-- `createCheckoutSession` → Stripe (cuando esté activo)
-- `/api/public/stripe-webhook` → confirma pago y dispara generación
-
-## UI
-
-- Diseño consistente con el resto del sitio: fondo Tinta `#0C0C0C`, texto Hueso `#F5F2ED`, Bodoni Moda para títulos, Josefin Sans para UI
-- Mobile-first, validado en 390px
-- Una pregunta por pantalla con animación de entrada (framer-motion)
-- Barra de progreso superior
-- Cards con hover/active states consistentes con `/modo`
-- Todos los "Otra/Otro" abren input de texto libre automáticamente
-
-## Entrega por etapas
-
-Por el tamaño, propongo entregar en 3 PRs dentro de esta misma conversación:
-
-**PR1 — Estructura + Pasos 1, 2, 3, 4** (UI completa, sin backend)
-**PR2 — Pasos 5, 6, 7 + Supabase + Anthropic + Resend** (todo el backend, paywall con placeholder de Stripe)
-**PR3 — Stripe Payments + webhook + página de resultado compartible**
-
-Empiezo por PR1 apenas confirmes.
-
-## Detalles técnicos
-
-- Validación con zod en cliente y servidor
-- `claude-sonnet-4-5` vía Lovable AI Gateway (sin pedirte API key extra)
-- Resend vía connector ya configurado con tu `RESEND_API_KEY`
-- Documentos: parseados en server, NO se almacenan archivos. Solo el texto extraído queda en memoria de la sesión y los datos estructurados terminan en `diagnosticos`
-- Anti-doble-submit en el paywall y idempotencia en la generación
-
-## Confirmá para arrancar
-
-1. ¿Activo **Lovable Payments con Stripe** ahora? (recomendado)
-2. ¿OK con `claude-sonnet-4-5` en lugar de `claude-sonnet-4-6`?
-3. ¿OK leer el plan de query string por ahora, o querés selector visible primero?
-4. ¿Arranco por PR1?
+### Verificación final
+- Test end-to-end con `beta-001-payrank`: crear diagnóstico vía server-fn, simular pago, generar reporte, leer fila resultante para confirmar `resultado_json` poblado.

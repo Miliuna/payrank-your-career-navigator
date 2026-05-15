@@ -338,6 +338,7 @@ function isValid(step: number, r: ReturnType<typeof useDiagnostico>["state"]["re
       if (!r.situacion) return false;
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
       if (r.situacion === "freelance") return !!r.salario && !!r.moneda;
+      if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
       // busqueda
       if (r.trabajaActualmente === "si") return !!r.salario && !!r.moneda;
       if (r.trabajaActualmente === "no") return !!r.salarioAnterior && !!r.monedaAnterior && !!r.tiempoSinTrabajo;
@@ -449,9 +450,9 @@ function P1Pais({ r, setR }: Props) {
         ))}
       </div>
       {r.pais === "Otro" && (
-        <div className="mt-6">
+        <div className="mt-6 animate-in fade-in duration-300">
           <TextInput
-            placeholder="Especificá tu país"
+            placeholder="Especificá acá"
             value={r.paisOtro ?? ""}
             onChange={(e) => setR({ paisOtro: e.target.value })}
             autoFocus
@@ -732,13 +733,23 @@ function P14HerramientasIA({ r, setR }: Props) {
     <>
       <QuestionTitle>¿Qué herramientas de IA usás en tu trabajo?</QuestionTitle>
       <QuestionHint>Seleccioná todas las que apliquen.</QuestionHint>
-      <div className="flex flex-wrap gap-2 mb-10">
+      <div className="flex flex-wrap gap-2 mb-6">
         {HERRAMIENTAS_IA.map((t) => (
           <ChipOption key={t} selected={tools.includes(t)} onClick={() => toggleTool(t)}>
             {t}
           </ChipOption>
         ))}
       </div>
+      {tools.includes("Otra") && (
+        <div className="mb-10 animate-in fade-in duration-300">
+          <TextInput
+            placeholder="Especificá acá"
+            value={r.herramientasIAOtra ?? ""}
+            onChange={(e) => setR({ herramientasIAOtra: e.target.value })}
+            autoFocus
+          />
+        </div>
+      )}
 
       <div className="border-t border-hueso/10 pt-8 mb-10">
         <h2 className="font-display text-2xl mb-5 text-hueso">¿Con qué frecuencia las usás?</h2>
@@ -771,19 +782,25 @@ function P15Situacion({ r, setR }: Props) {
       <QuestionTitle>¿Cuál es tu situación laboral actual?</QuestionTitle>
       <div className="grid grid-cols-1 gap-3 mb-8">
         {SITUACIONES.map((s) => (
-          <CardOption
-            key={s.id}
-            selected={r.situacion === s.id}
-            onClick={() => setR({
-              situacion: s.id,
-              // reset campos dependientes
-              salario: undefined, moneda: undefined, brutoNeto: undefined,
-              trabajaActualmente: undefined, salarioAnterior: undefined,
-              monedaAnterior: undefined, tiempoSinTrabajo: undefined,
-            })}
-          >
-            {s.label}
-          </CardOption>
+          <div key={s.id}>
+            <CardOption
+              selected={r.situacion === s.id}
+              onClick={() => setR({
+                situacion: s.id,
+                salario: undefined, moneda: undefined, brutoNeto: undefined,
+                trabajaActualmente: undefined, salarioAnterior: undefined,
+                monedaAnterior: undefined, tiempoSinTrabajo: undefined,
+                contractorHoras: undefined, contractorPago: undefined,
+              })}
+            >
+              {s.label}
+            </CardOption>
+            {s.descripcion && r.situacion === s.id && (
+              <p className="mt-2 ml-1 font-body text-xs text-hueso/55 leading-relaxed animate-in fade-in duration-300">
+                {s.descripcion}
+              </p>
+            )}
+          </div>
         ))}
       </div>
 
@@ -812,6 +829,34 @@ function P15Situacion({ r, setR }: Props) {
         <div className="border-t border-hueso/10 pt-8">
           <SalarioInput
             label="¿Cuánto cobrás mensualmente en promedio?"
+            valor={r.salario}
+            moneda={r.moneda}
+            onValor={(v) => setR({ salario: v })}
+            onMoneda={(m) => setR({ moneda: m })}
+          />
+        </div>
+      )}
+
+      {r.situacion === "contractor" && (
+        <div className="border-t border-hueso/10 pt-8 space-y-6 animate-in fade-in duration-300">
+          <div>
+            <p className="font-body text-base text-hueso mb-3">¿Tu contrato establece una cantidad fija de horas semanales?</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <CardOption selected={r.contractorHoras === "40h"} onClick={() => setR({ contractorHoras: "40h" })}>Sí, 40 horas</CardOption>
+              <CardOption selected={r.contractorHoras === "menos40"} onClick={() => setR({ contractorHoras: "menos40" })}>Sí, menos de 40 horas</CardOption>
+              <CardOption selected={r.contractorHoras === "proyecto"} onClick={() => setR({ contractorHoras: "proyecto" })}>No, es por proyecto</CardOption>
+            </div>
+          </div>
+          <div>
+            <p className="font-body text-base text-hueso mb-3">¿Cómo recibís tu pago?</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <CardOption selected={r.contractorPago === "usd"} onClick={() => setR({ contractorPago: "usd" })}>En USD o moneda extranjera</CardOption>
+              <CardOption selected={r.contractorPago === "local"} onClick={() => setR({ contractorPago: "local" })}>En moneda local</CardOption>
+              <CardOption selected={r.contractorPago === "mixto"} onClick={() => setR({ contractorPago: "mixto" })}>Mixto</CardOption>
+            </div>
+          </div>
+          <SalarioInput
+            label="¿Cuánto cobrás mensualmente?"
             valor={r.salario}
             moneda={r.moneda}
             onValor={(v) => setR({ salario: v })}
@@ -985,6 +1030,21 @@ function P18Genero({ r, setR }: Props) {
 }
 
 function P19Contacto({ r, setR }: Props) {
+  const paisSel = r.pais === "Otro" ? r.paisOtro : r.pais;
+  const phonePlaceholder = ((): string => {
+    switch ((paisSel ?? "").toLowerCase()) {
+      case "argentina": return "+54 9 11 XXXX XXXX";
+      case "méxico":
+      case "mexico": return "+52 1 55 XXXX XXXX";
+      case "chile": return "+56 9 XXXX XXXX";
+      case "colombia": return "+57 3XX XXX XXXX";
+      case "españa":
+      case "espana": return "+34 6XX XXX XXX";
+      case "estados unidos":
+      case "usa": return "+1 (XXX) XXX-XXXX";
+      default: return "+[código] número";
+    }
+  })();
   return (
     <>
       <QuestionTitle>¿Cómo te contactamos?</QuestionTitle>
@@ -1005,7 +1065,7 @@ function P19Contacto({ r, setR }: Props) {
           <p className="font-ui text-[10px] text-hueso/50 mb-3">WHATSAPP (OPCIONAL)</p>
           <TextInput
             type="tel"
-            placeholder="+54 9 11 1234 5678"
+            placeholder={phonePlaceholder}
             value={r.whatsapp ?? ""}
             onChange={(e) => setR({ whatsapp: e.target.value })}
           />

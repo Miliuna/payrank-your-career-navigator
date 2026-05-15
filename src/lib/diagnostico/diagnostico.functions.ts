@@ -31,6 +31,12 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     : null;
   const moneda = (r.moneda as string) ?? (r.monedaAnterior as string) ?? null;
 
+  // Contractor: empaquetar sub-flow en puesto_descripcion para que el prompt lo lea
+  const baseDesc = (r.descripcionPuesto as string) ?? (r.funcionesTexto as string) ?? "";
+  const contractorMeta = r.situacion === "contractor"
+    ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nModalidad de pago: ${r.contractorPago ?? "n/d"}`
+    : "";
+
   return {
     tipo_usuario: "pago",
     modo: input.modo ?? null,
@@ -57,8 +63,8 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     moneda_actual: moneda,
     salario_tipo: (r.brutoNeto as string) ?? null,
     beneficios: Array.isArray(r.beneficios) ? (r.beneficios as string[]) : null,
-    puesto_descripcion: (r.descripcionPuesto as string) ?? (r.funcionesTexto as string) ?? null,
-    linkedin_url: null,
+    puesto_descripcion: (baseDesc + contractorMeta) || null,
+    linkedin_url: (r.linkedinUrl as string) ?? null,
     genero: (r.genero as string) ?? null,
     mail: (r.email as string) ?? null,
     whatsapp: (r.whatsapp as string) ?? null,

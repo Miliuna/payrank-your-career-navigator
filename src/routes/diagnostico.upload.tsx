@@ -74,6 +74,9 @@ function UploadPage() {
   const [extractError, setExtractError] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [draggingOver, setDraggingOver] = React.useState(false);
+  const [linkedin, setLinkedin] = React.useState<string>(state.respuestas.linkedinUrl ?? "");
+  const linkedinValid = !linkedin.trim() || /^(https?:\/\/)?(www\.)?linkedin\.com\//i.test(linkedin.trim());
+  const linkedinTouched = linkedin.trim().length > 0;
 
   React.useEffect(() => {
     if (search.modo && search.modo !== state.modo) {
@@ -123,15 +126,24 @@ function UploadPage() {
     });
 
   const procesar = async () => {
-    if (files.length === 0 || busy) return;
+    if (busy) return;
+    if (files.length === 0 && !linkedinTouched) return;
+    if (linkedinTouched && !linkedinValid) return;
     setBusy(true);
     setExtractError(false);
     try {
-      // Estrategia: extraer texto en el cliente (incluso de PDFs vía pdf.js)
-      // y enviar SOLO texto al backend, para mantenerse bajo el rate limit
-      // de Tier 1 de Anthropic (30k tokens/min). Fallback: base64 truncado.
+      const linkedinUrl = linkedin.trim();
+      // Persist LinkedIn URL to state immediately
+      if (linkedinUrl) {
+        setState((s) => ({ ...s, respuestas: { ...s.respuestas, linkedinUrl } }));
+      }
+
       const textoBlocks: string[] = [];
       const pdfFallbacks: { name: string; base64: string }[] = [];
+
+      if (linkedinUrl) {
+        textoBlocks.push(`LinkedIn URL: ${linkedinUrl}`);
+      }
 
       for (const f of files) {
         const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
@@ -154,21 +166,30 @@ function UploadPage() {
         }
       }
 
+      // Si solo hay LinkedIn URL sin documentos, no podemos extraer mucho:
+      // saltamos la extracción y pasamos al formulario manual con la URL ya guardada.
+      if (files.length === 0 && linkedinUrl) {
+        setState((s) => ({
+          ...s,
+          datosExtraidos: null,
+          pasosOverride: [],
+        }));
+        navigate({ to: "/diagnostico/preguntas" });
+        return;
+      }
+
       let extracted: DatosExtraidos;
 
       if (pdfFallbacks.length === 0) {
-        // Caso ideal: todo extraído como texto, una sola llamada.
         const concatenated = textoBlocks.join("\n\n");
         extracted = (await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos;
       } else {
-        // Mix con fallback a base64: múltiples extracciones y merge.
         const results: DatosExtraidos[] = [];
         if (textoBlocks.length > 0) {
           const concatenated = textoBlocks.join("\n\n");
           results.push((await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos);
         }
         for (const p of pdfFallbacks) {
-          // Truncar base64 a ~15.000 chars (≈ primeras páginas) para acotar tokens.
           const b64Truncated = p.base64.slice(0, 15_000);
           results.push((await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos);
         }
@@ -179,7 +200,7 @@ function UploadPage() {
         ...s,
         datosExtraidos: extracted,
         pasosOverride: [],
-        documentos: { ...s.documentos, cvNombre: files.map((f) => f.name).join(", ") },
+        documentos: { ...s.documentos, cvNombre: files.map((f) => f.name).join(", "), linkedinUrl: linkedinUrl || undefined },
       }));
       navigate({ to: "/diagnostico/preguntas" });
     } catch (e) {
@@ -207,6 +228,30 @@ function UploadPage() {
             <li key={it} className="font-body text-sm text-hueso/75">· {it}</li>
           ))}
         </ul>
+
+        <div className="mt-6 max-w-2xl">
+          <label htmlFor="linkedin-url" className="font-ui text-[10px] text-hueso/50 mb-2 block uppercase tracking-wider">
+            O pegá la URL de tu perfil de LinkedIn
+          </label>
+          <input
+            id="linkedin-url"
+            type="url"
+            inputMode="url"
+            placeholder="https://linkedin.com/in/tu-perfil"
+            value={linkedin}
+            onChange={(e) => setLinkedin(e.target.value)}
+            disabled={busy}
+            className={cn(
+              "w-full bg-transparent border-b outline-none font-body text-base text-hueso placeholder:text-hueso/30 py-3 transition-colors disabled:opacity-50",
+              linkedinTouched && !linkedinValid ? "border-red-400/70" : "border-hueso/30 focus:border-hueso",
+            )}
+          />
+          {linkedinTouched && !linkedinValid && (
+            <p className="mt-2 font-body text-xs text-red-300/90">
+              Pegá una URL válida que empiece con linkedin.com
+            </p>
+          )}
+        </div>
       </div>
 
       {extractError ? (
@@ -315,14 +360,15 @@ function UploadPage() {
             se procesan para extraer datos y no se almacenan como archivo.
           </p>
 
-          {files.length > 0 && !busy && (
+          {(files.length > 0 || (linkedinTouched && linkedinValid)) && !busy && (
             <div className="mt-8">
               <button
                 type="button"
                 onClick={procesar}
-                className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso"
+                disabled={linkedinTouched && !linkedinValid}
+                className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso disabled:opacity-50"
               >
-                PROCESAR DOCUMENTOS →
+                {files.length > 0 ? "PROCESAR DOCUMENTOS →" : "CONTINUAR CON LINKEDIN →"}
               </button>
             </div>
           )}
