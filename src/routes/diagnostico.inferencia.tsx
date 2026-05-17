@@ -22,7 +22,7 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
 
   // ---------- Interlocución ----------
   const mencionaCLevel = /\b(founder|co[- ]?founder|ceo|cfo|coo|cto|cmo|chro|director\s+general|gerente\s+general)\b/.test(textoLibre);
-  let interlocucion: string;
+  let interlocucion: Inferencia["interlocucion"];
   let interlocucionJustif: string;
   if (interaccion.startsWith("Reporto directamente") || mencionaCLevel) {
     interlocucion = "Ejecutivo";
@@ -41,7 +41,7 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
   }
 
   // ---------- Alcance (lectura directa del campo) ----------
-  let influencia: string;
+  let influencia: Inferencia["influencia"];
   if (alcance === "Global") influencia = "Global";
   else if (alcance.startsWith("Regional")) influencia = "Regional";
   else if (alcance.startsWith("Local")) influencia = "Local";
@@ -51,7 +51,7 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
   // ---------- Autonomía ----------
   const reportaCLevel = interaccion.startsWith("Reporto directamente") || mencionaCLevel;
   const tieneEquipo = equipo.startsWith("Sí");
-  let autonomia: string;
+  let autonomia: Inferencia["autonomia"];
   let autonomiaJustif: string;
   if (nivel === "Director/Head" || nivel === "C-Level/VP") {
     autonomia = "Alta";
@@ -78,7 +78,7 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
     ["Presupuesto/P&L", "Estrategia", "RRHH/Talento", "Gestión de personas", "Finanzas/Contabilidad"].includes(f),
   );
   const fnCoord = funciones.some((f) => ["Proyectos/PMO", "Project Management", "Operaciones"].includes(f));
-  let impactoNegocio: string;
+  let impactoNegocio: Inferencia["impactoNegocio"];
   let impactoJustif: string;
   if (fnImpacto) {
     impactoNegocio = "Alto";
