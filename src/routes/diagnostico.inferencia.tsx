@@ -154,7 +154,7 @@ function InferenciaPage() {
     { key: "complejidad", label: "Complejidad de gestión", valueKey: "complejidad", justifKey: "complejidadJustif", opciones: ["Alto", "Medio", "Bajo"] },
     { key: "interlocucion", label: "Nivel de interlocución", valueKey: "interlocucion", justifKey: "interlocucionJustif", opciones: ["Ejecutivo", "Senior", "Medio", "Operativo"] },
     { key: "influencia", label: "Alcance de influencia", valueKey: "influencia", justifKey: "influenciaJustif", opciones: ["Global", "Regional", "Local"] },
-    { key: "autonomia", label: "Autonomía en decisiones", valueKey: "autonomia", justifKey: "autonomiaJustif", opciones: ["Alta", "Media", "Baja"] },
+    { key: "autonomia", label: "Autonomía en decisiones", valueKey: "autonomia", justifKey: "autonomiaJustif", opciones: ["Alta", "Media-Alta", "Media", "Baja"] },
   ];
 
   return (
