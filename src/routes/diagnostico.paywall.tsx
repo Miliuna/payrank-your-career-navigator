@@ -2,7 +2,7 @@ import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { useDiagnostico } from "@/lib/diagnostico/store";
+import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
 import { confirmBetaAccess, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 import type { Plan } from "@/lib/diagnostico/types";
 
@@ -33,7 +33,7 @@ const BENEFICIOS = [
 
 function PaywallPage() {
   const { id } = Route.useSearch();
-  const { state } = useDiagnostico();
+  const { state, setState } = useDiagnostico();
   const navigate = useNavigate();
   const confirmBeta = useServerFn(confirmBetaAccess);
   const simulate = useServerFn(simulatePayment);
@@ -101,9 +101,30 @@ function PaywallPage() {
               Tu PayRank está listo para <span className="font-display-italic">generar</span>
             </h1>
 
-            <div className="mt-6 mb-2 flex items-baseline gap-2">
-              <span className="font-ui text-[10px] text-hueso/60">{plan.nombre}</span>
+            <div className="mt-6 mb-3">
+              <p className="font-ui text-[10px] text-hueso/55 mb-2">ELEGÍ TU PLAN</p>
+              <div className="grid grid-cols-3 gap-2">
+                {(Object.keys(PLAN_INFO) as Plan[]).map((p) => {
+                  const active = state.plan === p;
+                  return (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setPlan(setState, p)}
+                      className={`px-2 py-2 border text-left transition-colors ${
+                        active
+                          ? "bg-hueso text-tinta border-hueso"
+                          : "border-hueso/25 text-hueso hover:border-hueso/60"
+                      }`}
+                    >
+                      <div className="font-ui text-[9px] opacity-70">{PLAN_INFO[p].nombre}</div>
+                      <div className="font-display text-base leading-tight">{PLAN_INFO[p].precio}</div>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
+
             <div className="flex items-baseline gap-2 mb-6">
               <span className="font-display text-5xl md:text-6xl text-hueso">{plan.precio}</span>
               {plan.sufijo && <span className="font-body text-sm text-hueso/70">{plan.sufijo}</span>}
