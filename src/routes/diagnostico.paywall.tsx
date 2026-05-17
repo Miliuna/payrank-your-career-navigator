@@ -2,7 +2,7 @@ import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { useDiagnostico } from "@/lib/diagnostico/store";
+import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
 import { confirmBetaAccess, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 import type { Plan } from "@/lib/diagnostico/types";
 
