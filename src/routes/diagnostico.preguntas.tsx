@@ -99,18 +99,12 @@ const STEP_TITULO: Record<number, string> = {
   1: "¿En qué industria trabajás?",
   2: "¿En qué tipo de empresa trabajás?",
   3: "¿Cuál es tu nivel jerárquico?",
-  4: "¿Cuál es el alcance de tu rol?",
-  5: "¿Tenés personas a cargo?",
-  6: "¿Qué funciones forman parte de tu trabajo?",
   8: "¿Qué idiomas usás en tu trabajo?",
   9: "¿Cuántos años de experiencia total tenés?",
   10: "¿Cuántos años de experiencia tenés en esta industria?",
   11: "¿Cuál es tu formación?",
   12: "¿Tenés certificaciones profesionales?",
   13: "¿Qué herramientas de IA usás?",
-  14: "¿Cuál es tu compensación actual?",
-  15: "¿Qué beneficios recibís?",
-  16: "Tu puesto",
 };
 
 function tieneExtraccion(step: number, d: DatosExtraidos): boolean {
@@ -124,12 +118,6 @@ function resumenExtraccion(step: number, d: DatosExtraidos): { titulo: string; v
       case 1: return findOption(INDUSTRIAS, asString(d.industria_inferida));
       case 2: return findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
       case 3: return findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
-      case 4: return findOption(ALCANCES, asString(d.alcance_inferido));
-      case 5: return findOption(PERSONAS_A_CARGO, asString(d.equipo_inferido));
-      case 6: {
-        const arr = asArrayStr(d.funciones_inferidas);
-        return arr ? arr.slice(0, 6).join(" · ") : null;
-      }
       case 8: {
         const arr = Array.isArray(d.idiomas) ? d.idiomas : null;
         if (!arr || !arr.length) return null;
@@ -140,15 +128,6 @@ function resumenExtraccion(step: number, d: DatosExtraidos): { titulo: string; v
       case 11: { const a = asArrayStr(d.formacion); return a ? a.join(" · ") : null; }
       case 12: { const a = asArrayStr(d.certificaciones); return a ? a.join(" · ") : null; }
       case 13: { const a = asArrayStr(d.herramientas_ia_inferidas); return a ? a.join(" · ") : null; }
-      case 14: {
-        const sal = d.salario_actual_inferido;
-        const mon = asString(d.moneda_inferida);
-        const tipo = asString(d.tipo_salario_inferido);
-        if (!sal || !mon) return null;
-        return `${mon} ${typeof sal === "number" ? sal.toLocaleString("es-AR") : sal}${tipo ? ` (${tipo})` : ""}`;
-      }
-      case 15: { const a = asArrayStr(d.beneficios_inferidos); return a ? a.join(" · ") : null; }
-      case 16: return asString(d.titulo_puesto);
       default: return null;
     }
   })();
@@ -163,8 +142,10 @@ export const Route = createFileRoute("/diagnostico/preguntas")({
 
 const TOTAL = 19;
 
-// Mapa de pasos que pueden pre-completarse desde el documento
-const EXTRACTABLE_STEPS = new Set([1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+// Categoría A: campos inferibles del documento. El resto (alcance, equipo,
+// funciones, interacción, situación, salario, beneficios, descripción, género,
+// contacto) son Categoría B — siempre se preguntan al usuario.
+const EXTRACTABLE_STEPS = new Set([1, 2, 3, 8, 9, 10, 11, 12, 13]);
 
 function PreguntasPage() {
   const navigate = useNavigate();
