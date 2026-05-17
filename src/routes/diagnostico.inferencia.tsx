@@ -92,16 +92,16 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
   }
 
   // ---------- Complejidad de gestión ----------
-  let complejidad: string;
+  let complejidad: Inferencia["complejidad"];
   let complejidadJustif: string;
   if (equipo.includes("grande")) {
-    complejidad = "Alta";
+    complejidad = "Alto";
     complejidadJustif = "Equipo grande a cargo (más de 15 personas).";
   } else if (equipo.startsWith("Sí")) {
-    complejidad = "Media";
+    complejidad = "Medio";
     complejidadJustif = `Equipo a cargo: ${equipo.replace(/^Sí, /, "")}.`;
   } else {
-    complejidad = "Baja";
+    complejidad = "Bajo";
     complejidadJustif = "Trabajás de forma individual, sin equipo a cargo.";
   }
 
