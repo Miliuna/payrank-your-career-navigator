@@ -33,7 +33,7 @@ const BENEFICIOS = [
 
 function PaywallPage() {
   const { id } = Route.useSearch();
-  const { state } = useDiagnostico();
+  const { state, setState } = useDiagnostico();
   const navigate = useNavigate();
   const confirmBeta = useServerFn(confirmBetaAccess);
   const simulate = useServerFn(simulatePayment);
