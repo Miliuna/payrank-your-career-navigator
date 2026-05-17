@@ -11,24 +11,111 @@ export const Route = createFileRoute("/diagnostico/inferencia")({
 });
 
 function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]): Inferencia {
-  const isSenior = ["Senior Manager/Gerente", "Director/Head", "C-Level/VP"].includes(r.nivel ?? "");
-  const isManager = ["Manager/Líder de equipo", "Senior Manager/Gerente", "Director/Head", "C-Level/VP"].includes(r.nivel ?? "");
-  const equipoGrande = (r.personasACargo ?? "").includes("grande") || (r.personasACargo ?? "").includes("mediano");
-  const alcanceGlobal = r.alcance === "Global";
-  const alcanceRegional = r.alcance?.startsWith("Regional");
-  const altaInteraccion = (r.interaccion ?? "").includes("frecuente") || (r.interaccion ?? "").includes("Reporto");
+  const nivel = r.nivel ?? "";
+  const interaccion = r.interaccion ?? "";
+  const alcance = r.alcance ?? "";
+  const equipo = r.personasACargo ?? "";
+  const funciones = Array.isArray(r.funciones) ? (r.funciones as string[]) : [];
+  const funcionesTexto = (r.funcionesTexto as string) ?? "";
+  const descPuesto = (r.descripcionPuesto as string) ?? "";
+  const textoLibre = `${funcionesTexto} ${descPuesto}`.toLowerCase();
+
+  // ---------- Interlocución ----------
+  const mencionaCLevel = /\b(founder|co[- ]?founder|ceo|cfo|coo|cto|cmo|chro|director\s+general|gerente\s+general)\b/.test(textoLibre);
+  let interlocucion: string;
+  let interlocucionJustif: string;
+  if (interaccion.startsWith("Reporto directamente") || mencionaCLevel) {
+    interlocucion = "Ejecutivo";
+    interlocucionJustif = mencionaCLevel && !interaccion.startsWith("Reporto directamente")
+      ? "Mencionás reporte directo a C-Level/founder en la descripción de tu rol."
+      : "Reportás directamente a dirección ejecutiva.";
+  } else if (interaccion.includes("frecuente")) {
+    interlocucion = "Senior";
+    interlocucionJustif = "Tenés interacción frecuente con dirección ejecutiva.";
+  } else if (interaccion.includes("ocasional")) {
+    interlocucion = "Medio";
+    interlocucionJustif = "Tu interacción con dirección ejecutiva es ocasional.";
+  } else {
+    interlocucion = "Operativo";
+    interlocucionJustif = "Sin contacto directo declarado con dirección ejecutiva.";
+  }
+
+  // ---------- Alcance (lectura directa del campo) ----------
+  let influencia: string;
+  if (alcance === "Global") influencia = "Global";
+  else if (alcance.startsWith("Regional")) influencia = "Regional";
+  else if (alcance.startsWith("Local")) influencia = "Local";
+  else influencia = "Local";
+  const influenciaJustif = `Alcance declarado en el formulario: ${alcance || "—"}.`;
+
+  // ---------- Autonomía ----------
+  const reportaCLevel = interaccion.startsWith("Reporto directamente") || mencionaCLevel;
+  const tieneEquipo = equipo.startsWith("Sí");
+  let autonomia: string;
+  let autonomiaJustif: string;
+  if (nivel === "Director/Head" || nivel === "C-Level/VP") {
+    autonomia = "Alta";
+    autonomiaJustif = `Tu nivel (${nivel}) implica autonomía decisional alta.`;
+  } else if (nivel === "Senior Manager/Gerente" && reportaCLevel) {
+    autonomia = "Alta";
+    autonomiaJustif = "Gerente con reporte directo a C-Level: autonomía decisional alta.";
+  } else if (nivel === "Manager/Líder de equipo" && tieneEquipo) {
+    autonomia = "Media-Alta";
+    autonomiaJustif = "Manager con equipo a cargo: autonomía media-alta.";
+  } else if (nivel === "Senior/Especialista" || nivel === "Semi-senior") {
+    autonomia = "Media";
+    autonomiaJustif = `Nivel ${nivel}: autonomía media.`;
+  } else if (nivel === "Junior/Analista") {
+    autonomia = "Baja";
+    autonomiaJustif = "Nivel junior: autonomía baja, decisiones supervisadas.";
+  } else {
+    autonomia = "Media";
+    autonomiaJustif = `Inferido a partir de tu nivel (${nivel || "—"}).`;
+  }
+
+  // ---------- Impacto en el negocio ----------
+  const fnImpacto = funciones.some((f) =>
+    ["Presupuesto/P&L", "Estrategia", "RRHH/Talento", "Gestión de personas", "Finanzas/Contabilidad"].includes(f),
+  );
+  const fnCoord = funciones.some((f) => ["Proyectos/PMO", "Project Management", "Operaciones"].includes(f));
+  let impactoNegocio: string;
+  let impactoJustif: string;
+  if (fnImpacto) {
+    impactoNegocio = "Alto";
+    impactoJustif = "Tus funciones incluyen P&L, estrategia o decisiones de personas/presupuesto.";
+  } else if (fnCoord) {
+    impactoNegocio = "Medio";
+    impactoJustif = "Tus funciones son principalmente de coordinación.";
+  } else {
+    impactoNegocio = "Bajo";
+    impactoJustif = "Tus funciones son principalmente de ejecución.";
+  }
+
+  // ---------- Complejidad de gestión ----------
+  let complejidad: string;
+  let complejidadJustif: string;
+  if (equipo.includes("grande")) {
+    complejidad = "Alta";
+    complejidadJustif = "Equipo grande a cargo (más de 15 personas).";
+  } else if (equipo.startsWith("Sí")) {
+    complejidad = "Media";
+    complejidadJustif = `Equipo a cargo: ${equipo.replace(/^Sí, /, "")}.`;
+  } else {
+    complejidad = "Baja";
+    complejidadJustif = "Trabajás de forma individual, sin equipo a cargo.";
+  }
 
   return {
-    impactoNegocio: isSenior ? "Alto" : isManager ? "Medio" : "Bajo",
-    impactoJustif: `Inferido a partir de tu nivel (${r.nivel ?? "—"}) y funciones reportadas.`,
-    complejidad: equipoGrande || isManager ? "Alto" : "Medio",
-    complejidadJustif: `Tu rol incluye ${r.personasACargo?.toLowerCase() ?? "trabajo individual"}.`,
-    interlocucion: altaInteraccion ? "Ejecutivo" : isManager ? "Senior" : "Medio",
-    interlocucionJustif: `Basado en tu interacción con dirección: ${r.interaccion ?? "—"}.`,
-    influencia: alcanceGlobal ? "Global" : alcanceRegional ? "Regional" : "Local",
-    influenciaJustif: `Alcance declarado: ${r.alcance ?? "—"}.`,
-    autonomia: isSenior ? "Alta" : isManager ? "Media" : "Baja",
-    autonomiaJustif: `Inferido por nivel jerárquico y reporte directo.`,
+    impactoNegocio,
+    impactoJustif,
+    complejidad,
+    complejidadJustif,
+    interlocucion,
+    interlocucionJustif,
+    influencia,
+    influenciaJustif,
+    autonomia,
+    autonomiaJustif,
   };
 }
 
