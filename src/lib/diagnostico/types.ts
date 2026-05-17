@@ -16,7 +16,7 @@ export type Inferencia = {
   interlocucionJustif: string;
   influencia: "Global" | "Regional" | "Local";
   influenciaJustif: string;
-  autonomia: "Alta" | "Media" | "Baja";
+  autonomia: "Alta" | "Media-Alta" | "Media" | "Baja";
   autonomiaJustif: string;
 };
 
