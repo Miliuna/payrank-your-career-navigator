@@ -40,7 +40,13 @@ function findOption(opts: readonly string[], val: string | null): string | null 
     ?? null;
 }
 
-/** Mapea el JSON extraído por la IA a parciales de Respuestas */
+/**
+ * Mapea el JSON extraído por la IA a parciales de Respuestas.
+ * SOLO Categoría A (campos inferibles de un CV/recibo). Los campos
+ * compensológicos críticos (alcance, equipo, funciones reales, interacción,
+ * situación, beneficios, descripción) NO se pre-completan: siempre se
+ * preguntan al usuario.
+ */
 function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
   const out: Record<string, unknown> = {};
   const industria = findOption(INDUSTRIAS, asString(d.industria_inferida));
@@ -49,21 +55,10 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
   if (tipoEmp) out.tipoEmpresa = tipoEmp;
   const nivel = findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
   if (nivel) out.nivel = nivel;
-  const alcance = findOption(ALCANCES, asString(d.alcance_inferido));
-  if (alcance) out.alcance = alcance;
-  const equipo = findOption(PERSONAS_A_CARGO, asString(d.equipo_inferido));
-  if (equipo) out.personasACargo = equipo;
   const expTot = findOption(EXP_TOTAL, asString(d.anos_experiencia_total_inferidos));
   if (expTot) out.expTotal = expTot;
   const expInd = findOption(EXP_INDUSTRIA, asString(d.anos_experiencia_industria_inferidos));
   if (expInd) out.expIndustria = expInd;
-
-  const funcs = asArrayStr(d.funciones_inferidas);
-  if (funcs) {
-    const matched = funcs.map((f) => findOption(FUNCIONES, f) ?? null).filter(Boolean) as string[];
-    if (matched.length) out.funciones = Array.from(new Set(matched));
-    else out.funcionesTexto = funcs.join(", ");
-  }
 
   const form = asArrayStr(d.formacion);
   if (form) {
