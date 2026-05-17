@@ -89,27 +89,8 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
     if (matched.length) out.herramientasIA = Array.from(new Set(matched));
   }
 
-  const salario = typeof d.salario_actual_inferido === "number"
-    ? d.salario_actual_inferido
-    : (typeof d.salario_actual_inferido === "string" ? Number(d.salario_actual_inferido.replace(/\D/g, "")) : null);
-  if (salario && Number.isFinite(salario) && salario > 0) out.salario = salario;
-  const moneda = findOption(MONEDAS, asString(d.moneda_inferida));
-  if (moneda) out.moneda = moneda;
-  const tipoSal = asString(d.tipo_salario_inferido);
-  if (tipoSal) {
-    const lower = tipoSal.toLowerCase();
-    if (lower.includes("bruto")) out.brutoNeto = "bruto";
-    else if (lower.includes("neto")) out.brutoNeto = "neto";
-  }
-
-  const beneficios = asArrayStr(d.beneficios_inferidos);
-  if (beneficios) {
-    const matched = beneficios.map((b) => findOption(BENEFICIOS, b) ?? null).filter(Boolean) as string[];
-    if (matched.length) out.beneficios = Array.from(new Set(matched));
-  }
-
-  const titulo = asString(d.titulo_puesto);
-  if (titulo) out.descripcionPuesto = titulo;
+  // Categoría B: NO pre-completar salario, beneficios, descripción de puesto,
+  // alcance, equipo, funciones, situación. Esos datos siempre se preguntan.
 
   return out;
 }
