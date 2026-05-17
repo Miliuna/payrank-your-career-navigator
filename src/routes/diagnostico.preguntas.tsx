@@ -218,6 +218,13 @@ function PreguntasPage() {
   return (
     <DiagnosticoShell step={2} progress={pct}>
       <p className="font-ui text-[10px] text-hueso/45 mb-3">{progressHeader}</p>
+      {step === 0 && (
+        <p className="font-body text-sm text-hueso/70 mb-6 leading-relaxed border-l-2 border-hueso/30 pl-4">
+          {hasDoc
+            ? "Encontré información básica de tu perfil. Confirmala rápido y después te pregunto lo que necesito para hacer el análisis preciso."
+            : "Te hago algunas preguntas para entender tu perfil completo."}
+        </p>
+      )}
       <StepFade k={step}>
         {extraccionTexto ? (
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} />
