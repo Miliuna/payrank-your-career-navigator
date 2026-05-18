@@ -36,11 +36,7 @@ export function DiagnosticoShell({ step, totalSteps = 8, progress, children }: S
   );
 }
 
-export function StepFade({ children, k }: { children: React.ReactNode; k: string | number }) {
-  // Re-mount on key change to retrigger the entrance animation
-  return (
-    <div key={k} className="animate-in fade-in slide-in-from-bottom-3 duration-500">
-      {children}
-    </div>
-  );
+export function StepFade({ children }: { children: React.ReactNode; k?: string | number }) {
+  // Sin re-mount ni fade: evita el "apagón" visible entre pasos.
+  return <div>{children}</div>;
 }
