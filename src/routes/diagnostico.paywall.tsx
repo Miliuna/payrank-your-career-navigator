@@ -41,6 +41,7 @@ function PaywallPage() {
   const [betaToken, setBetaToken] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState<string | null>(null);
+  const [showPaymentSoon, setShowPaymentSoon] = React.useState(false);
   const [referido, setReferido] = React.useState("");
   const [referidoEstado, setReferidoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
 
@@ -53,11 +54,15 @@ function PaywallPage() {
   const plan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
   const isDev = import.meta.env.DEV;
 
-  const onBetaConfirm = async () => {
-    if (!betaToken) return;
-    setBusy(true);
+  const onPrimaryClick = async () => {
     setErr(null);
+    if (!betaToken) {
+      setShowPaymentSoon(true);
+      return;
+    }
+    setBusy(true);
     try {
+      // confirmBetaAccess: valida token, marca pago_confirmado=true y consume el token
       await confirmBeta({ data: { id, token: betaToken } });
       navigate({ to: "/diagnostico/procesando", search: { id } });
     } catch (e) {
@@ -141,69 +146,69 @@ function PaywallPage() {
               ))}
             </ul>
 
-            {betaToken ? (
-              <div className="border border-real/70 p-5 mb-6" style={{ borderColor: "#2E4A6E" }}>
+            <div className="mb-6">
+              <label className="font-ui text-[10px] text-hueso/55 block mb-2">
+                ¿TENÉS UN CÓDIGO DE REFERIDO?
+              </label>
+              <div className="flex gap-2">
+                <input
+                  value={referido}
+                  onChange={(e) => { setReferido(e.target.value); setReferidoEstado("idle"); }}
+                  placeholder="Tu código"
+                  className="flex-1 bg-hueso/5 border border-hueso/20 px-3 py-2 font-body text-sm text-hueso placeholder:text-hueso/40 focus:outline-none focus:border-hueso/60"
+                />
+                <button
+                  type="button"
+                  onClick={aplicarReferido}
+                  className="px-4 py-2 border border-hueso/30 font-ui text-[10px] text-hueso hover:bg-hueso hover:text-tinta transition-colors"
+                >
+                  Aplicar
+                </button>
+              </div>
+              {referidoEstado === "ok" && (
+                <p className="mt-2 font-body text-xs" style={{ color: "#2E4A6E" }}>
+                  15% de descuento aplicado ✓
+                </p>
+              )}
+              {referidoEstado === "invalid" && (
+                <p className="mt-2 font-body text-xs text-hueso/55">
+                  Código no válido.
+                </p>
+              )}
+            </div>
+
+            {betaToken && (
+              <div className="border p-4 mb-4" style={{ borderColor: "#2E4A6E" }}>
                 <p className="font-body text-sm text-hueso/90 leading-relaxed">
                   Estás usando un acceso beta gratuito. Tu PayRank se generará sin costo.
                 </p>
-                <button
-                  type="button"
-                  onClick={onBetaConfirm}
-                  disabled={busy}
-                  className="mt-4 w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
-                >
-                  {busy ? "GENERANDO…" : "GENERAR MI PAYRANK"}
-                  <span aria-hidden>→</span>
-                </button>
               </div>
-            ) : (
-              <>
-                <div className="mb-6">
-                  <label className="font-ui text-[10px] text-hueso/55 block mb-2">
-                    ¿TENÉS UN CÓDIGO DE REFERIDO?
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      value={referido}
-                      onChange={(e) => { setReferido(e.target.value); setReferidoEstado("idle"); }}
-                      placeholder="Tu código"
-                      className="flex-1 bg-hueso/5 border border-hueso/20 px-3 py-2 font-body text-sm text-hueso placeholder:text-hueso/40 focus:outline-none focus:border-hueso/60"
-                    />
-                    <button
-                      type="button"
-                      onClick={aplicarReferido}
-                      className="px-4 py-2 border border-hueso/30 font-ui text-[10px] text-hueso hover:bg-hueso hover:text-tinta transition-colors"
-                    >
-                      Aplicar
-                    </button>
-                  </div>
-                  {referidoEstado === "ok" && (
-                    <p className="mt-2 font-body text-xs" style={{ color: "#2E4A6E" }}>
-                      15% de descuento aplicado ✓
-                    </p>
-                  )}
-                  {referidoEstado === "invalid" && (
-                    <p className="mt-2 font-body text-xs text-hueso/55">
-                      Código no válido.
-                    </p>
-                  )}
-                </div>
+            )}
 
-                <button
-                  type="button"
-                  disabled
-                  className="w-full inline-flex items-center justify-between bg-hueso/15 text-hueso/60 px-5 py-3 font-ui text-[11px] cursor-not-allowed"
-                >
-                  PAGAR Y VER MI PAYRANK · {plan.precio}
-                  <span aria-hidden>→</span>
-                </button>
-                <p className="mt-3 font-body text-xs text-hueso/55 text-center">
-                  Pagos disponibles próximamente. Usá un código de acceso beta para generar tu PayRank.
+            <button
+              type="button"
+              onClick={onPrimaryClick}
+              disabled={busy}
+              className="w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
+            >
+              {busy
+                ? "GENERANDO…"
+                : betaToken
+                  ? "GENERAR MI PAYRANK"
+                  : `PAGAR Y VER MI PAYRANK · ${plan.precio}`}
+              <span aria-hidden>→</span>
+            </button>
+
+            {showPaymentSoon && !betaToken && (
+              <div className="mt-4 border border-hueso/25 p-4">
+                <p className="font-body text-sm text-hueso/90 leading-relaxed">
+                  Pagos con tarjeta disponibles próximamente. Para acceso anticipado escribinos a{" "}
+                  <a href="mailto:hello@payrank.co" className="underline underline-offset-4">
+                    hello@payrank.co
+                  </a>
+                  .
                 </p>
-                <p className="mt-2 font-body text-xs text-hueso/40 text-center">
-                  Pago seguro. Podés pagar con cualquier tarjeta internacional.
-                </p>
-              </>
+              </div>
             )}
 
             {err && <p className="mt-4 font-body text-xs text-red-300/90">{err}</p>}
