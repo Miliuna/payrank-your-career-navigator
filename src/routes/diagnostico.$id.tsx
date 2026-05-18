@@ -149,10 +149,6 @@ function ResultadoPage() {
             </Card>
           )}
 
-          <Card>
-            <KV k="Nivel de confianza" v={str(s1.nivel_confianza)} />
-            <KV k="Justificación" v={<span className="text-hueso/80">{str(s1.justificacion_confianza)}</span>} />
-          </Card>
         </Section>
 
         <Divider />
