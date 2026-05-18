@@ -41,6 +41,7 @@ function PaywallPage() {
   const [betaToken, setBetaToken] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState<string | null>(null);
+  const [showPaymentSoon, setShowPaymentSoon] = React.useState(false);
   const [referido, setReferido] = React.useState("");
   const [referidoEstado, setReferidoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
 
@@ -53,11 +54,15 @@ function PaywallPage() {
   const plan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
   const isDev = import.meta.env.DEV;
 
-  const onBetaConfirm = async () => {
-    if (!betaToken) return;
-    setBusy(true);
+  const onPrimaryClick = async () => {
     setErr(null);
+    if (!betaToken) {
+      setShowPaymentSoon(true);
+      return;
+    }
+    setBusy(true);
     try {
+      // confirmBetaAccess: valida token, marca pago_confirmado=true y consume el token
       await confirmBeta({ data: { id, token: betaToken } });
       navigate({ to: "/diagnostico/procesando", search: { id } });
     } catch (e) {
