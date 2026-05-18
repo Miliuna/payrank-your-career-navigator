@@ -1,15 +1,38 @@
 export function SiteFooter() {
   return (
-    <footer className="bg-tinta">
+    <footer style={{ backgroundColor: "#0C0C0C", color: "#C4BFB8" }}>
       <div className="mx-auto max-w-6xl px-5 md:px-10 py-10">
-        <p className="font-ui text-[10px] tracking-[0.12em] text-piedra text-center md:text-left">
-          © 2026 PayRank LLC · Todos los derechos reservados ·{" "}
-          <a href="mailto:hello@payrank.co" className="hover:text-hueso transition-colors">hello@payrank.co</a>
-          {" · "}
-          <a href="/politica-privacidad" className="hover:text-hueso transition-colors">Política de Privacidad</a>
-          {" · "}
-          <a href="/terminos-condiciones" className="hover:text-hueso transition-colors">Términos y Condiciones</a>
-        </p>
+        <div
+          className="flex flex-col md:flex-row gap-6 md:gap-10 md:justify-between"
+          style={{
+            fontSize: "11px",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            color: "#C4BFB8",
+            lineHeight: 1.7,
+          }}
+        >
+          <div className="font-ui">
+            © 2026 PayRank LLC ·{" "}
+            <a href="/politica-privacidad" className="hover:opacity-80 transition-opacity">
+              Política de Privacidad
+            </a>{" "}
+            ·{" "}
+            <a href="/terminos-condiciones" className="hover:opacity-80 transition-opacity">
+              Términos
+            </a>
+          </div>
+          <div className="font-ui md:text-right">
+            <div>Professional Intelligence · Tu valor en el mercado</div>
+            <div>
+              payrank.co ·{" "}
+              <a href="mailto:hello@payrank.co" className="hover:opacity-80 transition-opacity">
+                hello@payrank.co
+              </a>
+            </div>
+            <div>PayRank LLC · 30 N Gould St, Ste R · Sheridan, WY 82801</div>
+          </div>
+        </div>
       </div>
     </footer>
   );
