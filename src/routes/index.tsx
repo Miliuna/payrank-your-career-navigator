@@ -218,9 +218,9 @@ function Landing() {
       </section>
 
       {/* Proceso en 3 pasos */}
-      <section className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28 border-t border-niebla">
+      <section className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28 border-t border-hueso/15">
         <div className="mx-auto max-w-6xl">
-          <p className="font-ui text-[10px] text-piedra mb-4">EL PROCESO</p>
+          <p className="font-ui text-[10px] text-hueso/60 mb-4">EL PROCESO</p>
           <h2 className="font-display text-3xl md:text-5xl mb-14">
             Tres minutos. El <span className="font-display-italic">número exacto.</span>
           </h2>
@@ -246,23 +246,41 @@ function Landing() {
                 tag: "ACCIONABLE DE INMEDIATO",
               },
             ].map((c) => (
-              <div key={c.n} className="bg-hueso border border-niebla p-7 md:p-9 flex flex-col">
-                <p className="font-display text-5xl md:text-6xl text-tinta mb-6">{c.n}</p>
-                <h3 className="font-display text-2xl text-tinta mb-4">{c.titulo}</h3>
-                <p className="font-body text-sm text-piedra leading-relaxed mb-8 flex-1">{c.texto}</p>
-                <p className="font-ui text-[10px] text-tinta border-t border-niebla pt-4">{c.tag}</p>
+              <div key={c.n} className="bg-tinta border border-hueso/15 p-7 md:p-9 flex flex-col">
+                <p className="font-display text-5xl md:text-6xl text-[#C4BFB8] mb-6">{c.n}</p>
+                <h3 className="font-display text-2xl text-hueso mb-4">{c.titulo}</h3>
+                <p className="font-body text-sm text-hueso/70 leading-relaxed mb-8 flex-1">{c.texto}</p>
+                <p className="font-ui text-[10px] text-[#2E4A6E] border-t border-hueso/15 pt-4">{c.tag}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-
+      {/* Social proof */}
+      <section className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="font-display text-5xl md:text-7xl mb-4" style={{ color: "#1A2B45" }}>+500</p>
+          <p className="font-ui text-[11px] uppercase tracking-widest mb-6 max-w-lg mx-auto" style={{ color: "#5A5550" }}>
+            PROFESIONALES EN LATAM YA SABEN EXACTAMENTE CUÁNTO VALE SU PERFIL EN EL MERCADO
+          </p>
+          <p className="font-body text-base max-w-[480px] mx-auto mb-10 leading-relaxed" style={{ color: "#5A5550" }}>
+            La mayoría lo descubrió en menos de tres minutos.
+          </p>
+          <Link
+            to="/modo"
+            className="inline-flex items-center gap-3 bg-tinta text-hueso px-8 py-4 font-ui text-[11px] hover:bg-tinta/90 transition-colors"
+          >
+            HACER MI PAYRANK
+            <span aria-hidden>→</span>
+          </Link>
+        </div>
+      </section>
 
       {/* Precios */}
-      <section id="precios" className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
+      <section id="precios" className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <p className="font-ui text-[10px] text-piedra mb-4">PLANES</p>
+          <p className="font-ui text-[10px] text-hueso/60 mb-4">PLANES</p>
           <h2 className="font-display text-3xl md:text-5xl mb-14">
             Elegí tu <span className="font-display-italic">PayRank</span>
           </h2>
@@ -275,7 +293,7 @@ function Landing() {
                 <div
                   key={plan.plan}
                   className={`relative flex flex-col p-7 md:p-9 ${
-                    d ? "bg-tinta text-hueso" : "bg-hueso text-tinta border border-niebla"
+                    d ? "bg-tinta text-hueso border border-hueso/20" : "bg-hueso text-tinta border border-niebla"
                   }`}
                 >
                   {plan.badge && (
@@ -323,47 +341,47 @@ function Landing() {
           </div>
 
           {/* Tabla comparativa */}
-          <div className="mt-24 border-t border-niebla pt-16">
-            <p className="font-ui text-[10px] text-piedra mb-8">EN DETALLE</p>
+          <div className="mt-24 border-t border-hueso/20 pt-16">
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">EN DETALLE</p>
             <div className="overflow-x-auto">
               <table className="w-full font-body text-sm">
                 <thead>
-                  <tr className="border-b border-niebla">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-piedra w-1/3"></th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-tinta">GO</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-tinta">PLUS</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-tinta">PRO</th>
+                  <tr className="border-b border-hueso/20">
+                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/3"></th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">GO</th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PLUS</th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PRO</th>
                   </tr>
                 </thead>
-                <tbody className="text-tinta">
-                  <tr className="border-b border-niebla/60">
-                    <td className="py-4 pr-4 text-piedra">Precio</td>
+                <tbody className="text-hueso">
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">Precio</td>
                     <td className="py-4 px-4">USD 29</td>
                     <td className="py-4 px-4">USD 69</td>
                     <td className="py-4 px-4">USD 99/año</td>
                   </tr>
-                  <tr className="border-b border-niebla/60">
-                    <td className="py-4 pr-4 text-piedra">PayRank incluidos</td>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>
                     <td className="py-4 px-4">1</td>
                     <td className="py-4 px-4">3</td>
                     <td className="py-4 px-4">Ilimitados por 12 meses</td>
                   </tr>
-                  <tr className="border-b border-niebla/60">
-                    <td className="py-4 pr-4 text-piedra">Análisis completo</td>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">Análisis completo</td>
                     <td className="py-4 px-4">✓</td>
                     <td className="py-4 px-4">✓</td>
                     <td className="py-4 px-4">✓</td>
                   </tr>
                   <tr>
-                    <td className="py-4 pr-4 text-piedra">Alertas cuando tu mercado se mueve</td>
-                    <td className="py-4 px-4 text-piedra">—</td>
-                    <td className="py-4 px-4 text-piedra">—</td>
+                    <td className="py-4 pr-4 text-hueso/70">Alertas cuando tu mercado se mueve</td>
+                    <td className="py-4 px-4 text-hueso/70">—</td>
+                    <td className="py-4 px-4 text-hueso/70">—</td>
                     <td className="py-4 px-4">✓</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p className="font-display-italic text-base text-piedra mt-8 max-w-2xl">
+            <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
               La mayoría de quienes están en búsqueda activa o atravesando una negociación terminan necesitando más de un PayRank. El plan PLUS está diseñado para eso.
             </p>
           </div>
