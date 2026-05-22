@@ -50,6 +50,43 @@ function Section({ children }: { children: React.ReactNode }) {
 function Divider() {
   return <div className="border-t border-hueso/10" />;
 }
+function Band({
+  theme,
+  children,
+}: {
+  theme: "dark" | "light" | "hueso";
+  children: React.ReactNode;
+}) {
+  const bg =
+    theme === "dark"
+      ? "bg-[#0C0C0C]"
+      : theme === "hueso"
+        ? "bg-[#F5F2ED]"
+        : "bg-white";
+  const cls = theme === "dark" ? "theme-dark" : "theme-light";
+  return (
+    <section className={`${bg} ${cls}`}>
+      <div className="mx-auto max-w-4xl px-5 md:px-8 py-12 md:py-20 space-y-12">
+        {children}
+      </div>
+    </section>
+  );
+}
+const ThemeStyles = () => (
+  <style>{`
+    .theme-light { --hueso: oklch(0.15 0 0); --tinta: oklch(1 0 0); color: #0C0C0C; }
+    .theme-light h2 { color: #1A2B45 !important; }
+    .theme-light .eyebrow { color: #2E4A6E !important; }
+    .theme-light .p-body { color: #0C0C0C !important; text-align: justify; }
+    .theme-light .card-alert { background: #F0EDE8 !important; border: 0 !important; border-left: 3px solid #2E4A6E !important; }
+    .theme-light table { border-color: #E5E1DA; }
+    .theme-light table thead tr { background: #1A2B45 !important; }
+    .theme-light table thead th { color: #F5F2ED !important; }
+    .theme-light table tbody tr { background: #FFFFFF; border-color: #E5E1DA !important; }
+    .theme-light table tbody tr:nth-child(even) { background: #F7F4F0; }
+  `}</style>
+);
+
 
 function KV({ k, v }: { k: string; v: React.ReactNode }) {
   return (
