@@ -399,3 +399,23 @@ Generá el PayRank completo aplicando todos los ajustes compensológicos del sys
 
 Respondé ÚNICAMENTE con JSON válido sin texto adicional.`;
 }
+
+// ===== Prompts parciales para generación en 2 partes (evita timeouts) =====
+
+export function buildUserPromptPartA(d: AnyRecord): string {
+  return `${buildUserPrompt(d)}
+
+IMPORTANTE — PARTE 1 DE 2:
+Generá ÚNICAMENTE estas claves del JSON: "seccion_1", "seccion_2", "seccion_3", "seccion_4".
+Aplicá todas las reglas del system prompt. La estructura interna de cada sección es la definida en el system prompt.
+Respondé un único objeto JSON con exactamente esas 4 claves de nivel superior. Sin markdown, sin backticks, sin explicación.`;
+}
+
+export function buildUserPromptPartB(d: AnyRecord): string {
+  return `${buildUserPrompt(d)}
+
+IMPORTANTE — PARTE 2 DE 2:
+Generá ÚNICAMENTE estas claves del JSON: "seccion_5", "seccion_6", "seccion_7", "seccion_8", "freelance".
+Aplicá todas las reglas del system prompt. La estructura interna de cada sección es la definida en el system prompt.
+Respondé un único objeto JSON con exactamente esas 5 claves de nivel superior. Sin markdown, sin backticks, sin explicación.`;
+}

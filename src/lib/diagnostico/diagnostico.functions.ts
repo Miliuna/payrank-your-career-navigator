@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { SYSTEM_PROMPT, buildUserPrompt } from "./prompt";
+import { SYSTEM_PROMPT, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-4-5";
@@ -227,13 +227,18 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
 }
 
 function tryParseJson(text: string): unknown | null {
+  // 1) Limpiar fences markdown ```json ... ```
+  let cleaned = text.trim();
+  const fence = cleaned.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+  if (fence) cleaned = fence[1].trim();
   try {
-    return JSON.parse(text);
+    return JSON.parse(cleaned);
   } catch {
-    // intentar extraer un bloque JSON
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) {
-      try { return JSON.parse(match[0]); } catch { /* noop */ }
+    // 2) intentar extraer el bloque {...} más largo
+    const first = cleaned.indexOf("{");
+    const last = cleaned.lastIndexOf("}");
+    if (first !== -1 && last > first) {
+      try { return JSON.parse(cleaned.slice(first, last + 1)); } catch { /* noop */ }
     }
     return null;
   }
@@ -261,24 +266,34 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       return { id: record.id as string, link_unico: record.link_unico as string };
     }
 
-    const userPrompt = buildUserPrompt(record);
+    // Generación en 2 llamadas paralelas para evitar timeout upstream (≥60s).
+    const promptA = buildUserPromptPartA(record);
+    const promptB = buildUserPromptPartB(record);
 
-    let parsed: unknown | null = null;
-    let lastRaw = "";
-    for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
-      try {
-        lastRaw = await callAnthropic(SYSTEM_PROMPT, userPrompt);
-        parsed = tryParseJson(lastRaw);
-      } catch (e) {
-        console.error(`[generateDiagnostico] intento ${attempt + 1} falló:`, e);
+    async function genPart(prompt: string, label: string): Promise<Record<string, unknown>> {
+      let parsed: unknown | null = null;
+      let lastRaw = "";
+      for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
+        try {
+          lastRaw = await callAnthropic(SYSTEM_PROMPT, prompt);
+          parsed = tryParseJson(lastRaw);
+        } catch (e) {
+          console.error(`[generateDiagnostico:${label}] intento ${attempt + 1} falló:`, e);
+        }
       }
+      if (!parsed || typeof parsed !== "object") {
+        throw new Error(`Anthropic no devolvió JSON válido en ${label}. Raw: ${lastRaw.slice(0, 300)}`);
+      }
+      return parsed as Record<string, unknown>;
     }
 
-    if (!parsed) {
-      throw new Error(`Anthropic no devolvió JSON válido. Raw: ${lastRaw.slice(0, 300)}`);
-    }
+    const [partA, partB] = await Promise.all([
+      genPart(promptA, "parteA"),
+      genPart(promptB, "parteB"),
+    ]);
+    const parsed: Record<string, unknown> = { ...partA, ...partB };
 
-    const nivelConfianza = (parsed as Record<string, unknown>).nivel_confianza;
+    const nivelConfianza = (parsed.seccion_1 as Record<string, unknown> | undefined)?.nivel_confianza;
 
     const { error: upErr } = await supabaseAdmin
       .from("diagnosticos" as never)
