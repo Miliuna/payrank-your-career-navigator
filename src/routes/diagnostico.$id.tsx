@@ -354,10 +354,11 @@ function ResultadoPage() {
             </div>
           )}
         </Section>
+        </Band>
 
-        <Divider />
-
+        <Band theme="light">
         {/* SECCIÓN 3 */}
+
         <Section>
           <Eyebrow>03 · COMPENSACIÓN TOTAL</Eyebrow>
           <H2>Tu paquete completo, valorizado</H2>
