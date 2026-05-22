@@ -349,6 +349,11 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     const promptA = buildUserPromptPartA(record);
     const promptB = buildUserPromptPartB(record);
 
+    // Tipo de cambio (en paralelo con la generación)
+    const { code: currency, usdOnly } = detectCurrency(record.pais_rol as string | null);
+    const fxPromise: Promise<TipoCambio | null> =
+      currency && !usdOnly ? fetchFxRate(currency) : Promise.resolve(null);
+
     async function genPart(prompt: string, label: string): Promise<Record<string, unknown>> {
       let parsed: unknown | null = null;
       let lastRaw = "";
@@ -366,9 +371,10 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       return parsed as Record<string, unknown>;
     }
 
-    const [partA, partB] = await Promise.all([
+    const [partA, partB, tipoCambio] = await Promise.all([
       genPart(promptA, "parteA"),
       genPart(promptB, "parteB"),
+      fxPromise,
     ]);
     const parsed: Record<string, unknown> = { ...partA, ...partB };
 
@@ -379,9 +385,11 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       .update({
         resultado_json: parsed,
         nivel_confianza: typeof nivelConfianza === "string" ? nivelConfianza : null,
+        tipo_cambio_utilizado: tipoCambio,
       } as never)
       .eq("id", data.id);
     if (upErr) throw new Error(upErr.message);
+
 
     return { id: record.id as string, link_unico: record.link_unico as string };
   });
