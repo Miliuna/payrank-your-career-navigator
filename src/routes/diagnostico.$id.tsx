@@ -25,21 +25,21 @@ const bool = (v: unknown): boolean => v === true;
 // ---------- UI primitives ----------
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="font-ui text-[10px] tracking-[0.18em] text-hueso/45 mb-3">{children}</p>;
+  return <p className="eyebrow font-ui text-[10px] tracking-[0.18em] text-hueso/45 mb-3">{children}</p>;
 }
 function H2({ children }: { children: React.ReactNode }) {
   return <h2 className="font-display text-3xl md:text-4xl text-hueso leading-tight">{children}</h2>;
 }
 function P({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) {
   return (
-    <p className={`font-body leading-relaxed ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
+    <p className={`p-body font-body leading-relaxed ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
       {children}
     </p>
   );
 }
 function Card({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div className={`border border-hueso/15 p-5 md:p-6 ${dark ? "bg-hueso/[0.04]" : ""}`}>
+    <div className={`${dark ? "card-alert " : ""}border border-hueso/15 p-5 md:p-6 ${dark ? "bg-hueso/[0.04]" : ""}`}>
       {children}
     </div>
   );
@@ -50,6 +50,44 @@ function Section({ children }: { children: React.ReactNode }) {
 function Divider() {
   return <div className="border-t border-hueso/10" />;
 }
+function Band({
+  theme,
+  children,
+}: {
+  theme: "dark" | "light" | "hueso";
+  children: React.ReactNode;
+}) {
+  const bg =
+    theme === "dark"
+      ? "bg-[#0C0C0C]"
+      : theme === "hueso"
+        ? "bg-[#F5F2ED]"
+        : "bg-white";
+  const cls = theme === "dark" ? "theme-dark" : "theme-light";
+  return (
+    <section className={`${bg} ${cls}`}>
+      <div className="mx-auto max-w-4xl px-5 md:px-8 py-12 md:py-20 space-y-12">
+        {children}
+      </div>
+    </section>
+  );
+}
+const ThemeStyles = () => (
+  <style>{`
+    .theme-light { --hueso: oklch(0.15 0 0); --tinta: oklch(1 0 0); color: #0C0C0C; }
+    .theme-light h2 { color: #1A2B45 !important; }
+    .theme-light .eyebrow { color: #2E4A6E !important; }
+    .theme-light .p-body { color: #0C0C0C !important; text-align: justify; }
+    .theme-light .card-alert { background: #F0EDE8 !important; border: 0 !important; border-left: 3px solid #2E4A6E !important; }
+    .theme-light table { border-color: #E5E1DA; }
+    .theme-light table thead tr { background: #1A2B45 !important; }
+    .theme-light table thead th { color: #F5F2ED !important; }
+    .theme-light table tbody tr { background: #FFFFFF; border-color: #E5E1DA !important; }
+    .theme-light table tbody tr:nth-child(even) { background: #F7F4F0; }
+  `}</style>
+);
+
+
 function KV({ k, v }: { k: string; v: React.ReactNode }) {
   return (
     <div className="flex justify-between gap-4 py-2 border-b border-hueso/10 last:border-0">
@@ -207,15 +245,18 @@ function ResultadoPage() {
   const fl = (res.freelance as R) ?? {};
 
   return (
-    <div className="min-h-screen bg-tinta text-hueso">
-      <header className="border-b border-hueso/10">
+    <div className="min-h-screen bg-white">
+      <ThemeStyles />
+      <header className="theme-dark bg-[#0C0C0C] border-b border-hueso/10">
         <div className="mx-auto max-w-4xl px-5 md:px-8 h-16 flex items-center justify-between">
           <Logo />
           <span className="font-ui text-[10px] text-hueso/50">PayRank · resultado</span>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-5 md:px-8 py-12 md:py-20 space-y-20">
+      <main>
+        <Band theme="light">
+
         {/* SECCIÓN 1 */}
         <Section>
           <Eyebrow>01 · TU PERFIL</Eyebrow>
@@ -235,10 +276,11 @@ function ResultadoPage() {
           )}
 
         </Section>
+        </Band>
 
-        <Divider />
-
+        <Band theme="dark">
         {/* SECCIÓN 2 */}
+
         <Section>
           <Eyebrow>02 · EL NÚMERO</Eyebrow>
           <H2>Cuánto valés hoy en el mercado</H2>
@@ -313,10 +355,11 @@ function ResultadoPage() {
             </div>
           )}
         </Section>
+        </Band>
 
-        <Divider />
-
+        <Band theme="light">
         {/* SECCIÓN 3 */}
+
         <Section>
           <Eyebrow>03 · COMPENSACIÓN TOTAL</Eyebrow>
           <H2>Tu paquete completo, valorizado</H2>
@@ -420,10 +463,11 @@ function ResultadoPage() {
             <P muted>{str(s4.mensaje_si_hombre)}</P>
           </Card>
         )}
+        </Band>
 
-        <Divider />
-
+        <Band theme="dark">
         {/* SECCIÓN 5 */}
+
         <Section>
           <Eyebrow>05 · CUÁNTO PEDIR</Eyebrow>
           <H2>Tu pretensión salarial</H2>
@@ -462,10 +506,11 @@ function ResultadoPage() {
             </div>
           </div>
         </Section>
+        </Band>
 
-        <Divider />
-
+        <Band theme="light">
         {/* SECCIÓN 6 */}
+
         <Section>
           <Eyebrow>06 · SCRIPTS DE NEGOCIACIÓN</Eyebrow>
           <H2>Las palabras exactas</H2>
@@ -639,10 +684,15 @@ function ResultadoPage() {
           </>
         )}
 
-        <section className="pt-12 border-t border-hueso/10 text-xs text-hueso/40 font-body">
-          PayRank LLC · 30 N Gould St, STE R, Sheridan, Wyoming 82801, USA · hello@payrank.co
+        </Band>
+
+        <section className="bg-[#F5F2ED]">
+          <div className="mx-auto max-w-4xl px-5 md:px-8 py-10 text-xs text-[#0C0C0C]/60 font-body text-center">
+            PayRank LLC · 30 N Gould St, STE R, Sheridan, Wyoming 82801, USA · hello@payrank.co
+          </div>
         </section>
       </main>
+
     </div>
   );
 }
