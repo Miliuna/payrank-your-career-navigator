@@ -19,7 +19,7 @@ export function DownloadPdfButton({
 
     try {
       const [{ default: html2canvas }, jspdfMod] = await Promise.all([
-        import("html2canvas"),
+        import("html2canvas-pro"),
         import("jspdf"),
       ]);
       const { jsPDF } = jspdfMod as typeof import("jspdf");
