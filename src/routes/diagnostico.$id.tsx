@@ -25,21 +25,21 @@ const bool = (v: unknown): boolean => v === true;
 // ---------- UI primitives ----------
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="font-ui text-[10px] tracking-[0.18em] text-hueso/45 mb-3">{children}</p>;
+  return <p className="eyebrow font-ui text-[10px] tracking-[0.18em] text-hueso/45 mb-3">{children}</p>;
 }
 function H2({ children }: { children: React.ReactNode }) {
   return <h2 className="font-display text-3xl md:text-4xl text-hueso leading-tight">{children}</h2>;
 }
 function P({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) {
   return (
-    <p className={`font-body leading-relaxed ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
+    <p className={`p-body font-body leading-relaxed ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
       {children}
     </p>
   );
 }
 function Card({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
   return (
-    <div className={`border border-hueso/15 p-5 md:p-6 ${dark ? "bg-hueso/[0.04]" : ""}`}>
+    <div className={`${dark ? "card-alert " : ""}border border-hueso/15 p-5 md:p-6 ${dark ? "bg-hueso/[0.04]" : ""}`}>
       {children}
     </div>
   );
@@ -50,6 +50,7 @@ function Section({ children }: { children: React.ReactNode }) {
 function Divider() {
   return <div className="border-t border-hueso/10" />;
 }
+
 function KV({ k, v }: { k: string; v: React.ReactNode }) {
   return (
     <div className="flex justify-between gap-4 py-2 border-b border-hueso/10 last:border-0">
