@@ -190,17 +190,6 @@ function PaywallPage() {
             </button>
 
 
-            {showPaymentSoon && !esBeta && (
-              <div className="mt-4 border border-hueso/25 p-4">
-                <p className="font-body text-sm text-hueso/90 leading-relaxed">
-                  Pagos con tarjeta disponibles próximamente. Para acceso anticipado escribinos a{" "}
-                  <a href="mailto:hello@payrank.co" className="underline underline-offset-4">
-                    hello@payrank.co
-                  </a>
-                  .
-                </p>
-              </div>
-            )}
 
             {err && <p className="mt-4 font-body text-xs text-red-300/90">{err}</p>}
           </div>
