@@ -83,6 +83,91 @@ function posKind(p: string | undefined): "bajo" | "en" | "sobre" | "neutral" {
   return "neutral";
 }
 
+function parseNum(v: unknown): number | null {
+  if (v === null || v === undefined) return null;
+  if (typeof v === "number" && isFinite(v)) return v;
+  const s = String(v).replace(/[^\d.,-]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", ".");
+  const n = parseFloat(s);
+  return isFinite(n) ? n : null;
+}
+function fmtUSD(n: number): string {
+  return "USD " + Math.round(n).toLocaleString("en-US");
+}
+
+function PercentilesChart({
+  p25, p50, p75, p90, salario,
+}: { p25: number; p50: number; p75: number; p90: number; salario: number | null }) {
+  const bars = [
+    { label: "P25", value: p25 },
+    { label: "P50", value: p50 },
+    { label: "P75", value: p75 },
+    { label: "P90", value: p90 },
+  ];
+  const maxRef = Math.max(p90, salario ?? 0) * 1.1;
+  const chartH = 240;
+  return (
+    <div className="border border-hueso/15 p-5 md:p-6 bg-hueso/[0.04]">
+      <p className="font-ui text-[10px] tracking-[0.18em] text-hueso/45 mb-5">
+        TU UBICACIÓN EN LA DISTRIBUCIÓN · USD
+      </p>
+      <div className="relative" style={{ height: chartH + 60 }}>
+        {/* bars */}
+        <div className="absolute inset-x-0 top-0 flex items-end justify-between gap-3 px-2" style={{ height: chartH }}>
+          {bars.map((b) => {
+            const h = (b.value / maxRef) * chartH;
+            const isP50 = b.label === "P50";
+            return (
+              <div key={b.label} className="flex-1 flex flex-col items-center justify-end h-full">
+                <div
+                  className="w-full transition-all"
+                  style={{
+                    height: `${h}px`,
+                    backgroundColor: isP50 ? "#2E4A6E" : "rgba(46,74,110,0.35)",
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+        {/* salario line */}
+        {salario !== null && salario > 0 && (() => {
+          const top = chartH - (salario / maxRef) * chartH;
+          return (
+            <div
+              className="absolute left-0 right-0 pointer-events-none"
+              style={{ top: `${top}px` }}
+            >
+              <div
+                className="w-full"
+                style={{
+                  borderTop: "2px dashed #E5484D",
+                  height: 0,
+                }}
+              />
+              <div
+                className="absolute right-0 -translate-y-full px-2 py-1 font-ui text-[10px] uppercase tracking-widest"
+                style={{ backgroundColor: "#E5484D", color: "#F5F2ED" }}
+              >
+                Tu salario actual: {fmtUSD(salario)}
+              </div>
+            </div>
+          );
+        })()}
+        {/* labels */}
+        <div className="absolute inset-x-0 flex justify-between gap-3 px-2" style={{ top: chartH + 8 }}>
+          {bars.map((b) => (
+            <div key={b.label} className="flex-1 text-center">
+              <div className="font-display text-base md:text-lg text-hueso">{fmtUSD(b.value)}</div>
+              <div className="font-ui text-[10px] tracking-widest text-hueso/55 mt-1">{b.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
 // ---------- Page ----------
 
 function ResultadoPage() {
