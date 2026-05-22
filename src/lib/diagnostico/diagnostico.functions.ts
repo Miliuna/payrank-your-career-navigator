@@ -227,13 +227,18 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
 }
 
 function tryParseJson(text: string): unknown | null {
+  // 1) Limpiar fences markdown ```json ... ```
+  let cleaned = text.trim();
+  const fence = cleaned.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+  if (fence) cleaned = fence[1].trim();
   try {
-    return JSON.parse(text);
+    return JSON.parse(cleaned);
   } catch {
-    // intentar extraer un bloque JSON
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) {
-      try { return JSON.parse(match[0]); } catch { /* noop */ }
+    // 2) intentar extraer el bloque {...} más largo
+    const first = cleaned.indexOf("{");
+    const last = cleaned.lastIndexOf("}");
+    if (first !== -1 && last > first) {
+      try { return JSON.parse(cleaned.slice(first, last + 1)); } catch { /* noop */ }
     }
     return null;
   }
