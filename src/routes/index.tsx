@@ -46,11 +46,11 @@ const planes = [
   },
   {
     nombre: "PRO",
-    precio: "USD 99",
+    precio: "USD 149",
     sufijo: "/año",
     italic: "Para quien quiere que PayRank lo acompañe.",
     descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
+      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.\n\nUSD 199/año en USA, UK, Australia y Canadá.",
     cta: "EMPEZAR CON PRO",
     plan: "anual" as const,
     destacada: false,
@@ -358,7 +358,7 @@ function Landing() {
                     <td className="py-4 pr-4 text-hueso/70">Precio</td>
                     <td className="py-4 px-4">USD 29</td>
                     <td className="py-4 px-4">USD 69</td>
-                    <td className="py-4 px-4">USD 99/año</td>
+                    <td className="py-4 px-4">USD 149/año <span className="text-hueso/50 text-xs block">USD 199/año en USA, UK, Australia y Canadá</span></td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>

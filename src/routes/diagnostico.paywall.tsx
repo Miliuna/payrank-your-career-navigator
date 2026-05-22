@@ -17,8 +17,18 @@ export const Route = createFileRoute("/diagnostico/paywall")({
 const PLAN_INFO: Record<Plan, { nombre: string; precio: string; sufijo?: string }> = {
   unico: { nombre: "GO", precio: "USD 29" },
   pack3: { nombre: "PLUS", precio: "USD 69" },
-  anual: { nombre: "PRO", precio: "USD 99", sufijo: "/año" },
+  anual: { nombre: "PRO", precio: "USD 149", sufijo: "/año" },
 };
+
+function getProPrice(pais?: string, paisOtro?: string): { precio: string; sufijo?: string } {
+  const highPriceCountries = ["estados unidos", "usa", "united states", "reino unido", "united kingdom", "uk", "gran bretaña", "great britain", "australia", "canadá", "canada"];
+  const raw = pais === "Otro" ? paisOtro : pais;
+  const normalized = (raw || "").toLowerCase().trim();
+  if (highPriceCountries.some((c) => normalized.includes(c))) {
+    return { precio: "USD 199", sufijo: "/año" };
+  }
+  return { precio: "USD 149", sufijo: "/año" };
+}
 
 const BENEFICIOS = [
   "Tu posición exacta en el mercado",
@@ -51,7 +61,9 @@ function PaywallPage() {
     }
   }, []);
 
-  const plan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
+  const basePlan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
+  const proPrice = state.plan === "anual" ? getProPrice(state.respuestas?.pais, state.respuestas?.paisOtro) : null;
+  const plan = proPrice ? { ...basePlan, ...proPrice } : basePlan;
   const isDev = import.meta.env.DEV;
 
   const onPrimaryClick = async () => {
