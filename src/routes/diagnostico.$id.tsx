@@ -680,10 +680,15 @@ function ResultadoPage() {
           </>
         )}
 
-        <section className="pt-12 border-t border-hueso/10 text-xs text-hueso/40 font-body">
-          PayRank LLC · 30 N Gould St, STE R, Sheridan, Wyoming 82801, USA · hello@payrank.co
+        </Band>
+
+        <section className="bg-[#F5F2ED]">
+          <div className="mx-auto max-w-4xl px-5 md:px-8 py-10 text-xs text-[#0C0C0C]/60 font-body text-center">
+            PayRank LLC · 30 N Gould St, STE R, Sheridan, Wyoming 82801, USA · hello@payrank.co
+          </div>
         </section>
       </main>
+
     </div>
   );
 }
