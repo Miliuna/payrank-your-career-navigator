@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { getDiagnostico } from "@/lib/diagnostico/diagnostico.functions";
 import { Logo } from "@/components/Logo";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 
 export const Route = createFileRoute("/diagnostico/$id")({
   head: () => ({ meta: [{ title: "Tu PayRank — PayRank" }] }),
