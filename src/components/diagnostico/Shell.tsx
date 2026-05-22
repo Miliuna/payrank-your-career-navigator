@@ -24,7 +24,7 @@ export function DiagnosticoShell({ step, totalSteps = 8, progress, children }: S
         </div>
         <div className="h-[2px] bg-hueso/10 w-full">
           <div
-            className="h-full bg-hueso transition-all duration-500"
+            className="h-full bg-hueso transition-all duration-200"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -37,6 +37,10 @@ export function DiagnosticoShell({ step, totalSteps = 8, progress, children }: S
 }
 
 export function StepFade({ children }: { children: React.ReactNode; k?: string | number }) {
-  // Sin re-mount ni fade: evita el "apagón" visible entre pasos.
-  return <div>{children}</div>;
+  return (
+    <div className="transition-opacity duration-200 ease-in-out" style={{ opacity: 1 }}>
+      {children}
+    </div>
+  );
 }
+

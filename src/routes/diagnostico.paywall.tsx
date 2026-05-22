@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
-import { confirmBetaAccess, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
+import { confirmBetaAccess, simulatePayment, getDiagnostico } from "@/lib/diagnostico/diagnostico.functions";
 import type { Plan } from "@/lib/diagnostico/types";
 
 const searchSchema = z.object({ id: z.string().uuid() });
@@ -47,8 +47,10 @@ function PaywallPage() {
   const navigate = useNavigate();
   const confirmBeta = useServerFn(confirmBetaAccess);
   const simulate = useServerFn(simulatePayment);
+  const fetchDiag = useServerFn(getDiagnostico);
 
   const [betaToken, setBetaToken] = React.useState<string | null>(null);
+  const [tipoUsuario, setTipoUsuario] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState<string | null>(null);
   const [showPaymentSoon, setShowPaymentSoon] = React.useState(false);
@@ -61,6 +63,21 @@ function PaywallPage() {
     }
   }, []);
 
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const row = (await fetchDiag({ data: { id } })) as { tipo_usuario?: string } | null;
+        if (!cancelled && row?.tipo_usuario) setTipoUsuario(row.tipo_usuario);
+      } catch (e) {
+        console.error("[paywall] getDiagnostico error:", e);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [id, fetchDiag]);
+
+  const esBeta = !!betaToken || tipoUsuario === "beta_gratuito";
+
   const basePlan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
   const proPrice = state.plan === "anual" ? getProPrice(state.respuestas?.pais, state.respuestas?.paisOtro) : null;
   const plan = proPrice ? { ...basePlan, ...proPrice } : basePlan;
@@ -72,13 +89,15 @@ function PaywallPage() {
       typeof window !== "undefined"
         ? window.localStorage.getItem("payrank.betaToken")
         : null;
-    if (!token) {
+    if (!token && tipoUsuario !== "beta_gratuito") {
       setShowPaymentSoon(true);
       return;
     }
     setBusy(true);
     try {
-      await confirmBeta({ data: { id, token } });
+      if (token) {
+        await confirmBeta({ data: { id, token } });
+      }
       await navigate({ to: "/diagnostico/procesando", search: { id } });
     } catch (e) {
       console.error("[paywall] confirmBeta error:", e);
@@ -86,6 +105,7 @@ function PaywallPage() {
       setBusy(false);
     }
   };
+
 
   const onSimulate = async () => {
     setBusy(true);
@@ -193,7 +213,7 @@ function PaywallPage() {
               )}
             </div>
 
-            {betaToken && (
+            {esBeta && (
               <div className="border p-4 mb-4" style={{ borderColor: "#2E4A6E" }}>
                 <p className="font-body text-sm text-hueso/90 leading-relaxed">
                   Estás usando un acceso beta gratuito. Tu PayRank se generará sin costo.
@@ -209,13 +229,13 @@ function PaywallPage() {
             >
               {busy
                 ? "GENERANDO…"
-                : betaToken
-                  ? "GENERAR MI PAYRANK"
+                : esBeta
+                  ? "OBTENER MI PAYRANK"
                   : `PAGAR Y VER MI PAYRANK · ${plan.precio}`}
               <span aria-hidden>→</span>
             </button>
 
-            {showPaymentSoon && !betaToken && (
+            {showPaymentSoon && !esBeta && (
               <div className="mt-4 border border-hueso/25 p-4">
                 <p className="font-body text-sm text-hueso/90 leading-relaxed">
                   Pagos con tarjeta disponibles próximamente. Para acceso anticipado escribinos a{" "}
