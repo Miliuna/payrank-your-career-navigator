@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
-import { confirmBetaAccess, simulatePayment, getDiagnostico } from "@/lib/diagnostico/diagnostico.functions";
+import { simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 import type { Plan } from "@/lib/diagnostico/types";
 
 const searchSchema = z.object({ id: z.string().uuid() });
