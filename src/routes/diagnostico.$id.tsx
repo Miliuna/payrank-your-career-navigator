@@ -764,6 +764,10 @@ function ResultadoPage() {
         </section>
       </main>
 
+      <div id="payrank-pdf-cta">
+        <DownloadPdfButton targetId="payrank-report" diagId={String(row.id ?? "")} />
+      </div>
+
     </div>
   );
 }
