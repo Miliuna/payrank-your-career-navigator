@@ -216,13 +216,10 @@ function PaywallPage() {
               disabled={busy}
               className="w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
             >
-              {busy
-                ? "GENERANDO…"
-                : esBeta
-                  ? "OBTENER MI PAYRANK"
-                  : `PAGAR Y VER MI PAYRANK · ${plan.precio}`}
+              {busy ? "GENERANDO…" : "OBTENER MI PAYRANK"}
               <span aria-hidden>→</span>
             </button>
+
 
             {showPaymentSoon && !esBeta && (
               <div className="mt-4 border border-hueso/25 p-4">
