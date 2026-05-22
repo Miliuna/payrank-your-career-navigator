@@ -268,7 +268,7 @@ function ResultadoPage() {
         </div>
       </header>
 
-      <main>
+      <main id="payrank-report">
         <Band theme="light">
 
         {/* SECCIÓN 1 */}
