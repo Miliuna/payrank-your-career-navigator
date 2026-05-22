@@ -45,38 +45,14 @@ function PaywallPage() {
   const { id } = Route.useSearch();
   const { state, setState } = useDiagnostico();
   const navigate = useNavigate();
-  const confirmBeta = useServerFn(confirmBetaAccess);
   const simulate = useServerFn(simulatePayment);
-  const fetchDiag = useServerFn(getDiagnostico);
 
-  const [betaToken, setBetaToken] = React.useState<string | null>(null);
-  const [tipoUsuario, setTipoUsuario] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState<string | null>(null);
-  const [showPaymentSoon, setShowPaymentSoon] = React.useState(false);
   const [referido, setReferido] = React.useState("");
   const [referidoEstado, setReferidoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      setBetaToken(window.localStorage.getItem("payrank.betaToken"));
-    }
-  }, []);
 
-  React.useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const row = (await fetchDiag({ data: { id } })) as { tipo_usuario?: string } | null;
-        if (!cancelled && row?.tipo_usuario) setTipoUsuario(row.tipo_usuario);
-      } catch (e) {
-        console.error("[paywall] getDiagnostico error:", e);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [id, fetchDiag]);
-
-  const esBeta = !!betaToken || tipoUsuario === "beta_gratuito";
 
   const basePlan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
   const proPrice = state.plan === "anual" ? getProPrice(state.respuestas?.pais, state.respuestas?.paisOtro) : null;
