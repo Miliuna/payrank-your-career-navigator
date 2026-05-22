@@ -245,15 +245,18 @@ function ResultadoPage() {
   const fl = (res.freelance as R) ?? {};
 
   return (
-    <div className="min-h-screen bg-tinta text-hueso">
-      <header className="border-b border-hueso/10">
+    <div className="min-h-screen bg-white">
+      <ThemeStyles />
+      <header className="theme-dark bg-[#0C0C0C] border-b border-hueso/10">
         <div className="mx-auto max-w-4xl px-5 md:px-8 h-16 flex items-center justify-between">
           <Logo />
           <span className="font-ui text-[10px] text-hueso/50">PayRank · resultado</span>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-5 md:px-8 py-12 md:py-20 space-y-20">
+      <main>
+        <Band theme="light">
+
         {/* SECCIÓN 1 */}
         <Section>
           <Eyebrow>01 · TU PERFIL</Eyebrow>
