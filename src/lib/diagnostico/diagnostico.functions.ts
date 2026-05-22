@@ -227,21 +227,43 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
 }
 
 function tryParseJson(text: string): unknown | null {
-  // 1) Limpiar fences markdown ```json ... ```
   let cleaned = text.trim();
-  const fence = cleaned.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+  // 1) Fence markdown ```json ... ``` en cualquier posición (no anclado a fin)
+  const fence = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/i);
   if (fence) cleaned = fence[1].trim();
   try {
     return JSON.parse(cleaned);
-  } catch {
-    // 2) intentar extraer el bloque {...} más largo
-    const first = cleaned.indexOf("{");
+  } catch { /* noop */ }
+  // 2) Extraer primer objeto JSON balanceado, ignorando llaves dentro de strings
+  const first = cleaned.indexOf("{");
+  if (first !== -1) {
+    let depth = 0;
+    let inStr = false;
+    let esc = false;
+    for (let i = first; i < cleaned.length; i++) {
+      const c = cleaned[i];
+      if (inStr) {
+        if (esc) { esc = false; continue; }
+        if (c === "\\") { esc = true; continue; }
+        if (c === '"') inStr = false;
+        continue;
+      }
+      if (c === '"') { inStr = true; continue; }
+      if (c === "{") depth++;
+      else if (c === "}") {
+        depth--;
+        if (depth === 0) {
+          try { return JSON.parse(cleaned.slice(first, i + 1)); } catch { return null; }
+        }
+      }
+    }
+    // 3) Último intento: slice ingenuo first..last
     const last = cleaned.lastIndexOf("}");
-    if (first !== -1 && last > first) {
+    if (last > first) {
       try { return JSON.parse(cleaned.slice(first, last + 1)); } catch { /* noop */ }
     }
-    return null;
   }
+  return null;
 }
 
 // ---------- Tipo de cambio ----------
