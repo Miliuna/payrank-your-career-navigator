@@ -769,6 +769,11 @@ function ResultadoPage() {
         <DownloadPdfButton targetId="payrank-report" diagId={String(row.id ?? "")} />
       </div>
 
+      <ReportFooterActions
+        diagnosticoId={String(row.id ?? "")}
+        planElegido={(row.plan_elegido as string | null) ?? null}
+      />
+
     </div>
   );
 }
