@@ -154,8 +154,8 @@ export function ReportFooterActions({
 
         {/* Acciones */}
         <div className="flex flex-col items-center gap-4 pt-6 border-t" style={{ borderColor: "#E5E1DA" }}>
-          <Link
-            to={newPayrankHref}
+          <a
+            href={newPayrankHref}
             style={{
               background: "#1A2B45",
               color: "#F5F2ED",
@@ -169,7 +169,7 @@ export function ReportFooterActions({
             }}
           >
             {newPayrankLabel}
-          </Link>
+          </a>
 
           <Link
             to="/"
