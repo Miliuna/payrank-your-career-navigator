@@ -178,13 +178,6 @@ function PaywallPage() {
               )}
             </div>
 
-            {esBeta && (
-              <div className="border p-4 mb-4" style={{ borderColor: "#2E4A6E" }}>
-                <p className="font-body text-sm text-hueso/90 leading-relaxed">
-                  Estás usando un acceso beta gratuito. Tu PayRank se generará sin costo.
-                </p>
-              </div>
-            )}
 
             <button
               type="button"
