@@ -261,24 +261,34 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       return { id: record.id as string, link_unico: record.link_unico as string };
     }
 
-    const userPrompt = buildUserPrompt(record);
+    // Generación en 2 llamadas paralelas para evitar timeout upstream (≥60s).
+    const promptA = buildUserPromptPartA(record);
+    const promptB = buildUserPromptPartB(record);
 
-    let parsed: unknown | null = null;
-    let lastRaw = "";
-    for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
-      try {
-        lastRaw = await callAnthropic(SYSTEM_PROMPT, userPrompt);
-        parsed = tryParseJson(lastRaw);
-      } catch (e) {
-        console.error(`[generateDiagnostico] intento ${attempt + 1} falló:`, e);
+    async function genPart(prompt: string, label: string): Promise<Record<string, unknown>> {
+      let parsed: unknown | null = null;
+      let lastRaw = "";
+      for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
+        try {
+          lastRaw = await callAnthropic(SYSTEM_PROMPT, prompt);
+          parsed = tryParseJson(lastRaw);
+        } catch (e) {
+          console.error(`[generateDiagnostico:${label}] intento ${attempt + 1} falló:`, e);
+        }
       }
+      if (!parsed || typeof parsed !== "object") {
+        throw new Error(`Anthropic no devolvió JSON válido en ${label}. Raw: ${lastRaw.slice(0, 300)}`);
+      }
+      return parsed as Record<string, unknown>;
     }
 
-    if (!parsed) {
-      throw new Error(`Anthropic no devolvió JSON válido. Raw: ${lastRaw.slice(0, 300)}`);
-    }
+    const [partA, partB] = await Promise.all([
+      genPart(promptA, "parteA"),
+      genPart(promptB, "parteB"),
+    ]);
+    const parsed: Record<string, unknown> = { ...partA, ...partB };
 
-    const nivelConfianza = (parsed as Record<string, unknown>).nivel_confianza;
+    const nivelConfianza = (parsed.seccion_1 as Record<string, unknown> | undefined)?.nivel_confianza;
 
     const { error: upErr } = await supabaseAdmin
       .from("diagnosticos" as never)
