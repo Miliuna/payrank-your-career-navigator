@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
-import { confirmBetaAccess, simulatePayment, getDiagnostico } from "@/lib/diagnostico/diagnostico.functions";
+import { simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 import type { Plan } from "@/lib/diagnostico/types";
 
 const searchSchema = z.object({ id: z.string().uuid() });
@@ -45,38 +45,14 @@ function PaywallPage() {
   const { id } = Route.useSearch();
   const { state, setState } = useDiagnostico();
   const navigate = useNavigate();
-  const confirmBeta = useServerFn(confirmBetaAccess);
   const simulate = useServerFn(simulatePayment);
-  const fetchDiag = useServerFn(getDiagnostico);
 
-  const [betaToken, setBetaToken] = React.useState<string | null>(null);
-  const [tipoUsuario, setTipoUsuario] = React.useState<string | null>(null);
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState<string | null>(null);
-  const [showPaymentSoon, setShowPaymentSoon] = React.useState(false);
   const [referido, setReferido] = React.useState("");
   const [referidoEstado, setReferidoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      setBetaToken(window.localStorage.getItem("payrank.betaToken"));
-    }
-  }, []);
 
-  React.useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const row = (await fetchDiag({ data: { id } })) as { tipo_usuario?: string } | null;
-        if (!cancelled && row?.tipo_usuario) setTipoUsuario(row.tipo_usuario);
-      } catch (e) {
-        console.error("[paywall] getDiagnostico error:", e);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [id, fetchDiag]);
-
-  const esBeta = !!betaToken || tipoUsuario === "beta_gratuito";
 
   const basePlan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
   const proPrice = state.plan === "anual" ? getProPrice(state.respuestas?.pais, state.respuestas?.paisOtro) : null;
@@ -85,26 +61,15 @@ function PaywallPage() {
 
   const onPrimaryClick = async () => {
     setErr(null);
-    const token =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem("payrank.betaToken")
-        : null;
-    if (!token && tipoUsuario !== "beta_gratuito") {
-      setShowPaymentSoon(true);
-      return;
-    }
     setBusy(true);
     try {
-      if (token) {
-        await confirmBeta({ data: { id, token } });
-      }
       await navigate({ to: "/diagnostico/procesando", search: { id } });
     } catch (e) {
-      console.error("[paywall] confirmBeta error:", e);
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
   };
+
 
 
   const onSimulate = async () => {
@@ -213,13 +178,6 @@ function PaywallPage() {
               )}
             </div>
 
-            {esBeta && (
-              <div className="border p-4 mb-4" style={{ borderColor: "#2E4A6E" }}>
-                <p className="font-body text-sm text-hueso/90 leading-relaxed">
-                  Estás usando un acceso beta gratuito. Tu PayRank se generará sin costo.
-                </p>
-              </div>
-            )}
 
             <button
               type="button"
@@ -227,25 +185,11 @@ function PaywallPage() {
               disabled={busy}
               className="w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
             >
-              {busy
-                ? "GENERANDO…"
-                : esBeta
-                  ? "OBTENER MI PAYRANK"
-                  : `PAGAR Y VER MI PAYRANK · ${plan.precio}`}
+              {busy ? "GENERANDO…" : "OBTENER MI PAYRANK"}
               <span aria-hidden>→</span>
             </button>
 
-            {showPaymentSoon && !esBeta && (
-              <div className="mt-4 border border-hueso/25 p-4">
-                <p className="font-body text-sm text-hueso/90 leading-relaxed">
-                  Pagos con tarjeta disponibles próximamente. Para acceso anticipado escribinos a{" "}
-                  <a href="mailto:hello@payrank.co" className="underline underline-offset-4">
-                    hello@payrank.co
-                  </a>
-                  .
-                </p>
-              </div>
-            )}
+
 
             {err && <p className="mt-4 font-body text-xs text-red-300/90">{err}</p>}
           </div>

@@ -36,9 +36,15 @@ export function DiagnosticoShell({ step, totalSteps = 8, progress, children }: S
   );
 }
 
-export function StepFade({ children }: { children: React.ReactNode; k?: string | number }) {
+export function StepFade({ children, k }: { children: React.ReactNode; k: number | string }) {
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => {
+    setVisible(false);
+    const t = setTimeout(() => setVisible(true), 50);
+    return () => clearTimeout(t);
+  }, [k]);
   return (
-    <div className="transition-opacity duration-200 ease-in-out" style={{ opacity: 1 }}>
+    <div style={{ opacity: visible ? 1 : 0, transition: "opacity 150ms ease" }}>
       {children}
     </div>
   );

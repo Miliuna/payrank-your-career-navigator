@@ -38,7 +38,10 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     : "";
 
   return {
-    tipo_usuario: "pago",
+    // TEMPORAL: hardcodeado hasta que Stripe esté activo.
+    tipo_usuario: "beta_gratuito",
+    pago_confirmado: true,
+    monto_pagado_usd: 0,
     modo: input.modo ?? null,
     plan_elegido: input.plan ?? null,
     pais_rol: (pais as string) ?? null,
