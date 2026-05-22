@@ -433,7 +433,7 @@ Extraé estos campos si están presentes:
 - funciones_inferidas (array)
 - alcance_inferido
 - equipo_inferido
-- herramientas_ia_inferidas (array)
+- herramientas_ia_inferidas (array) — IMPORTANTE: incluir SOLO herramientas de IA generativa o machine learning de uso profesional. Ejemplos válidos: ChatGPT, Claude, Gemini, Copilot, GitHub Copilot, Midjourney, Perplexity, Notion AI, DALL-E, Stable Diffusion, Runway, Cursor, Whisper, ElevenLabs, Jasper, Synthesia. NUNCA incluir software de gestión, encuestas, BI, ERP, CRM o productividad aunque aparezcan en el CV (NO incluir: Qualtrics, SuccessFactors/SSFF, SAP, Workday, Slik, Salesforce, HubSpot, Excel, Power BI, Tableau, Looker, Google Analytics, Jira, Asana, Notion sin AI, Office, Slack). Si el CV no menciona ninguna herramienta de IA generativa o ML, devolver array vacío [].
 - salario_actual_inferido
 - moneda_inferida
 - tipo_salario_inferido (bruto/neto)
