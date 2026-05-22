@@ -85,26 +85,15 @@ function PaywallPage() {
 
   const onPrimaryClick = async () => {
     setErr(null);
-    const token =
-      typeof window !== "undefined"
-        ? window.localStorage.getItem("payrank.betaToken")
-        : null;
-    if (!token && tipoUsuario !== "beta_gratuito") {
-      setShowPaymentSoon(true);
-      return;
-    }
     setBusy(true);
     try {
-      if (token) {
-        await confirmBeta({ data: { id, token } });
-      }
       await navigate({ to: "/diagnostico/procesando", search: { id } });
     } catch (e) {
-      console.error("[paywall] confirmBeta error:", e);
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
   };
+
 
 
   const onSimulate = async () => {
