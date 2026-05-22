@@ -503,10 +503,11 @@ function ResultadoPage() {
             </div>
           </div>
         </Section>
+        </Band>
 
-        <Divider />
-
+        <Band theme="light">
         {/* SECCIÓN 6 */}
+
         <Section>
           <Eyebrow>06 · SCRIPTS DE NEGOCIACIÓN</Eyebrow>
           <H2>Las palabras exactas</H2>
