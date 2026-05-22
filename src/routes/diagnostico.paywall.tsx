@@ -68,19 +68,18 @@ function PaywallPage() {
 
   const onPrimaryClick = async () => {
     setErr(null);
-    // Fallback: re-leer localStorage al click por si el useEffect no se disparó aún.
-    const tokenAtClick =
-      betaToken ?? (typeof window !== "undefined"
+    const token =
+      typeof window !== "undefined"
         ? window.localStorage.getItem("payrank.betaToken")
-        : null);
-    if (!tokenAtClick) {
+        : null;
+    if (!token) {
       setShowPaymentSoon(true);
       return;
     }
     setBusy(true);
     try {
-      await confirmBeta({ data: { id, token: tokenAtClick } });
-      navigate({ to: "/diagnostico/procesando", search: { id } });
+      await confirmBeta({ data: { id, token } });
+      await navigate({ to: "/diagnostico/procesando", search: { id } });
     } catch (e) {
       console.error("[paywall] confirmBeta error:", e);
       setErr(e instanceof Error ? e.message : "Error desconocido");
