@@ -213,7 +213,7 @@ function PaywallPage() {
               )}
             </div>
 
-            {betaToken && (
+            {esBeta && (
               <div className="border p-4 mb-4" style={{ borderColor: "#2E4A6E" }}>
                 <p className="font-body text-sm text-hueso/90 leading-relaxed">
                   Estás usando un acceso beta gratuito. Tu PayRank se generará sin costo.
@@ -229,13 +229,13 @@ function PaywallPage() {
             >
               {busy
                 ? "GENERANDO…"
-                : betaToken
-                  ? "GENERAR MI PAYRANK"
+                : esBeta
+                  ? "OBTENER MI PAYRANK"
                   : `PAGAR Y VER MI PAYRANK · ${plan.precio}`}
               <span aria-hidden>→</span>
             </button>
 
-            {showPaymentSoon && !betaToken && (
+            {showPaymentSoon && !esBeta && (
               <div className="mt-4 border border-hueso/25 p-4">
                 <p className="font-body text-sm text-hueso/90 leading-relaxed">
                   Pagos con tarjeta disponibles próximamente. Para acceso anticipado escribinos a{" "}
