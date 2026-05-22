@@ -244,7 +244,86 @@ function tryParseJson(text: string): unknown | null {
   }
 }
 
-// ---------- Generar diagnóstico ----------
+// ---------- Tipo de cambio ----------
+
+type TipoCambio = { moneda: string; valor: number; fuente: string; fecha: string };
+
+function detectCurrency(pais: string | null | undefined): { code: string | null; usdOnly: boolean } {
+  if (!pais) return { code: null, usdOnly: false };
+  const p = pais.toLowerCase();
+  if (p.includes("argentin")) return { code: "ARS", usdOnly: false };
+  if (p.includes("méxico") || p.includes("mexico")) return { code: "MXN", usdOnly: false };
+  if (p.includes("chile")) return { code: "CLP", usdOnly: false };
+  if (p.includes("colombia")) return { code: "COP", usdOnly: false };
+  if (
+    p === "usa" || p === "eeuu" || p.includes("estados unidos") ||
+    p.includes("united states") || p.includes("ee.uu")
+  ) return { code: "USD", usdOnly: true };
+  if (p === "uk" || p.includes("united kingdom") || p.includes("reino unido")) return { code: "GBP", usdOnly: true };
+  if (p.includes("australia")) return { code: "AUD", usdOnly: true };
+  if (p.includes("canad")) return { code: "CAD", usdOnly: true };
+  return { code: null, usdOnly: false };
+}
+
+const FUENTE_FX: Record<string, string> = {
+  ARS: "BCRA (Banco Nación)",
+  MXN: "Banxico",
+  CLP: "Banco Central de Chile",
+  COP: "Banco de la República",
+};
+
+async function fetchFxRate(currency: string): Promise<TipoCambio | null> {
+  const now = new Date().toISOString();
+  try {
+    if (currency === "ARS") {
+      const r = await fetch("https://dolarapi.com/v1/dolares/oficial");
+      if (r.ok) {
+        const j = (await r.json()) as { venta?: number };
+        const valor = Number(j.venta);
+        if (isFinite(valor) && valor > 0) {
+          return { moneda: "ARS", valor, fuente: FUENTE_FX.ARS, fecha: now };
+        }
+      }
+    } else {
+      const r = await fetch("https://open.er-api.com/v6/latest/USD");
+      if (r.ok) {
+        const j = (await r.json()) as { rates?: Record<string, number> };
+        const valor = Number(j?.rates?.[currency]);
+        if (isFinite(valor) && valor > 0) {
+          return { moneda: currency, valor, fuente: FUENTE_FX[currency] ?? "exchangerate-api.com", fecha: now };
+        }
+      }
+    }
+  } catch (e) {
+    console.error("[fetchFxRate] error:", e);
+  }
+  // Fallback: último valor guardado para misma moneda
+  try {
+    const { data } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .select("tipo_cambio_utilizado, created_at")
+      .not("tipo_cambio_utilizado", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (Array.isArray(data)) {
+      for (const r of data as Array<{ tipo_cambio_utilizado: Partial<TipoCambio> | null }>) {
+        const tc = r.tipo_cambio_utilizado;
+        if (tc && tc.moneda === currency && typeof tc.valor === "number") {
+          return {
+            moneda: currency,
+            valor: tc.valor,
+            fuente: (tc.fuente ?? FUENTE_FX[currency] ?? "valor anterior") + " (último disponible)",
+            fecha: tc.fecha ?? "",
+          };
+        }
+      }
+    }
+  } catch (e) {
+    console.error("[fetchFxRate] fallback error:", e);
+  }
+  return null;
+}
+
 
 export const generateDiagnostico = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
@@ -270,6 +349,11 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     const promptA = buildUserPromptPartA(record);
     const promptB = buildUserPromptPartB(record);
 
+    // Tipo de cambio (en paralelo con la generación)
+    const { code: currency, usdOnly } = detectCurrency(record.pais_rol as string | null);
+    const fxPromise: Promise<TipoCambio | null> =
+      currency && !usdOnly ? fetchFxRate(currency) : Promise.resolve(null);
+
     async function genPart(prompt: string, label: string): Promise<Record<string, unknown>> {
       let parsed: unknown | null = null;
       let lastRaw = "";
@@ -287,9 +371,10 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       return parsed as Record<string, unknown>;
     }
 
-    const [partA, partB] = await Promise.all([
+    const [partA, partB, tipoCambio] = await Promise.all([
       genPart(promptA, "parteA"),
       genPart(promptB, "parteB"),
+      fxPromise,
     ]);
     const parsed: Record<string, unknown> = { ...partA, ...partB };
 
@@ -300,9 +385,11 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       .update({
         resultado_json: parsed,
         nivel_confianza: typeof nivelConfianza === "string" ? nivelConfianza : null,
+        tipo_cambio_utilizado: tipoCambio,
       } as never)
       .eq("id", data.id);
     if (upErr) throw new Error(upErr.message);
+
 
     return { id: record.id as string, link_unico: record.link_unico as string };
   });
