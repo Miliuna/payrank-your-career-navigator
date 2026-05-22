@@ -131,6 +131,12 @@ function TerminosCondiciones() {
               "No reproducir ni comercializar los reportes generados sin autorización expresa.",
             ]}
           />
+          <P>
+            <strong className="font-normal text-tinta">Uso personal exclusivamente.</strong> El
+            diagnóstico generado por PayRank está destinado al uso personal del usuario. Está
+            prohibido el uso corporativo o la utilización del reporte para la prestación de
+            servicios profesionales a terceros sin autorización expresa de PayRank LLC.
+          </P>
 
           <SectionTitle>7 — Propiedad intelectual</SectionTitle>
           <P>
