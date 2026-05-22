@@ -200,25 +200,63 @@ export type Database = {
         }
         Relationships: []
       }
-      nps_responses: {
+      followup_responses: {
         Row: {
           created_at: string
+          dia: number
           diagnostico_id: string | null
-          feedback: string | null
+          id: string
+          resultado: string | null
+          tuvo_conversacion: boolean | null
+          utilidad_score: number | null
+        }
+        Insert: {
+          created_at?: string
+          dia: number
+          diagnostico_id?: string | null
+          id?: string
+          resultado?: string | null
+          tuvo_conversacion?: boolean | null
+          utilidad_score?: number | null
+        }
+        Update: {
+          created_at?: string
+          dia?: number
+          diagnostico_id?: string | null
+          id?: string
+          resultado?: string | null
+          tuvo_conversacion?: boolean | null
+          utilidad_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "followup_responses_diagnostico_id_fkey"
+            columns: ["diagnostico_id"]
+            isOneToOne: false
+            referencedRelation: "diagnosticos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nps_responses: {
+        Row: {
+          comentario: string | null
+          created_at: string
+          diagnostico_id: string | null
           id: string
           score: number
         }
         Insert: {
+          comentario?: string | null
           created_at?: string
           diagnostico_id?: string | null
-          feedback?: string | null
           id?: string
           score: number
         }
         Update: {
+          comentario?: string | null
           created_at?: string
           diagnostico_id?: string | null
-          feedback?: string | null
           id?: string
           score?: number
         }
