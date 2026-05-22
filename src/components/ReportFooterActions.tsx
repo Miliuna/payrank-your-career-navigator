@@ -103,7 +103,7 @@ export function ReportFooterActions({
 
               {score !== null && (
                 <div className="space-y-3">
-                  <label className="block text-sm" style={{ color: "#0C0C0C" }}>
+                  <label htmlFor="nps-feedback" className="block text-sm" style={{ color: "#0C0C0C" }}>
                     ¿Qué fue lo más valioso de tu PayRank?
                   </label>
                   <textarea
