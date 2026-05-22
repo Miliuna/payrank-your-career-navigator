@@ -200,6 +200,38 @@ export type Database = {
         }
         Relationships: []
       }
+      nps_responses: {
+        Row: {
+          created_at: string
+          diagnostico_id: string | null
+          feedback: string | null
+          id: string
+          score: number
+        }
+        Insert: {
+          created_at?: string
+          diagnostico_id?: string | null
+          feedback?: string | null
+          id?: string
+          score: number
+        }
+        Update: {
+          created_at?: string
+          diagnostico_id?: string | null
+          feedback?: string | null
+          id?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nps_responses_diagnostico_id_fkey"
+            columns: ["diagnostico_id"]
+            isOneToOne: false
+            referencedRelation: "diagnosticos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
