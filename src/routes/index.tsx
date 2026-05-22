@@ -46,11 +46,11 @@ const planes = [
   },
   {
     nombre: "PRO",
-    precio: "USD 99",
+    precio: "USD 149",
     sufijo: "/año",
     italic: "Para quien quiere que PayRank lo acompañe.",
     descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
+      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.\n\nUSD 199/año en USA, UK, Australia y Canadá.",
     cta: "EMPEZAR CON PRO",
     plan: "anual" as const,
     destacada: false,
