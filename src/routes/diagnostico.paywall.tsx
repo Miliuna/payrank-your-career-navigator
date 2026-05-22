@@ -68,16 +68,21 @@ function PaywallPage() {
 
   const onPrimaryClick = async () => {
     setErr(null);
-    if (!betaToken) {
+    // Fallback: re-leer localStorage al click por si el useEffect no se disparó aún.
+    const tokenAtClick =
+      betaToken ?? (typeof window !== "undefined"
+        ? window.localStorage.getItem("payrank.betaToken")
+        : null);
+    if (!tokenAtClick) {
       setShowPaymentSoon(true);
       return;
     }
     setBusy(true);
     try {
-      // confirmBetaAccess: valida token, marca pago_confirmado=true y consume el token
-      await confirmBeta({ data: { id, token: betaToken } });
+      await confirmBeta({ data: { id, token: tokenAtClick } });
       navigate({ to: "/diagnostico/procesando", search: { id } });
     } catch (e) {
+      console.error("[paywall] confirmBeta error:", e);
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
