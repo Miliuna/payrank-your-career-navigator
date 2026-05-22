@@ -29,7 +29,7 @@ export function ReportFooterActions({
     const { error: err } = await supabase.from("nps_responses").insert({
       diagnostico_id: diagnosticoId || null,
       score,
-      feedback: feedback.trim() || null,
+      comentario: feedback.trim() || null,
     });
     setSending(false);
     if (err) {
