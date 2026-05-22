@@ -318,24 +318,81 @@ function ResultadoPage() {
 
           <P>{str(s2.diagnostico_especifico)}</P>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <Card>
-              <Eyebrow>RANGO LOCAL · {str(s2.moneda_local)}</Eyebrow>
-              <KV k="P25" v={str(s2.p25_local)} />
-              <KV k="P50" v={str(s2.p50_local)} />
-              <KV k="P75" v={str(s2.p75_local)} />
-              <KV k="P90" v={str(s2.p90_local)} />
-              <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
-            </Card>
-            <Card>
-              <Eyebrow>RANGO USD</Eyebrow>
-              <KV k="P25" v={str(s2.p25_usd)} />
-              <KV k="P50" v={str(s2.p50_usd)} />
-              <KV k="P75" v={str(s2.p75_usd)} />
-              <KV k="P90" v={str(s2.p90_usd)} />
-              <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
-            </Card>
-          </div>
+          {(() => {
+            const pais = String(row.pais_rol ?? "").toLowerCase();
+            const usdOnly =
+              pais === "usa" || pais === "eeuu" ||
+              pais.includes("estados unidos") || pais.includes("united states") || pais.includes("ee.uu") ||
+              pais === "uk" || pais.includes("united kingdom") || pais.includes("reino unido") ||
+              pais.includes("australia") || pais.includes("canad");
+            const tc = (row.tipo_cambio_utilizado ?? null) as
+              | { moneda?: string; valor?: number; fuente?: string; fecha?: string }
+              | null;
+            const createdAt = row.created_at
+              ? new Date(String(row.created_at)).toLocaleDateString("es-AR", { year: "numeric", month: "long", day: "numeric" })
+              : "—";
+            const fxFecha = tc?.fecha
+              ? new Date(String(tc.fecha)).toLocaleDateString("es-AR", { year: "numeric", month: "long", day: "numeric" })
+              : createdAt;
+            const fuenteFull: Record<string, string> = {
+              ARS: "Dólar oficial (BNA — Banco Nación) · Fuente: BCRA",
+              MXN: "Peso mexicano oficial · Fuente: Banxico",
+              CLP: "Peso chileno oficial · Fuente: Banco Central de Chile",
+              COP: "Peso colombiano oficial · Fuente: Banco de la República",
+            };
+            const monedaLocal = tc?.moneda ?? (typeof s2.moneda_local === "string" ? s2.moneda_local : "");
+            const fxLabel = fuenteFull[monedaLocal] ?? (tc?.fuente ?? "");
+
+            if (usdOnly) {
+              return (
+                <Card>
+                  <Eyebrow>RANGO USD</Eyebrow>
+                  <KV k="P25" v={str(s2.p25_usd)} />
+                  <KV k="P50" v={str(s2.p50_usd)} />
+                  <KV k="P75" v={str(s2.p75_usd)} />
+                  <KV k="P90" v={str(s2.p90_usd)} />
+                  <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
+                </Card>
+              );
+            }
+
+            return (
+              <>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Card>
+                    <Eyebrow>RANGO EN MONEDA LOCAL · {str(s2.moneda_local)}</Eyebrow>
+                    <KV k="P25" v={str(s2.p25_local)} />
+                    <KV k="P50" v={str(s2.p50_local)} />
+                    <KV k="P75" v={str(s2.p75_local)} />
+                    <KV k="P90" v={str(s2.p90_local)} />
+                    <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
+                  </Card>
+                  <Card>
+                    <Eyebrow>RANGO EN USD</Eyebrow>
+                    <KV k="P25" v={str(s2.p25_usd)} />
+                    <KV k="P50" v={str(s2.p50_usd)} />
+                    <KV k="P75" v={str(s2.p75_usd)} />
+                    <KV k="P90" v={str(s2.p90_usd)} />
+                    <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
+                  </Card>
+                </div>
+                <p className="font-body text-xs text-hueso/55 leading-relaxed">
+                  Tipo de cambio utilizado: {fxLabel}
+                  {tc?.valor ? ` · 1 USD = ${tc.valor.toLocaleString("es-AR")} ${monedaLocal}` : ""}
+                  {" · Al: "}{fxFecha}
+                </p>
+                {monedaLocal === "ARS" && (
+                  <p className="font-body text-xs text-hueso/55 leading-relaxed mt-2">
+                    En Argentina existen múltiples tipos de cambio (oficial, MEP, CCL, informal).
+                    Este reporte usa el tipo de cambio oficial BNA porque los salarios formales en
+                    relación de dependencia se liquidan en pesos a ese tipo. Si tu empresa liquida
+                    a otro tipo, ajustá el valor de referencia proporcionalmente.
+                  </p>
+                )}
+              </>
+            );
+          })()}
+
 
           <Card>
             <KV k="SBTA usuario" v={str(s2.sbta_usuario)} />
