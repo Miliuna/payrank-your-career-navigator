@@ -1,3 +1,5 @@
+import { Link } from "@tanstack/react-router";
+
 export function SiteFooter() {
   return (
     <footer style={{ backgroundColor: "#0C0C0C", color: "#C4BFB8" }}>
@@ -14,13 +16,13 @@ export function SiteFooter() {
         >
           <div className="font-ui">
             © 2026 PayRank LLC ·{" "}
-            <a href="/politica-privacidad" className="hover:opacity-80 transition-opacity">
+            <Link to="/politica-privacidad" className="hover:opacity-80 transition-opacity">
               Política de Privacidad
-            </a>{" "}
+            </Link>{" "}
             ·{" "}
-            <a href="/terminos-condiciones" className="hover:opacity-80 transition-opacity">
+            <Link to="/terminos-condiciones" className="hover:opacity-80 transition-opacity">
               Términos
-            </a>
+            </Link>
           </div>
           <div className="font-ui md:text-right">
             <div>Professional Intelligence · Tu valor en el mercado</div>

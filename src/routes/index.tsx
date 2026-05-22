@@ -50,7 +50,7 @@ const planes = [
     sufijo: "/año",
     italic: "Para quien quiere que PayRank lo acompañe.",
     descripcion:
-      "PayRank ilimitados durante 12 meses. Más alertas cuando tu mercado se mueva — para que nunca negocies con información vieja.",
+      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
     cta: "EMPEZAR CON PRO",
     plan: "anual" as const,
     destacada: false,
@@ -91,7 +91,7 @@ function Landing() {
             to="/modo"
             className="inline-flex items-center gap-3 bg-hueso text-tinta px-8 py-4 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
           >
-            HACER MI PAYRANK
+            OBTENER MI PAYRANK
             <span aria-hidden>→</span>
           </Link>
 
@@ -210,7 +210,7 @@ function Landing() {
               to="/modo"
               className="inline-flex items-center gap-3 bg-tinta text-hueso px-8 py-4 font-ui text-[11px] hover:bg-tinta/90 transition-colors"
             >
-              HACER MI PAYRANK
+              OBTENER MI PAYRANK
               <span aria-hidden>→</span>
             </Link>
           </div>
@@ -260,7 +260,7 @@ function Landing() {
       {/* Social proof */}
       <section className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
         <div className="mx-auto max-w-4xl text-center">
-          <p className="font-display text-5xl md:text-7xl mb-4" style={{ color: "#1A2B45" }}>+500</p>
+          <p className="font-display text-5xl md:text-7xl mb-4" style={{ color: "#1A2B45" }}>+1.200</p>
           <p className="font-ui text-[11px] uppercase tracking-widest mb-6 max-w-lg mx-auto" style={{ color: "#5A5550" }}>
             PROFESIONALES EN LATAM YA SABEN EXACTAMENTE CUÁNTO VALE SU PERFIL EN EL MERCADO
           </p>
@@ -271,7 +271,7 @@ function Landing() {
             to="/modo"
             className="inline-flex items-center gap-3 bg-tinta text-hueso px-8 py-4 font-ui text-[11px] hover:bg-tinta/90 transition-colors"
           >
-            HACER MI PAYRANK
+            OBTENER MI PAYRANK
             <span aria-hidden>→</span>
           </Link>
         </div>
@@ -364,7 +364,7 @@ function Landing() {
                     <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>
                     <td className="py-4 px-4">1</td>
                     <td className="py-4 px-4">3</td>
-                    <td className="py-4 px-4">Ilimitados por 12 meses</td>
+                    <td className="py-4 px-4">Hasta 12 por año (1 por mes)</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">Análisis completo</td>
@@ -374,9 +374,9 @@ function Landing() {
                   </tr>
                   <tr>
                     <td className="py-4 pr-4 text-hueso/70">Alertas cuando tu mercado se mueve</td>
-                    <td className="py-4 px-4 text-hueso/70">—</td>
-                    <td className="py-4 px-4 text-hueso/70">—</td>
-                    <td className="py-4 px-4">✓</td>
+                    <td className="py-4 px-4">Email</td>
+                    <td className="py-4 px-4">Email + 1 update gratis</td>
+                    <td className="py-4 px-4">Update automática</td>
                   </tr>
                 </tbody>
               </table>
