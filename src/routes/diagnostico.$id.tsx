@@ -244,6 +244,19 @@ function ResultadoPage() {
           <H2>Cuánto valés hoy en el mercado</H2>
 
           <p className="font-display text-3xl md:text-4xl text-hueso">{str(s2.rango_texto)}</p>
+
+          {(() => {
+            const p25 = parseNum(s2.p25_usd);
+            const p50 = parseNum(s2.p50_usd);
+            const p75 = parseNum(s2.p75_usd);
+            const p90 = parseNum(s2.p90_usd);
+            const sal = parseNum(s2.salario_actual_usd);
+            if (p25 && p50 && p75 && p90) {
+              return <PercentilesChart p25={p25} p50={p50} p75={p75} p90={p90} salario={sal} />;
+            }
+            return null;
+          })()}
+
           <P>{str(s2.porcentaje_gana_mas)}</P>
 
           <div className="flex items-center gap-3 flex-wrap">
