@@ -29,7 +29,7 @@ export function ReportFooterActions({
     const { error: err } = await supabase.from("nps_responses").insert({
       diagnostico_id: diagnosticoId || null,
       score,
-      feedback: feedback.trim() || null,
+      comentario: feedback.trim() || null,
     });
     setSending(false);
     if (err) {
@@ -103,7 +103,7 @@ export function ReportFooterActions({
 
               {score !== null && (
                 <div className="space-y-3">
-                  <label className="block text-sm" style={{ color: "#0C0C0C" }}>
+                  <label htmlFor="nps-feedback" className="block text-sm" style={{ color: "#0C0C0C" }}>
                     ¿Qué fue lo más valioso de tu PayRank?
                   </label>
                   <textarea
