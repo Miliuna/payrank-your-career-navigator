@@ -61,7 +61,9 @@ function PaywallPage() {
     }
   }, []);
 
-  const plan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
+  const basePlan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
+  const proPrice = state.plan === "anual" ? getProPrice(state.respuestas?.pais, state.respuestas?.paisOtro) : null;
+  const plan = proPrice ? { ...basePlan, ...proPrice } : basePlan;
   const isDev = import.meta.env.DEV;
 
   const onPrimaryClick = async () => {
