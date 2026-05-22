@@ -2,15 +2,15 @@
 // Limita tokens enviados a Anthropic para no superar el rate limit de Tier 1.
 
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+// Vite resuelve la URL del worker correctamente con `?url`.
+import workerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 
-// Desactivar worker para simplificar (corre en main thread; ok para CVs cortos).
-(pdfjsLib as { GlobalWorkerOptions: { workerSrc: string } }).GlobalWorkerOptions.workerSrc = "";
+(pdfjsLib as { GlobalWorkerOptions: { workerSrc: string } }).GlobalWorkerOptions.workerSrc = workerUrl;
 
 export async function extractPdfText(file: File): Promise<string> {
   const buf = await file.arrayBuffer();
   const loadingTask = pdfjsLib.getDocument({
     data: new Uint8Array(buf),
-    disableWorker: true,
     isEvalSupported: false,
     useSystemFonts: true,
   } as unknown as Parameters<typeof pdfjsLib.getDocument>[0]);
