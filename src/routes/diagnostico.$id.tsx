@@ -276,10 +276,11 @@ function ResultadoPage() {
           )}
 
         </Section>
+        </Band>
 
-        <Divider />
-
+        <Band theme="dark">
         {/* SECCIÓN 2 */}
+
         <Section>
           <Eyebrow>02 · EL NÚMERO</Eyebrow>
           <H2>Cuánto valés hoy en el mercado</H2>
