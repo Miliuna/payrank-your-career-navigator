@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getDiagnostico } from "@/lib/diagnostico/diagnostico.functions";
 import { Logo } from "@/components/Logo";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
+import { ReportFooterActions } from "@/components/ReportFooterActions";
 
 export const Route = createFileRoute("/diagnostico/$id")({
   head: () => ({ meta: [{ title: "Tu PayRank — PayRank" }] }),
@@ -767,6 +768,11 @@ function ResultadoPage() {
       <div id="payrank-pdf-cta">
         <DownloadPdfButton targetId="payrank-report" diagId={String(row.id ?? "")} />
       </div>
+
+      <ReportFooterActions
+        diagnosticoId={String(row.id ?? "")}
+        planElegido={(row.plan_elegido as string | null) ?? null}
+      />
 
     </div>
   );
