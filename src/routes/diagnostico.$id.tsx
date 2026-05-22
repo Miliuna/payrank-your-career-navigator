@@ -84,6 +84,19 @@ const ThemeStyles = () => (
     .theme-light table thead th { color: #F5F2ED !important; }
     .theme-light table tbody tr { background: #FFFFFF; border-color: #E5E1DA !important; }
     .theme-light table tbody tr:nth-child(even) { background: #F7F4F0; }
+
+    /* PDF export: force every band to light palette */
+    body.pdf-export .theme-dark,
+    body.pdf-export .bg-\\[\\#0C0C0C\\] { background: #FFFFFF !important; color: #0C0C0C !important; }
+    body.pdf-export .theme-dark h2, body.pdf-export .theme-dark .font-display { color: #1A2B45 !important; }
+    body.pdf-export .theme-dark .eyebrow { color: #2E4A6E !important; }
+    body.pdf-export .theme-dark, body.pdf-export .theme-dark * { color: #0C0C0C !important; border-color: #E5E1DA !important; }
+    body.pdf-export .theme-dark h2, body.pdf-export .theme-dark .font-display { color: #1A2B45 !important; }
+    body.pdf-export .theme-dark .eyebrow { color: #2E4A6E !important; }
+    body.pdf-export .theme-dark table thead tr { background: #1A2B45 !important; }
+    body.pdf-export .theme-dark table thead th { color: #F5F2ED !important; }
+    body.pdf-export .theme-dark .card-alert { background: #F0EDE8 !important; border: 0 !important; border-left: 3px solid #2E4A6E !important; }
+    body.pdf-export #payrank-pdf-cta { display: none !important; }
   `}</style>
 );
 
