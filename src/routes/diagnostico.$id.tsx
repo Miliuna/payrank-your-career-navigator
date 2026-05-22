@@ -461,10 +461,11 @@ function ResultadoPage() {
             <P muted>{str(s4.mensaje_si_hombre)}</P>
           </Card>
         )}
+        </Band>
 
-        <Divider />
-
+        <Band theme="dark">
         {/* SECCIÓN 5 */}
+
         <Section>
           <Eyebrow>05 · CUÁNTO PEDIR</Eyebrow>
           <H2>Tu pretensión salarial</H2>
