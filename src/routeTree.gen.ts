@@ -14,6 +14,7 @@ import { Route as PoliticaPrivacidadRouteImport } from './routes/politica-privac
 import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RefCodigoRouteImport } from './routes/ref.$codigo'
 import { Route as DiagnosticoUploadRouteImport } from './routes/diagnostico.upload'
 import { Route as DiagnosticoProcesandoRouteImport } from './routes/diagnostico.procesando'
 import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.preguntas'
@@ -47,6 +48,11 @@ const MetodologiaRoute = MetodologiaRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefCodigoRoute = RefCodigoRouteImport.update({
+  id: '/ref/$codigo',
+  path: '/ref/$codigo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiagnosticoUploadRoute = DiagnosticoUploadRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
+  '/ref/$codigo': typeof RefCodigoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
+  '/ref/$codigo': typeof RefCodigoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
+  '/ref/$codigo': typeof RefCodigoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -162,6 +171,7 @@ export interface FileRouteTypes {
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
     | '/diagnostico/upload'
+    | '/ref/$codigo'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
     | '/diagnostico/upload'
+    | '/ref/$codigo'
   id:
     | '__root__'
     | '/'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
     | '/diagnostico/upload'
+    | '/ref/$codigo'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -211,6 +223,7 @@ export interface RootRouteChildren {
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
   DiagnosticoProcesandoRoute: typeof DiagnosticoProcesandoRoute
   DiagnosticoUploadRoute: typeof DiagnosticoUploadRoute
+  RefCodigoRoute: typeof RefCodigoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -248,6 +261,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ref/$codigo': {
+      id: '/ref/$codigo'
+      path: '/ref/$codigo'
+      fullPath: '/ref/$codigo'
+      preLoaderRoute: typeof RefCodigoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diagnostico/upload': {
@@ -331,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
   DiagnosticoProcesandoRoute: DiagnosticoProcesandoRoute,
   DiagnosticoUploadRoute: DiagnosticoUploadRoute,
+  RefCodigoRoute: RefCodigoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
