@@ -5,15 +5,31 @@ import { supabase } from "@/integrations/supabase/client";
 export function ReportFooterActions({
   diagnosticoId,
   planElegido,
+  linkUnico,
 }: {
   diagnosticoId: string;
   planElegido: string | null;
+  linkUnico?: string;
 }) {
   const [score, setScore] = React.useState<number | null>(null);
   const [feedback, setFeedback] = React.useState("");
   const [sending, setSending] = React.useState(false);
   const [sent, setSent] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [copied, setCopied] = React.useState(false);
+
+  const refCode = linkUnico ? linkUnico.replace(/-/g, "").slice(0, 8) : null;
+  const refLink = refCode
+    ? `${typeof window !== "undefined" ? window.location.origin : "https://payrank.app"}/ref/${refCode}`
+    : null;
+
+  const copyRefLink = () => {
+    if (!refLink) return;
+    navigator.clipboard.writeText(refLink).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const plan = (planElegido ?? "").toLowerCase();
   const isGo = plan === "go" || plan === "";
@@ -196,6 +212,54 @@ export function ReportFooterActions({
             </li>
           </ul>
         </div>
+
+        {/* Referidos */}
+        {refLink && (
+          <div className="pt-8 border-t" style={{ borderColor: "#E5E1DA" }}>
+            <p className="text-base font-semibold mb-2" style={{ color: "#1A2B45" }}>
+              Compartí tu PayRank.
+            </p>
+            <p className="text-sm mb-5" style={{ color: "#0C0C0C" }}>
+              Si tres personas hacen su PayRank con tu link, el próximo es tuyo — gratis.
+              Cada persona referida obtiene 15% de descuento en su primer PayRank.
+            </p>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span
+                className="text-sm font-mono px-3 py-2 select-all"
+                style={{
+                  background: "#F0EDE8",
+                  color: "#1A2B45",
+                  border: "1px solid #E5E1DA",
+                  borderRadius: 4,
+                  wordBreak: "break-all",
+                }}
+              >
+                {refLink}
+              </span>
+              <button
+                type="button"
+                onClick={copyRefLink}
+                style={{
+                  background: copied ? "#2E4A6E" : "#1A2B45",
+                  color: "#F5F2ED",
+                  fontFamily: "Arial, sans-serif",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  padding: "10px 20px",
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  border: "none",
+                  cursor: "pointer",
+                  borderRadius: 4,
+                  transition: "background 200ms",
+                  flexShrink: 0,
+                }}
+              >
+                {copied ? "¡Copiado!" : "Copiar link"}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

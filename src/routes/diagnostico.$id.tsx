@@ -790,6 +790,7 @@ function ResultadoPage() {
       <ReportFooterActions
         diagnosticoId={String(row.id ?? "")}
         planElegido={(row.plan_elegido as string | null) ?? null}
+        linkUnico={String(row.link_unico ?? "")}
       />
 
     </div>

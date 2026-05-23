@@ -384,6 +384,9 @@ function Landing() {
             <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
               La mayoría de quienes están en búsqueda activa o atravesando una negociación terminan necesitando más de un PayRank. El plan PLUS está diseñado para eso.
             </p>
+            <p className="font-body text-sm text-hueso/50 mt-4">
+              ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
+            </p>
           </div>
         </div>
       </section>

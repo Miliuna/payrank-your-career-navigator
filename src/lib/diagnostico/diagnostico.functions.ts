@@ -17,6 +17,7 @@ const createDiagnosticoSchema = z.object({
   documentos: z.record(z.string(), z.unknown()).optional(),
   betaToken: z.string().min(1).max(128).optional(),
   datosExtraidos: z.record(z.string(), z.unknown()).nullable().optional(),
+  codigoReferido: z.string().max(64).optional(),
 });
 
 function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
@@ -74,6 +75,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     inferencia_valuacion: (input.inferencia as object) ?? null,
     inferencia_validada: input.inferenciaValidada ?? false,
     datos_extraidos_documento: (input.datosExtraidos as object | null) ?? null,
+    referido_por: input.codigoReferido ?? null,
   };
 }
 

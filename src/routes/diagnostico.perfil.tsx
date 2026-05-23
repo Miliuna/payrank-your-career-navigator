@@ -22,10 +22,12 @@ function PerfilPage() {
 
   const isDev = import.meta.env.DEV;
   const [betaToken, setBetaToken] = React.useState<string | null>(null);
+  const [codigoReferido, setCodigoReferido] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       setBetaToken(window.localStorage.getItem("payrank.betaToken"));
+      setCodigoReferido(window.localStorage.getItem("payrank.codigoReferido"));
     }
   }, []);
 
@@ -44,8 +46,10 @@ function PerfilPage() {
           inferencia: state.inferencia,
           inferenciaValidada: state.inferenciaValidada,
           datosExtraidos: (state.datosExtraidos ?? null) as Record<string, unknown> | null,
+          codigoReferido: codigoReferido ?? undefined,
         },
       });
+      if (typeof window !== "undefined") window.localStorage.removeItem("payrank.codigoReferido");
       navigate({ to: "/diagnostico/consentimientos", search: { id: created.id } });
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Error desconocido");
@@ -66,8 +70,10 @@ function PerfilPage() {
           inferencia: state.inferencia,
           inferenciaValidada: state.inferenciaValidada,
           datosExtraidos: (state.datosExtraidos ?? null) as Record<string, unknown> | null,
+          codigoReferido: codigoReferido ?? undefined,
         },
       });
+      if (typeof window !== "undefined") window.localStorage.removeItem("payrank.codigoReferido");
       await simulate({ data: { id: created.id } });
       navigate({ to: "/diagnostico/procesando", search: { id: created.id } });
     } catch (e) {
