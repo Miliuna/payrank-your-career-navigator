@@ -362,7 +362,12 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
 
     const record = row as Record<string, unknown>;
     if (!record.pago_confirmado) {
-      throw new Error("El pago no está confirmado para este diagnóstico");
+      // BETA: diagnóstico creado antes del hardcode de pago_confirmado — marcarlo como confirmado.
+      const { error: payErr } = await supabaseAdmin
+        .from("diagnosticos" as never)
+        .update({ pago_confirmado: true } as never)
+        .eq("id", data.id);
+      if (payErr) throw new Error("El pago no está confirmado para este diagnóstico");
     }
 
     // Si ya fue generado, devolverlo tal cual (idempotencia)
@@ -440,7 +445,9 @@ type Json = string | number | boolean | null | { [k: string]: Json } | Json[];
 
 // ---------- Extracción de datos desde documento subido ----------
 
-const EXTRACT_SYSTEM = `Extraé todos los datos profesionales y de compensación que encuentres en este documento. Respondé ÚNICAMENTE con JSON válido sin texto adicional.`;
+const EXTRACT_SYSTEM = `Extraé datos profesionales y de compensación del documento siguiendo las instrucciones al pie de la letra. Respondé ÚNICAMENTE con JSON válido sin texto adicional.
+
+REGLA CRÍTICA — herramientas_ia_inferidas: incluir EXCLUSIVAMENTE herramientas de IA generativa o machine learning (ChatGPT, Claude, Gemini, Copilot, GitHub Copilot, Midjourney, Perplexity, Notion AI, DALL-E, Cursor, Whisper, ElevenLabs, Runway, Jasper, Synthesia, Stable Diffusion, etc.). NUNCA incluir software de gestión, encuestas, ERP, CRM, BI, HRIS ni productividad: Qualtrics, SuccessFactors, SAP, Workday, Slik, Salesforce, HubSpot, Excel, Power BI, Tableau, Looker, Google Analytics, Jira, Asana, Slack, Office, y similares NO son herramientas de IA. Si no hay herramientas de IA generativa, devolver [].`;
 
 const EXTRACT_USER_INSTRUCTIONS = `El documento puede estar truncado. Extraé toda la información disponible del fragmento recibido.
 

@@ -18,6 +18,7 @@ function ProcesandoPage() {
   const generate = useServerFn(generateDiagnostico);
   const [idx, setIdx] = React.useState(0);
   const [error, setError] = React.useState<string | null>(null);
+  const [retryCount, setRetryCount] = React.useState(0);
   const startedRef = React.useRef(false);
 
   const MENSAJES = React.useMemo(
@@ -50,7 +51,7 @@ function ProcesandoPage() {
         setError(e instanceof Error ? e.message : "Error desconocido");
       }
     })();
-  }, [generate, id, navigate]);
+  }, [generate, id, navigate, retryCount]);
 
   return (
     <div className="min-h-screen bg-tinta text-hueso flex flex-col">
@@ -93,7 +94,7 @@ function ProcesandoPage() {
             </p>
             <p className="mt-3 font-body text-xs text-hueso/40 max-w-lg whitespace-pre-wrap">{error}</p>
             <button
-              onClick={() => { startedRef.current = false; setError(null); setIdx(0); }}
+              onClick={() => { startedRef.current = false; setError(null); setIdx(0); setRetryCount((c) => c + 1); }}
               className="mt-6 inline-flex items-center justify-center bg-hueso text-tinta px-6 py-3 font-ui text-[11px]"
             >
               Reintentar

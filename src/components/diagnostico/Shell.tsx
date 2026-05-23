@@ -38,9 +38,13 @@ export function DiagnosticoShell({ step, totalSteps = 8, progress, children }: S
 
 export function StepFade({ children, k }: { children: React.ReactNode; k: number | string }) {
   const [visible, setVisible] = React.useState(false);
-  React.useEffect(() => {
+  // useLayoutEffect corre antes del paint: oculta el contenido nuevo antes de que el browser lo vea,
+  // eliminando el parpadeo que causaba el useEffect (que corre después del paint).
+  React.useLayoutEffect(() => {
     setVisible(false);
-    const t = setTimeout(() => setVisible(true), 50);
+  }, [k]);
+  React.useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 30);
     return () => clearTimeout(t);
   }, [k]);
   return (
