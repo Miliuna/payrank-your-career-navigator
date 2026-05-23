@@ -77,10 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Diagnóstico salarial con criterio compensológico real. No crowdsourcing." },
       { name: "author", content: "PayRank" },
       { property: "og:title", content: "PayRank — Diagnóstico salarial profesional" },
-      { property: "og:description", content: "Descubrí cuánto vale tu puesto hoy en el mercado." },
+      { property: "og:description", content: "Diagnóstico salarial con criterio compensológico real. No crowdsourcing." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "PayRank — Diagnóstico salarial profesional" },
+      { name: "twitter:description", content: "Diagnóstico salarial con criterio compensológico real. No crowdsourcing." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f19babff-c509-4bd2-980e-f96ab52e0299/id-preview-2fe8cde6--4608759e-4c2c-4661-b4b8-7c2b442d45ea.lovable.app-1779567930468.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f19babff-c509-4bd2-980e-f96ab52e0299/id-preview-2fe8cde6--4608759e-4c2c-4661-b4b8-7c2b442d45ea.lovable.app-1779567930468.png" },
     ],
     links: [
       {
