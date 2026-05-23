@@ -86,6 +86,7 @@ export type Database = {
           pdf_enviado: boolean
           plan_elegido: string | null
           puesto_descripcion: string | null
+          referido_por: string | null
           resultado_json: Json | null
           salario_actual: number | null
           salario_tipo: string | null
@@ -136,6 +137,7 @@ export type Database = {
           pdf_enviado?: boolean
           plan_elegido?: string | null
           puesto_descripcion?: string | null
+          referido_por?: string | null
           resultado_json?: Json | null
           salario_actual?: number | null
           salario_tipo?: string | null
@@ -186,6 +188,7 @@ export type Database = {
           pdf_enviado?: boolean
           plan_elegido?: string | null
           puesto_descripcion?: string | null
+          referido_por?: string | null
           resultado_json?: Json | null
           salario_actual?: number | null
           salario_tipo?: string | null
