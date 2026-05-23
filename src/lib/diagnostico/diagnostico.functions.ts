@@ -280,6 +280,8 @@ function detectCurrency(pais: string | null | undefined): { code: string | null;
   if (p.includes("méxico") || p.includes("mexico")) return { code: "MXN", usdOnly: false };
   if (p.includes("chile")) return { code: "CLP", usdOnly: false };
   if (p.includes("colombia")) return { code: "COP", usdOnly: false };
+  if (p.includes("espa") || p.includes("spain")) return { code: "EUR", usdOnly: false };
+  if (p.includes("brasil") || p.includes("brazil")) return { code: "BRL", usdOnly: false };
   if (
     p === "usa" || p === "eeuu" || p.includes("estados unidos") ||
     p.includes("united states") || p.includes("ee.uu")
@@ -295,6 +297,8 @@ const FUENTE_FX: Record<string, string> = {
   MXN: "Banxico",
   CLP: "Banco Central de Chile",
   COP: "Banco de la República",
+  EUR: "Banco Central Europeo (BCE)",
+  BRL: "Banco Central do Brasil",
 };
 
 async function fetchFxRate(currency: string): Promise<TipoCambio | null> {

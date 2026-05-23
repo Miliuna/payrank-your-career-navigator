@@ -99,6 +99,10 @@ const ThemeStyles = () => (
     body.pdf-export .theme-dark table thead th { color: #F5F2ED !important; }
     body.pdf-export .theme-dark .card-alert { background: #F0EDE8 !important; border: 0 !important; border-left: 3px solid #2E4A6E !important; }
     body.pdf-export #payrank-pdf-cta { display: none !important; }
+
+    /* Recuadros de alerta en banda oscura: texto blanco puro para máximo contraste */
+    .theme-dark .card-alert .p-body { color: #FFFFFF !important; }
+    .theme-dark .card-alert .eyebrow { color: rgba(255,255,255,0.75) !important; }
   `}</style>
 );
 
@@ -354,6 +358,8 @@ function ResultadoPage() {
               MXN: "Peso mexicano oficial · Fuente: Banxico",
               CLP: "Peso chileno oficial · Fuente: Banco Central de Chile",
               COP: "Peso colombiano oficial · Fuente: Banco de la República",
+              EUR: "Euro oficial · Fuente: Banco Central Europeo (BCE)",
+              BRL: "Real brasileño oficial · Fuente: Banco Central do Brasil",
             };
             const monedaLocal = tc?.moneda ?? (typeof s2.moneda_local === "string" ? s2.moneda_local : "");
             const fxLabel = fuenteFull[monedaLocal] ?? (tc?.fuente ?? "");
@@ -421,7 +427,10 @@ function ResultadoPage() {
               <Eyebrow>AJUSTES APLICADOS</Eyebrow>
               <ul className="space-y-1">
                 {arr<string>(s2.ajustes_aplicados).map((a, i) => (
-                  <li key={i} className="font-body text-sm text-hueso/80">— {a}</li>
+                  <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
+                    <span style={{ color: "#2E4A6E", fontWeight: 600, flexShrink: 0 }}>—</span>
+                    <span>{a}</span>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -483,7 +492,10 @@ function ResultadoPage() {
               <Eyebrow>BENEFICIOS QUE TE FALTAN</Eyebrow>
               <ul className="space-y-1">
                 {arr<string>(s3.beneficios_faltantes).map((b, i) => (
-                  <li key={i} className="font-body text-sm text-hueso/80">— {b}</li>
+                  <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
+                    <span style={{ color: "#2E4A6E", fontWeight: 600, flexShrink: 0 }}>—</span>
+                    <span>{b}</span>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -510,7 +522,10 @@ function ResultadoPage() {
                   <Eyebrow>FACTORES QUE AMPLÍAN LA BRECHA</Eyebrow>
                   <ul className="space-y-1">
                     {arr<string>(s4.factores_amplificadores).map((f, i) => (
-                      <li key={i} className="font-body text-sm text-hueso/80">— {f}</li>
+                      <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
+                        <span style={{ color: "#2E4A6E", fontWeight: 600, flexShrink: 0 }}>—</span>
+                        <span>{f}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -657,7 +672,10 @@ function ResultadoPage() {
               <Eyebrow>HERRAMIENTAS RECOMENDADAS</Eyebrow>
               <ul className="space-y-1">
                 {arr<string>(s7.herramientas_ia_recomendadas).map((h, i) => (
-                  <li key={i} className="font-body text-sm text-hueso/80">— {h}</li>
+                  <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
+                    <span style={{ color: "#2E4A6E", fontWeight: 600, flexShrink: 0 }}>—</span>
+                    <span>{h}</span>
+                  </li>
                 ))}
               </ul>
             </div>

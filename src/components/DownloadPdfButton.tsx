@@ -14,6 +14,7 @@ export function DownloadPdfButton({
     if (!el) return;
     setLoading(true);
     document.body.classList.add("pdf-export");
+    document.documentElement.style.fontSize = "18px";
     // small delay so styles apply
     await new Promise((r) => setTimeout(r, 100));
 
@@ -35,7 +36,7 @@ export function DownloadPdfButton({
       const pdf = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
-      const margin = 36;
+      const margin = 18;
       const headerH = 70;
       const footerH = 24;
       const contentW = pageW - margin * 2;
@@ -111,6 +112,7 @@ export function DownloadPdfButton({
       alert("No se pudo generar el PDF. Intentá de nuevo.");
     } finally {
       document.body.classList.remove("pdf-export");
+      document.documentElement.style.fontSize = "";
       setLoading(false);
     }
   };

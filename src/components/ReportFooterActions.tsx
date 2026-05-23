@@ -179,6 +179,23 @@ export function ReportFooterActions({
             Volver al inicio
           </Link>
         </div>
+
+        {/* Seguimiento post-reporte */}
+        <div className="pt-8 border-t" style={{ borderColor: "#E5E1DA" }}>
+          <p className="text-base font-semibold mb-4" style={{ color: "#1A2B45" }}>
+            Esto no termina acá.
+          </p>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-2 text-sm" style={{ color: "#0C0C0C" }}>
+              <span style={{ color: "#2E4A6E", fontWeight: 600, flexShrink: 0 }}>—</span>
+              <span>Nos volvemos a contactar a los 30, 60 y 90 días para saber cómo te fue.</span>
+            </li>
+            <li className="flex items-start gap-2 text-sm" style={{ color: "#0C0C0C" }}>
+              <span style={{ color: "#2E4A6E", fontWeight: 600, flexShrink: 0 }}>—</span>
+              <span>Recibís alertas en tu correo cuando el mercado para tu posición se mueva.</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
   );
