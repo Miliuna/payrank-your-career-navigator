@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { SYSTEM_PROMPT, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
+import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-4-5";
@@ -390,12 +390,12 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     const fxPromise: Promise<TipoCambio | null> =
       currency && !usdOnly ? fetchFxRate(currency) : Promise.resolve(null);
 
-    async function genPart(prompt: string, label: string): Promise<Record<string, unknown>> {
+    async function genPart(prompt: string, label: string, systemPrompt: string): Promise<Record<string, unknown>> {
       let parsed: unknown | null = null;
       let lastRaw = "";
       for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
         try {
-          lastRaw = await callAnthropic(SYSTEM_PROMPT, prompt);
+          lastRaw = await callAnthropic(systemPrompt, prompt);
           parsed = tryParseJson(lastRaw);
         } catch (e) {
           console.error(`[generateDiagnostico:${label}] intento ${attempt + 1} falló:`, e);
@@ -408,8 +408,8 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     }
 
     const [partA, partB, tipoCambio] = await Promise.all([
-      genPart(promptA, "parteA"),
-      genPart(promptB, "parteB"),
+      genPart(promptA, "parteA", SYSTEM_PROMPT),
+      genPart(promptB, "parteB", SYSTEM_PROMPT_B),
       fxPromise,
     ]);
     const parsed: Record<string, unknown> = { ...partA, ...partB };

@@ -340,6 +340,16 @@ CRITICAL OUTPUT RULE — READ THIS LAST:
 Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.
 `;
 
+const JSON_ONLY_RULE = `Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.`;
+
+// SYSTEM_PROMPT_B: same as SYSTEM_PROMPT but with the JSON rule injected at two extra positions
+// specific to the sections parteB generates (5–8, freelance).
+export const SYSTEM_PROMPT_B = SYSTEM_PROMPT
+  .replace(
+    `  "seccion_5": {`,
+    `--- CRITICAL RULE FOR SECTIONS 5–8 AND freelance ---\n${JSON_ONLY_RULE}\n---\n\n  "seccion_5": {`,
+  ) + `\n\nFINAL CRITICAL RULE — PART B:\n${JSON_ONLY_RULE}`;
+
 type AnyRecord = Record<string, unknown>;
 
 const MODO_DESCRIPCION: Record<string, string> = {
