@@ -229,6 +229,7 @@ Sección 8: hoja de ruta. Nivel actual → nivel siguiente → tres criterios co
 
 FORMATO DE RESPUESTA:
 Respondé ÚNICAMENTE con JSON válido. Sin texto adicional. Sin backticks. Sin markdown. Parseable directamente.
+Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.
 
 La estructura exacta del JSON es:
 {
@@ -334,6 +335,9 @@ La estructura exacta del JSON es:
     "alerta_monotributo": string | null
   }
 }
+
+CRITICAL OUTPUT RULE — READ THIS LAST:
+Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.
 `;
 
 type AnyRecord = Record<string, unknown>;
@@ -408,7 +412,7 @@ export function buildUserPromptPartA(d: AnyRecord): string {
 IMPORTANTE — PARTE 1 DE 2:
 Generá ÚNICAMENTE estas claves del JSON: "seccion_1", "seccion_2", "seccion_3", "seccion_4".
 Aplicá todas las reglas del system prompt. La estructura interna de cada sección es la definida en el system prompt.
-Respondé un único objeto JSON con exactamente esas 4 claves de nivel superior. Sin markdown, sin backticks, sin explicación.`;
+Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.`;
 }
 
 export function buildUserPromptPartB(d: AnyRecord): string {
@@ -417,5 +421,5 @@ export function buildUserPromptPartB(d: AnyRecord): string {
 IMPORTANTE — PARTE 2 DE 2:
 Generá ÚNICAMENTE estas claves del JSON: "seccion_5", "seccion_6", "seccion_7", "seccion_8", "freelance".
 Aplicá todas las reglas del system prompt. La estructura interna de cada sección es la definida en el system prompt.
-Respondé un único objeto JSON con exactamente esas 5 claves de nivel superior. Sin markdown, sin backticks, sin explicación.`;
+Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.`;
 }

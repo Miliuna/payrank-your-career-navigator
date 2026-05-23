@@ -451,7 +451,7 @@ type Json = string | number | boolean | null | { [k: string]: Json } | Json[];
 
 // ---------- Extracción de datos desde documento subido ----------
 
-const EXTRACT_SYSTEM = `Extraé datos profesionales y de compensación del documento siguiendo las instrucciones al pie de la letra. Respondé ÚNICAMENTE con JSON válido sin texto adicional.
+const EXTRACT_SYSTEM = `Extraé datos profesionales y de compensación del documento siguiendo las instrucciones al pie de la letra. Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.
 
 REGLA CRÍTICA — herramientas_ia_inferidas: incluir EXCLUSIVAMENTE herramientas de IA generativa o machine learning (ChatGPT, Claude, Gemini, Copilot, GitHub Copilot, Midjourney, Perplexity, Notion AI, DALL-E, Cursor, Whisper, ElevenLabs, Runway, Jasper, Synthesia, Stable Diffusion, etc.). NUNCA incluir software de gestión, encuestas, ERP, CRM, BI, HRIS ni productividad: Qualtrics, SuccessFactors, SAP, Workday, Slik, Salesforce, HubSpot, Excel, Power BI, Tableau, Looker, Google Analytics, Jira, Asana, Slack, Office, y similares NO son herramientas de IA. Si no hay herramientas de IA generativa, devolver [].`;
 
@@ -480,7 +480,7 @@ Extraé estos campos si están presentes:
 
 Para cada campo que NO puedas inferir con certeza del documento, devolvé null.
 No inventes datos que no están explícitamente en el documento.
-Respondé un único objeto JSON, sin markdown ni explicaciones.`;
+Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.`;
 
 const extractInputSchema = z.union([
   z.object({
