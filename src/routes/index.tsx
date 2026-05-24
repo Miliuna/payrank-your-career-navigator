@@ -5,53 +5,75 @@ import { SiteFooter } from "@/components/SiteFooter";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PayRank — Diagnóstico salarial profesional" },
-      { name: "description", content: "La información salarial que las empresas siempre tuvieron y los profesionales nunca. Diagnóstico con criterio compensológico real." },
-      { property: "og:title", content: "PayRank — Diagnóstico salarial profesional" },
-      { property: "og:description", content: "Descubrí cuánto vale tu puesto hoy en el mercado." },
+      { title: "PayRank — Professional Salary Intelligence" },
+      { name: "description", content: "Your market value is a precise number — built from your specific experience, role, industry, and the real impact of AI on what your profile is worth today. PayRank gives you that number, and what to do with it." },
+      { property: "og:title", content: "PayRank — Professional Salary Intelligence" },
+      { property: "og:description", content: "The other side of the table already knows what you're worth. Now you do too." },
     ],
   }),
   component: Landing,
 });
 
-const preguntas = [
-  "Tu experiencia y tu trayectoria pueden valer más de lo que te pagan. Necesitás saberlo.",
-  "Todos los puestos tienen un valor de mercado. ¿Sabés cuánto vale el tuyo?",
-  "Puede existir una brecha de género en tu industria que te está costando dinero cada mes sin que lo sepas.",
-  "Con el número correcto y los argumentos correctos, la conversación que tenés por delante cambia completamente.",
+const affirmations = [
+  "Your company ran a salary benchmark on your role.\nThat number shaped your last raise.\nAnd the one before that.",
+  "That offer on the table didn't come from thin air.\nThey benchmarked your profile before they wrote it.",
+  "The gender pay gap in your industry isn't a statistic.\nIt's a monthly number with your name on it.",
+  "Walking into any salary conversation without\nmarket data isn't negotiating. It's guessing.",
+];
+
+const situations = [
+  {
+    id: "A",
+    label: "Am I being paid competitively?",
+    description:
+      "You're employed. You want to know where you actually stand in the market. No guessing.",
+  },
+  {
+    id: "B",
+    label: "I want to ask for a raise or review",
+    description:
+      "You're ready to have the conversation. PayRank gives you the number, the strategy, and the exact script.",
+  },
+  {
+    id: "C",
+    label: "I have an offer or interview",
+    description:
+      "You have an offer or you're heading into an interview. Know your floor, your ceiling, and what to say when they ask.",
+  },
+  {
+    id: "D",
+    label: "I'm planning my next career move",
+    description:
+      "You're building your next move. Know how the market reads your profile today and what changes your range tomorrow.",
+  },
 ];
 
 const planes = [
   {
     nombre: "GO",
-    precio: "USD 29",
+    precio: "USD 39",
     sufijo: undefined as string | undefined,
-    italic: "Para cuando tenés una conversación puntual por delante.",
-    descripcion: "Un PayRank completo. Sin vencimiento.",
-    cta: "EMPEZAR CON GO",
+    descripcion: "1 PayRank. Any situation. No expiration.",
+    cta: "START WITH GO",
     plan: "unico" as const,
     destacada: false,
   },
   {
     nombre: "PLUS",
-    precio: "USD 69",
+    precio: "USD 99",
     sufijo: undefined as string | undefined,
-    italic: "Para cuando estás en movimiento.",
-    descripcion:
-      "Tres PayRank completos. Sin vencimiento.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
-    cta: "EMPEZAR CON PLUS",
+    descripcion: "3 PayRanks. Any situation. No expiration. Save 20%.",
+    cta: "START WITH PLUS",
     plan: "pack3" as const,
     destacada: true,
-    badge: "MÁS ELEGIDO",
+    badge: "MOST CHOSEN",
   },
   {
     nombre: "PRO",
     precio: "USD 149",
-    sufijo: "/año",
-    italic: "Para quien quiere que PayRank lo acompañe.",
-    descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.\n\nUSD 199/año en USA, UK, Australia y Canadá.",
-    cta: "EMPEZAR CON PRO",
+    sufijo: "/yr",
+    descripcion: "Unlimited PayRanks + market movement alerts for your industry.",
+    cta: "START WITH PRO",
     plan: "anual" as const,
     destacada: false,
   },
@@ -66,23 +88,25 @@ function Landing() {
       <section className="pt-32 md:pt-44 pb-24 md:pb-36 px-5 md:px-10">
         <div className="mx-auto max-w-4xl">
           <p className="font-ui text-[10px] md:text-[11px] text-hueso/60 mb-8">
-            PROFESSIONAL INTELLIGENCE · TU VALOR EN EL MERCADO
+            PROFESSIONAL SALARY INTELLIGENCE
           </p>
           <h1 className="font-display text-[2.75rem] leading-[1.05] md:text-7xl md:leading-[1.02] tracking-tight text-hueso mb-8">
-            ¿Cuánto <span className="font-display-italic">valés</span><br />
-            realmente en<br />
-            el mercado?
+            The other side of the table<br />
+            already knows<br />
+            <span className="font-display-italic">what you're worth.</span><br />
+            Now you do too.
           </h1>
           <p className="font-body text-lg md:text-xl text-hueso/70 max-w-2xl mb-14 leading-relaxed">
-            No solo tu puesto. Tu experiencia, tus habilidades, tu trayectoria y tu potencial.
-            Todo tiene un valor en el mercado. PayRank te lo dice — y te muestra qué hacer con esa información.
+            Your market value is a precise number — built from your specific experience,
+            role, industry, and the real impact of AI on what your profile is worth today.
+            PayRank gives you that number, and what to do with it.
           </p>
 
           <ul className="space-y-4 mb-14 max-w-2xl">
-            {preguntas.map((p) => (
-              <li key={p} className="flex items-start gap-4 font-body text-base md:text-lg text-hueso/85">
+            {affirmations.map((a) => (
+              <li key={a} className="flex items-start gap-4 font-body text-base md:text-lg text-hueso/85">
                 <span className="mt-2 size-1.5 rounded-full bg-hueso shrink-0" />
-                <span>{p}</span>
+                <span className="whitespace-pre-line">{a}</span>
               </li>
             ))}
           </ul>
@@ -91,201 +115,63 @@ function Landing() {
             to="/modo"
             className="inline-flex items-center gap-3 bg-hueso text-tinta px-8 py-4 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
           >
-            OBTENER MI PAYRANK
-            <span aria-hidden>→</span>
+            RUN MY PAYRANK →
           </Link>
-
-          <p className="mt-10 font-body text-sm text-hueso/50 max-w-xl">
-            La información que cambia la conversación.
-          </p>
         </div>
       </section>
 
-      {/* Comparativa de fuentes */}
+      {/* Situations Selector */}
       <section className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
-        <div className="mx-auto max-w-6xl">
-          <p className="font-ui text-[10px] text-piedra mb-4">POR QUÉ IMPORTA LA FUENTE</p>
-          <h2 className="font-display text-3xl md:text-5xl mb-6">
-            Por qué importa la <span className="font-display-italic">fuente</span>
-          </h2>
-          <p className="font-body text-lg md:text-xl text-piedra mb-6 max-w-2xl leading-relaxed">
-            Lo que encontrás gratis.<br />Lo que necesitás saber.
-          </p>
-          <p className="font-body text-base text-tinta/80 mb-14 max-w-2xl leading-relaxed">
-            Toda la información salarial disponible hoy tiene el mismo problema: te muestra lo que otros quieren que veas, no lo que tu perfil vale en el mercado.
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Columna izquierda — Gratis */}
-            <div className="bg-hueso border border-niebla p-7 md:p-9 flex flex-col">
-              <p className="font-ui text-[10px] text-piedra mb-3">GRATIS</p>
-              <p className="font-body text-sm text-tinta mb-6">
-                LinkedIn Salary · Glassdoor · ChatGPT · Bumeran · InfoJobs
-              </p>
-
-              <div className="bg-fondo2 p-5 mb-6 font-mono text-xs text-tinta/80 leading-relaxed">
-                <p className="mb-3 text-tinta">
-                  ¿Cuánto debería ganar un Gerente de Marketing en Argentina con 8 años de experiencia?
-                </p>
-                <p className="text-piedra">
-                  → "Los salarios para ese rol varían entre $1.200.000 y $2.800.000 ARS por mes según el tamaño de la empresa y la industria. En multinacionales puede ser más alto."
-                </p>
-              </div>
-
-              <ul className="space-y-4 font-body text-sm text-tinta/85">
-                {[
-                  ["En pesos — inutilizable en semanas", "todas las fuentes"],
-                  ["Datos autodeclarados sin verificación", "LinkedIn Salary · Glassdoor"],
-                  ["Muestran lo que las empresas ofrecen publicar, no lo que realmente pagan", "Bumeran · InfoJobs"],
-                  ["Sin ajuste por tu perfil real — el mismo rango para un junior que para vos", "ChatGPT · buscadores"],
-                  ["Sin posición en el mercado: no sabés si ese número es bueno o malo para tu nivel", "todas las fuentes"],
-                  ["Sin argumento — tenés el dato pero no qué decir en la negociación", "todas las fuentes"],
-                ].map(([texto, fuente]) => (
-                  <li key={texto} className="flex items-start gap-3">
-                    <span className="font-display text-base shrink-0" style={{ color: "#4A1F1F" }}>✕</span>
-                    <span>
-                      {texto}
-                      <span className="block text-xs text-piedra mt-0.5">({fuente})</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Columna derecha — PayRank */}
-            <div className="bg-tinta text-hueso p-7 md:p-9 flex flex-col">
-              <p className="font-ui text-[10px] mb-3" style={{ color: "#2E4A6E" }}>TU PAYRANK</p>
-              <div className="font-body text-sm text-hueso mb-8 leading-relaxed">
-                <p>PayRank · Diagnóstico #PR-0047</p>
-                <p>Gerente de Marketing · FMCG · AMBA</p>
-                <p>Multinacional · Alcance regional · 8 años</p>
-              </div>
-
-              <div className="mb-8">
-                <p className="font-ui text-[10px] text-hueso/60 mb-2">TU VALOR DE MERCADO</p>
-                <p className="font-display text-3xl md:text-4xl text-hueso mb-2">
-                  USD 3.200 <span className="font-body text-base text-hueso/70">bruto mensual · P50</span>
-                </p>
-                <p className="font-body text-sm text-hueso/80 leading-relaxed">
-                  Tu compensación actual equivale a USD 2.750. Estás dejando USD 450 sobre la mesa cada mes.
-                </p>
-              </div>
-
-              <div className="mb-8">
-                <p className="font-ui text-[10px] text-hueso/60 mb-3">TU POSICIÓN EN EL MERCADO</p>
-                <div className="relative h-2 bg-hueso/15 mb-2">
-                  <div className="absolute left-0 top-0 h-full bg-hueso/40" style={{ width: "75%" }} />
-                  <div className="absolute top-1/2 -translate-y-1/2 size-3 rounded-full bg-hueso" style={{ left: "50%" }} />
-                  <div className="absolute top-1/2 -translate-y-1/2 size-3 rounded-full" style={{ left: "75%", backgroundColor: "#2E4A6E" }} />
-                </div>
-                <div className="flex justify-between font-ui text-[9px] text-hueso/60 mb-3">
-                  <span>25% INF</span>
-                  <span>MEDIANA 3.200</span>
-                  <span>TOP 25% · 4.100</span>
-                  <span>TOP 10% · 5.200</span>
-                </div>
-                <p className="font-body text-sm leading-relaxed" style={{ color: "#DDE4EE" }}>
-                  Con tu perfil regional y adopción de IA, pertenecés al top 25% del mercado. Tu salario actual está en la franja media.
-                </p>
-              </div>
-
-              <div className="mb-8">
-                <p className="font-ui text-[10px] text-hueso/60 mb-2">BRECHA DE GÉNERO DETECTADA</p>
-                <p className="font-body text-sm text-hueso/85 leading-relaxed">
-                  En FMCG para este nivel, la brecha promedio es 22%. Potencial impacto: hasta USD 8.400 anuales.
-                </p>
-              </div>
-
-              <div>
-                <p className="font-ui text-[10px] text-hueso/60 mb-2">ARGUMENTO DE NEGOCIACIÓN</p>
-                <p className="font-display-italic text-base text-hueso leading-relaxed">
-                  "Mi perfil con gestión regional y adopción de IA está en el top 25% del mercado. El valor de referencia para ese nivel es USD 4.100. Estoy pidiendo USD 3.900."
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-14 flex justify-center">
-            <Link
-              to="/modo"
-              className="inline-flex items-center gap-3 bg-tinta text-hueso px-8 py-4 font-ui text-[11px] hover:bg-tinta/90 transition-colors"
-            >
-              OBTENER MI PAYRANK
-              <span aria-hidden>→</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Proceso en 3 pasos */}
-      <section className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28 border-t border-hueso/15">
-        <div className="mx-auto max-w-6xl">
-          <p className="font-ui text-[10px] text-hueso/60 mb-4">EL PROCESO</p>
+        <div className="mx-auto max-w-4xl">
           <h2 className="font-display text-3xl md:text-5xl mb-14">
-            Tres minutos. El <span className="font-display-italic">número exacto.</span>
+            What brings you <span className="font-display-italic">here today?</span>
           </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[
-              {
-                n: "01",
-                titulo: "Tu perfil en segundos",
-                texto: "Respondés 4 preguntas. La IA deduce el resto — industria, alcance, nivel de seniority — sin que tengas que explicar nada que ya se puede inferir.",
-                tag: "ASISTIDO POR IA",
-              },
-              {
-                n: "02",
-                titulo: "PayRank procesa",
-                texto: "Aplicamos los ajustes compensológicos que usan las consultoras globales — alcance, liderazgo, idiomas, adopción de IA — sobre la base de datos de mercado.",
-                tag: "METODOLOGÍA DE CONSULTORA GLOBAL",
-              },
-              {
-                n: "03",
-                titulo: "Tu diagnóstico completo",
-                texto: "Posición en el mercado, brecha de género si aplica, compensación total y el argumento exacto para tu próxima conversación — en menos de tres minutos.",
-                tag: "ACCIONABLE DE INMEDIATO",
-              },
-            ].map((c) => (
-              <div key={c.n} className="bg-tinta border border-hueso/15 p-7 md:p-9 flex flex-col">
-                <p className="font-display text-5xl md:text-6xl text-[#C4BFB8] mb-6">{c.n}</p>
-                <h3 className="font-display text-2xl text-hueso mb-4">{c.titulo}</h3>
-                <p className="font-body text-sm text-hueso/70 leading-relaxed mb-8 flex-1">{c.texto}</p>
-                <p className="font-ui text-[10px] text-[#2E4A6E] border-t border-hueso/15 pt-4">{c.tag}</p>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {situations.map((s) => (
+              <Link
+                key={s.id}
+                to="/modo"
+                className="group border border-niebla p-7 md:p-9 flex flex-col hover:border-tinta transition-colors"
+              >
+                <p className="font-ui text-[10px] text-piedra mb-3">{s.id}</p>
+                <p className="font-display text-xl md:text-2xl text-tinta mb-4">
+                  {s.label}
+                </p>
+                <p className="font-body text-sm text-piedra leading-relaxed">
+                  {s.description}
+                </p>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Social proof */}
-      <section className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="font-display text-5xl md:text-7xl mb-4" style={{ color: "#1A2B45" }}>+1.200</p>
-          <p className="font-ui text-[11px] uppercase tracking-widest mb-6 max-w-lg mx-auto" style={{ color: "#5A5550" }}>
-            PROFESIONALES EN LATAM YA SABEN EXACTAMENTE CUÁNTO VALE SU PERFIL EN EL MERCADO
+      {/* Methodology */}
+      <section id="metodologia" className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28">
+        <div className="mx-auto max-w-4xl">
+          <p className="font-ui text-[10px] text-hueso/60 mb-4">METHODOLOGY</p>
+          <h2 className="font-display text-3xl md:text-5xl mb-10">
+            The same intelligence firms charge<br />
+            <span className="font-display-italic">thousands for.</span> Built for you.
+          </h2>
+          <p className="font-body text-lg md:text-xl text-hueso/70 max-w-2xl leading-relaxed">
+            PayRank uses the same methodology as global compensation consultancies — Mercer,
+            WTW, Korn Ferry — applied to your specific profile. Not an average. Not a database
+            lookup. A diagnosis built from your experience, your industry, your company tier,
+            and your role's real complexity — including what AI is doing to its market value
+            right now.
           </p>
-          <p className="font-body text-base max-w-[480px] mx-auto mb-10 leading-relaxed" style={{ color: "#5A5550" }}>
-            La mayoría lo descubrió en menos de tres minutos.
-          </p>
-          <Link
-            to="/modo"
-            className="inline-flex items-center gap-3 bg-tinta text-hueso px-8 py-4 font-ui text-[11px] hover:bg-tinta/90 transition-colors"
-          >
-            OBTENER MI PAYRANK
-            <span aria-hidden>→</span>
-          </Link>
         </div>
       </section>
 
-      {/* Precios */}
-      <section id="precios" className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28">
+      {/* Plans */}
+      <section id="precios" className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
         <div className="mx-auto max-w-6xl">
-          <p className="font-ui text-[10px] text-hueso/60 mb-4">PLANES</p>
+          <p className="font-ui text-[10px] text-piedra mb-4">PLANS</p>
           <h2 className="font-display text-3xl md:text-5xl mb-14">
-            Elegí tu <span className="font-display-italic">PayRank</span>
+            One PayRank changes <span className="font-display-italic">the conversation.</span>
           </h2>
 
-          {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {planes.map((plan) => {
               const d = plan.destacada;
@@ -317,10 +203,7 @@ function Landing() {
                       </span>
                     )}
                   </div>
-                  <p className={`font-display-italic text-base mb-6 ${d ? "text-hueso" : "text-tinta"}`}>
-                    {plan.italic}
-                  </p>
-                  <p className={`font-body text-sm leading-relaxed mb-10 whitespace-pre-line ${d ? "text-hueso/80" : "text-piedra"}`}>
+                  <p className={`font-body text-sm leading-relaxed mb-10 flex-1 ${d ? "text-hueso/80" : "text-piedra"}`}>
                     {plan.descripcion}
                   </p>
                   <Link
@@ -339,135 +222,32 @@ function Landing() {
               );
             })}
           </div>
-
-          {/* Tabla comparativa */}
-          <div className="mt-24 border-t border-hueso/20 pt-16">
-            <p className="font-ui text-[10px] text-hueso/60 mb-8">EN DETALLE</p>
-            <div className="overflow-x-auto">
-              <table className="w-full font-body text-sm">
-                <thead>
-                  <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/3"></th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">GO</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PLUS</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PRO</th>
-                  </tr>
-                </thead>
-                <tbody className="text-hueso">
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Precio</td>
-                    <td className="py-4 px-4">USD 29</td>
-                    <td className="py-4 px-4">USD 69</td>
-                    <td className="py-4 px-4">USD 149/año <span className="text-hueso/50 text-xs block">USD 199/año en USA, UK, Australia y Canadá</span></td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>
-                    <td className="py-4 px-4">1</td>
-                    <td className="py-4 px-4">3</td>
-                    <td className="py-4 px-4">Hasta 12 por año (1 por mes)</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Análisis completo</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                  </tr>
-                  <tr>
-                    <td className="py-4 pr-4 text-hueso/70">Alertas cuando tu mercado se mueve</td>
-                    <td className="py-4 px-4">Email</td>
-                    <td className="py-4 px-4">Email + 1 update gratis</td>
-                    <td className="py-4 px-4">Update automática</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
-              La mayoría de quienes están en búsqueda activa o atravesando una negociación terminan necesitando más de un PayRank. El plan PLUS está diseñado para eso.
-            </p>
-            <p className="font-body text-sm text-hueso/50 mt-4">
-              ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
-            </p>
-          </div>
         </div>
       </section>
 
-      {/* Referidos */}
-      <section className="bg-hueso text-tinta px-5 md:px-10 py-16 md:py-20">
-        <div className="mx-auto max-w-4xl border-t border-niebla pt-16">
-          <p className="font-ui text-[10px] text-piedra mb-4">PROGRAMA DE REFERIDOS</p>
-          <h2 className="font-display text-3xl md:text-4xl mb-6">
-            Compartí. Y el próximo <span className="font-display-italic">es tuyo.</span>
-          </h2>
-          <div className="grid md:grid-cols-2 gap-10 mt-8">
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">1</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Compartís tu link único</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Cada PayRank completado incluye un link personal de referido que podés compartir con colegas o en redes.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">2</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Ellos obtienen 15% de descuento</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Cada persona que haga su PayRank usando tu link recibe 15% de descuento automático en su primer análisis.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">3</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Con 3 referidos, el próximo es gratis</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Cuando tres personas completan su PayRank usando tu link, tu próximo análisis no te cuesta nada.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center">
-              <div className="bg-tinta text-hueso p-8">
-                <p className="font-ui text-[10px] text-hueso/60 mb-4">EN RESUMEN</p>
-                <p className="font-display-italic text-2xl text-hueso leading-snug mb-6">
-                  "Si tres personas hacen su PayRank con tu link, el próximo es tuyo — gratis."
-                </p>
-                <p className="font-body text-sm text-hueso/70">
-                  Tu link único aparece al final de tu reporte, una vez que completás tu PayRank.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Metodología */}
-      <section id="metodologia" className="bg-hueso text-tinta px-5 md:px-10 pb-24">
-        <div className="mx-auto max-w-4xl border-t border-niebla pt-20">
-          <p className="font-ui text-[10px] text-piedra mb-4">Metodología</p>
+      {/* Gender Gap */}
+      <section className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28">
+        <div className="mx-auto max-w-4xl">
           <h2 className="font-display text-3xl md:text-5xl mb-10">
-            Esto no es una calculadora.
+            The pay gap in your field is real.<br />
+            <span className="font-display-italic">PayRank shows you exactly where you stand.</span>
           </h2>
-          <div className="font-body text-piedra leading-relaxed space-y-8 max-w-2xl">
-            <p>
-              Existe un número exacto para tu puesto, tu industria y tu momento.
-              Un número que el mercado ya definió. Que existe independientemente
-              de lo que te pagan hoy o de lo que vas a negociar mañana.
-            </p>
-            <p className="font-display-italic text-3xl md:text-5xl text-tinta my-12 md:my-16 leading-tight">
-              PayRank te lo dice.
-            </p>
-            <p>
-              No con promedios de internet. Con el mismo rigor con el que se
-              construyen las encuestas de compensaciones globales — ajustado a tu
-              alcance, tu nivel y tu país.
-            </p>
-            <p>
-              Para que la próxima conversación ocurra con información real de tu lado.
-            </p>
-          </div>
+          <p className="font-body text-lg md:text-xl text-hueso/70 max-w-2xl leading-relaxed">
+            If you choose to include gender in your PayRank, we show you the documented gap in
+            your industry and seniority level — and give you the specific arguments to close it.
+          </p>
+        </div>
+      </section>
+
+      {/* Trust Block */}
+      <section className="bg-hueso text-tinta px-5 md:px-10 py-16 md:py-20">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="font-display text-xl md:text-2xl text-tinta mb-4">
+            Methodologically rigorous. Completely confidential.
+          </p>
+          <p className="font-body text-base text-piedra max-w-lg mx-auto leading-relaxed">
+            Your data is never sold, shared, or used to identify you. Ever.
+          </p>
         </div>
       </section>
 
