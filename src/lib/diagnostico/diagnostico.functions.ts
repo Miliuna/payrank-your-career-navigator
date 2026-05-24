@@ -388,8 +388,15 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     }
 
     // Generación en 2 llamadas paralelas para evitar timeout upstream (≥60s).
-    const promptA = buildUserPromptPartA(record);
-    const promptB = buildUserPromptPartB(record);
+    let promptA: string;
+    let promptB: string;
+    try {
+      promptA = buildUserPromptPartA(record);
+      promptB = buildUserPromptPartB(record);
+    } catch (promptErr) {
+      console.error("[generateDiagnostico] error construyendo prompts (modo:", record.modo, "):", promptErr);
+      throw promptErr;
+    }
 
     // Tipo de cambio (en paralelo con la generación)
     const { code: currency, usdOnly } = detectCurrency(record.pais_rol as string | null);

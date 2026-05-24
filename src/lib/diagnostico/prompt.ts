@@ -396,7 +396,7 @@ Título del puesto objetivo: ${v(doc.titulo_puesto)}
 Empresa/tipo de empresa objetivo: ${v(doc.tipo_empresa_inferida)}
 Industria del puesto objetivo: ${v(doc.industria_inferida)}
 Nivel jerárquico del puesto objetivo: ${v(doc.nivel_jerarquico_inferido)}
-Funciones del puesto objetivo: ${v(doc.funciones_inferidas)}
+Funciones del puesto objetivo: ${v(doc.funciones_inferidas).slice(0, 600)}
 Alcance del puesto objetivo: ${v(doc.alcance_inferido)}
 Salario ofertado (si figura): ${v(doc.salario_actual_inferido)} ${v(doc.moneda_inferida, "")}
 
@@ -406,33 +406,39 @@ Todos los benchmarks, scripts de negociación (seccion_6), argumentos (seccion_5
 Si la industria del puesto objetivo difiere de la industria del perfil del usuario, los benchmarks deben corresponder a la industria del PUESTO OBJETIVO.`
     : "";
 
-  const descStr = typeof d.puesto_descripcion === "string" ? d.puesto_descripcion : "";
+  const MAX_DESC_CHARS = 2000;
+  const descStr = (typeof d.puesto_descripcion === "string" ? d.puesto_descripcion : "").slice(0, MAX_DESC_CHARS);
 
   const modeInstructionBlock = (() => {
-    if (modo === "B") {
-      return `\n\nINSTRUCCIÓN DE MODO B — NEGOCIACIÓN INTERNA:
+    try {
+      if (modo === "B") {
+        return `\n\nINSTRUCCIÓN DE MODO B — NEGOCIACIÓN INTERNA:
 El usuario está en una negociación salarial activa con su empleador actual. El alcance real que describió en "Descripción del puesto" es el argumento central.
 En seccion_5, argumento_2_alcance_real debe citar directamente las responsabilidades que el usuario ejerce más allá de su título formal.
 En seccion_6, los scripts y las objeciones deben estar 100% orientados a negociación interna (con el jefe o RRHH de la empresa actual). Incluir respuestas específicas a estas objeciones:
 - "No hay presupuesto / budget freeze este año"
 - "Esperemos el próximo ciclo de revisión salarial"
 - "A todos les dimos el mismo ajuste"`;
-    }
-    if (modo === "C") {
-      const tieneOferta = descStr.includes("Ya tengo una oferta concreta");
-      return `\n\nINSTRUCCIÓN DE MODO C — ${tieneOferta ? "NEGOCIACIÓN DE OFERTA" : "PREPARACIÓN PARA ENTREVISTA"}:
+      }
+      if (modo === "C") {
+        const tieneOferta = descStr.includes("Ya tengo una oferta concreta");
+        return `\n\nINSTRUCCIÓN DE MODO C — ${tieneOferta ? "NEGOCIACIÓN DE OFERTA" : "PREPARACIÓN PARA ENTREVISTA"}:
 ${tieneOferta
   ? "El usuario ya recibió una oferta concreta de la empresa objetivo. El diagnóstico debe: (1) evaluar si la oferta es competitiva vs. mercado de esa industria; (2) dar recomendación clara (aceptar / negociar / rechazar) en seccion_5; (3) definir piso y techo de negociación específicos."
   : "El usuario está en proceso de selección o entrevista con la empresa objetivo. El diagnóstico debe prepararlo para negociar la mejor oferta posible cuando llegue el momento."}
 Todos los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO definido arriba.`;
-    }
-    if (modo === "D") {
-      return `\n\nINSTRUCCIÓN DE MODO D — SALTO DE CARRERA:
+      }
+      if (modo === "D") {
+        return `\n\nINSTRUCCIÓN DE MODO D — SALTO DE CARRERA:
 El usuario quiere dar su próximo salto profesional. La seccion_8 (hoja de ruta) es la sección más crítica de este diagnóstico.
 El ceiling en seccion_5 debe corresponder al rango del nivel que el usuario quiere alcanzar (ver "Dirección objetivo" en la descripción del puesto si fue declarada).
 El diagnóstico debe incluir: análisis de la brecha entre el nivel actual y el nivel objetivo, tres criterios concretos y accionables para el salto, y un tiempo realista.`;
+      }
+      return "";
+    } catch (e) {
+      console.error("[buildUserPrompt] error en modeInstructionBlock (modo:", modo, "):", e);
+      return "";
     }
-    return "";
   })();
 
   return `Situación de consulta: ${modoDesc}${targetJobBlock}
@@ -458,7 +464,7 @@ Uso de IA para: ${v(d.uso_ia)}
 Situación laboral: ${v(d.situacion_laboral)}
 Salario bruto mensual actual: ${salario}
 Beneficios actuales: ${v(d.beneficios)}
-Descripción del puesto: ${v(d.puesto_descripcion)}
+Descripción del puesto: ${descStr || "no declarado"}
 Género: ${v(d.genero, "no solicitado")}
 
 Inferencia de valuación validada: ${v(d.inferencia_valuacion)}${modeInstructionBlock}
