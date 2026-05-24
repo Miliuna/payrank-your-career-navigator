@@ -8,19 +8,18 @@ const LangContext = React.createContext<{
 }>({ lang: "ES", setLang: () => {} });
 
 export function LangProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = React.useState<Lang>(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("payrank_lang");
-      if (stored === "EN" || stored === "ES") return stored as Lang;
-    }
-    return "ES";
-  });
+  const [lang, setLangState] = React.useState<Lang>("ES");
+
+  // Read stored preference after mount only — keeps ES as the server-side
+  // and first-paint default, avoids SSR hydration mismatches.
+  React.useEffect(() => {
+    const stored = localStorage.getItem("payrank_lang");
+    if (stored === "EN") setLangState("EN");
+  }, []);
 
   const setLang = React.useCallback((l: Lang) => {
     setLangState(l);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("payrank_lang", l);
-    }
+    localStorage.setItem("payrank_lang", l);
   }, []);
 
   return (
