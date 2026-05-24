@@ -501,19 +501,52 @@ Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any f
 const extractInputSchema = z.union([
   z.object({
     kind: z.literal("text"),
-    text: z.string().min(1).max(200_000),
+    text: z.string().min(1).max(30_000),
   }),
   z.object({
     kind: z.literal("pdf"),
-    base64: z.string().min(1).max(20_000_000),
+    base64: z.string().min(1).max(4_000_000),
   }),
 ]);
+
+// Per-IP in-memory rate limiter (best-effort; resets when the worker restarts).
+const extractRateLimit = new Map<string, { count: number; windowStart: number }>();
+const RATE_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+const RATE_MAX = 10; // 10 extractions per IP per hour
+
+function checkExtractRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = extractRateLimit.get(ip);
+  if (!entry || now - entry.windowStart > RATE_WINDOW_MS) {
+    extractRateLimit.set(ip, { count: 1, windowStart: now });
+    return true;
+  }
+  if (entry.count >= RATE_MAX) return false;
+  entry.count++;
+  return true;
+}
 
 export const extractFromDocument = createServerFn({ method: "POST" })
   .inputValidator((input) => extractInputSchema.parse(input))
   .handler(async ({ data }) => {
+    // Rate limit por IP para evitar abuso del endpoint (consumo de créditos Anthropic).
+    try {
+      const { getRequestHeader } = await import("@tanstack/react-start/server");
+      const ip =
+        getRequestHeader("cf-connecting-ip") ||
+        getRequestHeader("x-forwarded-for")?.split(",")[0]?.trim() ||
+        getRequestHeader("x-real-ip") ||
+        "unknown";
+      if (!checkExtractRateLimit(ip)) {
+        throw new Error("Demasiadas solicitudes. Esperá unos minutos antes de volver a intentar.");
+      }
+    } catch (e) {
+      // Si no podemos leer la IP por algún motivo de runtime, no bloqueamos —
+      // pero los límites de tamaño + validación siguen aplicando.
+      if (e instanceof Error && e.message.startsWith("Demasiadas")) throw e;
+    }
+
     // Límite temporal por rate limit de Anthropic Tier 1 (30k tpm).
-    // En Tier 2 (≥USD 40 acumulados, 80k tpm) se puede subir.
     const TEXT_MAX_CHARS = 6_000;
     const PDF_MAX_TOKENS = 800;
     const TEXT_MAX_TOKENS = 1000;
@@ -553,7 +586,8 @@ export const extractFromDocument = createServerFn({ method: "POST" })
 
     if (!res.ok) {
       const txt = await res.text();
-      throw new Error(`Anthropic ${res.status}: ${txt.slice(0, 500)}`);
+      console.error("[extractFromDocument] Anthropic error:", res.status, txt.slice(0, 500));
+      throw new Error("No pudimos procesar el documento. Intentá nuevamente o pegá el texto manualmente.");
     }
     const json = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
     const text = json.content?.find((c) => c.type === "text")?.text ?? "";
@@ -567,6 +601,9 @@ export const extractFromDocument = createServerFn({ method: "POST" })
         try { parsed = JSON.parse(match[0]); } catch { /* noop */ }
       }
     }
-    if (!parsed) throw new Error("La extracción no devolvió JSON válido");
+    if (!parsed) {
+      console.error("[extractFromDocument] JSON parse failed. Raw:", text.slice(0, 500));
+      throw new Error("No pudimos procesar el documento. Intentá nuevamente o pegá el texto manualmente.");
+    }
     return JSON.parse(JSON.stringify(parsed)) as Json;
   });
