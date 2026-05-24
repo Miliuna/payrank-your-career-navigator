@@ -1,6 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import { useLang } from "@/lib/lang";
 
 export function SiteFooter() {
+  const { lang } = useLang();
+  const isEN = lang === "EN";
+
   return (
     <footer style={{ backgroundColor: "#0C0C0C", color: "#C4BFB8" }}>
       <div className="mx-auto max-w-6xl px-5 md:px-10 py-10">
@@ -17,15 +21,19 @@ export function SiteFooter() {
           <div className="font-ui">
             © 2026 PayRank LLC ·{" "}
             <Link to="/politica-privacidad" className="hover:opacity-80 transition-opacity">
-              Política de Privacidad
+              {isEN ? "Privacy Policy" : "Política de Privacidad"}
             </Link>{" "}
             ·{" "}
             <Link to="/terminos-condiciones" className="hover:opacity-80 transition-opacity">
-              Términos
+              {isEN ? "Terms" : "Términos"}
             </Link>
           </div>
           <div className="font-ui md:text-right">
-            <div>Professional Intelligence · Tu valor en el mercado</div>
+            <div>
+              {isEN
+                ? "Professional Intelligence · Your Market Value"
+                : "Professional Intelligence · Tu valor en el mercado"}
+            </div>
             <div>
               payrank.co ·{" "}
               <a href="mailto:hello@payrank.co" className="hover:opacity-80 transition-opacity">

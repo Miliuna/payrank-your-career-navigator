@@ -11,6 +11,7 @@ import { Analytics } from "@vercel/analytics/react";
 
 import appCss from "../styles.css?url";
 import { DiagnosticoProvider } from "@/lib/diagnostico/store";
+import { LangProvider } from "@/lib/lang";
 
 function NotFoundComponent() {
   return (
@@ -120,9 +121,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <DiagnosticoProvider>
-        <Outlet />
-      </DiagnosticoProvider>
+      <LangProvider>
+        <DiagnosticoProvider>
+          <Outlet />
+        </DiagnosticoProvider>
+      </LangProvider>
     </QueryClientProvider>
   );
 }
