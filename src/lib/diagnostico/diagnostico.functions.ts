@@ -378,12 +378,7 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
 
     const record = row as Record<string, unknown>;
     if (!record.pago_confirmado) {
-      // BETA: diagnóstico creado antes del hardcode de pago_confirmado — marcarlo como confirmado.
-      const { error: payErr } = await supabaseAdmin
-        .from("diagnosticos" as never)
-        .update({ pago_confirmado: true } as never)
-        .eq("id", data.id);
-      if (payErr) throw new Error("El pago no está confirmado para este diagnóstico");
+      throw new Error("Pago no confirmado");
     }
 
     // Si ya fue generado, devolverlo tal cual (idempotencia)
