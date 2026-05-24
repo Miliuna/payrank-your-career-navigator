@@ -68,7 +68,7 @@ function Band({
   const cls = theme === "dark" ? "theme-dark" : "theme-light";
   return (
     <section className={`${bg} ${cls}`}>
-      <div className="mx-auto max-w-4xl px-5 md:px-8 py-12 md:py-20 space-y-12">
+      <div className="mx-auto max-w-4xl px-4 md:px-6 py-12 md:py-20 space-y-12">
         {children}
       </div>
     </section>
@@ -79,7 +79,7 @@ const ThemeStyles = () => (
     .theme-light { --hueso: oklch(0.15 0 0); --tinta: oklch(1 0 0); color: #0C0C0C; }
     .theme-light h2 { color: #1A2B45 !important; }
     .theme-light .eyebrow { color: #2E4A6E !important; }
-    .theme-light .p-body { color: #0C0C0C !important; text-align: justify; }
+    .theme-light .p-body { color: #0C0C0C !important; text-align: left; font-size: 1.0625rem; }
     .theme-light .card-alert { background: #F0EDE8 !important; border: 0 !important; border-left: 3px solid #2E4A6E !important; }
     .theme-light table { border-color: #E5E1DA; }
     .theme-light table thead tr { background: #1A2B45 !important; }
@@ -344,6 +344,7 @@ function ResultadoPage() {
               pais.includes("estados unidos") || pais.includes("united states") || pais.includes("ee.uu") ||
               pais === "uk" || pais.includes("united kingdom") || pais.includes("reino unido") ||
               pais.includes("australia") || pais.includes("canad");
+            const euroOnly = pais.includes("espa") || pais.includes("spain");
             const tc = (row.tipo_cambio_utilizado ?? null) as
               | { moneda?: string; valor?: number; fuente?: string; fecha?: string }
               | null;
@@ -373,6 +374,19 @@ function ResultadoPage() {
                   <KV k="P75" v={str(s2.p75_usd)} />
                   <KV k="P90" v={str(s2.p90_usd)} />
                   <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
+                </Card>
+              );
+            }
+
+            if (euroOnly) {
+              return (
+                <Card>
+                  <Eyebrow>RANGO EN EUR</Eyebrow>
+                  <KV k="P25" v={str(s2.p25_local)} />
+                  <KV k="P50" v={str(s2.p50_local)} />
+                  <KV k="P75" v={str(s2.p75_local)} />
+                  <KV k="P90" v={str(s2.p90_local)} />
+                  <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
                 </Card>
               );
             }

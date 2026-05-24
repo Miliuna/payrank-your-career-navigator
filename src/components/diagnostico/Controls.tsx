@@ -31,7 +31,7 @@ export function CardOption({ selected, onClick, children }: CardOptionProps) {
       className={cn(
         "w-full text-left font-body text-base md:text-lg p-5 md:p-6 border transition-all",
         selected
-          ? "border-hueso bg-hueso/5 text-hueso"
+          ? "border-hueso bg-hueso text-tinta"
           : "border-hueso/20 text-hueso/85 hover:border-hueso/60 hover:bg-hueso/5"
       )}
     >

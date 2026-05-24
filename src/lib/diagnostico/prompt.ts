@@ -354,9 +354,9 @@ type AnyRecord = Record<string, unknown>;
 
 const MODO_DESCRIPCION: Record<string, string> = {
   A: "A — Quiero saber cuánto valgo en el mercado",
-  B: "B — Estoy en una negociación salarial",
-  C: "C — Estoy preparando una entrevista para un puesto específico",
-  D: "D — Estoy evaluando una oferta concreta",
+  B: "B — Estoy en una negociación salarial con mi empleador actual",
+  C: "C — Tengo una entrevista o negociación con una empresa específica (ver PUESTO OBJETIVO más abajo)",
+  D: "D — Recibí una oferta concreta y quiero evaluarla (ver PUESTO OBJETIVO más abajo)",
 };
 
 function v(value: unknown, fallback = "no declarado"): string {
@@ -376,17 +376,47 @@ function v(value: unknown, fallback = "no declarado"): string {
 export function buildUserPrompt(d: AnyRecord): string {
   const modo = typeof d.modo === "string" ? d.modo : "";
   const modoDesc = MODO_DESCRIPCION[modo] ?? v(d.modo);
+  const isModeWithTarget = modo === "C" || modo === "D";
 
   const salario = d.salario_actual != null
     ? `${v(d.salario_actual)} ${v(d.moneda_actual, "")} ${v(d.salario_tipo, "")}`.trim()
     : "no declarado";
 
-  return `Situación de consulta: ${modoDesc}
+  const doc = d.datos_extraidos_documento && typeof d.datos_extraidos_documento === "object"
+    ? d.datos_extraidos_documento as AnyRecord
+    : null;
 
-PERFIL:
+  const targetJobBlock = isModeWithTarget && doc
+    ? `
+
+PUESTO OBJETIVO — DATOS EXTRAÍDOS DEL DOCUMENTO ADJUNTO (PRIORIDAD MÁXIMA):
+Título del puesto objetivo: ${v(doc.titulo_puesto)}
+Empresa/tipo de empresa objetivo: ${v(doc.tipo_empresa_inferida)}
+Industria del puesto objetivo: ${v(doc.industria_inferida)}
+Nivel jerárquico del puesto objetivo: ${v(doc.nivel_jerarquico_inferido)}
+Funciones del puesto objetivo: ${v(doc.funciones_inferidas)}
+Alcance del puesto objetivo: ${v(doc.alcance_inferido)}
+Salario ofertado (si figura): ${v(doc.salario_actual_inferido)} ${v(doc.moneda_inferida, "")}
+
+INSTRUCCIÓN CRÍTICA — MODO ${modo}:
+El análisis COMPLETO debe estar referenciado a la industria y empresa del PUESTO OBJETIVO, no al empleador actual del usuario.
+Todos los benchmarks, scripts de negociación (seccion_6), argumentos (seccion_5) y recomendaciones deben ser 100% específicos a ${modo === "C" ? "la empresa donde el usuario va a entrevistarse o negociar" : "la empresa que realizó la oferta concreta"}.
+Si la industria del puesto objetivo difiere de la industria del perfil del usuario, los benchmarks deben corresponder a la industria del PUESTO OBJETIVO.`
+    : "";
+
+  const modeInstruction = isModeWithTarget
+    ? `\n\nINSTRUCCIÓN DE MODO ${modo}: ${modo === "C"
+        ? "Scripts y argumentos de negociación orientados a obtener la oferta o negociar los términos con la empresa objetivo. El benchmark de mercado usa la industria y sector de la empresa objetivo."
+        : "Evaluá si la oferta recibida es competitiva para el sector de la empresa que la hace. Incluí recomendación clara (aceptar / negociar / rechazar) con piso y techo de negociación."
+      }`
+    : "";
+
+  return `Situación de consulta: ${modoDesc}${targetJobBlock}
+
+PERFIL DEL USUARIO:
 País donde opera el rol: ${v(d.pais_rol)}
-Industria: ${v(d.industria)}
-Tipo de empresa: ${v(d.tipo_empresa)}
+Industria actual del usuario: ${v(d.industria)}
+Tipo de empresa actual: ${v(d.tipo_empresa)}
 Nivel jerárquico declarado: ${v(d.nivel)}
 Alcance del rol: ${v(d.alcance)}
 Funciones reales: ${v(d.funciones)}
@@ -407,7 +437,7 @@ Beneficios actuales: ${v(d.beneficios)}
 Descripción del puesto: ${v(d.puesto_descripcion)}
 Género: ${v(d.genero, "no solicitado")}
 
-Inferencia de valuación validada: ${v(d.inferencia_valuacion)}
+Inferencia de valuación validada: ${v(d.inferencia_valuacion)}${modeInstruction}
 
 Generá el PayRank completo aplicando todos los ajustes compensológicos del system prompt.
 

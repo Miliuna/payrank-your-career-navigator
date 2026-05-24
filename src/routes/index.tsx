@@ -391,6 +391,58 @@ function Landing() {
         </div>
       </section>
 
+      {/* Referidos */}
+      <section className="bg-hueso text-tinta px-5 md:px-10 py-16 md:py-20">
+        <div className="mx-auto max-w-4xl border-t border-niebla pt-16">
+          <p className="font-ui text-[10px] text-piedra mb-4">PROGRAMA DE REFERIDOS</p>
+          <h2 className="font-display text-3xl md:text-4xl mb-6">
+            Compartí. Y el próximo <span className="font-display-italic">es tuyo.</span>
+          </h2>
+          <div className="grid md:grid-cols-2 gap-10 mt-8">
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <span className="font-display text-4xl text-piedra leading-none">1</span>
+                <div>
+                  <p className="font-body font-semibold text-tinta mb-1">Compartís tu link único</p>
+                  <p className="font-body text-sm text-piedra leading-relaxed">
+                    Cada PayRank completado incluye un link personal de referido que podés compartir con colegas o en redes.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <span className="font-display text-4xl text-piedra leading-none">2</span>
+                <div>
+                  <p className="font-body font-semibold text-tinta mb-1">Ellos obtienen 15% de descuento</p>
+                  <p className="font-body text-sm text-piedra leading-relaxed">
+                    Cada persona que haga su PayRank usando tu link recibe 15% de descuento automático en su primer análisis.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <span className="font-display text-4xl text-piedra leading-none">3</span>
+                <div>
+                  <p className="font-body font-semibold text-tinta mb-1">Con 3 referidos, el próximo es gratis</p>
+                  <p className="font-body text-sm text-piedra leading-relaxed">
+                    Cuando tres personas completan su PayRank usando tu link, tu próximo análisis no te cuesta nada.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col justify-center">
+              <div className="bg-tinta text-hueso p-8">
+                <p className="font-ui text-[10px] text-hueso/60 mb-4">EN RESUMEN</p>
+                <p className="font-display-italic text-2xl text-hueso leading-snug mb-6">
+                  "Si tres personas hacen su PayRank con tu link, el próximo es tuyo — gratis."
+                </p>
+                <p className="font-body text-sm text-hueso/70">
+                  Tu link único aparece al final de tu reporte, una vez que completás tu PayRank.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Metodología */}
       <section id="metodologia" className="bg-hueso text-tinta px-5 md:px-10 pb-24">
         <div className="mx-auto max-w-4xl border-t border-niebla pt-20">
