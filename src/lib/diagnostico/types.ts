@@ -75,6 +75,10 @@ export type Respuestas = {
   // Contractor sub-flow
   contractorHoras?: "40h" | "menos40" | "proyecto";
   contractorPago?: "usd" | "local" | "mixto";
+  // Mode C sub-case
+  subCasoC?: "oferta" | "entrevista";
+  // Mode D target direction
+  targetDireccionD?: string;
 };
 
 export type DatosExtraidos = {

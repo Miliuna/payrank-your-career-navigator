@@ -342,9 +342,11 @@ Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any f
 
 const JSON_ONLY_RULE = `Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.`;
 
-// SYSTEM_PROMPT_B: same as SYSTEM_PROMPT but with the JSON rule injected at two extra positions
+const ABSOLUTE_RULE_B = `ABSOLUTE RULE NUMBER ONE: Respond with raw JSON only. No markdown. No backticks. No code blocks. No \`\`\`json wrapper. Your response must begin with { and end with }. Any other format will cause a critical system failure.`;
+
+// SYSTEM_PROMPT_B: same as SYSTEM_PROMPT but with the JSON rule injected at three extra positions
 // specific to the sections parteB generates (5–8, freelance).
-export const SYSTEM_PROMPT_B = SYSTEM_PROMPT
+export const SYSTEM_PROMPT_B = `${ABSOLUTE_RULE_B}\n\n` + SYSTEM_PROMPT
   .replace(
     `  "seccion_5": {`,
     `--- CRITICAL RULE FOR SECTIONS 5–8 AND freelance ---\n${JSON_ONLY_RULE}\n---\n\n  "seccion_5": {`,
@@ -355,8 +357,8 @@ type AnyRecord = Record<string, unknown>;
 const MODO_DESCRIPCION: Record<string, string> = {
   A: "A — Quiero saber cuánto valgo en el mercado",
   B: "B — Estoy en una negociación salarial con mi empleador actual",
-  C: "C — Tengo una entrevista o negociación con una empresa específica (ver PUESTO OBJETIVO más abajo)",
-  D: "D — Recibí una oferta concreta y quiero evaluarla (ver PUESTO OBJETIVO más abajo)",
+  C: "C — Tengo una oferta o entrevista con una empresa específica (ver PUESTO OBJETIVO abajo)",
+  D: "D — Quiero dar mi próximo salto de carrera",
 };
 
 function v(value: unknown, fallback = "no declarado"): string {
@@ -376,7 +378,7 @@ function v(value: unknown, fallback = "no declarado"): string {
 export function buildUserPrompt(d: AnyRecord): string {
   const modo = typeof d.modo === "string" ? d.modo : "";
   const modoDesc = MODO_DESCRIPCION[modo] ?? v(d.modo);
-  const isModeWithTarget = modo === "C" || modo === "D";
+  const isModeWithTarget = modo === "C";
 
   const salario = d.salario_actual != null
     ? `${v(d.salario_actual)} ${v(d.moneda_actual, "")} ${v(d.salario_tipo, "")}`.trim()
@@ -398,18 +400,40 @@ Funciones del puesto objetivo: ${v(doc.funciones_inferidas)}
 Alcance del puesto objetivo: ${v(doc.alcance_inferido)}
 Salario ofertado (si figura): ${v(doc.salario_actual_inferido)} ${v(doc.moneda_inferida, "")}
 
-INSTRUCCIÓN CRÍTICA — MODO ${modo}:
+INSTRUCCIÓN CRÍTICA — MODO C:
 El análisis COMPLETO debe estar referenciado a la industria y empresa del PUESTO OBJETIVO, no al empleador actual del usuario.
-Todos los benchmarks, scripts de negociación (seccion_6), argumentos (seccion_5) y recomendaciones deben ser 100% específicos a ${modo === "C" ? "la empresa donde el usuario va a entrevistarse o negociar" : "la empresa que realizó la oferta concreta"}.
+Todos los benchmarks, scripts de negociación (seccion_6), argumentos (seccion_5) y recomendaciones deben ser 100% específicos a la empresa donde el usuario va a entrevistarse o negociar.
 Si la industria del puesto objetivo difiere de la industria del perfil del usuario, los benchmarks deben corresponder a la industria del PUESTO OBJETIVO.`
     : "";
 
-  const modeInstruction = isModeWithTarget
-    ? `\n\nINSTRUCCIÓN DE MODO ${modo}: ${modo === "C"
-        ? "Scripts y argumentos de negociación orientados a obtener la oferta o negociar los términos con la empresa objetivo. El benchmark de mercado usa la industria y sector de la empresa objetivo."
-        : "Evaluá si la oferta recibida es competitiva para el sector de la empresa que la hace. Incluí recomendación clara (aceptar / negociar / rechazar) con piso y techo de negociación."
-      }`
-    : "";
+  const descStr = typeof d.puesto_descripcion === "string" ? d.puesto_descripcion : "";
+
+  const modeInstructionBlock = (() => {
+    if (modo === "B") {
+      return `\n\nINSTRUCCIÓN DE MODO B — NEGOCIACIÓN INTERNA:
+El usuario está en una negociación salarial activa con su empleador actual. El alcance real que describió en "Descripción del puesto" es el argumento central.
+En seccion_5, argumento_2_alcance_real debe citar directamente las responsabilidades que el usuario ejerce más allá de su título formal.
+En seccion_6, los scripts y las objeciones deben estar 100% orientados a negociación interna (con el jefe o RRHH de la empresa actual). Incluir respuestas específicas a estas objeciones:
+- "No hay presupuesto / budget freeze este año"
+- "Esperemos el próximo ciclo de revisión salarial"
+- "A todos les dimos el mismo ajuste"`;
+    }
+    if (modo === "C") {
+      const tieneOferta = descStr.includes("Ya tengo una oferta concreta");
+      return `\n\nINSTRUCCIÓN DE MODO C — ${tieneOferta ? "NEGOCIACIÓN DE OFERTA" : "PREPARACIÓN PARA ENTREVISTA"}:
+${tieneOferta
+  ? "El usuario ya recibió una oferta concreta de la empresa objetivo. El diagnóstico debe: (1) evaluar si la oferta es competitiva vs. mercado de esa industria; (2) dar recomendación clara (aceptar / negociar / rechazar) en seccion_5; (3) definir piso y techo de negociación específicos."
+  : "El usuario está en proceso de selección o entrevista con la empresa objetivo. El diagnóstico debe prepararlo para negociar la mejor oferta posible cuando llegue el momento."}
+Todos los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO definido arriba.`;
+    }
+    if (modo === "D") {
+      return `\n\nINSTRUCCIÓN DE MODO D — SALTO DE CARRERA:
+El usuario quiere dar su próximo salto profesional. La seccion_8 (hoja de ruta) es la sección más crítica de este diagnóstico.
+El ceiling en seccion_5 debe corresponder al rango del nivel que el usuario quiere alcanzar (ver "Dirección objetivo" en la descripción del puesto si fue declarada).
+El diagnóstico debe incluir: análisis de la brecha entre el nivel actual y el nivel objetivo, tres criterios concretos y accionables para el salto, y un tiempo realista.`;
+    }
+    return "";
+  })();
 
   return `Situación de consulta: ${modoDesc}${targetJobBlock}
 
@@ -437,7 +461,7 @@ Beneficios actuales: ${v(d.beneficios)}
 Descripción del puesto: ${v(d.puesto_descripcion)}
 Género: ${v(d.genero, "no solicitado")}
 
-Inferencia de valuación validada: ${v(d.inferencia_valuacion)}${modeInstruction}
+Inferencia de valuación validada: ${v(d.inferencia_valuacion)}${modeInstructionBlock}
 
 Generá el PayRank completo aplicando todos los ajustes compensológicos del system prompt.
 

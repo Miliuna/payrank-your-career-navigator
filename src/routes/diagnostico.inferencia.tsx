@@ -119,10 +119,30 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
   };
 }
 
+const INFERENCIA_TEXTO: Record<string, { titulo: React.ReactNode; parrafo: string }> = {
+  A: {
+    titulo: <>Esto es lo que <span className="font-display-italic">inferimos</span> sobre el alcance real de tu rol</>,
+    parrafo: "Esta inferencia impacta directamente en tu diagnóstico. Si algo no refleja tu situación real, corregilo ahora.",
+  },
+  B: {
+    titulo: <>Esto es lo que <span className="font-display-italic">inferí</span> sobre la complejidad real de lo que hacés</>,
+    parrafo: "No solo tu título — lo que realmente ejercés. Confirmalo o ajustalo. Cada corrección fortalece tus argumentos de negociación.",
+  },
+  C: {
+    titulo: <>Esto es lo que <span className="font-display-italic">inferí</span> sobre la complejidad del puesto al que aplicás</>,
+    parrafo: "Confirmalo o ajustalo. Esta inferencia define los benchmarks y scripts específicos para tu negociación con la empresa objetivo.",
+  },
+  D: {
+    titulo: <>Esto es lo que <span className="font-display-italic">inferí</span> sobre la complejidad de tu rol actual</>,
+    parrafo: "Es tu punto de partida. Confirmalo o ajustalo antes de definir tu hoja de ruta hacia el siguiente nivel.",
+  },
+};
+
 function InferenciaPage() {
   const navigate = useNavigate();
   const { state, setState } = useDiagnostico();
   const [editando, setEditando] = React.useState(false);
+  const modo = state.modo;
 
   React.useEffect(() => {
     if (!state.inferencia) {
@@ -162,10 +182,10 @@ function InferenciaPage() {
       <StepFade k="inf">
         <p className="font-ui text-[10px] text-hueso/45 mb-3">VALIDACIÓN DE INFERENCIA</p>
         <h1 className="font-display text-3xl md:text-4xl mb-3 text-hueso leading-tight">
-          Esto es lo que <span className="font-display-italic">inferimos</span> sobre el alcance real de tu rol
+          {(INFERENCIA_TEXTO[modo] ?? INFERENCIA_TEXTO.A).titulo}
         </h1>
         <p className="font-body text-hueso/60 mb-6">
-          Esta inferencia impacta directamente en tu diagnóstico. Si algo no refleja tu situación real, corregilo ahora.
+          {(INFERENCIA_TEXTO[modo] ?? INFERENCIA_TEXTO.A).parrafo}
         </p>
         <button
           type="button"

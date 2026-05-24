@@ -150,7 +150,8 @@ const EXTRACTABLE_STEPS = new Set([1, 2, 3, 8, 9, 10, 11, 12, 13]);
 function PreguntasPage() {
   const navigate = useNavigate();
   const { state, setState } = useDiagnostico();
-  const [step, setStep] = React.useState(0); // 0..18
+  const modo = state.modo;
+  const [step, setStep] = React.useState(() => modo === "C" ? -1 : 0); // -1 = sub-case (Mode C only), 0..18
   const appliedRef = React.useRef(false);
 
   const r = state.respuestas;
@@ -180,10 +181,13 @@ function PreguntasPage() {
   }, [hasDoc, datos, overrides]);
 
   const next = () => {
+    if (step === -1) { setStep(0); return; }
     if (step < TOTAL - 1) setStep(step + 1);
     else navigate({ to: "/diagnostico/inferencia" });
   };
   const back = () => {
+    if (step === -1) { navigate({ to: "/diagnostico/upload" }); return; }
+    if (step === 0 && modo === "C") { setStep(-1); return; }
     if (step > 0) setStep(step - 1);
     else navigate({ to: "/diagnostico/upload" });
   };
@@ -196,24 +200,28 @@ function PreguntasPage() {
     }));
   };
 
-  const valid = isValid(step, r);
-  const extraccionTexto = hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step)
+  const valid = isValid(step, r, modo);
+  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step)
     ? resumenExtraccion(step, datos!)
     : null;
 
   // Cabecera de progreso
-  const progressHeader = hasDoc && pendientes
-    ? (() => {
-        const idx = pendientes.indexOf(step);
-        const totalPend = pendientes.length;
-        if (idx >= 0) return `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
-        return `CAMPO CONFIRMADO`;
-      })()
-    : `PREGUNTA ${step + 1} DE ${TOTAL}`;
+  const progressHeader = step === -1
+    ? "PASO PREVIO"
+    : (hasDoc && pendientes
+      ? (() => {
+          const idx = pendientes.indexOf(step);
+          const totalPend = pendientes.length;
+          if (idx >= 0) return `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
+          return `CAMPO CONFIRMADO`;
+        })()
+      : `PREGUNTA ${step + 1} DE ${TOTAL}`);
 
-  const pct = hasDoc && pendientes && pendientes.length > 0
-    ? Math.round(((Math.max(pendientes.indexOf(step), 0) + 1) / pendientes.length) * 50) + 10
-    : Math.round(((step + 1) / TOTAL) * 50) + 10;
+  const pct = step === -1
+    ? 8
+    : (hasDoc && pendientes && pendientes.length > 0
+      ? Math.round(((Math.max(pendientes.indexOf(step), 0) + 1) / pendientes.length) * 50) + 10
+      : Math.round(((step + 1) / TOTAL) * 50) + 10);
 
   return (
     <DiagnosticoShell step={2} progress={pct}>
@@ -226,10 +234,12 @@ function PreguntasPage() {
         </p>
       )}
       <StepFade k={step}>
-        {extraccionTexto ? (
+        {step === -1 ? (
+          <SubCasoC r={r} setR={setR} />
+        ) : extraccionTexto ? (
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} />
         ) : (
-          renderStep(step, r, setR)
+          renderStep(step, r, setR, modo)
         )}
       </StepFade>
       {!extraccionTexto && <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />}
@@ -282,8 +292,13 @@ function ConfirmCard({ texto, onCorrecto, onCambiar }: {
   );
 }
 
-function isValid(step: number, r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]): boolean {
+function isValid(
+  step: number,
+  r: ReturnType<typeof useDiagnostico>["state"]["respuestas"],
+  modo: string,
+): boolean {
   switch (step) {
+    case -1: return !!r.subCasoC;
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
     case 1: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
     case 2: return !!r.tipoEmpresa;
@@ -300,6 +315,7 @@ function isValid(step: number, r: ReturnType<typeof useDiagnostico>["state"]["re
     case 13: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
     case 14: {
       if (!r.situacion) return false;
+      if (modo === "C") return true; // salario opcional en Modo C
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
       if (r.situacion === "freelance") return !!r.salario && !!r.moneda;
       if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
@@ -320,6 +336,7 @@ function renderStep(
   step: number,
   r: ReturnType<typeof useDiagnostico>["state"]["respuestas"],
   setR: (p: Partial<typeof r>) => void,
+  modo: string,
 ) {
   switch (step) {
     case 0: return <P1Pais r={r} setR={setR} />;
@@ -336,9 +353,9 @@ function renderStep(
     case 11: return <P12Formacion r={r} setR={setR} />;
     case 12: return <P13Certificaciones r={r} setR={setR} />;
     case 13: return <P14HerramientasIA r={r} setR={setR} />;
-    case 14: return <P15Situacion r={r} setR={setR} />;
+    case 14: return <P15Situacion r={r} setR={setR} modo={modo} />;
     case 15: return <P16Beneficios r={r} setR={setR} />;
-    case 16: return <P17Descripcion r={r} setR={setR} />;
+    case 16: return <P17Descripcion r={r} setR={setR} modo={modo} />;
     case 17: return <P18Genero r={r} setR={setR} />;
     case 18: return <P19Contacto r={r} setR={setR} />;
     default: return null;
@@ -351,6 +368,31 @@ type Props = {
   r: ReturnType<typeof useDiagnostico>["state"]["respuestas"];
   setR: (p: Partial<Props["r"]>) => void;
 };
+
+function SubCasoC({ r, setR }: Props) {
+  return (
+    <>
+      <QuestionTitle>¿En qué momento estás?</QuestionTitle>
+      <QuestionHint>
+        Esto define la estrategia del diagnóstico: si ya tenés una oferta, el foco es negociar los términos. Si estás en proceso, el foco es posicionarte para obtenerla.
+      </QuestionHint>
+      <div className="grid grid-cols-1 gap-3">
+        <CardOption
+          selected={r.subCasoC === "oferta"}
+          onClick={() => setR({ subCasoC: "oferta" })}
+        >
+          Ya tengo una oferta concreta
+        </CardOption>
+        <CardOption
+          selected={r.subCasoC === "entrevista"}
+          onClick={() => setR({ subCasoC: "entrevista" })}
+        >
+          Tengo una entrevista / estoy en proceso de selección
+        </CardOption>
+      </div>
+    </>
+  );
+}
 
 function SimpleCards({ title, hint, options, value, onChange }: {
   title: string; hint?: string; options: readonly string[]; value?: string; onChange: (v: string) => void;
@@ -740,10 +782,13 @@ function P14HerramientasIA({ r, setR }: Props) {
   );
 }
 
-function P15Situacion({ r, setR }: Props) {
+function P15Situacion({ r, setR, modo }: Props & { modo?: string }) {
   return (
     <>
       <QuestionTitle>¿Cuál es tu situación laboral actual?</QuestionTitle>
+      {modo === "C" && (
+        <QuestionHint>El salario es opcional en este modo — igual lo usamos si lo declarás para calcular tu posicionamiento.</QuestionHint>
+      )}
       <div className="grid grid-cols-1 gap-3 mb-8">
         {SITUACIONES.map((s) => (
           <div key={s.id}>
@@ -955,7 +1000,65 @@ function P16Beneficios({ r, setR }: Props) {
   );
 }
 
-function P17Descripcion({ r, setR }: Props) {
+function P17Descripcion({ r, setR, modo }: Props & { modo?: string }) {
+  if (modo === "B") {
+    return (
+      <>
+        <QuestionTitle>¿Tu rol real va más allá de tu título?</QuestionTitle>
+        <QuestionHint>
+          Describí lo que hacés de verdad: decisiones que tomás, proyectos que liderás, impacto que generás — aunque no estén en tu descripción formal. Esto es el argumento central de tu negociación.
+        </QuestionHint>
+        <TextArea
+          placeholder="Describí el alcance real de tu puesto: decisiones, proyectos, responsabilidades que exceden tu título, impacto concreto en el negocio."
+          value={r.descripcionPuesto ?? ""}
+          onChange={(e) => setR({ descripcionPuesto: e.target.value })}
+          className="min-h-48"
+        />
+      </>
+    );
+  }
+  if (modo === "C") {
+    return (
+      <>
+        <QuestionTitle>¿Qué experiencia querés destacar para este rol?</QuestionTitle>
+        <QuestionHint>
+          Describí lo más relevante de tu trayectoria para el puesto al que aplicás. Esto se usa para construir tus argumentos frente a la empresa objetivo.
+        </QuestionHint>
+        <TextArea
+          placeholder="Describí los logros, proyectos y habilidades más relevantes para el rol al que aplicás."
+          value={r.descripcionPuesto ?? ""}
+          onChange={(e) => setR({ descripcionPuesto: e.target.value })}
+          className="min-h-48"
+        />
+      </>
+    );
+  }
+  if (modo === "D") {
+    return (
+      <>
+        <QuestionTitle>Contanos sobre tu rol actual y adónde apuntás</QuestionTitle>
+        <QuestionHint>
+          Describí tu puesto actual y el próximo salto que querés dar. El diagnóstico traza la ruta entre ambos.
+        </QuestionHint>
+        <TextArea
+          placeholder="Describí tu puesto actual: responsabilidades, decisiones y alcance real."
+          value={r.descripcionPuesto ?? ""}
+          onChange={(e) => setR({ descripcionPuesto: e.target.value })}
+          className="min-h-48"
+        />
+        <div className="mt-6">
+          <p className="font-body text-base text-hueso mb-3">¿A dónde apuntás?</p>
+          <TextArea
+            placeholder="Describí el siguiente rol o nivel que querés alcanzar: título, tipo de empresa, responsabilidades que buscás asumir."
+            value={r.targetDireccionD ?? ""}
+            onChange={(e) => setR({ targetDireccionD: e.target.value })}
+            className="min-h-32"
+          />
+        </div>
+      </>
+    );
+  }
+  // Modo A (default)
   return (
     <>
       <QuestionTitle>Contanos sobre tu puesto</QuestionTitle>

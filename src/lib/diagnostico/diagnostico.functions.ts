@@ -32,10 +32,18 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     : null;
   const moneda = (r.moneda as string) ?? (r.monedaAnterior as string) ?? null;
 
-  // Contractor: empaquetar sub-flow en puesto_descripcion para que el prompt lo lea
+  // Empaquetar metadatos en puesto_descripcion para que el prompt los lea
   const baseDesc = (r.descripcionPuesto as string) ?? (r.funcionesTexto as string) ?? "";
   const contractorMeta = r.situacion === "contractor"
     ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nModalidad de pago: ${r.contractorPago ?? "n/d"}`
+    : "";
+  const subCasoC = r.subCasoC as string | undefined;
+  const subCasoMeta = subCasoC
+    ? `\n\n[Subcaso Modo C: ${subCasoC === "oferta" ? "Ya tengo una oferta concreta" : "Tengo una entrevista / estoy en proceso de selección"}]`
+    : "";
+  const targetDireccionD = r.targetDireccionD as string | undefined;
+  const targetDirMeta = targetDireccionD
+    ? `\n\n[Dirección objetivo — Modo D]\n${targetDireccionD}`
     : "";
 
   return {
@@ -67,7 +75,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     moneda_actual: moneda,
     salario_tipo: (r.brutoNeto as string) ?? null,
     beneficios: Array.isArray(r.beneficios) ? (r.beneficios as string[]) : null,
-    puesto_descripcion: (baseDesc + contractorMeta) || null,
+    puesto_descripcion: (baseDesc + contractorMeta + subCasoMeta + targetDirMeta) || null,
     linkedin_url: (r.linkedinUrl as string) ?? null,
     genero: (r.genero as string) ?? null,
     mail: (r.email as string) ?? null,
@@ -233,12 +241,14 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
 
 function tryParseJson(text: string): unknown | null {
   let cleaned = text.trim();
-  // 1) Fence markdown ```json ... ``` en cualquier posición (no anclado a fin)
+  // 0) Strip leading/trailing markdown fences (most common failure mode)
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, "").replace(/\s*```\s*$/, "").trim();
+  try { return JSON.parse(cleaned); } catch { /* noop */ }
+  // 1) Fence markdown ```json ... ``` anywhere in text
   const fence = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fence) cleaned = fence[1].trim();
-  try {
-    return JSON.parse(cleaned);
-  } catch { /* noop */ }
+  if (fence) {
+    try { return JSON.parse(fence[1].trim()); } catch { /* noop */ }
+  }
   // 2) Extraer primer objeto JSON balanceado, ignorando llaves dentro de strings
   const first = cleaned.indexOf("{");
   if (first !== -1) {
