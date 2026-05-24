@@ -92,7 +92,7 @@ function ProcesandoPage() {
               <a href="mailto:hello@payrank.co" className="underline underline-offset-4">hello@payrank.co</a>
               .
             </p>
-            <p className="mt-3 font-body text-xs text-hueso/40 max-w-lg whitespace-pre-wrap">{error}</p>
+            <p className="mt-3 font-body text-xs text-hueso/40 max-w-lg">Ocurrió un error inesperado. Por favor intentá nuevamente en unos minutos.</p>
             <button
               onClick={() => { startedRef.current = false; setError(null); setIdx(0); setRetryCount((c) => c + 1); }}
               className="mt-6 inline-flex items-center justify-center bg-hueso text-tinta px-6 py-3 font-ui text-[11px]"
