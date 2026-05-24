@@ -369,6 +369,7 @@ async function fetchFxRate(currency: string): Promise<TipoCambio | null> {
 export const generateDiagnostico = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
+    try {
     const { data: row, error } = await supabaseAdmin
       .from("diagnosticos" as never)
       .select("*")
@@ -378,7 +379,7 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
 
     const record = row as Record<string, unknown>;
     if (!record.pago_confirmado) {
-      throw new Error("Pago no confirmado");
+      throw new Error("PAYMENT_REQUIRED");
     }
 
     // Si ya fue generado, devolverlo tal cual (idempotencia)
@@ -407,7 +408,8 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
         }
       }
       if (!parsed || typeof parsed !== "object") {
-        throw new Error(`Anthropic no devolvió JSON válido en ${label}. Raw: ${lastRaw.slice(0, 300)}`);
+        console.error(`[generateDiagnostico:${label}] respuesta inválida. Raw:`, lastRaw.slice(0, 500));
+        throw new Error("GENERATION_FAILED");
       }
       return parsed as Record<string, unknown>;
     }
@@ -429,10 +431,19 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
         tipo_cambio_utilizado: tipoCambio,
       } as never)
       .eq("id", data.id);
-    if (upErr) throw new Error(upErr.message);
+    if (upErr) {
+      console.error("[generateDiagnostico] update error:", upErr);
+      throw new Error("GENERATION_FAILED");
+    }
 
 
     return { id: record.id as string, link_unico: record.link_unico as string };
+    } catch (err) {
+      console.error("[generateDiagnostico] error:", err);
+      const msg = err instanceof Error ? err.message : "";
+      if (msg === "PAYMENT_REQUIRED") throw new Error("Pago no confirmado");
+      throw new Error("No pudimos generar tu diagnóstico. Intentá nuevamente en unos minutos.");
+    }
   });
 
 // ---------- Obtener diagnóstico por id ----------
