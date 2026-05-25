@@ -94,7 +94,7 @@ const planesEN = [
   },
   {
     nombre: "PRO",
-    precio: "USD 149",
+    precio: "USD 199",
     sufijo: "/yr",
     italic: "For when you want PayRank in your corner all year.",
     descripcion:
@@ -124,7 +124,7 @@ function LandingES() {
       <section className="pt-32 md:pt-44 pb-24 md:pb-36 px-5 md:px-10">
         <div className="mx-auto max-w-4xl">
           <p className="font-ui text-[10px] md:text-[11px] text-hueso/60 mb-8">
-            INTELIGENCIA PROFESIONAL · TU VALOR EN EL MERCADO
+            PROFESSIONAL SALARY INTELLIGENCE
           </p>
           <h1 className="font-display text-[2.75rem] leading-[1.05] md:text-7xl md:leading-[1.02] tracking-tight text-hueso mb-8">
             ¿Cuánto <span className="font-display-italic">valés</span><br />
@@ -838,7 +838,7 @@ function LandingEN() {
                     <td className="py-4 pr-4 text-hueso/70">Price</td>
                     <td className="py-4 px-4">USD 39</td>
                     <td className="py-4 px-4">USD 99</td>
-                    <td className="py-4 px-4">USD 149/yr</td>
+                    <td className="py-4 px-4">USD 199/yr</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">PayRanks included</td>

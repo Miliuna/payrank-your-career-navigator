@@ -1,6 +1,8 @@
+import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { useLang } from "@/lib/lang";
 
 export const Route = createFileRoute("/terminos-condiciones")({
   component: TerminosCondiciones,
@@ -46,6 +48,9 @@ function List({ items }: { items: React.ReactNode[] }) {
 }
 
 function TerminosCondiciones() {
+  const { lang } = useLang();
+  const isEN = lang === "EN";
+  if (isEN) return <TerminosCondicionesEN />;
   return (
     <div className="min-h-screen bg-hueso text-tinta">
       <SiteHeader />
@@ -79,8 +84,7 @@ function TerminosCondiciones() {
           </P>
           <List
             items={[
-              "Son estimaciones informadas, no valores exactos ni garantizados.",
-              "Incluyen un nivel de confianza declarado explícitamente (Alto, Medio o Bajo) según la disponibilidad de datos para el perfil consultado.",
+              "Los resultados se construyen con metodología compensológica profesional y datos de referencia de mercado actualizados.",
               "No constituyen asesoramiento legal, laboral ni financiero.",
               "Pueden variar según el movimiento del mercado después de la generación.",
             ]}
@@ -162,6 +166,114 @@ function TerminosCondiciones() {
 
           <SectionTitle>10 — Contacto</SectionTitle>
           <P>Para consultas sobre estos términos:</P>
+          <P>
+            <a href="mailto:hello@payrank.co" className="underline">hello@payrank.co</a>
+            <br />
+            PayRank LLC
+            <br />
+            30 N Gould St, STE R
+            <br />
+            Sheridan, Wyoming 82801, USA
+          </P>
+        </article>
+      </main>
+      <SiteFooter />
+    </div>
+  );
+}
+
+function TerminosCondicionesEN() {
+  return (
+    <div className="min-h-screen bg-hueso text-tinta">
+      <SiteHeader />
+      <main className="pt-32 pb-24 px-5 md:px-8">
+        <article className="mx-auto max-w-[720px]">
+          <h1 className="font-display text-4xl md:text-5xl leading-tight mb-3">
+            Terms and Conditions
+          </h1>
+          <p className="font-ui text-[11px] text-piedra mb-12">
+            PayRank LLC · Effective May 2026
+          </p>
+
+          <SectionTitle>1 — Acceptance</SectionTitle>
+          <P>
+            By using PayRank, you accept these terms. If you do not agree, do not use the service.
+          </P>
+
+          <SectionTitle>2 — What PayRank is</SectionTitle>
+          <P>
+            PayRank is a professional salary intelligence platform that generates personalized reports based on information provided by the user and professional compensation market criteria.
+          </P>
+
+          <SectionTitle>3 — The service and its limitations</SectionTitle>
+          <P>
+            PayRank generates market estimates based on reference data and professional compensation methodology. Results:
+          </P>
+          <List
+            items={[
+              "Results are built using professional compensation methodology and up-to-date market reference data.",
+              "They do not constitute legal, employment, or financial advice.",
+              "They may vary according to market movement after the report is generated.",
+            ]}
+          />
+          <P>
+            The accuracy of the report depends directly on the quality and completeness of the information the user provides.
+          </P>
+
+          <SectionTitle>4 — Payments and refunds</SectionTitle>
+          <P>
+            Payments are processed through Stripe. Prices are expressed in US dollars (USD).
+          </P>
+          <List
+            items={[
+              <><strong className="font-normal text-tinta">GO Plan (one PayRank):</strong> one-time payment, no expiration.</>,
+              <><strong className="font-normal text-tinta">PLUS Plan (three PayRanks):</strong> one-time payment, no expiration.</>,
+              <><strong className="font-normal text-tinta">PRO Plan (annual):</strong> automatic annual renewal. You may cancel before the renewal date.</>,
+            ]}
+          />
+          <P>
+            <strong className="font-normal text-tinta">Refund policy:</strong>{" "}
+            since the service is delivered immediately and digitally, we do not offer refunds once the PayRank has been generated. If the service has technical issues that prevent report delivery, contact us and we will resolve it.
+          </P>
+
+          <SectionTitle>5 — Referral program</SectionTitle>
+          <P>
+            The referral program allows you to earn a free PayRank when three people complete a PayRank using your unique link. Referrals receive a 15% discount on their first PayRank. PayRank reserves the right to modify or discontinue the program at any time with prior notice.
+          </P>
+
+          <SectionTitle>6 — Acceptable use</SectionTitle>
+          <P>By using PayRank you agree to:</P>
+          <List
+            items={[
+              "Provide truthful information about your professional profile.",
+              "Not use the service for fraudulent or illegal purposes.",
+              "Not attempt to access other users' data.",
+              "Not reproduce or commercialize generated reports without express authorization.",
+            ]}
+          />
+          <P>
+            <strong className="font-normal text-tinta">Personal use only.</strong> The diagnostic generated by PayRank is intended for the personal use of the user. Corporate use or use of the report to provide professional services to third parties is prohibited without express authorization from PayRank LLC.
+          </P>
+
+          <SectionTitle>7 — Intellectual property</SectionTitle>
+          <P>
+            The generated report is for the user's personal use. PayRank LLC retains all rights over the methodology, the system, and the anonymized aggregated data.
+          </P>
+
+          <SectionTitle>8 — Limitation of liability</SectionTitle>
+          <P>
+            PayRank is not responsible for employment, salary, or career decisions made based on the generated report. The user is solely responsible for decisions made using the information received.
+          </P>
+
+          <SectionTitle>9 — Governing law</SectionTitle>
+          <P>
+            These terms are governed by the laws of the State of Wyoming, United States, where PayRank LLC is incorporated.
+            <br />
+            30 N Gould St, STE R, Sheridan, Wyoming 82801, USA
+          </P>
+
+          <SectionTitle>10 — Contact</SectionTitle>
+          <P>For questions about these terms:</P>
           <P>
             <a href="mailto:hello@payrank.co" className="underline">hello@payrank.co</a>
             <br />

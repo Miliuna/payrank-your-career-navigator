@@ -29,11 +29,7 @@ export function SiteFooter() {
             </Link>
           </div>
           <div className="font-ui md:text-right">
-            <div>
-              {isEN
-                ? "Professional Intelligence · Your Market Value"
-                : "Professional Intelligence · Tu valor en el mercado"}
-            </div>
+            <div>PROFESSIONAL SALARY INTELLIGENCE</div>
             <div>
               payrank.co ·{" "}
               <a href="mailto:hello@payrank.co" className="hover:opacity-80 transition-opacity">

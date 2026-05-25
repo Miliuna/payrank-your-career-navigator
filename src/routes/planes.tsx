@@ -208,7 +208,7 @@ const planesEN = [
   },
   {
     nombre: "PRO",
-    precio: "USD 149",
+    precio: "USD 199",
     sufijo: "/yr",
     italic: "For when you want PayRank in your corner all year.",
     descripcion:
@@ -302,7 +302,7 @@ function PlanesEN() {
                     <td className="py-4 pr-4 text-hueso/70">Price</td>
                     <td className="py-4 px-4">USD 39</td>
                     <td className="py-4 px-4">USD 99</td>
-                    <td className="py-4 px-4">USD 149/yr</td>
+                    <td className="py-4 px-4">USD 199/yr</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">PayRanks included</td>
