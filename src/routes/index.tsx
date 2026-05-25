@@ -124,7 +124,7 @@ function LandingES() {
       <section className="pt-32 md:pt-44 pb-24 md:pb-36 px-5 md:px-10">
         <div className="mx-auto max-w-4xl">
           <p className="font-ui text-[10px] md:text-[11px] text-hueso/60 mb-8">
-            PROFESSIONAL INTELLIGENCE · TU VALOR EN EL MERCADO
+            INTELIGENCIA PROFESIONAL · TU VALOR EN EL MERCADO
           </p>
           <h1 className="font-display text-[2.75rem] leading-[1.05] md:text-7xl md:leading-[1.02] tracking-tight text-hueso mb-8">
             ¿Cuánto <span className="font-display-italic">valés</span><br />

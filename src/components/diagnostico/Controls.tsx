@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { useLang } from "@/lib/lang";
 
 export function QuestionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -67,9 +68,12 @@ type NavButtonsProps = {
 export function NavButtons({
   onBack,
   onNext,
-  nextLabel = "Continuar",
+  nextLabel,
   nextDisabled,
 }: NavButtonsProps) {
+  const { lang } = useLang();
+  const isEN = lang === "EN";
+  const label = nextLabel ?? (isEN ? "Continue" : "Continuar");
   return (
     <div className="mt-10 flex items-center justify-between">
       {onBack ? (
@@ -78,7 +82,7 @@ export function NavButtons({
           onClick={onBack}
           className="font-ui text-[11px] text-hueso/60 hover:text-hueso transition-colors"
         >
-          ← Volver
+          {isEN ? "← Back" : "← Volver"}
         </button>
       ) : (
         <span />
@@ -90,7 +94,7 @@ export function NavButtons({
           disabled={nextDisabled}
           className="inline-flex items-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {nextLabel} <span aria-hidden>→</span>
+          {label} <span aria-hidden>→</span>
         </button>
       )}
     </div>

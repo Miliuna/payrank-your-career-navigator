@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { NavButtons } from "@/components/diagnostico/Controls";
 import { useDiagnostico } from "@/lib/diagnostico/store";
+import { useLang } from "@/lib/lang";
 import type { Inferencia } from "@/lib/diagnostico/types";
 
 export const Route = createFileRoute("/diagnostico/inferencia")({
@@ -119,7 +120,7 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
   };
 }
 
-const INFERENCIA_TEXTO: Record<string, { titulo: React.ReactNode; parrafo: string }> = {
+const INFERENCIA_TEXTO_ES: Record<string, { titulo: React.ReactNode; parrafo: string }> = {
   A: {
     titulo: <>Esto es lo que <span className="font-display-italic">inferimos</span> sobre el alcance real de tu rol</>,
     parrafo: "Esta inferencia impacta directamente en tu diagnóstico. Si algo no refleja tu situación real, corregilo ahora.",
@@ -138,11 +139,33 @@ const INFERENCIA_TEXTO: Record<string, { titulo: React.ReactNode; parrafo: strin
   },
 };
 
+const INFERENCIA_TEXTO_EN: Record<string, { titulo: React.ReactNode; parrafo: string }> = {
+  A: {
+    titulo: <>This is what we <span className="font-display-italic">inferred</span> about the real scope of your role</>,
+    parrafo: "This inference directly impacts your diagnostic. If something doesn't reflect your real situation, correct it now.",
+  },
+  B: {
+    titulo: <>This is what I <span className="font-display-italic">inferred</span> about the real complexity of what you do</>,
+    parrafo: "Not just your title — what you actually do. Confirm or adjust it. Every correction strengthens your negotiation arguments.",
+  },
+  C: {
+    titulo: <>This is what I <span className="font-display-italic">inferred</span> about the complexity of the role you're applying for</>,
+    parrafo: "Confirm or adjust it. This inference defines the benchmarks and scripts for your negotiation with the target company.",
+  },
+  D: {
+    titulo: <>This is what I <span className="font-display-italic">inferred</span> about the complexity of your current role</>,
+    parrafo: "This is your starting point. Confirm or adjust it before mapping your path to the next level.",
+  },
+};
+
 function InferenciaPage() {
   const navigate = useNavigate();
   const { state, setState } = useDiagnostico();
+  const { lang } = useLang();
+  const isEN = lang === "EN";
   const [editando, setEditando] = React.useState(false);
   const modo = state.modo;
+  const INFERENCIA_TEXTO = isEN ? INFERENCIA_TEXTO_EN : INFERENCIA_TEXTO_ES;
 
   React.useEffect(() => {
     if (!state.inferencia) {
@@ -155,7 +178,7 @@ function InferenciaPage() {
   if (!inf) {
     return (
       <DiagnosticoShell step={3} progress={65}>
-        <p className="font-body text-hueso/60">Analizando tu perfil...</p>
+        <p className="font-body text-hueso/60">{isEN ? "Analyzing your profile..." : "Analizando tu perfil..."}</p>
       </DiagnosticoShell>
     );
   }
@@ -169,18 +192,26 @@ function InferenciaPage() {
     navigate({ to: "/diagnostico/perfil" });
   };
 
-  const dimensiones: { key: keyof Inferencia; label: string; valueKey: keyof Inferencia; justifKey: keyof Inferencia; opciones: string[] }[] = [
-    { key: "impactoNegocio", label: "Impacto en el negocio", valueKey: "impactoNegocio", justifKey: "impactoJustif", opciones: ["Alto", "Medio", "Bajo"] },
-    { key: "complejidad", label: "Complejidad de gestión", valueKey: "complejidad", justifKey: "complejidadJustif", opciones: ["Alto", "Medio", "Bajo"] },
-    { key: "interlocucion", label: "Nivel de interlocución", valueKey: "interlocucion", justifKey: "interlocucionJustif", opciones: ["Ejecutivo", "Senior", "Medio", "Operativo"] },
-    { key: "influencia", label: "Alcance de influencia", valueKey: "influencia", justifKey: "influenciaJustif", opciones: ["Global", "Regional", "Local"] },
-    { key: "autonomia", label: "Autonomía en decisiones", valueKey: "autonomia", justifKey: "autonomiaJustif", opciones: ["Alta", "Media-Alta", "Media", "Baja"] },
-  ];
+  const dimensiones: { key: keyof Inferencia; label: string; valueKey: keyof Inferencia; justifKey: keyof Inferencia; opciones: string[] }[] = isEN
+    ? [
+        { key: "impactoNegocio", label: "Business impact", valueKey: "impactoNegocio", justifKey: "impactoJustif", opciones: ["Alto", "Medio", "Bajo"] },
+        { key: "complejidad", label: "Management complexity", valueKey: "complejidad", justifKey: "complejidadJustif", opciones: ["Alto", "Medio", "Bajo"] },
+        { key: "interlocucion", label: "Interaction level", valueKey: "interlocucion", justifKey: "interlocucionJustif", opciones: ["Ejecutivo", "Senior", "Medio", "Operativo"] },
+        { key: "influencia", label: "Scope of influence", valueKey: "influencia", justifKey: "influenciaJustif", opciones: ["Global", "Regional", "Local"] },
+        { key: "autonomia", label: "Decision autonomy", valueKey: "autonomia", justifKey: "autonomiaJustif", opciones: ["Alta", "Media-Alta", "Media", "Baja"] },
+      ]
+    : [
+        { key: "impactoNegocio", label: "Impacto en el negocio", valueKey: "impactoNegocio", justifKey: "impactoJustif", opciones: ["Alto", "Medio", "Bajo"] },
+        { key: "complejidad", label: "Complejidad de gestión", valueKey: "complejidad", justifKey: "complejidadJustif", opciones: ["Alto", "Medio", "Bajo"] },
+        { key: "interlocucion", label: "Nivel de interlocución", valueKey: "interlocucion", justifKey: "interlocucionJustif", opciones: ["Ejecutivo", "Senior", "Medio", "Operativo"] },
+        { key: "influencia", label: "Alcance de influencia", valueKey: "influencia", justifKey: "influenciaJustif", opciones: ["Global", "Regional", "Local"] },
+        { key: "autonomia", label: "Autonomía en decisiones", valueKey: "autonomia", justifKey: "autonomiaJustif", opciones: ["Alta", "Media-Alta", "Media", "Baja"] },
+      ];
 
   return (
     <DiagnosticoShell step={3} progress={70}>
       <StepFade k="inf">
-        <p className="font-ui text-[10px] text-hueso/45 mb-3">VALIDACIÓN DE INFERENCIA</p>
+        <p className="font-ui text-[10px] text-hueso/45 mb-3">{isEN ? "INFERENCE VALIDATION" : "VALIDACIÓN DE INFERENCIA"}</p>
         <h1 className="font-display text-3xl md:text-4xl mb-3 text-hueso leading-tight">
           {(INFERENCIA_TEXTO[modo] ?? INFERENCIA_TEXTO.A).titulo}
         </h1>
@@ -192,7 +223,7 @@ function InferenciaPage() {
           onClick={() => navigate({ to: "/diagnostico/preguntas" })}
           className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline mb-10"
         >
-          ← Volver y editar respuestas anteriores
+          {isEN ? "← Back to edit previous answers" : "← Volver y editar respuestas anteriores"}
         </button>
 
         <div className="space-y-5">
@@ -234,21 +265,21 @@ function InferenciaPage() {
               onClick={confirm}
               className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 transition-colors"
             >
-              Todo correcto — continuá <span aria-hidden>→</span>
+              {isEN ? "All correct — continue" : "Todo correcto — continuá"} <span aria-hidden>→</span>
             </button>
             <button
               type="button"
               onClick={() => setEditando(true)}
               className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
             >
-              Quiero ajustar algo
+              {isEN ? "I want to adjust something" : "Quiero ajustar algo"}
             </button>
           </div>
         ) : (
           <NavButtons
             onBack={() => setEditando(false)}
             onNext={confirm}
-            nextLabel="Guardar y continuar"
+            nextLabel={isEN ? "Save and continue" : "Guardar y continuar"}
           />
         )}
       </StepFade>

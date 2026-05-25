@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
+import { useLang } from "@/lib/lang";
 import type { Modo, DatosExtraidos } from "@/lib/diagnostico/types";
 import { TITULOS_MODO } from "@/lib/diagnostico/data";
 import { extractFromDocument } from "@/lib/diagnostico/diagnostico.functions";
@@ -23,7 +24,46 @@ const MAX_FILES = 4;
 
 type DocsConfig = { items: string[]; legend: string };
 
-function docsForModo(modo: Modo): DocsConfig {
+function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
+  if (isEN) {
+    switch (modo) {
+      case "A":
+        return {
+          items: [
+            "CV or LinkedIn profile (URL or PDF)",
+            "Job description — if you have one",
+            "Pay stub or salary slip — if you have one",
+          ],
+          legend: "CV · JOB DESCRIPTION · PAY STUB",
+        };
+      case "B":
+        return {
+          items: [
+            "CV or LinkedIn profile (URL or PDF)",
+            "Job description — if you have one",
+            "Pay stub or salary slip — recommended for this mode",
+          ],
+          legend: "CV · JOB DESCRIPTION · PAY STUB",
+        };
+      case "C":
+        return {
+          items: [
+            "CV or LinkedIn profile (URL or PDF)",
+            "Job posting you're applying to — recommended for this mode",
+          ],
+          legend: "CV · JOB POSTING",
+        };
+      case "D":
+        return {
+          items: [
+            "CV or LinkedIn profile (URL or PDF)",
+            "Job description — if you have one",
+            "Pay stub or salary slip — if you have one",
+          ],
+          legend: "CV · JOB DESCRIPTION · PAY STUB",
+        };
+    }
+  }
   switch (modo) {
     case "A":
       return {
@@ -67,6 +107,8 @@ function UploadPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const { state, setState } = useDiagnostico();
+  const { lang } = useLang();
+  const isEN = lang === "EN";
   const extract = useServerFn(extractFromDocument);
 
   const [files, setFiles] = React.useState<File[]>([]);
@@ -85,7 +127,7 @@ function UploadPage() {
   }, [search.modo, state.modo, setState]);
 
   const modo: Modo = search.modo ?? state.modo;
-  const docsCfg = docsForModo(modo);
+  const docsCfg = docsForModo(modo, isEN);
 
   const goManual = () => {
     setState((s) => ({ ...s, datosExtraidos: null, pasosOverride: [] }));
@@ -214,15 +256,18 @@ function UploadPage() {
     <DiagnosticoShell step={1}>
       <p className="font-ui text-[10px] text-hueso/50 mb-4">{TITULOS_MODO[modo]}</p>
       <h1 className="font-display text-3xl md:text-5xl mb-4 text-hueso leading-tight">
-        Subí tu documento y te <span className="font-display-italic">ahorramos el formulario</span>
+        {isEN
+          ? <>Upload your document and <span className="font-display-italic">skip the form</span></>
+          : <>Subí tu documento y te <span className="font-display-italic">ahorramos el formulario</span></>}
       </h1>
       <p className="font-body text-base md:text-lg text-hueso/70 mb-8 leading-relaxed max-w-2xl">
-        La IA lee tus documentos y pre-completa tu perfil automáticamente.
-        Solo te preguntamos lo que no encontremos.
+        {isEN
+          ? "AI reads your documents and pre-fills your profile automatically. We only ask what we can't find."
+          : "La IA lee tus documentos y pre-completa tu perfil automáticamente. Solo te preguntamos lo que no encontremos."}
       </p>
 
       <div className="mb-8">
-        <p className="font-ui text-[10px] text-hueso/50 mb-3">DOCUMENTOS SUGERIDOS</p>
+        <p className="font-ui text-[10px] text-hueso/50 mb-3">{isEN ? "SUGGESTED DOCUMENTS" : "DOCUMENTOS SUGERIDOS"}</p>
         <ul className="space-y-1.5">
           {docsCfg.items.map((it) => (
             <li key={it} className="font-body text-sm text-hueso/75">· {it}</li>
@@ -231,13 +276,13 @@ function UploadPage() {
 
         <div className="mt-6 max-w-2xl">
           <label htmlFor="linkedin-url" className="font-ui text-[10px] text-hueso/50 mb-2 block uppercase tracking-wider">
-            O pegá la URL de tu perfil de LinkedIn
+            {isEN ? "Or paste your LinkedIn profile URL" : "O pegá la URL de tu perfil de LinkedIn"}
           </label>
           <input
             id="linkedin-url"
             type="url"
             inputMode="url"
-            placeholder="https://linkedin.com/in/tu-perfil"
+            placeholder={isEN ? "https://linkedin.com/in/your-profile" : "https://linkedin.com/in/tu-perfil"}
             value={linkedin}
             onChange={(e) => setLinkedin(e.target.value)}
             disabled={busy}
@@ -248,7 +293,7 @@ function UploadPage() {
           />
           {linkedinTouched && !linkedinValid && (
             <p className="mt-2 font-body text-xs text-red-300/90">
-              Pegá una URL válida que empiece con linkedin.com
+              {isEN ? "Paste a valid URL starting with linkedin.com" : "Pegá una URL válida que empiece con linkedin.com"}
             </p>
           )}
         </div>
@@ -257,18 +302,19 @@ function UploadPage() {
       {extractError ? (
         <div className="border border-[#C4BFB8] p-8 max-w-2xl">
           <p className="font-display text-2xl text-hueso mb-3">
-            No pudimos procesar tu documento automáticamente.
+            {isEN ? "We couldn't process your document automatically." : "No pudimos procesar tu documento automáticamente."}
           </p>
           <p className="font-body font-light text-base text-hueso/75 mb-8 leading-relaxed">
-            Podés continuar completando el formulario manualmente — te tomará
-            unos minutos más.
+            {isEN
+              ? "You can continue filling the form manually — it'll take a few more minutes."
+              : "Podés continuar completando el formulario manualmente — te tomará unos minutos más."}
           </p>
           <button
             type="button"
             onClick={goManual}
             className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso"
           >
-            COMPLETAR MANUALMENTE →
+            {isEN ? "FILL MANUALLY →" : "COMPLETAR MANUALMENTE →"}
           </button>
         </div>
       ) : (
@@ -289,15 +335,19 @@ function UploadPage() {
             {busy ? (
               <div className="flex flex-col items-center gap-4">
                 <Spinner />
-                <p className="font-display text-xl text-hueso">Leyendo tus documentos…</p>
+                <p className="font-display text-xl text-hueso">{isEN ? "Reading your documents…" : "Leyendo tus documentos…"}</p>
                 <p className="font-body text-sm text-hueso/55 max-w-md">
-                  Estamos extrayendo tus datos profesionales. Esto tarda unos segundos.
+                  {isEN
+                    ? "We're extracting your professional data. This takes a few seconds."
+                    : "Estamos extrayendo tus datos profesionales. Esto tarda unos segundos."}
                 </p>
               </div>
             ) : files.length === 0 ? (
               <>
                 <p className="font-body text-base text-hueso/85 mb-2">
-                  Arrastrá tus archivos acá o hacé clic para seleccionarlos.
+                  {isEN
+                    ? "Drag your files here or click to select them."
+                    : "Arrastrá tus archivos acá o hacé clic para seleccionarlos."}
                 </p>
                 <p className="font-ui text-[10px] text-hueso/45">{docsCfg.legend}</p>
               </>
@@ -305,8 +355,8 @@ function UploadPage() {
               <>
                 <p className="font-body text-sm text-hueso/65 mb-2">
                   {files.length < MAX_FILES
-                    ? "Arrastrá más archivos o hacé clic para agregar."
-                    : `Máximo ${MAX_FILES} documentos.`}
+                    ? (isEN ? "Drag more files or click to add." : "Arrastrá más archivos o hacé clic para agregar.")
+                    : (isEN ? `Maximum ${MAX_FILES} documents.` : `Máximo ${MAX_FILES} documentos.`)}
                 </p>
                 <p className="font-ui text-[10px] text-hueso/45">{docsCfg.legend}</p>
               </>
@@ -336,7 +386,7 @@ function UploadPage() {
                     type="button"
                     onClick={() => removeFile(i)}
                     disabled={busy}
-                    aria-label={`Eliminar ${f.name}`}
+                    aria-label={isEN ? `Remove ${f.name}` : `Eliminar ${f.name}`}
                     className="text-hueso/55 hover:text-hueso disabled:opacity-50"
                   >
                     ×
@@ -349,15 +399,16 @@ function UploadPage() {
                   onClick={() => fileInputRef.current?.click()}
                   className="font-ui text-[11px] tracking-[0.15em] text-hueso/65 hover:text-hueso underline underline-offset-4"
                 >
-                  + AGREGAR OTRO DOCUMENTO
+                  {isEN ? "+ ADD ANOTHER DOCUMENT" : "+ AGREGAR OTRO DOCUMENTO"}
                 </button>
               )}
             </div>
           )}
 
           <p className="font-body text-xs text-hueso/45 mt-5 leading-relaxed max-w-2xl">
-            Hasta {MAX_FILES} archivos. Formatos aceptados: PDF y Word. Tus documentos
-            se procesan para extraer datos y no se almacenan como archivo.
+            {isEN
+              ? `Up to ${MAX_FILES} files. Accepted formats: PDF and Word. Your documents are processed to extract data and not stored as files.`
+              : `Hasta ${MAX_FILES} archivos. Formatos aceptados: PDF y Word. Tus documentos se procesan para extraer datos y no se almacenan como archivo.`}
           </p>
 
           {(files.length > 0 || (linkedinTouched && linkedinValid)) && !busy && (
@@ -368,7 +419,9 @@ function UploadPage() {
                 disabled={linkedinTouched && !linkedinValid}
                 className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso disabled:opacity-50"
               >
-                {files.length > 0 ? "PROCESAR DOCUMENTOS →" : "CONTINUAR CON LINKEDIN →"}
+                {files.length > 0
+                  ? (isEN ? "PROCESS DOCUMENTS →" : "PROCESAR DOCUMENTOS →")
+                  : (isEN ? "CONTINUE WITH LINKEDIN →" : "CONTINUAR CON LINKEDIN →")}
               </button>
             </div>
           )}
@@ -380,7 +433,7 @@ function UploadPage() {
               disabled={busy}
               className="font-ui text-[11px] text-hueso/55 hover:text-hueso underline underline-offset-4 disabled:opacity-50"
             >
-              Prefiero completar todo manualmente →
+              {isEN ? "I prefer to fill everything manually →" : "Prefiero completar todo manualmente →"}
             </button>
           </div>
         </>
