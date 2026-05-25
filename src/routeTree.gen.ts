@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TerminosCondicionesRouteImport } from './routes/terminos-condiciones'
 import { Route as PoliticaPrivacidadRouteImport } from './routes/politica-privacidad'
+import { Route as PlanesRouteImport } from './routes/planes'
 import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
@@ -33,6 +34,11 @@ const TerminosCondicionesRoute = TerminosCondicionesRouteImport.update({
 const PoliticaPrivacidadRoute = PoliticaPrivacidadRouteImport.update({
   id: '/politica-privacidad',
   path: '/politica-privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanesRoute = PlanesRouteImport.update({
+  id: '/planes',
+  path: '/planes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ModoRoute = ModoRouteImport.update({
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
     | '/beta/$token'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
     | '/beta/$token'
@@ -194,6 +205,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
     | '/beta/$token'
@@ -212,6 +224,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MetodologiaRoute: typeof MetodologiaRoute
   ModoRoute: typeof ModoRoute
+  PlanesRoute: typeof PlanesRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
   BetaTokenRoute: typeof BetaTokenRoute
@@ -240,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/politica-privacidad'
       fullPath: '/politica-privacidad'
       preLoaderRoute: typeof PoliticaPrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/planes': {
+      id: '/planes'
+      path: '/planes'
+      fullPath: '/planes'
+      preLoaderRoute: typeof PlanesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/modo': {
@@ -340,6 +360,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MetodologiaRoute: MetodologiaRoute,
   ModoRoute: ModoRoute,
+  PlanesRoute: PlanesRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
   BetaTokenRoute: BetaTokenRoute,
