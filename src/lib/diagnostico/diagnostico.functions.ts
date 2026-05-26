@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-sonnet-4-6";
+const MODEL = "claude-sonnet-4-5";
 
 // ---------- Crear diagnóstico desde el state del cliente ----------
 
@@ -420,6 +420,7 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       let parsed: unknown | null = null;
       let lastRaw = "";
       for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
+        if (attempt > 0) await sleep(2000);
         try {
           console.log(`[generateDiagnostico:${label}] intento ${attempt + 1} — promptLen=${prompt.length}`);
           lastRaw = await callAnthropic(systemPrompt, prompt);

@@ -11,7 +11,7 @@ export const Route = createFileRoute("/diagnostico/inferencia")({
   component: InferenciaPage,
 });
 
-function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]): Inferencia {
+function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"], isEN?: boolean): Inferencia {
   const nivel = r.nivel ?? "";
   const interaccion = r.interaccion ?? "";
   const alcance = r.alcance ?? "";
@@ -23,22 +23,23 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
 
   // ---------- Interlocución ----------
   const mencionaCLevel = /\b(founder|co[- ]?founder|ceo|cfo|coo|cto|cmo|chro|director\s+general|gerente\s+general)\b/.test(textoLibre);
+  const reportaDirecto = interaccion.startsWith("Reporto directamente") || interaccion.startsWith("I report directly");
   let interlocucion: Inferencia["interlocucion"];
   let interlocucionJustif: string;
-  if (interaccion.startsWith("Reporto directamente") || mencionaCLevel) {
+  if (reportaDirecto || mencionaCLevel) {
     interlocucion = "Ejecutivo";
-    interlocucionJustif = mencionaCLevel && !interaccion.startsWith("Reporto directamente")
-      ? "Mencionás reporte directo a C-Level/founder en la descripción de tu rol."
-      : "Reportás directamente a dirección ejecutiva.";
-  } else if (interaccion.includes("frecuente")) {
+    interlocucionJustif = mencionaCLevel && !reportaDirecto
+      ? (isEN ? "You mention direct reporting to C-Level/founder in your role description." : "Mencionás reporte directo a C-Level/founder en la descripción de tu rol.")
+      : (isEN ? "You report directly to executive management." : "Reportás directamente a dirección ejecutiva.");
+  } else if (interaccion.includes("frecuente") || interaccion.toLowerCase().includes("frequent")) {
     interlocucion = "Senior";
-    interlocucionJustif = "Tenés interacción frecuente con dirección ejecutiva.";
-  } else if (interaccion.includes("ocasional")) {
+    interlocucionJustif = isEN ? "You have frequent interaction with executive management." : "Tenés interacción frecuente con dirección ejecutiva.";
+  } else if (interaccion.includes("ocasional") || interaccion.toLowerCase().includes("occasional")) {
     interlocucion = "Medio";
-    interlocucionJustif = "Tu interacción con dirección ejecutiva es ocasional.";
+    interlocucionJustif = isEN ? "Your interaction with executive management is occasional." : "Tu interacción con dirección ejecutiva es ocasional.";
   } else {
     interlocucion = "Operativo";
-    interlocucionJustif = "Sin contacto directo declarado con dirección ejecutiva.";
+    interlocucionJustif = isEN ? "No direct contact declared with executive management." : "Sin contacto directo declarado con dirección ejecutiva.";
   }
 
   // ---------- Alcance (lectura directa del campo) ----------
@@ -47,63 +48,72 @@ function inferirMock(r: ReturnType<typeof useDiagnostico>["state"]["respuestas"]
   else if (alcance.startsWith("Regional")) influencia = "Regional";
   else if (alcance.startsWith("Local")) influencia = "Local";
   else influencia = "Local";
-  const influenciaJustif = `Alcance declarado en el formulario: ${alcance || "—"}.`;
+  const influenciaJustif = isEN
+    ? `Scope declared in the form: ${alcance || "—"}.`
+    : `Alcance declarado en el formulario: ${alcance || "—"}.`;
 
   // ---------- Autonomía ----------
-  const reportaCLevel = interaccion.startsWith("Reporto directamente") || mencionaCLevel;
-  const tieneEquipo = equipo.startsWith("Sí");
+  const reportaCLevel = reportaDirecto || mencionaCLevel;
+  const tieneEquipo = equipo.startsWith("Sí") || equipo.startsWith("Yes");
   let autonomia: Inferencia["autonomia"];
   let autonomiaJustif: string;
   if (nivel === "Director/Head" || nivel === "C-Level/VP") {
     autonomia = "Alta";
-    autonomiaJustif = `Tu nivel (${nivel}) implica autonomía decisional alta.`;
+    autonomiaJustif = isEN ? `Your level (${nivel}) implies high decision-making autonomy.` : `Tu nivel (${nivel}) implica autonomía decisional alta.`;
   } else if (nivel === "Senior Manager/Gerente" && reportaCLevel) {
     autonomia = "Alta";
-    autonomiaJustif = "Gerente con reporte directo a C-Level: autonomía decisional alta.";
+    autonomiaJustif = isEN ? "Senior Manager reporting directly to C-Level: high decision-making autonomy." : "Gerente con reporte directo a C-Level: autonomía decisional alta.";
   } else if (nivel === "Manager/Líder de equipo" && tieneEquipo) {
     autonomia = "Media-Alta";
-    autonomiaJustif = "Manager con equipo a cargo: autonomía media-alta.";
+    autonomiaJustif = isEN ? "Manager with a team: medium-high autonomy." : "Manager con equipo a cargo: autonomía media-alta.";
   } else if (nivel === "Senior/Especialista" || nivel === "Semi-senior") {
     autonomia = "Media";
-    autonomiaJustif = `Nivel ${nivel}: autonomía media.`;
+    autonomiaJustif = isEN ? `Level ${nivel}: medium autonomy.` : `Nivel ${nivel}: autonomía media.`;
   } else if (nivel === "Junior/Analista") {
     autonomia = "Baja";
-    autonomiaJustif = "Nivel junior: autonomía baja, decisiones supervisadas.";
+    autonomiaJustif = isEN ? "Junior level: low autonomy, supervised decisions." : "Nivel junior: autonomía baja, decisiones supervisadas.";
   } else {
     autonomia = "Media";
-    autonomiaJustif = `Inferido a partir de tu nivel (${nivel || "—"}).`;
+    autonomiaJustif = isEN ? `Inferred from your level (${nivel || "—"}).` : `Inferido a partir de tu nivel (${nivel || "—"}).`;
   }
 
   // ---------- Impacto en el negocio ----------
   const fnImpacto = funciones.some((f) =>
-    ["Presupuesto/P&L", "Estrategia", "RRHH/Talento", "Gestión de personas", "Finanzas/Contabilidad"].includes(f),
+    [
+      "Presupuesto/P&L", "Estrategia", "RRHH/Talento", "Gestión de personas", "Finanzas/Contabilidad",
+      "Budget/P&L", "Strategy", "HR/Talent", "People management", "Finance/Accounting",
+    ].includes(f),
   );
-  const fnCoord = funciones.some((f) => ["Proyectos/PMO", "Project Management", "Operaciones"].includes(f));
+  const fnCoord = funciones.some((f) =>
+    ["Proyectos/PMO", "Project Management", "Operaciones", "Project management / PMO", "Operations"].includes(f),
+  );
   let impactoNegocio: Inferencia["impactoNegocio"];
   let impactoJustif: string;
   if (fnImpacto) {
     impactoNegocio = "Alto";
-    impactoJustif = "Tus funciones incluyen P&L, estrategia o decisiones de personas/presupuesto.";
+    impactoJustif = isEN ? "Your functions include P&L, strategy, or people/budget decisions." : "Tus funciones incluyen P&L, estrategia o decisiones de personas/presupuesto.";
   } else if (fnCoord) {
     impactoNegocio = "Medio";
-    impactoJustif = "Tus funciones son principalmente de coordinación.";
+    impactoJustif = isEN ? "Your functions are primarily coordination." : "Tus funciones son principalmente de coordinación.";
   } else {
     impactoNegocio = "Bajo";
-    impactoJustif = "Tus funciones son principalmente de ejecución.";
+    impactoJustif = isEN ? "Your functions are primarily execution." : "Tus funciones son principalmente de ejecución.";
   }
 
   // ---------- Complejidad de gestión ----------
   let complejidad: Inferencia["complejidad"];
   let complejidadJustif: string;
-  if (equipo.includes("grande")) {
+  if (equipo.includes("grande") || equipo.toLowerCase().includes("large")) {
     complejidad = "Alto";
-    complejidadJustif = "Equipo grande a cargo (más de 15 personas).";
-  } else if (equipo.startsWith("Sí")) {
+    complejidadJustif = isEN ? "Large team under management (more than 15 people)." : "Equipo grande a cargo (más de 15 personas).";
+  } else if (equipo.startsWith("Sí") || equipo.startsWith("Yes")) {
     complejidad = "Medio";
-    complejidadJustif = `Equipo a cargo: ${equipo.replace(/^Sí, /, "")}.`;
+    complejidadJustif = isEN
+      ? `Team under management: ${equipo.replace(/^(Sí|Yes), /, "")}.`
+      : `Equipo a cargo: ${equipo.replace(/^Sí, /, "")}.`;
   } else {
     complejidad = "Bajo";
-    complejidadJustif = "Trabajás de forma individual, sin equipo a cargo.";
+    complejidadJustif = isEN ? "You work individually, without a team under management." : "Trabajás de forma individual, sin equipo a cargo.";
   }
 
   return {
@@ -169,10 +179,10 @@ function InferenciaPage() {
 
   React.useEffect(() => {
     if (!state.inferencia) {
-      const inferida = inferirMock(state.respuestas);
+      const inferida = inferirMock(state.respuestas, isEN);
       setState((s) => ({ ...s, inferencia: inferida }));
     }
-  }, [state.inferencia, state.respuestas, setState]);
+  }, [state.inferencia, state.respuestas, setState, isEN]);
 
   const inf = state.inferencia;
   if (!inf) {

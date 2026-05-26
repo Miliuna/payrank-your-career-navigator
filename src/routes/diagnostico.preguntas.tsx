@@ -117,6 +117,84 @@ const STEP_TITULO_EN: Record<number, string> = {
   13: "What AI tools do you use?",
 };
 
+// ───────────── EN option arrays ─────────────
+
+const TIPOS_EMPRESA_EN = [
+  "Startup / SMB (1–99 employees)",
+  "Mid-size company (100–999 employees)",
+  "Large national company (1,000–4,999 employees)",
+  "Multinational / Enterprise (5,000+ employees)",
+];
+
+const ALCANCES_EN = ["Local (one country)", "Regional (several countries)", "Global"];
+
+const PERSONAS_A_CARGO_EN = [
+  "No, I work independently",
+  "Yes, small team (1–5)",
+  "Yes, medium team (6–15)",
+  "Yes, large team (more than 15)",
+];
+
+const INTERACCIONES_EN = [
+  "No direct contact",
+  "Occasional interaction",
+  "Frequent interaction with executive management",
+  "I report directly to executive management",
+];
+
+const EXP_TOTAL_EN = [
+  "Less than 3 years", "3–7 years", "7–12 years", "12–20 years", "More than 20 years",
+];
+
+const EXP_INDUSTRIA_EN = [
+  "Less than 2 years", "2–5 years", "5–10 years", "More than 10 years",
+];
+
+const FORMACIONES_EN = [
+  "High school diploma", "Technical degree", "Incomplete university",
+  "University degree", "Postgraduate/Specialization", "Master's degree",
+  "Doctorate", "Professional certifications",
+];
+
+const FRECUENCIAS_IA_EN = [
+  "Rarely",
+  "Several times a week",
+  "Every day",
+  "They are central to how I work",
+];
+
+const USOS_IA_EN = [
+  "Writing and communication", "Analysis and research",
+  "Images or visual content", "Code and automation",
+  "Decision making", "Learning", "Other",
+];
+
+const BENEFICIOS_EN = [
+  "Health insurance/Medical coverage", "Annual bonus", "Company car",
+  "Company phone", "Home office/Remote work", "Travel expenses",
+  "Company-paid training", "Stock options/Equity",
+  "Meal vouchers", "Extra vacation days",
+  "Life insurance", "Supplemental retirement plan",
+  "Other", "None of the above",
+];
+
+const GENEROS_EN = [
+  "Yes, I identify as a woman", "Yes, I identify as a man", "Yes, I am non-binary",
+  "I prefer not to include this analysis",
+];
+
+const FUNCIONES_EN = [
+  "People management", "Budget/P&L", "Strategy", "Operations",
+  "Sales/Commercial", "Marketing", "Communications & PR", "Technology/Product", "HR/Talent",
+  "Finance/Accounting", "Legal/Compliance", "Project management / PMO",
+  "Software/Web development", "Design/UX",
+  "Data/Analytics", "Innovation/R&D", "Customer service", "Other",
+];
+
+const TIEMPOS_SIN_TRABAJO_EN = [
+  "Less than 3 months", "3–6 months", "6–12 months", "More than 1 year",
+];
+
 function tieneExtraccion(step: number, d: DatosExtraidos): boolean {
   return !!resumenExtraccion(step, d, false);
 }
@@ -165,6 +243,7 @@ function PreguntasPage() {
   const isEN = lang === "EN";
   const modo = state.modo;
   const [step, setStep] = React.useState(() => modo === "C" ? -1 : 0); // -1 = sub-case (Mode C only), 0..18
+  const [certRawInput, setCertRawInput] = React.useState("");
   const appliedRef = React.useRef(false);
 
   const r = state.respuestas;
@@ -195,6 +274,12 @@ function PreguntasPage() {
 
   const next = () => {
     if (step === -1) { setStep(0); return; }
+    if (step === 12 && certRawInput.trim()) {
+      const v = certRawInput.trim();
+      const items = r.certificaciones ?? [];
+      if (!items.includes(v)) setR({ certificaciones: [...items, v], sinCertificaciones: false });
+      setCertRawInput("");
+    }
     if (step < TOTAL - 1) setStep(step + 1);
     else navigate({ to: "/diagnostico/inferencia" });
   };
@@ -213,7 +298,7 @@ function PreguntasPage() {
     }));
   };
 
-  const valid = isValid(step, r, modo);
+  const valid = isValid(step, r, modo, certRawInput);
   const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step)
     ? resumenExtraccion(step, datos!, isEN)
     : null;
@@ -256,7 +341,7 @@ function PreguntasPage() {
         ) : extraccionTexto ? (
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
-          renderStep(step, r, setR, modo, isEN)
+          renderStep(step, r, setR, modo, isEN, certRawInput, setCertRawInput)
         )}
       </StepFade>
       {!extraccionTexto && <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />}
@@ -314,6 +399,7 @@ function isValid(
   step: number,
   r: ReturnType<typeof useDiagnostico>["state"]["respuestas"],
   modo: string,
+  certRawInput?: string,
 ): boolean {
   switch (step) {
     case -1: return !!r.subCasoC;
@@ -329,7 +415,7 @@ function isValid(
     case 9: return !!r.expTotal;
     case 10: return !!r.expIndustria;
     case 11: return (r.formacion?.length ?? 0) > 0;
-    case 12: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0;
+    case 12: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim();
     case 13: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
     case 14: {
       if (!r.situacion) return false;
@@ -356,21 +442,23 @@ function renderStep(
   setR: (p: Partial<typeof r>) => void,
   modo: string,
   isEN: boolean,
+  certRawInput?: string,
+  onCertRawChange?: (v: string) => void,
 ) {
   switch (step) {
     case 0: return <P1Pais r={r} setR={setR} />;
     case 1: return <P2Industria r={r} setR={setR} />;
     case 2: return <P3TipoEmpresa r={r} setR={setR} />;
     case 3: return <P4Nivel r={r} setR={setR} />;
-    case 4: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
-    case 5: return <SimpleCards title={isEN ? "Do you have people reporting to you?" : "¿Tenés personas a cargo?"} options={PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
+    case 4: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={isEN ? ALCANCES_EN : ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
+    case 5: return <SimpleCards title={isEN ? "Do you have people reporting to you?" : "¿Tenés personas a cargo?"} options={isEN ? PERSONAS_A_CARGO_EN : PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
     case 6: return <P7Funciones r={r} setR={setR} />;
-    case 7: return <SimpleCards title={isEN ? "How do you interact with senior management?" : "¿Cómo interactuás con la alta dirección?"} options={INTERACCIONES} value={r.interaccion} onChange={(v) => setR({ interaccion: v })} />;
+    case 7: return <SimpleCards title={isEN ? "How do you interact with senior management?" : "¿Cómo interactuás con la alta dirección?"} options={isEN ? INTERACCIONES_EN : INTERACCIONES} value={r.interaccion} onChange={(v) => setR({ interaccion: v })} />;
     case 8: return <P9Idiomas r={r} setR={setR} />;
-    case 9: return <SimpleCards title={isEN ? "How many years of total career experience do you have?" : "¿Cuántos años de experiencia total tenés en tu carrera?"} options={EXP_TOTAL} value={r.expTotal} onChange={(v) => setR({ expTotal: v })} />;
-    case 10: return <SimpleCards title={isEN ? "How many years of experience in this industry?" : "¿Cuántos años de experiencia tenés en esta industria?"} options={EXP_INDUSTRIA} value={r.expIndustria} onChange={(v) => setR({ expIndustria: v })} />;
+    case 9: return <SimpleCards title={isEN ? "How many years of total career experience do you have?" : "¿Cuántos años de experiencia total tenés en tu carrera?"} options={isEN ? EXP_TOTAL_EN : EXP_TOTAL} value={r.expTotal} onChange={(v) => setR({ expTotal: v })} />;
+    case 10: return <SimpleCards title={isEN ? "How many years of experience in this industry?" : "¿Cuántos años de experiencia tenés en esta industria?"} options={isEN ? EXP_INDUSTRIA_EN : EXP_INDUSTRIA} value={r.expIndustria} onChange={(v) => setR({ expIndustria: v })} />;
     case 11: return <P12Formacion r={r} setR={setR} />;
-    case 12: return <P13Certificaciones r={r} setR={setR} />;
+    case 12: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
     case 13: return <P14HerramientasIA r={r} setR={setR} />;
     case 14: return <P15Situacion r={r} setR={setR} modo={modo} />;
     case 15: return <P16Beneficios r={r} setR={setR} />;
@@ -524,7 +612,7 @@ function P2Industria({ r, setR }: Props) {
 function P3TipoEmpresa({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
-  return <SimpleCards title={isEN ? "What type of company do you work at?" : "¿En qué tipo de empresa trabajás?"} options={TIPOS_EMPRESA} value={r.tipoEmpresa} onChange={(v) => setR({ tipoEmpresa: v })} />;
+  return <SimpleCards title={isEN ? "What type of company do you work at?" : "¿En qué tipo de empresa trabajás?"} options={isEN ? TIPOS_EMPRESA_EN : TIPOS_EMPRESA} value={r.tipoEmpresa} onChange={(v) => setR({ tipoEmpresa: v })} />;
 }
 
 function P4Nivel({ r, setR }: Props) {
@@ -563,6 +651,7 @@ function P7Funciones({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const sel = r.funciones ?? [];
+  const funcsDisplay = isEN ? FUNCIONES_EN : FUNCIONES;
   const toggle = (opt: string) => {
     if (sel.includes(opt)) setR({ funciones: sel.filter((x) => x !== opt) });
     else setR({ funciones: [...sel, opt] });
@@ -576,13 +665,13 @@ function P7Funciones({ r, setR }: Props) {
           : "Seleccioná todas las funciones que forman parte real de tu trabajo — aunque no estén en tu descripción formal de puesto."}
       </QuestionHint>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {FUNCIONES.map((opt) => (
+        {funcsDisplay.map((opt) => (
           <CardOption key={opt} selected={sel.includes(opt)} onClick={() => toggle(opt)}>
             {opt}
           </CardOption>
         ))}
       </div>
-      {sel.includes("Otra") && (
+      {(sel.includes("Otra") || sel.includes("Other")) && (
         <div className="mt-6">
           <TextInput
             placeholder={isEN ? "Specify the function" : "Especificá la función"}
@@ -703,24 +792,23 @@ function P12Formacion({ r, setR }: Props) {
     <MultiCards
       title={isEN ? "What is your educational background?" : "¿Cuál es tu formación?"}
       hint={isEN ? "You can select multiple." : "Podés seleccionar varias."}
-      options={FORMACIONES}
+      options={isEN ? FORMACIONES_EN : FORMACIONES}
       value={r.formacion}
       onChange={(v) => setR({ formacion: v })}
     />
   );
 }
 
-function P13Certificaciones({ r, setR }: Props) {
+function P13Certificaciones({ r, setR, certRawInput, onCertRawChange }: Props & { certRawInput: string; onCertRawChange: (v: string) => void }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
-  const [input, setInput] = React.useState("");
   const items = r.certificaciones ?? [];
   const add = () => {
-    const v = input.trim();
+    const v = certRawInput.trim();
     if (!v) return;
-    if (items.includes(v)) { setInput(""); return; }
+    if (items.includes(v)) { onCertRawChange(""); return; }
     setR({ certificaciones: [...items, v], sinCertificaciones: false });
-    setInput("");
+    onCertRawChange("");
   };
   return (
     <>
@@ -747,8 +835,8 @@ function P13Certificaciones({ r, setR }: Props) {
             placeholder={isEN
               ? "E.g.: PMP, AWS, Google Analytics, SHRM. Type each one and press Enter."
               : "Ej: PMP, AWS, Google Analytics, SHRM. Escribí cada una y presioná Enter."}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
+            value={certRawInput}
+            onChange={(e) => onCertRawChange(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
           />
           {items.length > 0 && (
@@ -784,6 +872,7 @@ function P14HerramientasIA({ r, setR }: Props) {
   const isEN = lang === "EN";
   const tools = r.herramientasIA ?? [];
   const usos = r.usoIA ?? [];
+  const toolOptions = isEN ? [...HERRAMIENTAS_IA.slice(0, -1), "Other"] : HERRAMIENTAS_IA;
   const toggleTool = (t: string) => {
     if (tools.includes(t)) setR({ herramientasIA: tools.filter((x) => x !== t) });
     else setR({ herramientasIA: [...tools, t] });
@@ -797,13 +886,13 @@ function P14HerramientasIA({ r, setR }: Props) {
       <QuestionTitle>{isEN ? "What AI tools do you use at work?" : "¿Qué herramientas de IA usás en tu trabajo?"}</QuestionTitle>
       <QuestionHint>{isEN ? "Select all that apply." : "Seleccioná todas las que apliquen."}</QuestionHint>
       <div className="flex flex-wrap gap-2 mb-6">
-        {HERRAMIENTAS_IA.map((t) => (
+        {toolOptions.map((t) => (
           <ChipOption key={t} selected={tools.includes(t)} onClick={() => toggleTool(t)}>
             {t}
           </ChipOption>
         ))}
       </div>
-      {tools.includes("Otra") && (
+      {(tools.includes("Otra") || tools.includes("Other")) && (
         <div className="mb-10 animate-in fade-in duration-300">
           <TextInput
             placeholder={isEN ? "Specify here" : "Especificá acá"}
@@ -817,7 +906,7 @@ function P14HerramientasIA({ r, setR }: Props) {
       <div className="border-t border-hueso/10 pt-8 mb-10">
         <h2 className="font-display text-2xl mb-5 text-hueso">{isEN ? "How often do you use them?" : "¿Con qué frecuencia las usás?"}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {FRECUENCIAS_IA.map((f) => (
+          {(isEN ? FRECUENCIAS_IA_EN : FRECUENCIAS_IA).map((f) => (
             <CardOption key={f} selected={r.frecuenciaIA === f} onClick={() => setR({ frecuenciaIA: f })}>
               {f}
             </CardOption>
@@ -828,7 +917,7 @@ function P14HerramientasIA({ r, setR }: Props) {
       <div className="border-t border-hueso/10 pt-8">
         <h2 className="font-display text-2xl mb-5 text-hueso">{isEN ? "What do you mainly use them for?" : "¿Para qué las usás principalmente?"}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {USOS_IA.map((u) => (
+          {(isEN ? USOS_IA_EN : USOS_IA).map((u) => (
             <CardOption key={u} selected={usos.includes(u)} onClick={() => toggleUso(u)}>
               {u}
             </CardOption>
@@ -838,6 +927,16 @@ function P14HerramientasIA({ r, setR }: Props) {
     </>
   );
 }
+
+const SITUACIONES_LABELS_EN: Record<string, string> = {
+  empleado: "I am currently employed",
+  busqueda: "I am actively job searching",
+  freelance: "I am a freelance or independent consultant",
+  contractor: "I work as a contractor or under a service contract",
+};
+const SITUACIONES_DESC_EN: Record<string, string> = {
+  contractor: "You have a contract with a company (usually international) with fixed weekly hours, but without formal local employment relationship.",
+};
 
 function P15Situacion({ r, setR, modo }: Props & { modo?: string }) {
   const { lang } = useLang();
@@ -865,11 +964,11 @@ function P15Situacion({ r, setR, modo }: Props & { modo?: string }) {
                 contractorHoras: undefined, contractorPago: undefined,
               })}
             >
-              {s.label}
+              {isEN ? (SITUACIONES_LABELS_EN[s.id] ?? s.label) : s.label}
             </CardOption>
             {s.descripcion && r.situacion === s.id && (
               <p className="mt-2 ml-1 font-body text-xs text-hueso/55 leading-relaxed animate-in fade-in duration-300">
-                {s.descripcion}
+                {isEN ? (SITUACIONES_DESC_EN[s.id] ?? s.descripcion) : s.descripcion}
               </p>
             )}
           </div>
@@ -973,7 +1072,7 @@ function P15Situacion({ r, setR, modo }: Props & { modo?: string }) {
               <div>
                 <p className="font-body text-base text-hueso mb-3">{isEN ? "How long ago did you leave that job?" : "¿Hace cuánto dejaste ese trabajo?"}</p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {TIEMPOS_SIN_TRABAJO.map((t) => (
+                  {(isEN ? TIEMPOS_SIN_TRABAJO_EN : TIEMPOS_SIN_TRABAJO).map((t) => (
                     <CardOption key={t} selected={r.tiempoSinTrabajo === t} onClick={() => setR({ tiempoSinTrabajo: t })}>
                       {t}
                     </CardOption>
@@ -1038,13 +1137,14 @@ function P16Beneficios({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const sel = r.beneficios ?? [];
-  const NINGUNO = "Ninguno de los anteriores";
+  const NINGUNO = isEN ? "None of the above" : "Ninguno de los anteriores";
+  const bensDisplay = isEN ? BENEFICIOS_EN : BENEFICIOS;
   const toggle = (opt: string) => {
     if (opt === NINGUNO) {
       setR({ beneficios: sel.includes(NINGUNO) ? [] : [NINGUNO], beneficiosOtro: "" });
       return;
     }
-    const without = sel.filter((x) => x !== NINGUNO);
+    const without = sel.filter((x) => x !== NINGUNO && x !== "Ninguno de los anteriores" && x !== "None of the above");
     if (without.includes(opt)) setR({ beneficios: without.filter((x) => x !== opt) });
     else setR({ beneficios: [...without, opt] });
   };
@@ -1053,13 +1153,13 @@ function P16Beneficios({ r, setR }: Props) {
       <QuestionTitle>{isEN ? "What benefits do you receive?" : "¿Qué beneficios recibís?"}</QuestionTitle>
       <QuestionHint>{isEN ? "Select all that apply." : "Seleccioná todos los que apliquen."}</QuestionHint>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {BENEFICIOS.map((opt) => (
+        {bensDisplay.map((opt) => (
           <CardOption key={opt} selected={sel.includes(opt)} onClick={() => toggle(opt)}>
             {opt}
           </CardOption>
         ))}
       </div>
-      {sel.includes("Otro") && (
+      {(sel.includes("Otro") || sel.includes("Other")) && (
         <div className="mt-6">
           <TextInput
             placeholder={isEN ? "Specify the benefit(s)" : "Especificá el/los beneficios"}
@@ -1079,7 +1179,7 @@ function P17Descripcion({ r, setR, modo }: Props & { modo?: string }) {
   if (modo === "B") {
     return (
       <>
-        <QuestionTitle>{isEN ? "Does your real role go beyond your job title?" : "¿Tu rol real va más allá de tu título?"}</QuestionTitle>
+        <QuestionTitle>{isEN ? "Does your actual role go beyond your job title?" : "¿Tu rol va más allá del título de tu puesto?"}</QuestionTitle>
         <QuestionHint>
           {isEN
             ? "Describe what you actually do: decisions you make, projects you lead, impact you generate — even if they're not in your formal description. This is the central argument for your negotiation."
@@ -1178,7 +1278,7 @@ function P18Genero({ r, setR }: Props) {
           : "El análisis compara tu compensación con la de tu mismo puesto, nivel, industria y país, segmentado por género — sirve para cualquier identidad, no solo para mujeres. La información se usa exclusivamente para este cálculo y se almacena de forma anonimizada."}
       </QuestionHint>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {GENEROS.map((g) => (
+        {(isEN ? GENEROS_EN : GENEROS).map((g) => (
           <CardOption key={g} selected={r.genero === g} onClick={() => setR({ genero: g })}>
             {g}
           </CardOption>

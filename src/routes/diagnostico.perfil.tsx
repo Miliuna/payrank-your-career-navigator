@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
-import { TITULOS_MODO } from "@/lib/diagnostico/data";
+import { TITULOS_MODO, TITULOS_MODO_EN } from "@/lib/diagnostico/data";
 import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 
 export const Route = createFileRoute("/diagnostico/perfil")({
@@ -138,7 +138,7 @@ function PerfilPage() {
           <Bloque
             titulo={isEN ? "Block 1 · Your situation" : "Bloque 1 · Tu situación"}
             items={[
-              { k: isEN ? "Selected mode" : "Modo elegido", v: TITULOS_MODO[state.modo] },
+              { k: isEN ? "Selected mode" : "Modo elegido", v: isEN ? TITULOS_MODO_EN[state.modo] : TITULOS_MODO[state.modo] },
               { k: isEN ? "Country" : "País", v: pais },
               { k: isEN ? "Industry" : "Industria", v: industria },
               { k: isEN ? "Company type" : "Tipo de empresa", v: r.tipoEmpresa },

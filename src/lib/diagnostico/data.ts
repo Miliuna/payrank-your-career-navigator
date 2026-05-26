@@ -7,6 +7,13 @@ export const TITULOS_MODO: Record<Modo, string> = {
   D: "Quiero dar mi próximo salto de carrera",
 };
 
+export const TITULOS_MODO_EN: Record<Modo, string> = {
+  A: "Am I being paid competitively?",
+  B: "I want to ask for a raise or review",
+  C: "I have an offer or interview",
+  D: "I'm planning my next career move",
+};
+
 export const PAISES = [
   "Argentina", "México", "Chile", "Colombia", "España", "Perú",
   "Uruguay", "Brasil", "Ecuador", "Estados Unidos", "Otro",
@@ -20,10 +27,10 @@ export const INDUSTRIAS = [
 ];
 
 export const TIPOS_EMPRESA = [
-  "Multinacional global (+5.000 empleados)",
-  "Empresa regional mediana (500–5.000 empleados)",
-  "Empresa local grande (100–500 empleados)",
-  "PyME/Startup (menos de 100 empleados)",
+  "Startup / PyME (1–99 empleados)",
+  "Empresa mediana (100–999 empleados)",
+  "Empresa grande nacional (1.000–4.999 empleados)",
+  "Multinacional / Enterprise (+5.000 empleados)",
 ];
 
 export const NIVELES = [

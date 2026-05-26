@@ -5,7 +5,7 @@ import { DiagnosticoShell } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
 import type { Modo, DatosExtraidos } from "@/lib/diagnostico/types";
-import { TITULOS_MODO } from "@/lib/diagnostico/data";
+import { TITULOS_MODO, TITULOS_MODO_EN } from "@/lib/diagnostico/data";
 import { extractFromDocument } from "@/lib/diagnostico/diagnostico.functions";
 import { extractPdfText } from "@/lib/diagnostico/pdf-text";
 import { cn } from "@/lib/utils";
@@ -254,7 +254,7 @@ function UploadPage() {
 
   return (
     <DiagnosticoShell step={1}>
-      <p className="font-ui text-[10px] text-hueso/50 mb-4">{TITULOS_MODO[modo]}</p>
+      <p className="font-ui text-[10px] text-hueso/50 mb-4">{isEN ? TITULOS_MODO_EN[modo] : TITULOS_MODO[modo]}</p>
       <h1 className="font-display text-3xl md:text-5xl mb-4 text-hueso leading-tight">
         {isEN
           ? <>Upload your document and <span className="font-display-italic">skip the form</span></>

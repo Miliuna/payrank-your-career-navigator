@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { Logo } from "@/components/Logo";
+import { useLang } from "@/lib/lang";
 
 type ShellProps = {
   step: number;
@@ -10,6 +11,8 @@ type ShellProps = {
 };
 
 export function DiagnosticoShell({ step, totalSteps = 8, progress, children }: ShellProps) {
+  const { lang } = useLang();
+  const isEN = lang === "EN";
   const pct = progress ?? Math.round((step / totalSteps) * 100);
   return (
     <div className="min-h-screen bg-tinta text-hueso">
@@ -19,7 +22,7 @@ export function DiagnosticoShell({ step, totalSteps = 8, progress, children }: S
             <Logo />
           </Link>
           <span className="font-ui text-[10px] text-hueso/60">
-            Paso {step} de {totalSteps}
+            {isEN ? `Step ${step} of ${totalSteps}` : `Paso ${step} de ${totalSteps}`}
           </span>
         </div>
         <div className="h-[2px] bg-hueso/10 w-full">

@@ -80,11 +80,11 @@ function ConsentimientosPage() {
             <Item checked={c1} onChange={setC1}>
               {isEN
                 ? <>I consent to the processing of my personal and salary data for the generation of my PayRank.{" "}
-                    <Link to="/politica-privacidad" className="underline underline-offset-4 hover:text-tinta">
+                    <Link to="/politica-privacidad" className="underline underline-offset-4 hover:text-tinta" target="_blank" rel="noopener noreferrer">
                       View Privacy Policy
                     </Link>.</>
                 : <>Acepto el procesamiento de mis datos personales y salariales para la generación de mi PayRank.{" "}
-                    <Link to="/politica-privacidad" className="underline underline-offset-4 hover:text-tinta">
+                    <Link to="/politica-privacidad" className="underline underline-offset-4 hover:text-tinta" target="_blank" rel="noopener noreferrer">
                       Ver Política de Privacidad
                     </Link>.</>}
             </Item>
@@ -96,11 +96,11 @@ function ConsentimientosPage() {
             <Item checked={c3} onChange={setC3}>
               {isEN
                 ? <>I have read and accept the{" "}
-                    <Link to="/terminos-condiciones" className="underline underline-offset-4 hover:text-tinta">
+                    <Link to="/terminos-condiciones" className="underline underline-offset-4 hover:text-tinta" target="_blank" rel="noopener noreferrer">
                       Terms and Conditions
                     </Link>.</>
                 : <>He leído y acepto los{" "}
-                    <Link to="/terminos-condiciones" className="underline underline-offset-4 hover:text-tinta">
+                    <Link to="/terminos-condiciones" className="underline underline-offset-4 hover:text-tinta" target="_blank" rel="noopener noreferrer">
                       Términos y Condiciones
                     </Link>.</>}
             </Item>
