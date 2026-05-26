@@ -302,7 +302,7 @@ function UploadPage() {
       {extractError ? (
         <div className="border border-[#C4BFB8] p-8 max-w-2xl">
           <p className="font-display text-2xl text-hueso mb-3">
-            {isEN ? "We couldn't process your document automatically." : "No pudimos procesar tu documento automáticamente."}
+            {isEN ? "We couldn't process your information automatically." : "No pudimos procesar tu información automáticamente."}
           </p>
           <p className="font-body font-light text-base text-hueso/75 mb-8 leading-relaxed">
             {isEN

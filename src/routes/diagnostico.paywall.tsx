@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
 import { simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
+import { useLang } from "@/lib/lang";
 import type { Plan } from "@/lib/diagnostico/types";
 
 const searchSchema = z.object({ id: z.string().uuid() });
@@ -47,6 +48,8 @@ function PaywallPage() {
   const navigate = useNavigate();
   const simulate = useServerFn(simulatePayment);
 
+  const { lang } = useLang();
+  const isEN = lang === "EN";
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState<string | null>(null);
   const [referido, setReferido] = React.useState("");
@@ -112,6 +115,9 @@ function PaywallPage() {
               <div className="grid grid-cols-3 gap-2">
                 {(Object.keys(PLAN_INFO) as Plan[]).map((p) => {
                   const active = state.plan === p;
+                  const btnPrecio = isEN
+                    ? (p === "unico" ? "USD 39" : p === "pack3" ? "USD 99" : "USD 199")
+                    : PLAN_INFO[p].precio;
                   return (
                     <button
                       key={p}
@@ -124,7 +130,7 @@ function PaywallPage() {
                       }`}
                     >
                       <div className="font-ui text-[9px] opacity-70">{PLAN_INFO[p].nombre}</div>
-                      <div className="font-display text-base leading-tight">{PLAN_INFO[p].precio}</div>
+                      <div className="font-display text-base leading-tight">{btnPrecio}</div>
                     </button>
                   );
                 })}

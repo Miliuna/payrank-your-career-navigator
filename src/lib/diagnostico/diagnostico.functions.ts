@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-sonnet-4-5";
+const MODEL = "claude-sonnet-4-6";
 
 // ---------- Crear diagnóstico desde el state del cliente ----------
 
@@ -219,6 +219,7 @@ async function fetchAnthropicWithRetry(
 }
 
 async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<string> {
+  console.log(`[callAnthropic] model=${MODEL} systemLen=${systemPrompt.length} userLen=${userPrompt.length}`);
   const res = await fetchAnthropicWithRetry(
     {
       model: MODEL,
@@ -232,10 +233,22 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
 
   if (!res.ok) {
     const txt = await res.text();
+    console.error(`[callAnthropic] HTTP ${res.status} error:`, txt.slice(0, 1000));
     throw new Error(`Anthropic ${res.status}: ${txt.slice(0, 500)}`);
   }
-  const json = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
+  const rawJson = await res.text();
+  console.log(`[callAnthropic] raw response (first 200):`, rawJson.slice(0, 200));
+  let json: { content?: Array<{ type: string; text?: string }> };
+  try {
+    json = JSON.parse(rawJson);
+  } catch (e) {
+    console.error(`[callAnthropic] failed to parse response JSON:`, rawJson.slice(0, 500));
+    throw new Error(`Anthropic response JSON parse failed: ${String(e)}`);
+  }
   const text = json.content?.find((c) => c.type === "text")?.text ?? "";
+  if (!text) {
+    console.error(`[callAnthropic] empty text in response. Full json:`, rawJson.slice(0, 500));
+  }
   return text;
 }
 
@@ -408,14 +421,20 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       let lastRaw = "";
       for (let attempt = 0; attempt < 2 && !parsed; attempt++) {
         try {
+          console.log(`[generateDiagnostico:${label}] intento ${attempt + 1} — promptLen=${prompt.length}`);
           lastRaw = await callAnthropic(systemPrompt, prompt);
+          console.log(`[generateDiagnostico:${label}] rawLen=${lastRaw.length} raw[:300]=`, lastRaw.slice(0, 300));
           parsed = tryParseJson(lastRaw);
+          if (!parsed) {
+            console.error(`[generateDiagnostico:${label}] tryParseJson devolvió null. rawLen=${lastRaw.length} raw[:500]=`, lastRaw.slice(0, 500));
+          }
         } catch (e) {
-          console.error(`[generateDiagnostico:${label}] intento ${attempt + 1} falló:`, e);
+          console.error(`[generateDiagnostico:${label}] intento ${attempt + 1} excepción:`, e);
+          lastRaw = "";
         }
       }
       if (!parsed || typeof parsed !== "object") {
-        console.error(`[generateDiagnostico:${label}] respuesta inválida. Raw:`, lastRaw.slice(0, 500));
+        console.error(`[generateDiagnostico:${label}] FALLO DEFINITIVO. rawLen=${lastRaw.length} raw[:500]=`, lastRaw.slice(0, 500));
         throw new Error("GENERATION_FAILED");
       }
       return parsed as Record<string, unknown>;
@@ -446,10 +465,11 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
 
     return { id: record.id as string, link_unico: record.link_unico as string };
     } catch (err) {
-      console.error("[generateDiagnostico] error:", err);
-      const msg = err instanceof Error ? err.message : "";
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("[generateDiagnostico] error final (msg=" + msg + "):", err);
       if (msg === "PAYMENT_REQUIRED") throw new Error("Pago no confirmado");
-      throw new Error("No pudimos generar tu diagnóstico. Intentá nuevamente en unos minutos.");
+      if (msg === "GENERATION_FAILED") throw new Error("No pudimos generar tu diagnóstico. Intentá nuevamente en unos minutos.");
+      throw new Error(`No pudimos generar tu diagnóstico (${msg.slice(0, 120)}). Intentá nuevamente en unos minutos.`);
     }
   });
 
@@ -582,7 +602,7 @@ export const extractFromDocument = createServerFn({ method: "POST" })
 
     const res = await fetchAnthropicWithRetry(
       {
-        model: "claude-sonnet-4-5",
+        model: MODEL,
         max_tokens: maxTokens,
         temperature: 0,
         system: EXTRACT_SYSTEM,
