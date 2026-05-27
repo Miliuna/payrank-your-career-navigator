@@ -529,7 +529,7 @@ Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any f
 const extractInputSchema = z.union([
   z.object({
     kind: z.literal("text"),
-    text: z.string().min(1).max(30_000),
+    text: z.string().min(1).max(100_000),
   }),
   z.object({
     kind: z.literal("pdf"),

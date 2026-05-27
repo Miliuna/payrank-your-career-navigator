@@ -223,12 +223,12 @@ function UploadPage() {
       let extracted: DatosExtraidos;
 
       if (pdfFallbacks.length === 0) {
-        const concatenated = textoBlocks.join("\n\n");
+        const concatenated = textoBlocks.join("\n\n").slice(0, 100_000);
         extracted = (await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos;
       } else {
         const results: DatosExtraidos[] = [];
         if (textoBlocks.length > 0) {
-          const concatenated = textoBlocks.join("\n\n");
+          const concatenated = textoBlocks.join("\n\n").slice(0, 100_000);
           results.push((await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos);
         }
         for (const p of pdfFallbacks) {
