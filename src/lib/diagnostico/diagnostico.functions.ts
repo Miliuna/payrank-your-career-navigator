@@ -223,7 +223,7 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
   const res = await fetchAnthropicWithRetry(
     {
       model: MODEL,
-      max_tokens: 16000,
+      max_tokens: 32000,
       temperature: 0,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
@@ -237,8 +237,11 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
     throw new Error(`Anthropic ${res.status}: ${txt.slice(0, 500)}`);
   }
   const rawJson = await res.text();
-  console.log(`[callAnthropic] raw response (first 200):`, rawJson.slice(0, 200));
-  let json: { content?: Array<{ type: string; text?: string }> };
+  let json: {
+    content?: Array<{ type: string; text?: string }>;
+    stop_reason?: string;
+    usage?: { input_tokens?: number; output_tokens?: number };
+  };
   try {
     json = JSON.parse(rawJson);
   } catch (e) {
@@ -246,6 +249,10 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
     throw new Error(`Anthropic response JSON parse failed: ${String(e)}`);
   }
   const text = json.content?.find((c) => c.type === "text")?.text ?? "";
+  console.log(`[callAnthropic] stop_reason=${json.stop_reason} output_tokens=${json.usage?.output_tokens} textLen=${text.length}`);
+  if (json.stop_reason === "max_tokens") {
+    console.error(`[callAnthropic] RESPUESTA TRUNCADA por max_tokens. tail=`, text.slice(-300));
+  }
   if (!text) {
     console.error(`[callAnthropic] empty text in response. Full json:`, rawJson.slice(0, 500));
   }
