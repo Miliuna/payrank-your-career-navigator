@@ -113,6 +113,11 @@ function ProcesandoPage() {
                 ? "An unexpected error occurred. Please try again in a few minutes."
                 : "Ocurrió un error inesperado. Por favor intentá nuevamente en unos minutos."}
             </p>
+            {error && (
+              <pre className="mt-4 max-w-2xl whitespace-pre-wrap break-words text-left font-mono text-[11px] text-red-300/70 border border-red-300/20 bg-red-300/5 p-3">
+                {error}
+              </pre>
+            )}
             <button
               onClick={() => { startedRef.current = false; setError(null); setIdx(0); setRetryCount((c) => c + 1); }}
               className="mt-6 inline-flex items-center justify-center bg-hueso text-tinta px-6 py-3 font-ui text-[11px]"
