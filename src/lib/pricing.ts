@@ -26,20 +26,21 @@ export type PlanPricing = {
 // Stripe Price IDs — replace placeholders with real IDs from the Stripe dashboard.
 export const PRICING: Record<Region, Record<Plan, PlanPricing>> = {
   LATAM: {
-    unico: { amount: 29, display: "USD 29", stripePriceId: "price_LATAM_GO_REPLACE" },
-    pack3: { amount: 69, display: "USD 69", stripePriceId: "price_LATAM_PLUS_REPLACE" },
-    anual: { amount: 119, display: "USD 119", suffix: "/año", stripePriceId: "price_LATAM_PRO_REPLACE" },
+    unico: { amount: 29, display: "USD 29", stripePriceId: "price_1Tcbx1QmBsnwYHrwGHbA0gb3" },
+    pack3: { amount: 69, display: "USD 69", stripePriceId: "price_1TccI9QmBsnwYHrwA7SMMIBI" },
+    anual: { amount: 119, display: "USD 119", suffix: "/año", stripePriceId: "price_1Tccv9QmBsnwYHrwdsj3szlB" },
   },
   ESPANA: {
-    unico: { amount: 39, display: "USD 39", stripePriceId: "price_ES_GO_REPLACE" },
-    pack3: { amount: 89, display: "USD 89", stripePriceId: "price_ES_PLUS_REPLACE" },
-    anual: { amount: 149, display: "USD 149", suffix: "/año", stripePriceId: "price_ES_PRO_REPLACE" },
+    unico: { amount: 39, display: "USD 39", stripePriceId: "price_1Tcc06QmBsnwYHrwfrjsYvmt" },
+    pack3: { amount: 89, display: "USD 89", stripePriceId: "price_1TccI9QmBsnwYHrwLQ6aRuVs" },
+    anual: { amount: 149, display: "USD 149", suffix: "/año", stripePriceId: "price_1TccvvQmBsnwYHrw6enC7S1o" },
   },
   INTERNACIONAL: {
-    unico: { amount: 49, display: "USD 49", stripePriceId: "price_INTL_GO_REPLACE" },
-    pack3: { amount: 99, display: "USD 99", stripePriceId: "price_INTL_PLUS_REPLACE" },
-    anual: { amount: 179, display: "USD 179", suffix: "/yr", stripePriceId: "price_INTL_PRO_REPLACE" },
+    unico: { amount: 49, display: "USD 49", stripePriceId: "price_1Tcc06QmBsnwYHrwc9lYBCAI" },
+    pack3: { amount: 99, display: "USD 99", stripePriceId: "price_1TccI9QmBsnwYHrwGL26gLiB" },
+    anual: { amount: 179, display: "USD 179", suffix: "/yr", stripePriceId: "price_1TccwfQmBsnwYHrwB9aNHk8P" },
   },
+
 };
 
 const STORAGE_KEY = "payrank_region";
