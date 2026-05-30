@@ -273,6 +273,56 @@ export type Database = {
           },
         ]
       }
+      pagos: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          diagnostico_id: string | null
+          email: string
+          id: string
+          plan_name: string | null
+          price_id: string | null
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          diagnostico_id?: string | null
+          email: string
+          id?: string
+          plan_name?: string | null
+          price_id?: string | null
+          status: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          diagnostico_id?: string | null
+          email?: string
+          id?: string
+          plan_name?: string | null
+          price_id?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pagos_diagnostico_id_fkey"
+            columns: ["diagnostico_id"]
+            isOneToOne: false
+            referencedRelation: "diagnosticos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
