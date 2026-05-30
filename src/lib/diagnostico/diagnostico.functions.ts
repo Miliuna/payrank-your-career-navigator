@@ -223,7 +223,7 @@ async function callAnthropic(systemPrompt: string, userPrompt: string): Promise<
   const res = await fetchAnthropicWithRetry(
     {
       model: MODEL,
-      max_tokens: 4000,
+      max_tokens: 16000,
       temperature: 0,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
