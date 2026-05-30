@@ -2,12 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useLang } from "@/lib/lang";
+import { useRegion, PRICING, persistPlanSelection, type Region } from "@/lib/pricing";
+import type { Plan } from "@/lib/diagnostico/types";
 
 export const Route = createFileRoute("/planes")({
   head: () => ({
     meta: [
       { title: "Planes — PayRank" },
-      { name: "description", content: "Elegí el PayRank que va con tu momento. Un diagnóstico completo desde USD 29." },
+      { name: "description", content: "Elegí el PayRank que va con tu momento. Diagnóstico completo con precios para tu región." },
     ],
   }),
   component: Planes,
@@ -15,49 +17,99 @@ export const Route = createFileRoute("/planes")({
 
 function Planes() {
   const { lang } = useLang();
-  if (lang === "EN") return <PlanesEN />;
-  return <PlanesES />;
+  const { region, ready } = useRegion();
+  if (lang === "EN") return <PlanesEN region={region} ready={ready} />;
+  return <PlanesES region={region} ready={ready} />;
 }
 
-// ─── ES ─────────────────────────────────────────────────────────────────────
+// ─── Plan copy (region-independent) ────────────────────────────────────────
 
-const planesES = [
+type PlanCopy = {
+  nombre: string;
+  italic: string;
+  descripcion: string;
+  cta: string;
+  plan: Plan;
+  destacada: boolean;
+  badge?: string;
+};
+
+const COPY_ES: PlanCopy[] = [
   {
     nombre: "GO",
-    precio: "USD 29",
-    sufijo: undefined as string | undefined,
     italic: "Para cuando tenés una conversación puntual por delante.",
     descripcion: "Un PayRank completo. Sin vencimiento.",
     cta: "EMPEZAR CON GO",
-    plan: "unico" as const,
+    plan: "unico",
     destacada: false,
   },
   {
     nombre: "PLUS",
-    precio: "USD 69",
-    sufijo: undefined as string | undefined,
     italic: "Para cuando estás en movimiento.",
     descripcion:
       "Tres PayRank completos. Sin vencimiento.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
     cta: "EMPEZAR CON PLUS",
-    plan: "pack3" as const,
+    plan: "pack3",
     destacada: true,
     badge: "MÁS ELEGIDO",
   },
   {
     nombre: "PRO",
-    precio: "USD 149",
-    sufijo: "/año",
     italic: "Para quien quiere que PayRank lo acompañe.",
     descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.\n\nUSD 199/año en USA, UK, Australia y Canadá.",
+      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
     cta: "EMPEZAR CON PRO",
-    plan: "anual" as const,
+    plan: "anual",
     destacada: false,
   },
 ];
 
-function PlanesES() {
+const COPY_EN: PlanCopy[] = [
+  {
+    nombre: "GO",
+    italic: "For when you have one key conversation ahead.",
+    descripcion: "1 PayRank. Any situation. No expiration.",
+    cta: "START WITH GO",
+    plan: "unico",
+    destacada: false,
+  },
+  {
+    nombre: "PLUS",
+    italic: "For when you're in motion.",
+    descripcion:
+      "3 PayRanks. Any situation. No expiration. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
+    cta: "START WITH PLUS",
+    plan: "pack3",
+    destacada: true,
+    badge: "MOST CHOSEN",
+  },
+  {
+    nombre: "PRO",
+    italic: "For when you want PayRank in your corner all year.",
+    descripcion:
+      "Unlimited PayRanks + automatic market updates when your sector moves — so you never negotiate with stale data.",
+    cta: "START WITH PRO",
+    plan: "anual",
+    destacada: false,
+  },
+];
+
+const REGION_LABEL_ES: Record<Region, string> = {
+  LATAM: "Precios para Latinoamérica",
+  ESPANA: "Precios para España",
+  INTERNACIONAL: "Precios internacionales (USD)",
+};
+
+const REGION_LABEL_EN: Record<Region, string> = {
+  LATAM: "Pricing for Latin America",
+  ESPANA: "Pricing for Spain",
+  INTERNACIONAL: "International pricing (USD)",
+};
+
+// ─── ES ─────────────────────────────────────────────────────────────────────
+
+function PlanesES({ region, ready }: { region: Region; ready: boolean }) {
+  const prices = PRICING[region];
   return (
     <div className="min-h-screen bg-tinta text-hueso">
       <SiteHeader />
@@ -65,13 +117,17 @@ function PlanesES() {
       <section className="px-5 md:px-10 pt-32 md:pt-44 pb-24 md:pb-36">
         <div className="mx-auto max-w-6xl">
           <p className="font-ui text-[10px] text-hueso/60 mb-4">PLANES</p>
-          <h1 className="font-display text-3xl md:text-5xl mb-14">
+          <h1 className="font-display text-3xl md:text-5xl mb-6">
             Elegí tu <span className="font-display-italic">PayRank</span>
           </h1>
+          <p className="font-ui text-[10px] text-hueso/50 mb-14" aria-live="polite">
+            {ready ? REGION_LABEL_ES[region] : "Detectando tu región…"}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {planesES.map((plan) => {
+            {COPY_ES.map((plan) => {
               const d = plan.destacada;
+              const pr = prices[plan.plan];
               return (
                 <div
                   key={plan.plan}
@@ -92,11 +148,11 @@ function PlanesES() {
                   </p>
                   <div className="mb-5 flex items-baseline gap-2">
                     <span className={`font-display text-5xl md:text-6xl ${d ? "text-hueso" : "text-tinta"}`}>
-                      {plan.precio}
+                      {pr.display}
                     </span>
-                    {plan.sufijo && (
+                    {pr.suffix && (
                       <span className={`font-body text-sm ${d ? "text-hueso/70" : "text-piedra"}`}>
-                        {plan.sufijo}
+                        {pr.suffix}
                       </span>
                     )}
                   </div>
@@ -109,6 +165,7 @@ function PlanesES() {
                   <Link
                     to="/modo"
                     search={{ plan: plan.plan }}
+                    onClick={() => persistPlanSelection(plan.plan, region)}
                     className={`mt-auto inline-flex items-center justify-between font-ui text-[11px] px-5 py-3 transition-colors ${
                       d
                         ? "bg-hueso text-tinta hover:bg-hueso/90"
@@ -138,12 +195,9 @@ function PlanesES() {
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">Precio</td>
-                    <td className="py-4 px-4">USD 29</td>
-                    <td className="py-4 px-4">USD 69</td>
-                    <td className="py-4 px-4">
-                      USD 149/año
-                      <span className="text-hueso/50 text-xs block">USD 199/año en USA, UK, Australia y Canadá</span>
-                    </td>
+                    <td className="py-4 px-4">{prices.unico.display}</td>
+                    <td className="py-4 px-4">{prices.pack3.display}</td>
+                    <td className="py-4 px-4">{prices.anual.display}{prices.anual.suffix ?? ""}</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>
@@ -183,43 +237,8 @@ function PlanesES() {
 
 // ─── EN ─────────────────────────────────────────────────────────────────────
 
-const planesEN = [
-  {
-    nombre: "GO",
-    precio: "USD 39",
-    sufijo: undefined as string | undefined,
-    italic: "For when you have one key conversation ahead.",
-    descripcion: "1 PayRank. Any situation. No expiration.",
-    cta: "START WITH GO",
-    plan: "unico" as const,
-    destacada: false,
-  },
-  {
-    nombre: "PLUS",
-    precio: "USD 99",
-    sufijo: undefined as string | undefined,
-    italic: "For when you're in motion.",
-    descripcion:
-      "3 PayRanks. Any situation. No expiration. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
-    cta: "START WITH PLUS",
-    plan: "pack3" as const,
-    destacada: true,
-    badge: "MOST CHOSEN",
-  },
-  {
-    nombre: "PRO",
-    precio: "USD 199",
-    sufijo: "/yr",
-    italic: "For when you want PayRank in your corner all year.",
-    descripcion:
-      "Unlimited PayRanks + automatic market updates when your sector moves — so you never negotiate with stale data.",
-    cta: "START WITH PRO",
-    plan: "anual" as const,
-    destacada: false,
-  },
-];
-
-function PlanesEN() {
+function PlanesEN({ region, ready }: { region: Region; ready: boolean }) {
+  const prices = PRICING[region];
   return (
     <div className="min-h-screen bg-tinta text-hueso">
       <SiteHeader />
@@ -227,13 +246,17 @@ function PlanesEN() {
       <section className="px-5 md:px-10 pt-32 md:pt-44 pb-24 md:pb-36">
         <div className="mx-auto max-w-6xl">
           <p className="font-ui text-[10px] text-hueso/60 mb-4">PLANS</p>
-          <h1 className="font-display text-3xl md:text-5xl mb-14">
+          <h1 className="font-display text-3xl md:text-5xl mb-6">
             One PayRank changes <span className="font-display-italic">the conversation.</span>
           </h1>
+          <p className="font-ui text-[10px] text-hueso/50 mb-14" aria-live="polite">
+            {ready ? REGION_LABEL_EN[region] : "Detecting your region…"}
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {planesEN.map((plan) => {
+            {COPY_EN.map((plan) => {
               const d = plan.destacada;
+              const pr = prices[plan.plan];
               return (
                 <div
                   key={plan.plan}
@@ -254,11 +277,11 @@ function PlanesEN() {
                   </p>
                   <div className="mb-5 flex items-baseline gap-2">
                     <span className={`font-display text-5xl md:text-6xl ${d ? "text-hueso" : "text-tinta"}`}>
-                      {plan.precio}
+                      {pr.display}
                     </span>
-                    {plan.sufijo && (
+                    {pr.suffix && (
                       <span className={`font-body text-sm ${d ? "text-hueso/70" : "text-piedra"}`}>
-                        {plan.sufijo}
+                        {pr.suffix}
                       </span>
                     )}
                   </div>
@@ -271,6 +294,7 @@ function PlanesEN() {
                   <Link
                     to="/modo"
                     search={{ plan: plan.plan }}
+                    onClick={() => persistPlanSelection(plan.plan, region)}
                     className={`mt-auto inline-flex items-center justify-between font-ui text-[11px] px-5 py-3 transition-colors ${
                       d
                         ? "bg-hueso text-tinta hover:bg-hueso/90"
@@ -300,9 +324,9 @@ function PlanesEN() {
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">Price</td>
-                    <td className="py-4 px-4">USD 39</td>
-                    <td className="py-4 px-4">USD 99</td>
-                    <td className="py-4 px-4">USD 199/yr</td>
+                    <td className="py-4 px-4">{prices.unico.display}</td>
+                    <td className="py-4 px-4">{prices.pack3.display}</td>
+                    <td className="py-4 px-4">{prices.anual.display}{prices.anual.suffix ?? ""}</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">PayRanks included</td>
