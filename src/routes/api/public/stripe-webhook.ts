@@ -105,6 +105,7 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
             .from('diagnosticos')
             .update({
               pago_confirmado: true,
+              stripe_session_id: session.id,
               stripe_payment_id: paymentIntentId ?? session.id,
               plan_elegido: planName,
               monto_pagado_usd: currency === 'usd' ? amount : null,

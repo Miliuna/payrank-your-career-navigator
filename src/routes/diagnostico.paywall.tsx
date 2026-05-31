@@ -3,11 +3,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
-import { simulatePayment, applyAccessCode } from "@/lib/diagnostico/diagnostico.functions";
+import { simulatePayment, applyAccessCode, createCheckoutSession } from "@/lib/diagnostico/diagnostico.functions";
 import { useLang } from "@/lib/lang";
 import type { Plan } from "@/lib/diagnostico/types";
+import { PRICING, useRegion } from "@/lib/pricing";
 
 const searchSchema = z.object({ id: z.string().uuid() });
+
 
 export const Route = createFileRoute("/diagnostico/paywall")({
   head: () => ({ meta: [{ title: "Tu PayRank — Paywall" }] }),
@@ -59,6 +61,8 @@ function PaywallPage() {
   const navigate = useNavigate();
   const simulate = useServerFn(simulatePayment);
   const applyCode = useServerFn(applyAccessCode);
+  const checkout = useServerFn(createCheckoutSession);
+  const { region } = useRegion();
 
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -81,12 +85,19 @@ function PaywallPage() {
     setErr(null);
     setBusy(true);
     try {
-      await navigate({ to: "/diagnostico/procesando", search: { id } });
+      const selected = state.plan;
+      const priceId = PRICING[region][selected].stripePriceId;
+      const planName = PLAN_INFO[selected].nombre;
+      const { url } = await checkout({
+        data: { id, plan: selected, priceId, planName, origin: window.location.origin },
+      });
+      window.location.href = url;
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
   };
+
 
 
 
@@ -265,7 +276,7 @@ function PaywallPage() {
               disabled={busy}
               className="w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
             >
-              {busy ? (isEN ? "GENERATING…" : "GENERANDO…") : (isEN ? "GET MY PAYRANK" : "OBTENER MI PAYRANK")}
+              {busy ? (isEN ? "REDIRECTING TO CHECKOUT…" : "REDIRIGIENDO AL PAGO…") : (isEN ? "PAY AND GET MY PAYRANK" : "PAGAR Y OBTENER MI PAYRANK")}
               <span aria-hidden>→</span>
             </button>
 

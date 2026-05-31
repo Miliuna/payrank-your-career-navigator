@@ -126,6 +126,7 @@ export type Database = {
           salario_tipo: string | null
           situacion_laboral: string | null
           stripe_payment_id: string | null
+          stripe_session_id: string | null
           tipo_cambio_utilizado: Json | null
           tipo_empresa: string | null
           tipo_usuario: string
@@ -178,6 +179,7 @@ export type Database = {
           salario_tipo?: string | null
           situacion_laboral?: string | null
           stripe_payment_id?: string | null
+          stripe_session_id?: string | null
           tipo_cambio_utilizado?: Json | null
           tipo_empresa?: string | null
           tipo_usuario?: string
@@ -230,6 +232,7 @@ export type Database = {
           salario_tipo?: string | null
           situacion_laboral?: string | null
           stripe_payment_id?: string | null
+          stripe_session_id?: string | null
           tipo_cambio_utilizado?: Json | null
           tipo_empresa?: string | null
           tipo_usuario?: string
