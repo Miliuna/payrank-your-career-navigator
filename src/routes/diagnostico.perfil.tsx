@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
-import { TITULOS_MODO, TITULOS_MODO_EN } from "@/lib/diagnostico/data";
+import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, NIVELES, TIPOS_EMPRESA } from "@/lib/diagnostico/data";
 import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 
 export const Route = createFileRoute("/diagnostico/perfil")({
