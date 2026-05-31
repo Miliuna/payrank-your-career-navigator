@@ -79,6 +79,11 @@ export type Respuestas = {
   subCasoC?: "oferta" | "entrevista";
   // Mode D target direction
   targetDireccionD?: string;
+  // Auditoría de documentos (paso de validación)
+  bonoUltimo?: string;
+  sinVariable?: boolean;
+  tituloElegido?: string;
+  antiguedadDesde?: string; // YYYY-MM
 };
 
 export type DatosExtraidos = {
@@ -101,6 +106,11 @@ export type DatosExtraidos = {
   tipo_salario_inferido?: string | null;
   beneficios_inferidos?: string[] | null;
   linkedin_url?: string | null;
+  // Auditoría
+  recibo_fecha?: string | null;
+  recibo_tiene_variable_sin_monto?: boolean | null;
+  titulo_cv?: string | null;
+  titulo_recibo?: string | null;
   [k: string]: unknown;
 };
 
