@@ -289,6 +289,13 @@ export const INDUSTRIAS_EN: Record<string, string> = {
   Otra: "Other",
 };
 
+export const TIPOS_EMPRESA_EN: Record<string, string> = {
+  "Startup / PyME (1–99 empleados)": "Startup / SMB (1–99 employees)",
+  "Empresa mediana (100–999 empleados)": "Mid-size company (100–999 employees)",
+  "Empresa grande nacional (1.000–4.999 empleados)": "Large national company (1,000–4,999 employees)",
+  "Multinacional / Enterprise (+5.000 empleados)": "Multinational / Enterprise (5,000+ employees)",
+};
+
 export const NIVELES_EN: Record<string, string> = {
   "Junior/Analista": "Junior/Analyst",
   "Semi-senior": "Semi-senior",
