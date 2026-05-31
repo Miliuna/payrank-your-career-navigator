@@ -719,7 +719,7 @@ function ResultadoPage() {
 
           <Card dark>
             <Eyebrow>HABLAR CON UN RECRUITER</Eyebrow>
-            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed">{str(s6.script_recruiter)}</p>
+            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_recruiter)}</p>
           </Card>
 
           <Eyebrow>OBJECIONES Y RESPUESTAS</Eyebrow>
