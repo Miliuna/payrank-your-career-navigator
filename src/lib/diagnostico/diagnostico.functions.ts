@@ -407,21 +407,23 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       return { id: record.id as string, link_unico: record.link_unico as string };
     }
 
+    // Tipo de cambio: se consulta UNA vez ANTES de Anthropic y se inyecta en los prompts
+    // para que el modelo use exactamente el mismo valor que se muestra en el reporte.
+    const { code: currency, usdOnly } = detectCurrency(record.pais_rol as string | null);
+    const tipoCambio: TipoCambio | null =
+      currency && !usdOnly ? await fetchFxRate(currency) : null;
+    console.log("[generateDiagnostico] tipoCambio:", tipoCambio);
+
     // Generación en 2 llamadas paralelas para evitar timeout upstream (≥60s).
     let promptA: string;
     let promptB: string;
     try {
-      promptA = buildUserPromptPartA(record);
-      promptB = buildUserPromptPartB(record);
+      promptA = buildUserPromptPartA(record, tipoCambio);
+      promptB = buildUserPromptPartB(record, tipoCambio);
     } catch (promptErr) {
       console.error("[generateDiagnostico] error construyendo prompts (modo:", record.modo, "):", promptErr);
       throw promptErr;
     }
-
-    // Tipo de cambio (en paralelo con la generación)
-    const { code: currency, usdOnly } = detectCurrency(record.pais_rol as string | null);
-    const fxPromise: Promise<TipoCambio | null> =
-      currency && !usdOnly ? fetchFxRate(currency) : Promise.resolve(null);
 
     async function genPart(prompt: string, label: string, systemPrompt: string): Promise<Record<string, unknown>> {
       let parsed: unknown | null = null;
@@ -448,10 +450,9 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       return parsed as Record<string, unknown>;
     }
 
-    const [partA, partB, tipoCambio] = await Promise.all([
+    const [partA, partB] = await Promise.all([
       genPart(promptA, "parteA", SYSTEM_PROMPT),
       genPart(promptB, "parteB", SYSTEM_PROMPT_B),
-      fxPromise,
     ]);
     const parsed: Record<string, unknown> = { ...partA, ...partB };
 

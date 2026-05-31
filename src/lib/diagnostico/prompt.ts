@@ -375,7 +375,32 @@ function v(value: unknown, fallback = "no declarado"): string {
   return str.length ? str : fallback;
 }
 
-export function buildUserPrompt(d: AnyRecord): string {
+export type TipoCambioInput = {
+  moneda: string;
+  valor: number;
+  fuente: string;
+  fecha: string;
+} | null | undefined;
+
+function fxBlock(tc: TipoCambioInput): string {
+  if (!tc || !tc.valor || !tc.moneda) return "";
+  const fechaFmt = tc.fecha
+    ? new Date(tc.fecha).toISOString()
+    : new Date().toISOString();
+  return `
+
+============================================================
+DATO CRÍTICO — TIPO DE CAMBIO OFICIAL (USAR EXCLUSIVAMENTE ESTE VALOR):
+1 USD = ${tc.valor} ${tc.moneda}
+Fuente: ${tc.fuente}
+Fecha de consulta: ${fechaFmt}
+
+INSTRUCCIÓN OBLIGATORIA: Usá EXCLUSIVAMENTE este valor (${tc.valor} ${tc.moneda} por 1 USD) para TODAS las conversiones entre USD y moneda local en este diagnóstico. No uses ningún otro tipo de cambio. No uses valores aproximados ni hardcodeados ni de tu entrenamiento. Cada vez que conviertas un valor entre USD y ${tc.moneda}, usá exactamente ${tc.valor}. El tipo de cambio que aparece en el reporte al usuario será este mismo número (${tc.valor} ${tc.moneda} por USD), por lo que todos los rangos locales y USD deben ser internamente consistentes con esa tasa.
+============================================================
+`;
+}
+
+export function buildUserPrompt(d: AnyRecord, tipoCambio?: TipoCambioInput): string {
   const modo = typeof d.modo === "string" ? d.modo : "";
   const modoDesc = MODO_DESCRIPCION[modo] ?? v(d.modo);
   const isModeWithTarget = modo === "C";
@@ -441,7 +466,7 @@ El diagnóstico debe incluir: análisis de la brecha entre el nivel actual y el 
     }
   })();
 
-  return `Situación de consulta: ${modoDesc}${targetJobBlock}
+  return `${fxBlock(tipoCambio)}Situación de consulta: ${modoDesc}${targetJobBlock}
 
 PERFIL DEL USUARIO:
 País donde opera el rol: ${v(d.pais_rol)}
@@ -476,8 +501,8 @@ Respondé ÚNICAMENTE con JSON válido sin texto adicional.`;
 
 // ===== Prompts parciales para generación en 2 partes (evita timeouts) =====
 
-export function buildUserPromptPartA(d: AnyRecord): string {
-  return `${buildUserPrompt(d)}
+export function buildUserPromptPartA(d: AnyRecord, tipoCambio?: TipoCambioInput): string {
+  return `${buildUserPrompt(d, tipoCambio)}
 
 IMPORTANTE — PARTE 1 DE 2:
 Generá ÚNICAMENTE estas claves del JSON: "seccion_1", "seccion_2", "seccion_3", "seccion_4".
@@ -485,8 +510,8 @@ Aplicá todas las reglas del system prompt. La estructura interna de cada secci�
 Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.`;
 }
 
-export function buildUserPromptPartB(d: AnyRecord): string {
-  return `${buildUserPrompt(d)}
+export function buildUserPromptPartB(d: AnyRecord, tipoCambio?: TipoCambioInput): string {
+  return `${buildUserPrompt(d, tipoCambio)}
 
 IMPORTANTE — PARTE 2 DE 2:
 Generá ÚNICAMENTE estas claves del JSON: "seccion_5", "seccion_6", "seccion_7", "seccion_8", "freelance".
