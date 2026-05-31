@@ -217,6 +217,15 @@ Sección 2: el número. Rango en lenguaje humano → cuántos profesionales gana
 
 Sección 3: compensación total valorizada. Tabla con cada beneficio valorizado → total vs mercado → análisis narrativo → beneficios faltantes.
 
+REGLA PARA BENEFICIOS FALTANTES (sección 3, campo "beneficios_faltantes"):
+No sugieras como beneficio faltante algo que el mercado no ofrece para el nivel del usuario.
+Criterio por beneficio:
+- Auto corporativo / allowance movilidad: solo sugerir como faltante si el nivel real es Manager/Gerente o superior, O si el rol requiere movilidad operativa (ventas, campo, supervisión de planta). No sugerir para niveles Analista, Especialista o Senior sin equipo a cargo en roles de oficina.
+- Stock options / Equity: solo sugerir como faltante si la empresa es multinacional, startup con funding, o cotiza en bolsa.
+- Plan de retiro complementario: solo sugerir si la empresa es multinacional o empresa grande nacional con más de 1000 empleados.
+Cuando listes beneficios faltantes, cada uno debe incluir entre paréntesis para qué tipo de empresa y nivel es frecuente. Ejemplo: "Auto corporativo (frecuente en niveles gerenciales en empresas grandes del sector)."
+Si un beneficio no aplica al perfil del usuario, NO lo listes como faltante.
+
 Sección 4: brecha de género solo si se solicitó. Número en dinero primero → contexto por nivel → factores → argumento de negociación adaptado al país.
 
 Sección 5: cuánto pedir y cómo defenderlo. Número grande → floor y ceiling → tres argumentos específicos al perfil.
