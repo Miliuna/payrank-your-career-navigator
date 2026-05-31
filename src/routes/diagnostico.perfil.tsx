@@ -211,7 +211,7 @@ function PerfilPage() {
                 className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
               >
                 <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
-                {TIPOS_EMPRESA.map((t) => <option key={t} value={t}>{t}</option>)}
+                {TIPOS_EMPRESA.map((t) => <option key={t} value={t}>{labelOf(t, TIPOS_EMPRESA_EN, isEN)}</option>)}
               </select>
             </EditField>
           </div>
