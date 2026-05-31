@@ -232,7 +232,7 @@ function PerfilPage() {
           <Bloque
             titulo={isEN ? "Block 2 · Your role" : "Bloque 2 · Tu rol"}
             items={[
-              { k: isEN ? "Level" : "Nivel jerárquico", v: r.nivel },
+              { k: isEN ? "Level" : "Nivel jerárquico", v: nivelDisplay },
               { k: isEN ? "Scope" : "Alcance", v: r.alcance },
               { k: isEN ? "Main functions" : "Funciones principales", v: funciones.join(" · ") || (r.funcionesTexto ? (isEN ? "(free description)" : "(descripción libre)") : "") },
               { k: isEN ? "Direct reports" : "Personas a cargo", v: r.personasACargo },
