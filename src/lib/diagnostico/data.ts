@@ -8,10 +8,10 @@ export const TITULOS_MODO: Record<Modo, string> = {
 };
 
 export const TITULOS_MODO_EN: Record<Modo, string> = {
-  A: "Am I being paid competitively?",
-  B: "I want to ask for a raise or review",
-  C: "I have an offer or interview",
-  D: "I'm planning my next career move",
+  A: "AM I BEING PAID COMPETITIVELY?",
+  B: "I WANT TO ASK FOR A RAISE OR REVIEW",
+  C: "I HAVE AN OFFER OR INTERVIEW",
+  D: "I'M PLANNING MY NEXT CAREER MOVE",
 };
 
 export const PAISES = [
