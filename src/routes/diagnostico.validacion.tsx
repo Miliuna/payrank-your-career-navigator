@@ -224,17 +224,56 @@ function ValidacionPage() {
             </Card>
           )}
 
-          {showTituloMismatch && (
+          {showFrecuencia && (
             <Card>
-              <Label>{isEN ? "Job title mismatch" : "Inconsistencia de título"}</Label>
+              <Label>{isEN ? "Bonus frequency mismatch" : "Frecuencia de bono inconsistente"}</Label>
               <p className="font-body text-base text-hueso mb-4">
                 {isEN
-                  ? <>Your CV says <em>{tituloCv}</em> but your pay stub says <em>{tituloRecibo}</em>. Which one best describes what you do today?</>
-                  : <>Tu CV dice <em>{tituloCv}</em> pero tu recibo dice <em>{tituloRecibo}</em>. ¿Cuál describe mejor lo que hacés hoy?</>}
+                  ? <>We detected inconsistent information about your variable component: in one place it says <em>{frecuenciasUnicas[0]}</em> and in another <em>{frecuenciasUnicas[1]}</em>. Which one is correct?</>
+                  : <>Detectamos información inconsistente sobre tu componente variable: en un campo dijiste <em>{frecuenciasUnicas[0]}</em> y en otro <em>{frecuenciasUnicas[1]}</em>. ¿Cuál es la correcta?</>}
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
-                <Pick selected={tituloPick === "cv"} onClick={() => setTituloPick("cv")}>{tituloCv}</Pick>
-                <Pick selected={tituloPick === "recibo"} onClick={() => setTituloPick("recibo")}>{tituloRecibo}</Pick>
+                {frecuenciasUnicas.map((f) => (
+                  <Pick key={f} selected={frecuenciaPick === f} onClick={() => setFrecuenciaPick(f)}>{f}</Pick>
+                ))}
+                <Pick selected={frecuenciaPick === "otra"} onClick={() => setFrecuenciaPick("otra")}>
+                  {isEN ? "Other" : "Otra"}
+                </Pick>
+              </div>
+              {frecuenciaPick === "otra" && (
+                <input
+                  type="text"
+                  placeholder={isEN ? "Clarify the real frequency" : "Aclará la frecuencia real"}
+                  value={frecuenciaOtra}
+                  onChange={(e) => setFrecuenciaOtra(e.target.value)}
+                  className="w-full mt-2 bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso placeholder:text-hueso/30 py-3"
+                />
+              )}
+            </Card>
+          )}
+
+          {showTituloMismatch && (
+            <Card>
+              <Label>{isEN ? "Current job title" : "Puesto actual"}</Label>
+              <p className="font-body text-base text-hueso mb-4">
+                {mismatchCvRecibo
+                  ? (isEN
+                      ? <>Your CV says <em>{tituloCv}</em> but your pay stub says <em>{tituloRecibo}</em>. Which one best describes what you do today?</>
+                      : <>Tu CV dice <em>{tituloCv}</em> pero tu recibo dice <em>{tituloRecibo}</em>. ¿Cuál describe mejor lo que hacés hoy?</>)
+                  : (isEN
+                      ? <>We couldn't reliably tell your current job title apart from your academic degree. What is your current job title?</>
+                      : <>No pudimos distinguir con seguridad tu puesto actual de tu título académico. ¿Cuál es tu puesto actual?</>)}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {tituloCv && (
+                  <Pick selected={tituloPick === "cv"} onClick={() => setTituloPick("cv")}>{tituloCv}</Pick>
+                )}
+                {tituloRecibo && (
+                  <Pick selected={tituloPick === "recibo"} onClick={() => setTituloPick("recibo")}>{tituloRecibo}</Pick>
+                )}
+                {tituloAcademico && !mismatchCvRecibo && (
+                  <Pick selected={tituloPick === "academico"} onClick={() => setTituloPick("academico")}>{tituloAcademico}</Pick>
+                )}
                 <Pick selected={tituloPick === "otro"} onClick={() => setTituloPick("otro")}>{isEN ? "Other" : "Otro"}</Pick>
               </div>
               {tituloPick === "otro" && (
