@@ -14,7 +14,7 @@ export const Route = createFileRoute("/diagnostico/perfil")({
 
 function PerfilPage() {
   const navigate = useNavigate();
-  const { state } = useDiagnostico();
+  const { state, setState } = useDiagnostico();
   const { lang } = useLang();
   const isEN = lang === "EN";
   const r = state.respuestas;
