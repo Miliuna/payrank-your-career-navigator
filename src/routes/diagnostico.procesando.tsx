@@ -2,8 +2,9 @@ import * as React from "react";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { generateDiagnostico } from "@/lib/diagnostico/diagnostico.functions";
+import { generateDiagnostico, getPaymentStatus } from "@/lib/diagnostico/diagnostico.functions";
 import { useLang } from "@/lib/lang";
+
 
 const searchSchema = z.object({ id: z.string().uuid() });
 
