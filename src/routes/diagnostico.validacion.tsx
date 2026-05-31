@@ -114,8 +114,12 @@ function ValidacionPage() {
     tituloPick === "academico" ||
     (tituloPick === "otro" && tituloOtro.trim().length > 1);
   const tenureOk = !showTenure || /^\d{4}-\d{2}$/.test(antiguedad);
+  const expOk =
+    !showExperiencia ||
+    (Number(expTotalNum) > 0 && Number(expTotalNum) <= 70 &&
+      Number(expIndNum) >= 0 && Number(expIndNum) <= Number(expTotalNum));
 
-  const canContinue = staleOk && variableOk && frecuenciaOk && tituloOk && tenureOk;
+  const canContinue = staleOk && variableOk && frecuenciaOk && tituloOk && tenureOk && expOk;
 
   const onContinue = () => {
     setState((s) => {
