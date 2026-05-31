@@ -375,7 +375,32 @@ function v(value: unknown, fallback = "no declarado"): string {
   return str.length ? str : fallback;
 }
 
-export function buildUserPrompt(d: AnyRecord): string {
+export type TipoCambioInput = {
+  moneda: string;
+  valor: number;
+  fuente: string;
+  fecha: string;
+} | null | undefined;
+
+function fxBlock(tc: TipoCambioInput): string {
+  if (!tc || !tc.valor || !tc.moneda) return "";
+  const fechaFmt = tc.fecha
+    ? new Date(tc.fecha).toISOString()
+    : new Date().toISOString();
+  return `
+
+============================================================
+DATO CRÍTICO — TIPO DE CAMBIO OFICIAL (USAR EXCLUSIVAMENTE ESTE VALOR):
+1 USD = ${tc.valor} ${tc.moneda}
+Fuente: ${tc.fuente}
+Fecha de consulta: ${fechaFmt}
+
+INSTRUCCIÓN OBLIGATORIA: Usá EXCLUSIVAMENTE este valor (${tc.valor} ${tc.moneda} por 1 USD) para TODAS las conversiones entre USD y moneda local en este diagnóstico. No uses ningún otro tipo de cambio. No uses valores aproximados ni hardcodeados ni de tu entrenamiento. Cada vez que conviertas un valor entre USD y ${tc.moneda}, usá exactamente ${tc.valor}. El tipo de cambio que aparece en el reporte al usuario será este mismo número (${tc.valor} ${tc.moneda} por USD), por lo que todos los rangos locales y USD deben ser internamente consistentes con esa tasa.
+============================================================
+`;
+}
+
+export function buildUserPrompt(d: AnyRecord, tipoCambio?: TipoCambioInput): string {
   const modo = typeof d.modo === "string" ? d.modo : "";
   const modoDesc = MODO_DESCRIPCION[modo] ?? v(d.modo);
   const isModeWithTarget = modo === "C";
