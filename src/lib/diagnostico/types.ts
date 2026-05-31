@@ -85,6 +85,8 @@ export type Respuestas = {
   sinVariable?: boolean;
   tituloElegido?: string;
   antiguedadDesde?: string; // YYYY-MM
+  experienciaTotalAnios?: number;
+  experienciaIndustriaAnios?: number;
 };
 
 export type DatosExtraidos = {
