@@ -34,7 +34,7 @@ function H2({ children }: { children: React.ReactNode }) {
 }
 function P({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) {
   return (
-    <p className={`p-body font-body leading-relaxed ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
+    <p className={`p-body font-body leading-relaxed text-justify ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
       {children}
     </p>
   );
@@ -714,12 +714,12 @@ function ResultadoPage() {
 
           <Card dark>
             <Eyebrow>HABLAR CON TU JEFE</Eyebrow>
-            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed">{str(s6.script_jefe)}</p>
+            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_jefe)}</p>
           </Card>
 
           <Card dark>
             <Eyebrow>HABLAR CON UN RECRUITER</Eyebrow>
-            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed">{str(s6.script_recruiter)}</p>
+            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_recruiter)}</p>
           </Card>
 
           <Eyebrow>OBJECIONES Y RESPUESTAS</Eyebrow>
@@ -729,7 +729,7 @@ function ResultadoPage() {
               <Card key={i}>
                 <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-2">Objeción {i + 1}</p>
                 <p className="font-body text-hueso italic mb-3">"{str(obj.objecion)}"</p>
-                <p className="font-body text-hueso/80">{str(obj.respuesta)}</p>
+                <p className="font-body text-hueso/80 text-justify">{str(obj.respuesta)}</p>
               </Card>
             );
           })}
