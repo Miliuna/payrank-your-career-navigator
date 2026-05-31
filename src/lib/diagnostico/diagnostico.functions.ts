@@ -1,7 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
+
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    httpClient: Stripe.createFetchHttpClient(),
+  });
+}
+
 
 const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-4-6";
