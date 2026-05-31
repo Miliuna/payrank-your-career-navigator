@@ -166,6 +166,65 @@ export const simulatePayment = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------- Crear Stripe Checkout Session ----------
+
+export const createCheckoutSession = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z.object({
+      id: z.string().uuid(),
+      plan: z.enum(["unico", "pack3", "anual"]),
+      priceId: z.string().min(1).max(128),
+      planName: z.string().min(1).max(64),
+      origin: z.string().url(),
+    }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const stripe = getStripe();
+    const mode: Stripe.Checkout.SessionCreateParams.Mode =
+      data.plan === "anual" ? "subscription" : "payment";
+
+    // Get customer email from diagnostic to prefill checkout
+    const { data: diag } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .select("mail")
+      .eq("id", data.id)
+      .maybeSingle();
+    const customerEmail = (diag as { mail?: string | null } | null)?.mail || undefined;
+
+    const session = await stripe.checkout.sessions.create({
+      mode,
+      line_items: [{ price: data.priceId, quantity: 1 }],
+      client_reference_id: data.id,
+      customer_email: customerEmail,
+      success_url: `${data.origin}/diagnostico/procesando?id=${data.id}`,
+      cancel_url: `${data.origin}/diagnostico/paywall?id=${data.id}`,
+      metadata: {
+        diagnostico_id: data.id,
+        plan: data.plan,
+        plan_name: data.planName,
+      },
+    });
+
+    if (!session.url) throw new Error("Stripe no devolvió URL de checkout");
+    return { url: session.url, sessionId: session.id };
+  });
+
+// ---------- Consultar estado de pago ----------
+
+export const getPaymentStatus = createServerFn({ method: "GET" })
+  .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
+  .handler(async ({ data }) => {
+    const { data: row, error } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .select("pago_confirmado")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    const r = row as { pago_confirmado: boolean } | null;
+    return { pagoConfirmado: !!r?.pago_confirmado };
+  });
+
+
 // ---------- Confirmar acceso beta (consume token) ----------
 
 export const confirmBetaAccess = createServerFn({ method: "POST" })
