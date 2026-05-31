@@ -44,19 +44,63 @@ function ValidacionPage() {
   const reciboMonthsOld = reciboFecha ? monthsAgo(reciboFecha) : null;
   const showStale = reciboFecha && reciboMonthsOld != null && reciboMonthsOld > 3;
 
-  // Bono sin monto: dispara si CUALQUIER documento lo menciona sin monto.
-  const bonoSinMontoFlag =
-    ex.bono_mencionado_sin_monto === true || ex.recibo_tiene_variable_sin_monto === true;
-  const showVariable = bonoSinMontoFlag && !r.bonoUltimo && !r.sinVariable;
+  // ── Escaneo transversal de bono/variable en todos los inputs ──
+  const FREQ_PATTERNS: Array<{ key: string; rx: RegExp }> = [
+    { key: "mensual", rx: /\b(mensual|monthly|por mes|al mes|cada mes)\b/i },
+    { key: "bimestral", rx: /\b(bimestral|bimonthly|bi-?monthly|cada dos meses)\b/i },
+    { key: "trimestral", rx: /\b(trimestral|quarterly|cada tres meses|cada trimestre)\b/i },
+    { key: "cuatrimestral", rx: /\b(cuatrimestral|cada cuatro meses)\b/i },
+    { key: "semestral", rx: /\b(semestral|semi-?annual|biannual|cada seis meses|semestralmente)\b/i },
+    { key: "anual", rx: /\b(anual|annual|yearly|por a[nñ]o|al a[nñ]o|cada a[nñ]o|anualmente)\b/i },
+  ];
+  const BONUS_RX = /\b(bono|bonos|bonus|variable|comisi[oó]n|comisiones|incentivo|incentivos|premio|premios)\b/i;
 
-  // Frecuencias de bono inconsistentes entre documentos.
-  const frecuenciasRaw = Array.isArray(ex.bono_frecuencias_detectadas)
-    ? (ex.bono_frecuencias_detectadas as string[]).filter((x) => typeof x === "string" && x.trim().length > 0)
+  const docs = state.documentos ?? {};
+  const bonusFields: Array<string | undefined> = [r.bonoUltimo, r.bonoFrecuencia];
+  const textosLibres: Array<{ txt: string; bonusField: boolean }> = [
+    { txt: r.descripcionPuesto ?? "", bonusField: false },
+    { txt: r.funcionesTexto ?? "", bonusField: false },
+    { txt: r.beneficiosOtro ?? "", bonusField: false },
+    { txt: r.bonoUltimo ?? "", bonusField: true },
+    { txt: r.bonoFrecuencia ?? "", bonusField: true },
+    { txt: docs.descriptivoTexto ?? "", bonusField: false },
+    { txt: docs.avisoTexto ?? "", bonusField: false },
+    { txt: docs.reciboTexto ?? "", bonusField: false },
+  ].filter((x) => x.txt.trim().length > 0);
+
+  const frecuenciasScan = new Set<string>();
+  for (const { txt, bonusField } of textosLibres) {
+    if (!bonusField && !BONUS_RX.test(txt)) continue;
+    for (const { key, rx } of FREQ_PATTERNS) {
+      if (rx.test(txt)) frecuenciasScan.add(key);
+    }
+  }
+  // Frecuencias extraídas por la IA (documentos) → normalizar a claves canónicas
+  const frecuenciasFromExtraction = Array.isArray(ex.bono_frecuencias_detectadas)
+    ? (ex.bono_frecuencias_detectadas as string[])
+        .filter((x) => typeof x === "string" && x.trim().length > 0)
+        .map((x) => x.trim().toLowerCase())
     : [];
-  const frecuenciasUnicas = Array.from(
-    new Set(frecuenciasRaw.map((x) => x.trim().toLowerCase())),
-  );
+  for (const f of frecuenciasFromExtraction) {
+    let matched = false;
+    for (const { key, rx } of FREQ_PATTERNS) {
+      if (rx.test(f) || key === f) { frecuenciasScan.add(key); matched = true; break; }
+    }
+    if (!matched) frecuenciasScan.add(f);
+  }
+  void bonusFields;
+  const frecuenciasUnicas = Array.from(frecuenciasScan);
   const showFrecuencia = frecuenciasUnicas.length >= 2 && !r.bonoFrecuencia && !r.sinVariable;
+
+  // Bono sin monto: dispara si CUALQUIER señal indica que hay variable
+  // (extracción de docs, frecuencia detectada en texto libre, o frecuencia ya elegida)
+  // y todavía no se especificó el monto.
+  const hayVariableDeclarada =
+    ex.bono_mencionado_sin_monto === true ||
+    ex.recibo_tiene_variable_sin_monto === true ||
+    frecuenciasUnicas.length > 0 ||
+    !!r.bonoFrecuencia;
+  const showVariable = hayVariableDeclarada && !r.bonoUltimo && !r.sinVariable;
 
   const tituloCv = typeof ex.titulo_cv === "string" ? ex.titulo_cv.trim() : "";
   const tituloRecibo = typeof ex.titulo_recibo === "string" ? ex.titulo_recibo.trim() : "";
