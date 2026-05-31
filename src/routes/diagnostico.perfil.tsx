@@ -102,17 +102,20 @@ function PerfilPage() {
     </section>
   );
 
-  const pais = r.pais === "Otro" ? r.paisOtro : r.pais;
-  const industria = r.industria === "Otra" ? r.industriaOtra : r.industria;
+  const paisRaw = r.pais === "Otro" ? r.paisOtro : r.pais;
+  const pais = isEN && paisRaw && r.pais !== "Otro" ? (PAISES_EN[paisRaw] ?? paisRaw) : paisRaw;
+  const industriaRaw = r.industria === "Otra" ? r.industriaOtra : r.industria;
+  const industria = isEN && industriaRaw && r.industria !== "Otra" ? (INDUSTRIAS_EN[industriaRaw] ?? industriaRaw) : industriaRaw;
+  const nivelDisplay = isEN && r.nivel ? (NIVELES_EN[r.nivel] ?? r.nivel) : r.nivel;
   const funciones = [...(r.funciones ?? [])];
   if (funciones.includes("Otra") && r.funcionesOtra) {
     const idx = funciones.indexOf("Otra");
-    funciones[idx] = `Otra: ${r.funcionesOtra}`;
+    funciones[idx] = `${isEN ? "Other" : "Otra"}: ${r.funcionesOtra}`;
   }
 
   const situacionLabel = isEN
-    ? (r.situacion === "empleado" ? "Employed" : r.situacion === "busqueda" ? "Active job search" : r.situacion === "freelance" ? "Freelance / independent consultant" : dash)
-    : (r.situacion === "empleado" ? "Empleado/a" : r.situacion === "busqueda" ? "En búsqueda activa" : r.situacion === "freelance" ? "Freelance / consultor/a" : dash);
+    ? (r.situacion === "empleado" ? "Employed" : r.situacion === "busqueda" ? "Active job search" : r.situacion === "freelance" ? "Freelance / independent consultant" : r.situacion === "contractor" ? "Contractor" : dash)
+    : (r.situacion === "empleado" ? "Empleado/a" : r.situacion === "busqueda" ? "En búsqueda activa" : r.situacion === "freelance" ? "Freelance / consultor/a" : r.situacion === "contractor" ? "Contractor" : dash);
   const salarioStr = r.salario && r.moneda
     ? `${r.moneda} ${r.salario.toLocaleString("es-AR")}${r.brutoNeto ? ` (${r.brutoNeto})` : ""}`
     : (r.salarioAnterior && r.monedaAnterior
