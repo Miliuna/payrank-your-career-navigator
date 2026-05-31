@@ -1293,7 +1293,7 @@ function P17Descripcion({ r, setR, modo }: Props & { modo?: string }) {
   if (modo === "B") {
     return (
       <>
-        <QuestionTitle>{isEN ? "Does your actual role go beyond your job title?" : "¿Tu rol va más allá del título de tu puesto?"}</QuestionTitle>
+        <QuestionTitle>{isEN ? "Does your role go beyond your job title?" : "¿Tu rol va más allá del título de tu puesto?"}</QuestionTitle>
         <QuestionHint>
           {isEN
             ? "Describe what you actually do: decisions you make, projects you lead, impact you generate — even if they're not in your formal description. This is the central argument for your negotiation."
