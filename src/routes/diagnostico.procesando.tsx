@@ -61,13 +61,29 @@ function ProcesandoPage() {
     startedRef.current = true;
     (async () => {
       try {
+        // Wait for payment confirmation (webhook may take a moment).
+        // Poll every 2s for up to 30s. Beta-code flow already sets pago_confirmado=true.
+        let confirmed = false;
+        for (let i = 0; i < 16; i++) {
+          const { pagoConfirmado } = await checkStatus({ data: { id } });
+          if (pagoConfirmado) { confirmed = true; break; }
+          await new Promise((r) => setTimeout(r, 2000));
+        }
+        if (!confirmed) {
+          throw new Error(
+            isEN
+              ? "Payment not confirmed yet. Please refresh in a few seconds or contact support."
+              : "El pago aún no se confirmó. Por favor refrescá en unos segundos o escribinos.",
+          );
+        }
         const res = await generate({ data: { id } });
         navigate({ to: "/diagnostico/$id", params: { id: res.id } });
       } catch (e) {
         setError(e instanceof Error ? e.message : "Error desconocido");
       }
     })();
-  }, [generate, id, navigate, retryCount]);
+  }, [generate, checkStatus, id, navigate, retryCount, isEN]);
+
 
   return (
     <div className="min-h-screen bg-tinta text-hueso flex flex-col">
