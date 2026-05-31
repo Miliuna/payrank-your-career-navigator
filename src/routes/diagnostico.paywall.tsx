@@ -276,7 +276,7 @@ function PaywallPage() {
               disabled={busy}
               className="w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
             >
-              {busy ? (isEN ? "GENERATING…" : "GENERANDO…") : (isEN ? "GET MY PAYRANK" : "OBTENER MI PAYRANK")}
+              {busy ? (isEN ? "REDIRECTING TO CHECKOUT…" : "REDIRIGIENDO AL PAGO…") : (isEN ? "PAY AND GET MY PAYRANK" : "PAGAR Y OBTENER MI PAYRANK")}
               <span aria-hidden>→</span>
             </button>
 
