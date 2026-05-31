@@ -386,6 +386,62 @@ async function fetchFxRate(currency: string): Promise<TipoCambio | null> {
 }
 
 
+// ---------- Conversión local → USD (única fuente de verdad) ----------
+
+function parseLocalAmount(s: unknown): number | null {
+  if (typeof s !== "string") return null;
+  // Quitar cualquier cosa que no sea dígito, punto, coma, guion
+  const cleaned = s.replace(/[^\d.,\-]/g, "").trim();
+  if (!cleaned) return null;
+  // Tratar puntos y comas como separadores de miles (los rangos salariales son enteros)
+  const digits = cleaned.replace(/[.,]/g, "");
+  const n = Number(digits);
+  return isFinite(n) ? n : null;
+}
+
+function formatUsd(n: number): string {
+  return `USD ${Math.round(n).toLocaleString("en-US")}`;
+}
+
+function applyUsdConversion(
+  parsed: Record<string, unknown>,
+  tc: TipoCambio | null,
+  usdOnly: boolean,
+): void {
+  // País USD-only: el modelo ya está en USD; copiar local→usd para consistencia visual.
+  if (usdOnly) {
+    const s2 = parsed.seccion_2 as Record<string, unknown> | undefined;
+    if (s2) {
+      for (const k of ["p25", "p50", "p75", "p90", "salario_actual"]) {
+        const v = s2[`${k}_local`];
+        if (typeof v === "string" && !s2[`${k}_usd`]) s2[`${k}_usd`] = v;
+      }
+    }
+    const s5 = parsed.seccion_5 as Record<string, unknown> | undefined;
+    if (s5 && typeof s5.pretension_recomendada_local === "string" && !s5.pretension_recomendada_usd) {
+      s5.pretension_recomendada_usd = s5.pretension_recomendada_local;
+    }
+    return;
+  }
+  if (!tc || !tc.valor || tc.valor <= 0) return;
+  const fx = tc.valor;
+
+  const s2 = parsed.seccion_2 as Record<string, unknown> | undefined;
+  if (s2) {
+    for (const k of ["p25", "p50", "p75", "p90", "salario_actual"]) {
+      const local = parseLocalAmount(s2[`${k}_local`]);
+      if (local != null) s2[`${k}_usd`] = formatUsd(local / fx);
+    }
+  }
+  const s5 = parsed.seccion_5 as Record<string, unknown> | undefined;
+  if (s5) {
+    const local = parseLocalAmount(s5.pretension_recomendada_local);
+    if (local != null) s5.pretension_recomendada_usd = formatUsd(local / fx);
+  }
+}
+
+
+
 export const generateDiagnostico = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
@@ -455,6 +511,10 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       genPart(promptB, "parteB", SYSTEM_PROMPT_B),
     ]);
     const parsed: Record<string, unknown> = { ...partA, ...partB };
+
+    // Conversión local→USD en backend (única fuente de verdad sobre tipo de cambio).
+    // El modelo solo trabaja en moneda local; acá rellenamos los campos *_usd.
+    applyUsdConversion(parsed, tipoCambio, usdOnly);
 
     const nivelConfianza = (parsed.seccion_1 as Record<string, unknown> | undefined)?.nivel_confianza;
 
