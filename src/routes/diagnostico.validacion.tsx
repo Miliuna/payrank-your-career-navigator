@@ -85,20 +85,27 @@ function ValidacionPage() {
   const [nuevoSalario, setNuevoSalario] = React.useState<string>("");
   const [bono, setBono] = React.useState("");
   const [sinVariable, setSinVariable] = React.useState(false);
-  const [tituloPick, setTituloPick] = React.useState<"cv" | "recibo" | "otro" | null>(null);
+  const [frecuenciaPick, setFrecuenciaPick] = React.useState<string | null>(null);
+  const [frecuenciaOtra, setFrecuenciaOtra] = React.useState("");
+  const [tituloPick, setTituloPick] = React.useState<"cv" | "recibo" | "academico" | "otro" | null>(null);
   const [tituloOtro, setTituloOtro] = React.useState("");
   const [antiguedad, setAntiguedad] = React.useState<string>("");
 
   const staleOk = !showStale || staleChoice === "igual" || (staleChoice === "cambio" && Number(nuevoSalario.replace(/[^\d]/g, "")) > 0);
   const variableOk = !showVariable || sinVariable || bono.trim().length > 0;
+  const frecuenciaOk =
+    !showFrecuencia ||
+    (frecuenciaPick && frecuenciaPick !== "otra") ||
+    (frecuenciaPick === "otra" && frecuenciaOtra.trim().length > 1);
   const tituloOk =
     !showTituloMismatch ||
     tituloPick === "cv" ||
     tituloPick === "recibo" ||
+    tituloPick === "academico" ||
     (tituloPick === "otro" && tituloOtro.trim().length > 1);
   const tenureOk = !showTenure || /^\d{4}-\d{2}$/.test(antiguedad);
 
-  const canContinue = staleOk && variableOk && tituloOk && tenureOk;
+  const canContinue = staleOk && variableOk && frecuenciaOk && tituloOk && tenureOk;
 
   const onContinue = () => {
     setState((s) => {
@@ -113,10 +120,15 @@ function ValidacionPage() {
         if (sinVariable) nr.sinVariable = true;
         else nr.bonoUltimo = bono.trim();
       }
+      if (showFrecuencia) {
+        nr.bonoFrecuencia =
+          frecuenciaPick === "otra" ? frecuenciaOtra.trim() : (frecuenciaPick ?? "");
+      }
       if (showTituloMismatch) {
         nr.tituloElegido =
           tituloPick === "cv" ? tituloCv :
           tituloPick === "recibo" ? tituloRecibo :
+          tituloPick === "academico" ? tituloAcademico :
           tituloOtro.trim();
       }
       if (showTenure && /^\d{4}-\d{2}$/.test(antiguedad)) {
