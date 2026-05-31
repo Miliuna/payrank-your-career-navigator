@@ -1,7 +1,26 @@
+import * as React from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useLang } from "@/lib/lang";
+
+function useCaptureReferralFromUrl() {
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const url = new URL(window.location.href);
+      const ref = url.searchParams.get("ref");
+      if (ref && ref.trim()) {
+        window.localStorage.setItem("payrank.codigoReferido", ref.trim());
+        url.searchParams.delete("ref");
+        window.history.replaceState({}, "", url.pathname + (url.search || "") + url.hash);
+      }
+    } catch {
+      // no-op
+    }
+  }, []);
+}
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -108,10 +127,12 @@ const planesEN = [
 // ─── Landing switcher ───────────────────────────────────────────────────────
 
 function Landing() {
+  useCaptureReferralFromUrl();
   const { lang } = useLang();
   if (lang === "EN") return <LandingEN />;
   return <LandingES />;
 }
+
 
 // ─── ES Landing ─────────────────────────────────────────────────────────────
 
