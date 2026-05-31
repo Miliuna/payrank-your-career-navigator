@@ -206,13 +206,30 @@ function resumenExtraccion(step: number, d: DatosExtraidos, isEN: boolean): { ti
   const titulo = STEP_TITULO[step] ?? "";
   const v = (() => {
     switch (step) {
-      case 1: return findOption(INDUSTRIAS, asString(d.industria_inferida));
-      case 2: return findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
-      case 3: return findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
+      case 1: {
+        const m = findOption(INDUSTRIAS, asString(d.industria_inferida));
+        return isEN && m ? (INDUSTRIAS_EN[m] ?? m) : m;
+      }
+      case 2: {
+        const m = findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
+        if (!m) return null;
+        if (!isEN) return m;
+        const idx = TIPOS_EMPRESA.indexOf(m);
+        return idx >= 0 ? TIPOS_EMPRESA_EN[idx] : m;
+      }
+      case 3: {
+        const m = findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
+        return isEN && m ? (NIVELES_EN[m] ?? m) : m;
+      }
       case 8: {
         const arr = Array.isArray(d.idiomas) ? d.idiomas : null;
         if (!arr || !arr.length) return null;
-        return arr.map((i) => typeof i === "string" ? i : `${i.idioma ?? ""}${i.nivel ? ` (${i.nivel})` : ""}`).filter(Boolean).join(" · ");
+        return arr.map((i) => {
+          if (typeof i === "string") return i;
+          const lvl = i.nivel ?? "";
+          const lvlDisplay = isEN ? (NIVELES_IDIOMA_EN[lvl] ?? lvl) : lvl;
+          return `${i.idioma ?? ""}${lvlDisplay ? ` (${lvlDisplay})` : ""}`;
+        }).filter(Boolean).join(" · ");
       }
       case 9: return asString(d.anos_experiencia_total_inferidos);
       case 10: return asString(d.anos_experiencia_industria_inferidos);
