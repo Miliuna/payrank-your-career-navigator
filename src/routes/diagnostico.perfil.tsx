@@ -225,7 +225,7 @@ function PerfilPage() {
               { k: isEN ? "Selected mode" : "Modo elegido", v: isEN ? TITULOS_MODO_EN[state.modo] : TITULOS_MODO[state.modo] },
               { k: isEN ? "Country" : "País", v: pais },
               { k: isEN ? "Industry" : "Industria", v: industria },
-              { k: isEN ? "Company type" : "Tipo de empresa", v: r.tipoEmpresa },
+              { k: isEN ? "Company type" : "Tipo de empresa", v: labelOf(r.tipoEmpresa, TIPOS_EMPRESA_EN, isEN) },
               { k: isEN ? "Employment situation" : "Situación laboral", v: situacionLabel },
             ]}
           />
