@@ -263,8 +263,8 @@ function ValidacionPage() {
               <Label>{isEN ? "Variable / bonus" : "Componente variable"}</Label>
               <p className="font-body text-base text-hueso mb-4">
                 {isEN
-                  ? "We detected you have a variable component but the amount doesn't appear. What's the amount of your last bonus / variable received?"
-                  : "Detectamos que tenés un componente variable pero no aparece el monto. ¿Cuál es el monto de tu último bono o variable cobrado?"}
+                  ? "You indicated you have a variable component but didn't specify the amount. What's the amount of your last bonus / variable received?"
+                  : "Indicaste que tenés un componente variable pero no especificaste el monto. ¿Cuál es el monto de tu último bono o variable cobrado?"}
               </p>
               <input
                 type="text"
