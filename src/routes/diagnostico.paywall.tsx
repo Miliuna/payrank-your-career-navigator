@@ -42,6 +42,17 @@ const BENEFICIOS = [
   "Hoja de ruta al siguiente nivel",
 ];
 
+const BENEFICIOS_EN = [
+  "Your exact position in the market",
+  "Total compensation valued",
+  "We detect if your title underestimates your real scope",
+  "Gender gap analysis (if requested)",
+  "How much to ask for and how to justify it",
+  "Exact script for your conversation",
+  "Skills that increase your value",
+  "Roadmap to the next level",
+];
+
 function PaywallPage() {
   const { id } = Route.useSearch();
   const { state, setState } = useDiagnostico();
