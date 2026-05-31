@@ -78,7 +78,15 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     salario_actual: salario,
     moneda_actual: moneda,
     salario_tipo: (r.brutoNeto as string) ?? null,
-    beneficios: Array.isArray(r.beneficios) ? (r.beneficios as string[]) : null,
+    beneficios: (() => {
+      const base = Array.isArray(r.beneficios) ? [...(r.beneficios as string[])] : [];
+      const tipo = (r.coberturaMedicaTipo as string | undefined) ?? null;
+      const alcance = (r.coberturaMedicaAlcance as string | undefined) ?? null;
+      if (tipo) {
+        base.unshift(alcance ? `Cobertura médica: ${tipo} — alcance: ${alcance}` : `Cobertura médica: ${tipo}`);
+      }
+      return base.length ? base : null;
+    })(),
     puesto_descripcion: (baseDesc + contractorMeta + subCasoMeta + targetDirMeta) || null,
     linkedin_url: (r.linkedinUrl as string) ?? null,
     genero: (r.genero as string) ?? null,

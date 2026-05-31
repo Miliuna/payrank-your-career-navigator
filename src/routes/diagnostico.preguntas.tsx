@@ -13,10 +13,11 @@ import {
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
 import {
-  ALCANCES, BENEFICIOS, EXP_INDUSTRIA, EXP_TOTAL, FORMACIONES, FRECUENCIAS_IA,
+  ALCANCES, BENEFICIOS, COBERTURA_ALCANCE_EN, COBERTURA_ALCANCE_ES,
+  COBERTURA_MEDICA_POR_PAIS, EXP_INDUSTRIA, EXP_TOTAL, FORMACIONES, FRECUENCIAS_IA,
   FUNCIONES, GENEROS, HERRAMIENTAS_IA, INDUSTRIAS, INTERACCIONES,
   MONEDAS, NIVELES, NIVELES_IDIOMA, PAISES, PERSONAS_A_CARGO, SITUACIONES,
-  TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA,
+  TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA, esCoberturaEmpleador,
 } from "@/lib/diagnostico/data";
 import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
 
@@ -170,7 +171,7 @@ const USOS_IA_EN = [
 ];
 
 const BENEFICIOS_EN = [
-  "Health insurance/Medical coverage", "Annual bonus", "Company car",
+  "Annual bonus", "Company car",
   "Company phone", "Home office/Remote work", "Travel expenses",
   "Company-paid training", "Stock options/Equity",
   "Meal vouchers", "Extra vacation days",
@@ -428,7 +429,11 @@ function isValid(
       if (r.trabajaActualmente === "no") return !!r.salarioAnterior && !!r.monedaAnterior && !!r.tiempoSinTrabajo;
       return false;
     }
-    case 15: return (r.beneficios?.length ?? 0) > 0;
+    case 15: {
+      if (!r.coberturaMedicaTipo) return false;
+      if (esCoberturaEmpleador(r.coberturaMedicaTipo) && !r.coberturaMedicaAlcance) return false;
+      return (r.beneficios?.length ?? 0) > 0;
+    }
     case 16: return !!r.descripcionPuesto?.trim();
     case 17: return !!r.genero;
     case 18: return !!r.email && /\S+@\S+\.\S+/.test(r.email);
@@ -1148,10 +1153,70 @@ function P16Beneficios({ r, setR }: Props) {
     if (without.includes(opt)) setR({ beneficios: without.filter((x) => x !== opt) });
     else setR({ beneficios: [...without, opt] });
   };
+
+  const paisKey = r.pais && COBERTURA_MEDICA_POR_PAIS[r.pais] ? r.pais : "default";
+  const cobOpts = COBERTURA_MEDICA_POR_PAIS[paisKey][isEN ? "en" : "es"];
+  const showAlcance = esCoberturaEmpleador(r.coberturaMedicaTipo);
+  const alcanceOpts = isEN ? COBERTURA_ALCANCE_EN : COBERTURA_ALCANCE_ES;
+
   return (
     <>
       <QuestionTitle>{isEN ? "What benefits do you receive?" : "¿Qué beneficios recibís?"}</QuestionTitle>
-      <QuestionHint>{isEN ? "Select all that apply." : "Seleccioná todos los que apliquen."}</QuestionHint>
+      <QuestionHint>
+        {isEN
+          ? "Start with your medical coverage, then select all other benefits that apply."
+          : "Empezá por tu cobertura médica y luego seleccioná todos los demás beneficios que apliquen."}
+      </QuestionHint>
+
+      {/* Paso 1: Tipo de cobertura médica */}
+      <div className="mb-8">
+        <p className="font-ui text-[11px] text-hueso/60 mb-3 uppercase tracking-wider">
+          {isEN ? "1 · Type of medical coverage" : "1 · Tipo de cobertura médica"}
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {cobOpts.map((opt) => (
+            <CardOption
+              key={opt}
+              selected={r.coberturaMedicaTipo === opt}
+              onClick={() => {
+                const next: Partial<typeof r> = { coberturaMedicaTipo: opt };
+                if (!esCoberturaEmpleador(opt)) next.coberturaMedicaAlcance = undefined;
+                setR(next);
+              }}
+            >
+              {opt}
+            </CardOption>
+          ))}
+        </div>
+      </div>
+
+      {/* Paso 2: Alcance (sólo si el empleador paga total o parcial) */}
+      {showAlcance && (
+        <div className="mb-8 animate-in fade-in duration-300">
+          <p className="font-ui text-[11px] text-hueso/60 mb-3 uppercase tracking-wider">
+            {isEN ? "2 · Coverage scope" : "2 · Alcance de la cobertura"}
+          </p>
+          <p className="font-body text-base text-hueso/80 mb-3">
+            {isEN ? "Does the coverage include your family?" : "¿La cobertura incluye a tu grupo familiar?"}
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {alcanceOpts.map((opt) => (
+              <CardOption
+                key={opt}
+                selected={r.coberturaMedicaAlcance === opt}
+                onClick={() => setR({ coberturaMedicaAlcance: opt })}
+              >
+                {opt}
+              </CardOption>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Otros beneficios */}
+      <p className="font-ui text-[11px] text-hueso/60 mb-3 uppercase tracking-wider">
+        {isEN ? "Other benefits (select all that apply)" : "Otros beneficios (seleccioná todos los que apliquen)"}
+      </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {bensDisplay.map((opt) => (
           <CardOption key={opt} selected={sel.includes(opt)} onClick={() => toggle(opt)}>

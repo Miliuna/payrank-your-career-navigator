@@ -115,12 +115,139 @@ export const TIEMPOS_SIN_TRABAJO = [
 ];
 
 export const BENEFICIOS = [
-  "Obra social/Seguro médico", "Bono anual", "Auto corporativo",
+  "Bono anual", "Auto corporativo",
   "Celular corporativo", "Home office/Trabajo remoto", "Viáticos",
   "Capacitación paga por la empresa", "Stock options/Equity",
   "Comedor o ticket alimentario", "Días extra de vacaciones",
   "Seguro de vida", "Plan de retiro complementario",
   "Otro", "Ninguno de los anteriores",
+];
+
+// Tipo de cobertura médica por país (clave = valor en PAISES; "default" = fallback)
+export const COBERTURA_MEDICA_POR_PAIS: Record<string, { es: string[]; en: string[] }> = {
+  Argentina: {
+    es: [
+      "Solo obra social sindical (la obligatoria)",
+      "Prepaga pagada por el empleador (OSDE, Swiss Medical, Galeno, etc.)",
+      "Prepaga con copago (el empleador paga una parte, vos el resto)",
+      "Sin cobertura médica del empleador",
+    ],
+    en: [
+      "Mandatory union health coverage only (obra social)",
+      "Private health plan fully paid by employer (OSDE, Swiss Medical, Galeno, etc.)",
+      "Private health plan with copay (employer pays part, you pay the rest)",
+      "No employer health coverage",
+    ],
+  },
+  México: {
+    es: [
+      "Solo IMSS (obligatorio)",
+      "Seguro de Gastos Médicos Mayores pagado por el empleador",
+      "SGMM con copago",
+      "Sin cobertura médica del empleador",
+    ],
+    en: [
+      "IMSS only (mandatory)",
+      "Major Medical Expenses Insurance (SGMM) fully paid by employer",
+      "SGMM with copay",
+      "No employer health coverage",
+    ],
+  },
+  Chile: {
+    es: [
+      "FONASA",
+      "ISAPRE pagada por el empleador",
+      "ISAPRE con copago",
+      "Sin cobertura médica del empleador",
+    ],
+    en: [
+      "FONASA",
+      "ISAPRE fully paid by employer",
+      "ISAPRE with copay",
+      "No employer health coverage",
+    ],
+  },
+  Colombia: {
+    es: [
+      "Solo EPS (obligatorio)",
+      "Medicina Prepagada pagada por el empleador",
+      "Prepagada con copago",
+      "Sin cobertura médica del empleador",
+    ],
+    en: [
+      "EPS only (mandatory)",
+      "Private prepaid medicine fully paid by employer",
+      "Private prepaid with copay",
+      "No employer health coverage",
+    ],
+  },
+  España: {
+    es: [
+      "Solo Seguridad Social",
+      "Seguro médico privado pagado por el empleador",
+      "Seguro privado con copago",
+      "Sin cobertura médica del empleador",
+    ],
+    en: [
+      "Social Security only",
+      "Private health insurance fully paid by employer",
+      "Private insurance with copay",
+      "No employer health coverage",
+    ],
+  },
+  "Estados Unidos": {
+    es: [
+      "Seguro de salud pagado por el empleador (HMO/PPO/HDHP)",
+      "Sin cobertura médica del empleador",
+    ],
+    en: [
+      "Employer-sponsored health insurance (HMO/PPO/HDHP)",
+      "No employer health coverage",
+    ],
+  },
+  default: {
+    es: [
+      "Cobertura pública/obligatoria solamente",
+      "Seguro médico privado pagado por el empleador",
+      "Seguro privado con copago",
+      "Sin cobertura médica del empleador",
+    ],
+    en: [
+      "Public/mandatory coverage only",
+      "Private health insurance fully paid by employer",
+      "Private insurance with copay",
+      "No employer health coverage",
+    ],
+  },
+};
+
+// Devuelve true si el tipo seleccionado implica cobertura pagada (total o parcial) por el empleador.
+export function esCoberturaEmpleador(tipo?: string): boolean {
+  if (!tipo) return false;
+  const t = tipo.toLowerCase();
+  if (t.includes("sin cobertura") || t.includes("no employer")) return false;
+  // Solo obligatoria / pública
+  if (
+    t.startsWith("solo ") ||
+    t.startsWith("fonasa") ||
+    t.includes("imss only") ||
+    t.includes("eps only") ||
+    t.includes("social security only") ||
+    t.includes("public/mandatory")
+  ) return false;
+  return true;
+}
+
+export const COBERTURA_ALCANCE_ES = [
+  "Solo yo",
+  "Yo + pareja",
+  "Yo + familia completa (pareja + hijos)",
+];
+
+export const COBERTURA_ALCANCE_EN = [
+  "Only me",
+  "Me + partner",
+  "Me + full family (partner + kids)",
 ];
 
 export const GENEROS = [
