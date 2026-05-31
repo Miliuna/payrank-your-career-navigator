@@ -293,8 +293,8 @@ function ValidacionPage() {
               <Label>{isEN ? "Bonus frequency mismatch" : "Frecuencia de bono inconsistente"}</Label>
               <p className="font-body text-base text-hueso mb-4">
                 {isEN
-                  ? <>We detected inconsistent information about your variable component: in one place it says <em>{frecuenciasUnicas[0]}</em> and in another <em>{frecuenciasUnicas[1]}</em>. Which one is correct?</>
-                  : <>Detectamos información inconsistente sobre tu componente variable: en un campo dijiste <em>{frecuenciasUnicas[0]}</em> y en otro <em>{frecuenciasUnicas[1]}</em>. ¿Cuál es la correcta?</>}
+                  ? <>We detected inconsistent information about the frequency of your variable component: in one field you indicated <em>{frecuenciasUnicas[0]}</em> and in another <em>{frecuenciasUnicas[1]}</em>. Which one is correct?</>
+                  : <>Detectamos información inconsistente sobre la frecuencia de tu componente variable: en un campo indicaste <em>{frecuenciasUnicas[0]}</em> y en otro <em>{frecuenciasUnicas[1]}</em>. ¿Cuál es la correcta?</>}
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {frecuenciasUnicas.map((f) => (
