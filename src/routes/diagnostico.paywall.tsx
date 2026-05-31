@@ -223,6 +223,41 @@ function PaywallPage() {
               )}
             </div>
 
+            <div className="mb-6">
+              <label className="font-ui text-[10px] text-hueso/55 block mb-2">
+                {isEN ? "HAVE AN ACCESS CODE?" : "¿TENÉS UN CÓDIGO DE ACCESO?"}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  value={codigoAcceso}
+                  onChange={(e) => { setCodigoAcceso(e.target.value); setCodigoEstado("idle"); }}
+                  placeholder={isEN ? "Access code" : "Código de acceso"}
+                  className="flex-1 bg-hueso/5 border border-hueso/20 px-3 py-2 font-body text-sm text-hueso placeholder:text-hueso/40 focus:outline-none focus:border-hueso/60"
+                />
+                <button
+                  type="button"
+                  onClick={aplicarCodigoAcceso}
+                  disabled={codigoBusy}
+                  className="px-4 py-2 border border-hueso/30 font-ui text-[10px] text-hueso hover:bg-hueso hover:text-tinta transition-colors disabled:opacity-50"
+                >
+                  {codigoBusy ? (isEN ? "…" : "…") : (isEN ? "APPLY" : "APLICAR")}
+                </button>
+              </div>
+              {codigoEstado === "ok" && (
+                <p className="mt-2 font-body text-xs" style={{ color: "#2E4A6E" }}>
+                  {isEN ? "Code applied · generating your PayRank…" : "Código aplicado · generando tu PayRank…"}
+                </p>
+              )}
+              {codigoEstado === "invalid" && (
+                <p className="mt-2 font-body text-xs text-hueso/55">
+                  {isEN ? "Invalid code" : "Código no válido"}
+                </p>
+              )}
+            </div>
+
+
+
+
 
             <button
               type="button"
