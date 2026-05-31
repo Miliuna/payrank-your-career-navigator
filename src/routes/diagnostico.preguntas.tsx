@@ -170,7 +170,7 @@ const USOS_IA_EN = [
 ];
 
 const BENEFICIOS_EN = [
-  "Health insurance/Medical coverage", "Annual bonus", "Company car",
+  "Annual bonus", "Company car",
   "Company phone", "Home office/Remote work", "Travel expenses",
   "Company-paid training", "Stock options/Equity",
   "Meal vouchers", "Extra vacation days",
