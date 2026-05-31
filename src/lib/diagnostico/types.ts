@@ -81,6 +81,7 @@ export type Respuestas = {
   targetDireccionD?: string;
   // Auditoría de documentos (paso de validación)
   bonoUltimo?: string;
+  bonoFrecuencia?: string;
   sinVariable?: boolean;
   tituloElegido?: string;
   antiguedadDesde?: string; // YYYY-MM
