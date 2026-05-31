@@ -456,6 +456,10 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     ]);
     const parsed: Record<string, unknown> = { ...partA, ...partB };
 
+    // Conversión local→USD en backend (única fuente de verdad sobre tipo de cambio).
+    // El modelo solo trabaja en moneda local; acá rellenamos los campos *_usd.
+    applyUsdConversion(parsed, tipoCambio, usdOnly);
+
     const nivelConfianza = (parsed.seccion_1 as Record<string, unknown> | undefined)?.nivel_confianza;
 
     const { error: upErr } = await supabaseAdmin
