@@ -18,6 +18,7 @@ function ProcesandoPage() {
   const navigate = useNavigate();
   const { id } = useSearch({ from: Route.id });
   const generate = useServerFn(generateDiagnostico);
+  const checkStatus = useServerFn(getPaymentStatus);
   const { lang } = useLang();
   const isEN = lang === "EN";
   const [idx, setIdx] = React.useState(0);
