@@ -591,8 +591,11 @@ Extraé estos campos si están presentes:
 - linkedin_url (si figura)
 - recibo_fecha: si el documento es un recibo/liquidación, devolvé la fecha de emisión o período en formato ISO YYYY-MM-DD (o YYYY-MM si solo hay mes). Si no es un recibo o no aparece, null.
 - recibo_tiene_variable_sin_monto: true SOLO si el recibo menciona un componente variable / bono / comisión pero NO aparece el monto numérico. false si aparece el monto. null si no aplica.
-- titulo_cv: título o puesto que figura en el CV. null si no hay CV.
+- titulo_cv: PUESTO LABORAL MÁS RECIENTE del CV. Buscá específicamente en la sección "Experiencia laboral", "Work experience", "Experience", "Trayectoria profesional" o equivalente, y devolvé el título del PRIMER puesto listado (el más reciente, típicamente acompañado de nombre de empresa y fechas). NUNCA devuelvas un título académico, grado universitario, maestría, doctorado, diplomatura ni certificación en este campo. Si no hay CV o no podés identificar un puesto laboral claro, null.
+- titulo_cv_academico: máximo grado académico que figura en el CV (ej: "Licenciado en Administración", "MBA", "Ingeniero Industrial", "Magíster en Finanzas"). Devolvé esto SOLO si aparece en una sección de educación / formación. null si no hay CV o no hay grado académico.
 - titulo_recibo: título o puesto que figura en el recibo de sueldo. null si no hay recibo.
+- bono_frecuencias_detectadas: array de strings con TODAS las frecuencias distintas de pago de bono/variable/comisión que aparezcan mencionadas en cualquier documento (recibo, CV, descriptivo, aviso). Valores posibles: "mensual", "trimestral", "cuatrimestral", "semestral", "anual", "por proyecto", "puntual". Si en distintos documentos aparecen frecuencias distintas, incluí todas. Si no se menciona ninguna, devolvé [].
+- bono_mencionado_sin_monto: true si CUALQUIER documento menciona la existencia de un bono / componente variable / comisión sin especificar el monto numérico. false si se menciona con monto. null si no se menciona en ningún lado.
 
 Para cada campo que NO puedas inferir con certeza del documento, devolvé null.
 No inventes datos que no están explícitamente en el documento.

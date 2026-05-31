@@ -44,16 +44,36 @@ function ValidacionPage() {
   const reciboMonthsOld = reciboFecha ? monthsAgo(reciboFecha) : null;
   const showStale = reciboFecha && reciboMonthsOld != null && reciboMonthsOld > 3;
 
-  const showVariable = ex.recibo_tiene_variable_sin_monto === true && !r.bonoUltimo && !r.sinVariable;
+  // Bono sin monto: dispara si CUALQUIER documento lo menciona sin monto.
+  const bonoSinMontoFlag =
+    ex.bono_mencionado_sin_monto === true || ex.recibo_tiene_variable_sin_monto === true;
+  const showVariable = bonoSinMontoFlag && !r.bonoUltimo && !r.sinVariable;
+
+  // Frecuencias de bono inconsistentes entre documentos.
+  const frecuenciasRaw = Array.isArray(ex.bono_frecuencias_detectadas)
+    ? (ex.bono_frecuencias_detectadas as string[]).filter((x) => typeof x === "string" && x.trim().length > 0)
+    : [];
+  const frecuenciasUnicas = Array.from(
+    new Set(frecuenciasRaw.map((x) => x.trim().toLowerCase())),
+  );
+  const showFrecuencia = frecuenciasUnicas.length >= 2 && !r.bonoFrecuencia && !r.sinVariable;
 
   const tituloCv = typeof ex.titulo_cv === "string" ? ex.titulo_cv.trim() : "";
   const tituloRecibo = typeof ex.titulo_recibo === "string" ? ex.titulo_recibo.trim() : "";
-  const showTituloMismatch =
-    tituloCv && tituloRecibo && tituloCv.toLowerCase() !== tituloRecibo.toLowerCase() && !r.tituloElegido;
+  const tituloAcademico = typeof ex.titulo_cv_academico === "string" ? ex.titulo_cv_academico.trim() : "";
+  // Mismatch clásico CV vs recibo
+  const mismatchCvRecibo =
+    !!tituloCv && !!tituloRecibo && tituloCv.toLowerCase() !== tituloRecibo.toLowerCase();
+  // Caso ambiguo: solo CV (sin recibo) y además se detectó un grado académico → preguntamos
+  // para evitar que el sistema confunda el título académico con el puesto actual.
+  const mismatchCvAcademico =
+    !tituloRecibo && !!tituloCv && !!tituloAcademico &&
+    tituloCv.toLowerCase() !== tituloAcademico.toLowerCase();
+  const showTituloMismatch = (mismatchCvRecibo || mismatchCvAcademico) && !r.tituloElegido;
 
   const showTenure = !r.antiguedadDesde && (r.situacion === "empleado" || r.situacion === "contractor");
 
-  const anyWarning = showStale || showVariable || showTituloMismatch || showTenure;
+  const anyWarning = showStale || showVariable || showFrecuencia || showTituloMismatch || showTenure;
 
   // Si no hay nada que validar, saltar a perfil automáticamente
   React.useEffect(() => {
@@ -65,20 +85,27 @@ function ValidacionPage() {
   const [nuevoSalario, setNuevoSalario] = React.useState<string>("");
   const [bono, setBono] = React.useState("");
   const [sinVariable, setSinVariable] = React.useState(false);
-  const [tituloPick, setTituloPick] = React.useState<"cv" | "recibo" | "otro" | null>(null);
+  const [frecuenciaPick, setFrecuenciaPick] = React.useState<string | null>(null);
+  const [frecuenciaOtra, setFrecuenciaOtra] = React.useState("");
+  const [tituloPick, setTituloPick] = React.useState<"cv" | "recibo" | "academico" | "otro" | null>(null);
   const [tituloOtro, setTituloOtro] = React.useState("");
   const [antiguedad, setAntiguedad] = React.useState<string>("");
 
   const staleOk = !showStale || staleChoice === "igual" || (staleChoice === "cambio" && Number(nuevoSalario.replace(/[^\d]/g, "")) > 0);
   const variableOk = !showVariable || sinVariable || bono.trim().length > 0;
+  const frecuenciaOk =
+    !showFrecuencia ||
+    (frecuenciaPick && frecuenciaPick !== "otra") ||
+    (frecuenciaPick === "otra" && frecuenciaOtra.trim().length > 1);
   const tituloOk =
     !showTituloMismatch ||
     tituloPick === "cv" ||
     tituloPick === "recibo" ||
+    tituloPick === "academico" ||
     (tituloPick === "otro" && tituloOtro.trim().length > 1);
   const tenureOk = !showTenure || /^\d{4}-\d{2}$/.test(antiguedad);
 
-  const canContinue = staleOk && variableOk && tituloOk && tenureOk;
+  const canContinue = staleOk && variableOk && frecuenciaOk && tituloOk && tenureOk;
 
   const onContinue = () => {
     setState((s) => {
@@ -93,10 +120,15 @@ function ValidacionPage() {
         if (sinVariable) nr.sinVariable = true;
         else nr.bonoUltimo = bono.trim();
       }
+      if (showFrecuencia) {
+        nr.bonoFrecuencia =
+          frecuenciaPick === "otra" ? frecuenciaOtra.trim() : (frecuenciaPick ?? "");
+      }
       if (showTituloMismatch) {
         nr.tituloElegido =
           tituloPick === "cv" ? tituloCv :
           tituloPick === "recibo" ? tituloRecibo :
+          tituloPick === "academico" ? tituloAcademico :
           tituloOtro.trim();
       }
       if (showTenure && /^\d{4}-\d{2}$/.test(antiguedad)) {
@@ -192,17 +224,56 @@ function ValidacionPage() {
             </Card>
           )}
 
-          {showTituloMismatch && (
+          {showFrecuencia && (
             <Card>
-              <Label>{isEN ? "Job title mismatch" : "Inconsistencia de título"}</Label>
+              <Label>{isEN ? "Bonus frequency mismatch" : "Frecuencia de bono inconsistente"}</Label>
               <p className="font-body text-base text-hueso mb-4">
                 {isEN
-                  ? <>Your CV says <em>{tituloCv}</em> but your pay stub says <em>{tituloRecibo}</em>. Which one best describes what you do today?</>
-                  : <>Tu CV dice <em>{tituloCv}</em> pero tu recibo dice <em>{tituloRecibo}</em>. ¿Cuál describe mejor lo que hacés hoy?</>}
+                  ? <>We detected inconsistent information about your variable component: in one place it says <em>{frecuenciasUnicas[0]}</em> and in another <em>{frecuenciasUnicas[1]}</em>. Which one is correct?</>
+                  : <>Detectamos información inconsistente sobre tu componente variable: en un campo dijiste <em>{frecuenciasUnicas[0]}</em> y en otro <em>{frecuenciasUnicas[1]}</em>. ¿Cuál es la correcta?</>}
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
-                <Pick selected={tituloPick === "cv"} onClick={() => setTituloPick("cv")}>{tituloCv}</Pick>
-                <Pick selected={tituloPick === "recibo"} onClick={() => setTituloPick("recibo")}>{tituloRecibo}</Pick>
+                {frecuenciasUnicas.map((f) => (
+                  <Pick key={f} selected={frecuenciaPick === f} onClick={() => setFrecuenciaPick(f)}>{f}</Pick>
+                ))}
+                <Pick selected={frecuenciaPick === "otra"} onClick={() => setFrecuenciaPick("otra")}>
+                  {isEN ? "Other" : "Otra"}
+                </Pick>
+              </div>
+              {frecuenciaPick === "otra" && (
+                <input
+                  type="text"
+                  placeholder={isEN ? "Clarify the real frequency" : "Aclará la frecuencia real"}
+                  value={frecuenciaOtra}
+                  onChange={(e) => setFrecuenciaOtra(e.target.value)}
+                  className="w-full mt-2 bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso placeholder:text-hueso/30 py-3"
+                />
+              )}
+            </Card>
+          )}
+
+          {showTituloMismatch && (
+            <Card>
+              <Label>{isEN ? "Current job title" : "Puesto actual"}</Label>
+              <p className="font-body text-base text-hueso mb-4">
+                {mismatchCvRecibo
+                  ? (isEN
+                      ? <>Your CV says <em>{tituloCv}</em> but your pay stub says <em>{tituloRecibo}</em>. Which one best describes what you do today?</>
+                      : <>Tu CV dice <em>{tituloCv}</em> pero tu recibo dice <em>{tituloRecibo}</em>. ¿Cuál describe mejor lo que hacés hoy?</>)
+                  : (isEN
+                      ? <>We couldn't reliably tell your current job title apart from your academic degree. What is your current job title?</>
+                      : <>No pudimos distinguir con seguridad tu puesto actual de tu título académico. ¿Cuál es tu puesto actual?</>)}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {tituloCv && (
+                  <Pick selected={tituloPick === "cv"} onClick={() => setTituloPick("cv")}>{tituloCv}</Pick>
+                )}
+                {tituloRecibo && (
+                  <Pick selected={tituloPick === "recibo"} onClick={() => setTituloPick("recibo")}>{tituloRecibo}</Pick>
+                )}
+                {tituloAcademico && !mismatchCvRecibo && (
+                  <Pick selected={tituloPick === "academico"} onClick={() => setTituloPick("academico")}>{tituloAcademico}</Pick>
+                )}
                 <Pick selected={tituloPick === "otro"} onClick={() => setTituloPick("otro")}>{isEN ? "Other" : "Otro"}</Pick>
               </div>
               {tituloPick === "otro" && (
