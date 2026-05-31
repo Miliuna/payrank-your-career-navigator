@@ -61,6 +61,8 @@ function PaywallPage() {
   const navigate = useNavigate();
   const simulate = useServerFn(simulatePayment);
   const applyCode = useServerFn(applyAccessCode);
+  const checkout = useServerFn(createCheckoutSession);
+  const { region } = useRegion();
 
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -83,12 +85,19 @@ function PaywallPage() {
     setErr(null);
     setBusy(true);
     try {
-      await navigate({ to: "/diagnostico/procesando", search: { id } });
+      const selected = state.plan;
+      const priceId = PRICING[region][selected].stripePriceId;
+      const planName = PLAN_INFO[selected].nombre;
+      const { url } = await checkout({
+        data: { id, plan: selected, priceId, planName, origin: window.location.origin },
+      });
+      window.location.href = url;
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Error desconocido");
       setBusy(false);
     }
   };
+
 
 
 
