@@ -324,7 +324,54 @@ function ValidacionPage() {
               />
             </Card>
           )}
+
+          {showExperiencia && (
+            <Card>
+              <Label>{isEN ? "Years of experience" : "Años de experiencia"}</Label>
+              <p className="font-body text-base text-hueso mb-4">
+                {isEN
+                  ? "We calculated these values from the dates in your CV. Confirm or correct them — the report uses these exact numbers."
+                  : "Calculamos estos valores a partir de las fechas de tu CV. Confirmá o corregilos — el reporte usa estos números exactos."}
+              </p>
+              <div className="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block font-ui text-[10px] text-hueso/55 mb-2 uppercase tracking-wider">
+                    {isEN ? "Total experience (years)" : "Experiencia total (años)"}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={70}
+                    value={expTotalNum}
+                    onChange={(e) => setExpTotalNum(e.target.value)}
+                    className="w-full bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso py-3"
+                  />
+                </div>
+                <div>
+                  <label className="block font-ui text-[10px] text-hueso/55 mb-2 uppercase tracking-wider">
+                    {isEN ? `Experience in ${industriaNombre} (years)` : `Experiencia en ${industriaNombre} (años)`}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={70}
+                    value={expIndNum}
+                    onChange={(e) => setExpIndNum(e.target.value)}
+                    className="w-full bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso py-3"
+                  />
+                </div>
+              </div>
+              {Number(expIndNum) > Number(expTotalNum) && (
+                <p className="mt-3 font-body text-sm text-red-300/90">
+                  {isEN
+                    ? "Industry experience can't be greater than total experience."
+                    : "La experiencia en la industria no puede ser mayor que la total."}
+                </p>
+              )}
+            </Card>
+          )}
         </div>
+
 
         <div className="mt-10">
           <button
