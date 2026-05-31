@@ -189,7 +189,7 @@ function PerfilPage() {
                 className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
               >
                 <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
-                {INDUSTRIAS.map((i) => <option key={i} value={i}>{i}</option>)}
+                {INDUSTRIAS.map((i) => <option key={i} value={i}>{labelOf(i, INDUSTRIAS_EN, isEN)}</option>)}
               </select>
             </EditField>
 
@@ -200,7 +200,7 @@ function PerfilPage() {
                 className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
               >
                 <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
-                {NIVELES.map((n) => <option key={n} value={n}>{n}</option>)}
+                {NIVELES.map((n) => <option key={n} value={n}>{labelOf(n, NIVELES_EN, isEN)}</option>)}
               </select>
             </EditField>
 
