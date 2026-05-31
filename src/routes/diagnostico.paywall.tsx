@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
-import { simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
+import { simulatePayment, applyAccessCode } from "@/lib/diagnostico/diagnostico.functions";
 import { useLang } from "@/lib/lang";
 import type { Plan } from "@/lib/diagnostico/types";
 
