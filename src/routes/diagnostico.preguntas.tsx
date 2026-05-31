@@ -600,7 +600,7 @@ function P2Industria({ r, setR }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {INDUSTRIAS.map((opt) => (
           <CardOption key={opt} selected={r.industria === opt} onClick={() => setR({ industria: opt })}>
-            {opt}
+            {labelOf(opt, INDUSTRIAS_EN, isEN)}
           </CardOption>
         ))}
       </div>
@@ -638,7 +638,7 @@ function P4Nivel({ r, setR }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {NIVELES.map((opt) => (
           <CardOption key={opt} selected={r.nivel === opt} onClick={() => setR({ nivel: opt })}>
-            {opt}
+            {labelOf(opt, NIVELES_EN, isEN)}
           </CardOption>
         ))}
       </div>
