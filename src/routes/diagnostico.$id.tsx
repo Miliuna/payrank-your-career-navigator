@@ -400,6 +400,8 @@ function ResultadoPage() {
 
           <p className="font-display text-3xl md:text-4xl text-hueso">{str(s2.rango_texto)}</p>
 
+          <HowToReadBox pais={String(row.pais_rol ?? "")} />
+
           {(() => {
             const p25 = parseNum(s2.p25_usd);
             const p50 = parseNum(s2.p50_usd);
