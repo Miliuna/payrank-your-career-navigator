@@ -73,7 +73,15 @@ function ValidacionPage() {
 
   const showTenure = !r.antiguedadDesde && (r.situacion === "empleado" || r.situacion === "contractor");
 
-  const anyWarning = showStale || showVariable || showFrecuencia || showTituloMismatch || showTenure;
+  // Experiencia calculada desde el CV — siempre pedimos confirmación si hay valores extraídos
+  const extTotal = typeof ex.experiencia_total_anios === "number" ? ex.experiencia_total_anios : null;
+  const extIndustria = typeof ex.experiencia_industria_anios === "number" ? ex.experiencia_industria_anios : null;
+  const industriaNombre = (r.industria === "Otra" ? r.industriaOtra : r.industria) || (isEN ? "your industry" : "tu industria");
+  const showExperiencia =
+    (extTotal != null || extIndustria != null) &&
+    (r.experienciaTotalAnios == null || r.experienciaIndustriaAnios == null);
+
+  const anyWarning = showStale || showVariable || showFrecuencia || showTituloMismatch || showTenure || showExperiencia;
 
   // Si no hay nada que validar, saltar a perfil automáticamente
   React.useEffect(() => {
