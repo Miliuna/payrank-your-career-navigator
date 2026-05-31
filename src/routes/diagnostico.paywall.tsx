@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
-import { simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
+import { simulatePayment, applyAccessCode } from "@/lib/diagnostico/diagnostico.functions";
 import { useLang } from "@/lib/lang";
 import type { Plan } from "@/lib/diagnostico/types";
 
@@ -58,6 +58,7 @@ function PaywallPage() {
   const { state, setState } = useDiagnostico();
   const navigate = useNavigate();
   const simulate = useServerFn(simulatePayment);
+  const applyCode = useServerFn(applyAccessCode);
 
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -65,6 +66,9 @@ function PaywallPage() {
   const [err, setErr] = React.useState<string | null>(null);
   const [referido, setReferido] = React.useState("");
   const [referidoEstado, setReferidoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
+  const [codigoAcceso, setCodigoAcceso] = React.useState("");
+  const [codigoEstado, setCodigoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
+  const [codigoBusy, setCodigoBusy] = React.useState(false);
 
 
 
@@ -100,6 +104,28 @@ function PaywallPage() {
 
   const aplicarReferido = () => {
     setReferidoEstado(referido.trim().length >= 4 ? "ok" : "invalid");
+  };
+
+  const aplicarCodigoAcceso = async () => {
+    const codigo = codigoAcceso.trim();
+    if (!codigo) {
+      setCodigoEstado("invalid");
+      return;
+    }
+    setCodigoBusy(true);
+    setErr(null);
+    try {
+      await applyCode({ data: { id, codigo } });
+      setCodigoEstado("ok");
+      // Bypass payment: jump straight to processing
+      await navigate({ to: "/diagnostico/procesando", search: { id } });
+    } catch (e) {
+      setCodigoEstado("invalid");
+      // Don't surface the raw error; the inline message handles UX
+      console.warn("[applyAccessCode] rejected:", e);
+    } finally {
+      setCodigoBusy(false);
+    }
   };
 
   return (
@@ -196,6 +222,41 @@ function PaywallPage() {
                 </p>
               )}
             </div>
+
+            <div className="mb-6">
+              <label className="font-ui text-[10px] text-hueso/55 block mb-2">
+                {isEN ? "HAVE AN ACCESS CODE?" : "¿TENÉS UN CÓDIGO DE ACCESO?"}
+              </label>
+              <div className="flex gap-2">
+                <input
+                  value={codigoAcceso}
+                  onChange={(e) => { setCodigoAcceso(e.target.value); setCodigoEstado("idle"); }}
+                  placeholder={isEN ? "Access code" : "Código de acceso"}
+                  className="flex-1 bg-hueso/5 border border-hueso/20 px-3 py-2 font-body text-sm text-hueso placeholder:text-hueso/40 focus:outline-none focus:border-hueso/60"
+                />
+                <button
+                  type="button"
+                  onClick={aplicarCodigoAcceso}
+                  disabled={codigoBusy}
+                  className="px-4 py-2 border border-hueso/30 font-ui text-[10px] text-hueso hover:bg-hueso hover:text-tinta transition-colors disabled:opacity-50"
+                >
+                  {codigoBusy ? (isEN ? "…" : "…") : (isEN ? "APPLY" : "APLICAR")}
+                </button>
+              </div>
+              {codigoEstado === "ok" && (
+                <p className="mt-2 font-body text-xs" style={{ color: "#2E4A6E" }}>
+                  {isEN ? "Code applied · generating your PayRank…" : "Código aplicado · generando tu PayRank…"}
+                </p>
+              )}
+              {codigoEstado === "invalid" && (
+                <p className="mt-2 font-body text-xs text-hueso/55">
+                  {isEN ? "Invalid code" : "Código no válido"}
+                </p>
+              )}
+            </div>
+
+
+
 
 
             <button
