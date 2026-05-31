@@ -58,6 +58,7 @@ function PaywallPage() {
   const { state, setState } = useDiagnostico();
   const navigate = useNavigate();
   const simulate = useServerFn(simulatePayment);
+  const applyCode = useServerFn(applyAccessCode);
 
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -65,6 +66,9 @@ function PaywallPage() {
   const [err, setErr] = React.useState<string | null>(null);
   const [referido, setReferido] = React.useState("");
   const [referidoEstado, setReferidoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
+  const [codigoAcceso, setCodigoAcceso] = React.useState("");
+  const [codigoEstado, setCodigoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
+  const [codigoBusy, setCodigoBusy] = React.useState(false);
 
 
 
