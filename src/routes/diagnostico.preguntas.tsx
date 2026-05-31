@@ -429,7 +429,11 @@ function isValid(
       if (r.trabajaActualmente === "no") return !!r.salarioAnterior && !!r.monedaAnterior && !!r.tiempoSinTrabajo;
       return false;
     }
-    case 15: return (r.beneficios?.length ?? 0) > 0;
+    case 15: {
+      if (!r.coberturaMedicaTipo) return false;
+      if (esCoberturaEmpleador(r.coberturaMedicaTipo) && !r.coberturaMedicaAlcance) return false;
+      return (r.beneficios?.length ?? 0) > 0;
+    }
     case 16: return !!r.descripcionPuesto?.trim();
     case 17: return !!r.genero;
     case 18: return !!r.email && /\S+@\S+\.\S+/.test(r.email);
