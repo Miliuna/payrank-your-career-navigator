@@ -127,10 +127,12 @@ const planesEN = [
 // ─── Landing switcher ───────────────────────────────────────────────────────
 
 function Landing() {
+  useCaptureReferralFromUrl();
   const { lang } = useLang();
   if (lang === "EN") return <LandingEN />;
   return <LandingES />;
 }
+
 
 // ─── ES Landing ─────────────────────────────────────────────────────────────
 
