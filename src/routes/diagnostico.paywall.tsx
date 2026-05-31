@@ -42,6 +42,17 @@ const BENEFICIOS = [
   "Hoja de ruta al siguiente nivel",
 ];
 
+const BENEFICIOS_EN = [
+  "Your exact position in the market",
+  "Total compensation valued",
+  "We detect if your title underestimates your real scope",
+  "Gender gap analysis (if requested)",
+  "How much to ask for and how to justify it",
+  "Exact script for your conversation",
+  "Skills that increase your value",
+  "Roadmap to the next level",
+];
+
 function PaywallPage() {
   const { id } = Route.useSearch();
   const { state, setState } = useDiagnostico();
@@ -96,7 +107,7 @@ function PaywallPage() {
       <header className="fixed top-0 inset-x-0 z-50 bg-hueso">
         <div className="mx-auto max-w-3xl px-5 md:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="font-display text-tinta text-xl">PayRank</Link>
-          <span className="font-ui text-[10px] text-piedra">Paso 6 de 8</span>
+          <span className="font-ui text-[10px] text-piedra">{isEN ? "Step 6 of 8" : "Paso 6 de 8"}</span>
         </div>
         <div className="h-[2px] bg-tinta/10 w-full">
           <div className="h-full bg-tinta transition-all duration-500" style={{ width: "92%" }} />
@@ -107,11 +118,13 @@ function PaywallPage() {
         <div className="mx-auto max-w-[480px]">
           <div className="bg-tinta text-hueso p-8 md:p-10">
             <h1 className="font-display text-2xl md:text-3xl text-hueso mb-3 leading-tight">
-              Tu PayRank está listo para <span className="font-display-italic">generar</span>
+              {isEN
+                ? <>Your PayRank is ready to <span className="font-display-italic">generate</span></>
+                : <>Tu PayRank está listo para <span className="font-display-italic">generar</span></>}
             </h1>
 
             <div className="mt-6 mb-3">
-              <p className="font-ui text-[10px] text-hueso/55 mb-2">ELEGÍ TU PLAN</p>
+              <p className="font-ui text-[10px] text-hueso/55 mb-2">{isEN ? "CHOOSE YOUR PLAN" : "ELEGÍ TU PLAN"}</p>
               <div className="grid grid-cols-3 gap-2">
                 {(Object.keys(PLAN_INFO) as Plan[]).map((p) => {
                   const active = state.plan === p;
@@ -139,13 +152,13 @@ function PaywallPage() {
 
             <div className="flex items-baseline gap-2 mb-6">
               <span className="font-display text-5xl md:text-6xl text-hueso">{plan.precio}</span>
-              {plan.sufijo && <span className="font-body text-sm text-hueso/70">{plan.sufijo}</span>}
+              {plan.sufijo && <span className="font-body text-sm text-hueso/70">{isEN && plan.sufijo === "/año" ? "/year" : plan.sufijo}</span>}
             </div>
 
-            <p className="font-ui text-[10px] text-hueso/60 mb-5">RESULTADO INMEDIATO · REPORTE POR MAIL</p>
+            <p className="font-ui text-[10px] text-hueso/60 mb-5">{isEN ? "INSTANT RESULT · REPORT BY EMAIL" : "RESULTADO INMEDIATO · REPORTE POR MAIL"}</p>
 
             <ul className="space-y-3 mb-8">
-              {BENEFICIOS.map((b) => (
+              {(isEN ? BENEFICIOS_EN : BENEFICIOS).map((b) => (
                 <li key={b} className="flex items-start gap-3 font-body text-sm text-hueso/85">
                   <span aria-hidden style={{ color: "#2E4A6E" }} className="mt-0.5">✓</span>
                   <span>{b}</span>
@@ -155,13 +168,13 @@ function PaywallPage() {
 
             <div className="mb-6">
               <label className="font-ui text-[10px] text-hueso/55 block mb-2">
-                ¿TENÉS UN CÓDIGO DE REFERIDO?
+                {isEN ? "DO YOU HAVE A REFERRAL CODE?" : "¿TENÉS UN CÓDIGO DE REFERIDO?"}
               </label>
               <div className="flex gap-2">
                 <input
                   value={referido}
                   onChange={(e) => { setReferido(e.target.value); setReferidoEstado("idle"); }}
-                  placeholder="Tu código"
+                  placeholder={isEN ? "Your code" : "Tu código"}
                   className="flex-1 bg-hueso/5 border border-hueso/20 px-3 py-2 font-body text-sm text-hueso placeholder:text-hueso/40 focus:outline-none focus:border-hueso/60"
                 />
                 <button
@@ -169,17 +182,17 @@ function PaywallPage() {
                   onClick={aplicarReferido}
                   className="px-4 py-2 border border-hueso/30 font-ui text-[10px] text-hueso hover:bg-hueso hover:text-tinta transition-colors"
                 >
-                  Aplicar
+                  {isEN ? "Apply" : "Aplicar"}
                 </button>
               </div>
               {referidoEstado === "ok" && (
                 <p className="mt-2 font-body text-xs" style={{ color: "#2E4A6E" }}>
-                  15% de descuento aplicado ✓
+                  {isEN ? "15% discount applied ✓" : "15% de descuento aplicado ✓"}
                 </p>
               )}
               {referidoEstado === "invalid" && (
                 <p className="mt-2 font-body text-xs text-hueso/55">
-                  Código no válido.
+                  {isEN ? "Invalid code." : "Código no válido."}
                 </p>
               )}
             </div>
@@ -191,7 +204,7 @@ function PaywallPage() {
               disabled={busy}
               className="w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
             >
-              {busy ? "GENERANDO…" : "OBTENER MI PAYRANK"}
+              {busy ? (isEN ? "GENERATING…" : "GENERANDO…") : (isEN ? "GET MY PAYRANK" : "OBTENER MI PAYRANK")}
               <span aria-hidden>→</span>
             </button>
 

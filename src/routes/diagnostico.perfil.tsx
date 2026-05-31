@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
-import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, NIVELES, TIPOS_EMPRESA } from "@/lib/diagnostico/data";
+import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, INDUSTRIAS_EN, NIVELES, NIVELES_EN, PAISES_EN, TIPOS_EMPRESA, labelOf } from "@/lib/diagnostico/data";
 import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 
 export const Route = createFileRoute("/diagnostico/perfil")({
@@ -102,17 +102,20 @@ function PerfilPage() {
     </section>
   );
 
-  const pais = r.pais === "Otro" ? r.paisOtro : r.pais;
-  const industria = r.industria === "Otra" ? r.industriaOtra : r.industria;
+  const paisRaw = r.pais === "Otro" ? r.paisOtro : r.pais;
+  const pais = isEN && paisRaw && r.pais !== "Otro" ? (PAISES_EN[paisRaw] ?? paisRaw) : paisRaw;
+  const industriaRaw = r.industria === "Otra" ? r.industriaOtra : r.industria;
+  const industria = isEN && industriaRaw && r.industria !== "Otra" ? (INDUSTRIAS_EN[industriaRaw] ?? industriaRaw) : industriaRaw;
+  const nivelDisplay = isEN && r.nivel ? (NIVELES_EN[r.nivel] ?? r.nivel) : r.nivel;
   const funciones = [...(r.funciones ?? [])];
   if (funciones.includes("Otra") && r.funcionesOtra) {
     const idx = funciones.indexOf("Otra");
-    funciones[idx] = `Otra: ${r.funcionesOtra}`;
+    funciones[idx] = `${isEN ? "Other" : "Otra"}: ${r.funcionesOtra}`;
   }
 
   const situacionLabel = isEN
-    ? (r.situacion === "empleado" ? "Employed" : r.situacion === "busqueda" ? "Active job search" : r.situacion === "freelance" ? "Freelance / independent consultant" : dash)
-    : (r.situacion === "empleado" ? "Empleado/a" : r.situacion === "busqueda" ? "En búsqueda activa" : r.situacion === "freelance" ? "Freelance / consultor/a" : dash);
+    ? (r.situacion === "empleado" ? "Employed" : r.situacion === "busqueda" ? "Active job search" : r.situacion === "freelance" ? "Freelance / independent consultant" : r.situacion === "contractor" ? "Contractor" : dash)
+    : (r.situacion === "empleado" ? "Empleado/a" : r.situacion === "busqueda" ? "En búsqueda activa" : r.situacion === "freelance" ? "Freelance / consultor/a" : r.situacion === "contractor" ? "Contractor" : dash);
   const salarioStr = r.salario && r.moneda
     ? `${r.moneda} ${r.salario.toLocaleString("es-AR")}${r.brutoNeto ? ` (${r.brutoNeto})` : ""}`
     : (r.salarioAnterior && r.monedaAnterior
@@ -186,7 +189,7 @@ function PerfilPage() {
                 className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
               >
                 <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
-                {INDUSTRIAS.map((i) => <option key={i} value={i}>{i}</option>)}
+                {INDUSTRIAS.map((i) => <option key={i} value={i}>{labelOf(i, INDUSTRIAS_EN, isEN)}</option>)}
               </select>
             </EditField>
 
@@ -197,7 +200,7 @@ function PerfilPage() {
                 className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
               >
                 <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
-                {NIVELES.map((n) => <option key={n} value={n}>{n}</option>)}
+                {NIVELES.map((n) => <option key={n} value={n}>{labelOf(n, NIVELES_EN, isEN)}</option>)}
               </select>
             </EditField>
 
@@ -229,7 +232,7 @@ function PerfilPage() {
           <Bloque
             titulo={isEN ? "Block 2 · Your role" : "Bloque 2 · Tu rol"}
             items={[
-              { k: isEN ? "Level" : "Nivel jerárquico", v: r.nivel },
+              { k: isEN ? "Level" : "Nivel jerárquico", v: nivelDisplay },
               { k: isEN ? "Scope" : "Alcance", v: r.alcance },
               { k: isEN ? "Main functions" : "Funciones principales", v: funciones.join(" · ") || (r.funcionesTexto ? (isEN ? "(free description)" : "(descripción libre)") : "") },
               { k: isEN ? "Direct reports" : "Personas a cargo", v: r.personasACargo },
