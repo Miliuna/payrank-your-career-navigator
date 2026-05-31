@@ -757,7 +757,7 @@ function P9Idiomas({ r, setR }: Props) {
                 <div className="flex flex-wrap gap-2 mt-4">
                   {NIVELES_IDIOMA.map((n) => (
                     <ChipOption key={n} selected={idi.nivel === n} onClick={() => update(i, { nivel: n })}>
-                      {n}
+                      {labelOf(n, NIVELES_IDIOMA_EN, isEN)}
                     </ChipOption>
                   ))}
                 </div>
