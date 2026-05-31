@@ -34,7 +34,7 @@ function H2({ children }: { children: React.ReactNode }) {
 }
 function P({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) {
   return (
-    <p className={`p-body font-body leading-relaxed ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
+    <p className={`p-body font-body leading-relaxed text-justify ${muted ? "text-hueso/65" : "text-hueso/85"}`}>
       {children}
     </p>
   );
