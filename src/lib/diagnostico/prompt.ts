@@ -384,18 +384,14 @@ export type TipoCambioInput = {
 
 function fxBlock(tc: TipoCambioInput): string {
   if (!tc || !tc.valor || !tc.moneda) return "";
-  const fechaFmt = tc.fecha
-    ? new Date(tc.fecha).toISOString()
-    : new Date().toISOString();
   return `
 
 ============================================================
-DATO CRÍTICO — TIPO DE CAMBIO OFICIAL (USAR EXCLUSIVAMENTE ESTE VALOR):
-1 USD = ${tc.valor} ${tc.moneda}
-Fuente: ${tc.fuente}
-Fecha de consulta: ${fechaFmt}
-
-INSTRUCCIÓN OBLIGATORIA: Usá EXCLUSIVAMENTE este valor (${tc.valor} ${tc.moneda} por 1 USD) para TODAS las conversiones entre USD y moneda local en este diagnóstico. No uses ningún otro tipo de cambio. No uses valores aproximados ni hardcodeados ni de tu entrenamiento. Cada vez que conviertas un valor entre USD y ${tc.moneda}, usá exactamente ${tc.valor}. El tipo de cambio que aparece en el reporte al usuario será este mismo número (${tc.valor} ${tc.moneda} por USD), por lo que todos los rangos locales y USD deben ser internamente consistentes con esa tasa.
+INSTRUCCIÓN OBLIGATORIA — MONEDA DE TRABAJO:
+Trabajá EXCLUSIVAMENTE en moneda local (${tc.moneda}). NO calcules ni estimes valores en USD.
+Para TODOS los campos que terminan en "_usd" (p25_usd, p50_usd, p75_usd, p90_usd, salario_actual_usd, pretension_recomendada_usd, etc.), devolvé el string vacío "".
+El backend se encarga de las conversiones a USD usando el tipo de cambio oficial. NO inventes ni calcules USD.
+Todos los rangos, percentiles, salarios, pretensiones y números monetarios van únicamente en ${tc.moneda}.
 ============================================================
 `;
 }
