@@ -729,7 +729,7 @@ function ResultadoPage() {
               <Card key={i}>
                 <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-2">Objeción {i + 1}</p>
                 <p className="font-body text-hueso italic mb-3">"{str(obj.objecion)}"</p>
-                <p className="font-body text-hueso/80">{str(obj.respuesta)}</p>
+                <p className="font-body text-hueso/80 text-justify">{str(obj.respuesta)}</p>
               </Card>
             );
           })}
