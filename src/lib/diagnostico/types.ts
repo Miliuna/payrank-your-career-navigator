@@ -66,6 +66,8 @@ export type Respuestas = {
   tiempoSinTrabajo?: string;
   beneficios?: string[];
   beneficiosOtro?: string;
+  coberturaMedicaTipo?: string;
+  coberturaMedicaAlcance?: string;
   descripcionPuesto?: string;
   genero?: string;
   email?: string;
