@@ -638,7 +638,25 @@ function P2Industria({ r, setR }: Props) {
 function P3TipoEmpresa({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
-  return <SimpleCards title={isEN ? "What type of company do you work at?" : "¿En qué tipo de empresa trabajás?"} options={isEN ? TIPOS_EMPRESA_EN : TIPOS_EMPRESA} value={r.tipoEmpresa} onChange={(v) => setR({ tipoEmpresa: v })} />;
+  const options = isEN ? TIPOS_EMPRESA_EN : TIPOS_EMPRESA;
+  const displayValue = isEN
+    ? (r.tipoEmpresa ? (TIPOS_EMPRESA_EN[TIPOS_EMPRESA.indexOf(r.tipoEmpresa)] ?? r.tipoEmpresa) : undefined)
+    : r.tipoEmpresa;
+  return (
+    <SimpleCards
+      title={isEN ? "What type of company do you work at?" : "¿En qué tipo de empresa trabajás?"}
+      options={options}
+      value={displayValue}
+      onChange={(v) => {
+        if (isEN) {
+          const idx = TIPOS_EMPRESA_EN.indexOf(v);
+          setR({ tipoEmpresa: idx >= 0 ? TIPOS_EMPRESA[idx] : v });
+        } else {
+          setR({ tipoEmpresa: v });
+        }
+      }}
+    />
+  );
 }
 
 function P4Nivel({ r, setR }: Props) {

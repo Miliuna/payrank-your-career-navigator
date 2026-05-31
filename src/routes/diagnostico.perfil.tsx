@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
-import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, INDUSTRIAS_EN, NIVELES, NIVELES_EN, PAISES_EN, TIPOS_EMPRESA, labelOf } from "@/lib/diagnostico/data";
+import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, INDUSTRIAS_EN, NIVELES, NIVELES_EN, PAISES_EN, TIPOS_EMPRESA, TIPOS_EMPRESA_EN, labelOf } from "@/lib/diagnostico/data";
 import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 
 export const Route = createFileRoute("/diagnostico/perfil")({
@@ -211,7 +211,7 @@ function PerfilPage() {
                 className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
               >
                 <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
-                {TIPOS_EMPRESA.map((t) => <option key={t} value={t}>{t}</option>)}
+                {TIPOS_EMPRESA.map((t) => <option key={t} value={t}>{labelOf(t, TIPOS_EMPRESA_EN, isEN)}</option>)}
               </select>
             </EditField>
           </div>
@@ -225,7 +225,7 @@ function PerfilPage() {
               { k: isEN ? "Selected mode" : "Modo elegido", v: isEN ? TITULOS_MODO_EN[state.modo] : TITULOS_MODO[state.modo] },
               { k: isEN ? "Country" : "País", v: pais },
               { k: isEN ? "Industry" : "Industria", v: industria },
-              { k: isEN ? "Company type" : "Tipo de empresa", v: r.tipoEmpresa },
+              { k: isEN ? "Company type" : "Tipo de empresa", v: labelOf(r.tipoEmpresa, TIPOS_EMPRESA_EN, isEN) },
               { k: isEN ? "Employment situation" : "Situación laboral", v: situacionLabel },
             ]}
           />
