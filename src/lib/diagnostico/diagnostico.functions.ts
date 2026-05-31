@@ -62,8 +62,12 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     equipo: (r.personasACargo as string) ?? null,
     interaccion_clevel: (r.interaccion as string) ?? null,
     idiomas: r.sinIdiomas ? null : (r.idiomas ?? null),
-    anos_experiencia_total: (r.expTotal as string) ?? null,
-    anos_experiencia_industria: (r.expIndustria as string) ?? null,
+    anos_experiencia_total: typeof r.experienciaTotalAnios === "number"
+      ? `${r.experienciaTotalAnios} años (calculado desde fechas del CV; confirmado por usuario)`
+      : (r.expTotal as string) ?? null,
+    anos_experiencia_industria: typeof r.experienciaIndustriaAnios === "number"
+      ? `${r.experienciaIndustriaAnios} años (calculado desde fechas del CV; confirmado por usuario)`
+      : (r.expIndustria as string) ?? null,
     anos_puesto_actual: null,
     formacion: Array.isArray(r.formacion) ? (r.formacion as string[]) : null,
     certificaciones: r.sinCertificaciones ? [] : (Array.isArray(r.certificaciones) ? (r.certificaciones as string[]) : null),
