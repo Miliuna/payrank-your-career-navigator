@@ -193,6 +193,64 @@ export const confirmBetaAccess = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+// ---------- Aplicar código de acceso (beta/promo/press) — bypassea el pago ----------
+
+export const applyAccessCode = createServerFn({ method: "POST" })
+  .inputValidator((input) =>
+    z.object({
+      id: z.string().uuid(),
+      codigo: z.string().min(1).max(128),
+    }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const codigo = data.codigo.trim().toUpperCase();
+
+    const { data: row, error: selErr } = await supabaseAdmin
+      .from("codigos_acceso" as never)
+      .select("id, codigo, tipo, usos_maximos, usos_actuales, activo, expires_at")
+      .eq("codigo", codigo)
+      .maybeSingle();
+    if (selErr) throw new Error(selErr.message);
+
+    const c = row as {
+      id: string;
+      codigo: string;
+      tipo: string;
+      usos_maximos: number;
+      usos_actuales: number;
+      activo: boolean;
+      expires_at: string | null;
+    } | null;
+
+    if (!c || !c.activo) throw new Error("INVALID_CODE");
+    if (c.expires_at && new Date(c.expires_at).getTime() < Date.now()) {
+      throw new Error("INVALID_CODE");
+    }
+    if (c.usos_actuales >= c.usos_maximos) throw new Error("INVALID_CODE");
+
+    // Marcar diagnóstico como pagado (gratis vía código) y guardar referencia al código
+    const { error: updDiagErr } = await supabaseAdmin
+      .from("diagnosticos" as never)
+      .update({
+        pago_confirmado: true,
+        monto_pagado_usd: 0,
+        tipo_usuario: c.tipo === "beta" ? "beta_gratuito" : `acceso_${c.tipo}`,
+        codigo_acceso_usado: c.codigo,
+        plan_elegido: "codigo_acceso",
+      } as never)
+      .eq("id", data.id);
+    if (updDiagErr) throw new Error(updDiagErr.message);
+
+    // Incrementar contador de usos del código
+    const { error: updCodeErr } = await supabaseAdmin
+      .from("codigos_acceso" as never)
+      .update({ usos_actuales: c.usos_actuales + 1 } as never)
+      .eq("id", c.id);
+    if (updCodeErr) console.error("[applyAccessCode] usos increment error:", updCodeErr);
+
+    return { ok: true, tipo: c.tipo };
+  });
+
 // ---------- Llamada a Anthropic ----------
 
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
