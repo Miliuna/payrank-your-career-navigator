@@ -239,8 +239,8 @@ function PerfilPage() {
           <Bloque
             titulo={isEN ? "Block 3 · Your profile" : "Bloque 3 · Tu perfil"}
             items={[
-              { k: isEN ? "Total experience" : "Experiencia total", v: r.expTotal },
-              { k: isEN ? "Industry experience" : "Experiencia en industria", v: r.expIndustria },
+              { k: isEN ? "Total experience" : "Experiencia total", v: r.experienciaTotalAnios != null ? `${r.experienciaTotalAnios} ${isEN ? "years" : "años"}` : r.expTotal },
+              { k: isEN ? "Industry experience" : "Experiencia en industria", v: r.experienciaIndustriaAnios != null ? `${r.experienciaIndustriaAnios} ${isEN ? "years" : "años"}` : r.expIndustria },
               { k: isEN ? "Education" : "Formación", v: (r.formacion ?? []).join(" · ") },
               { k: isEN ? "Certifications" : "Certificaciones", v: r.sinCertificaciones ? (isEN ? "None" : "Ninguna") : (r.certificaciones ?? []).join(" · ") },
               { k: isEN ? "Languages" : "Idiomas", v: r.sinIdiomas ? (isEN ? "English only" : "Solo español") : (r.idiomas ?? []).map((i) => `${i.idioma} (${i.nivel}${i.certificacion ? `, ${i.certificacion}` : ""})`).join(" · ") },
