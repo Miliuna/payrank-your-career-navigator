@@ -293,11 +293,17 @@ function PreguntasPage() {
 
   const next = () => {
     if (step === -1) { setStep(0); return; }
-    if (step === 12 && certRawInput.trim()) {
-      const v = certRawInput.trim();
-      const items = r.certificaciones ?? [];
-      if (!items.includes(v)) setR({ certificaciones: [...items, v], sinCertificaciones: false });
-      setCertRawInput("");
+    if (step === 12) {
+      const pending = (certRawInput.trim() || (r.certificacionesPending ?? "").trim());
+      if (pending) {
+        const items = r.certificaciones ?? [];
+        if (!items.includes(pending)) {
+          setR({ certificaciones: [...items, pending], sinCertificaciones: false, certificacionesPending: "" });
+        } else {
+          setR({ certificacionesPending: "" });
+        }
+        setCertRawInput("");
+      }
     }
     if (step < TOTAL - 1) setStep(step + 1);
     else navigate({ to: "/diagnostico/inferencia" });
