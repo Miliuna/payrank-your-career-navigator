@@ -38,7 +38,7 @@ export const PRICING: Record<Region, Record<Plan, PlanPricing>> = {
   INTERNACIONAL: {
     unico: { amount: 49, display: "USD 49", stripePriceId: "price_1Tcc06QmBsnwYHrwc9lYBCAI" },
     pack3: { amount: 99, display: "USD 99", stripePriceId: "price_1TccI9QmBsnwYHrwGL26gLiB" },
-    anual: { amount: 179, display: "USD 179", suffix: "/yr", stripePriceId: "price_1TccwfQmBsnwYHrwB9aNHk8P" },
+    anual: { amount: 199, display: "USD 199", suffix: "/yr", stripePriceId: "price_1TccwfQmBsnwYHrwB9aNHk8P" },
   },
 
 };
