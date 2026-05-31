@@ -106,6 +106,28 @@ function PaywallPage() {
     setReferidoEstado(referido.trim().length >= 4 ? "ok" : "invalid");
   };
 
+  const aplicarCodigoAcceso = async () => {
+    const codigo = codigoAcceso.trim();
+    if (!codigo) {
+      setCodigoEstado("invalid");
+      return;
+    }
+    setCodigoBusy(true);
+    setErr(null);
+    try {
+      await applyCode({ data: { id, codigo } });
+      setCodigoEstado("ok");
+      // Bypass payment: jump straight to processing
+      await navigate({ to: "/diagnostico/procesando", search: { id } });
+    } catch (e) {
+      setCodigoEstado("invalid");
+      // Don't surface the raw error; the inline message handles UX
+      console.warn("[applyAccessCode] rejected:", e);
+    } finally {
+      setCodigoBusy(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-hueso text-tinta">
       <header className="fixed top-0 inset-x-0 z-50 bg-hueso">
