@@ -256,3 +256,59 @@ export const GENEROS = [
 ];
 
 export const TOTAL_PREGUNTAS = 19;
+
+// ============= EN label maps (display only — canonical value stays Spanish) =============
+
+export const PAISES_EN: Record<string, string> = {
+  Argentina: "Argentina",
+  México: "Mexico",
+  Chile: "Chile",
+  Colombia: "Colombia",
+  España: "Spain",
+  Perú: "Peru",
+  Uruguay: "Uruguay",
+  Brasil: "Brazil",
+  Ecuador: "Ecuador",
+  "Estados Unidos": "United States",
+  Otro: "Other",
+};
+
+export const INDUSTRIAS_EN: Record<string, string> = {
+  "Tecnología/Software": "Technology/Software",
+  "Finanzas/Banca": "Finance/Banking",
+  "Consumo masivo/Retail": "Consumer goods/Retail",
+  "Industrial/Manufactura": "Industrial/Manufacturing",
+  "Consultoría/Servicios profesionales": "Consulting/Professional services",
+  "Salud/Pharma": "Healthcare/Pharma",
+  Seguros: "Insurance",
+  Educación: "Education",
+  "Medios/Entretenimiento": "Media/Entertainment",
+  Energía: "Energy",
+  "Real Estate": "Real Estate",
+  "Gobierno/Sector público": "Government/Public sector",
+  Otra: "Other",
+};
+
+export const NIVELES_EN: Record<string, string> = {
+  "Junior/Analista": "Junior/Analyst",
+  "Semi-senior": "Semi-senior",
+  "Senior/Especialista": "Senior/Specialist",
+  "Manager/Líder de equipo": "Manager/Team lead",
+  "Senior Manager/Gerente": "Senior Manager",
+  "Director/Head": "Director/Head",
+  "C-Level/VP": "C-Level/VP",
+  Otro: "Other",
+};
+
+export const NIVELES_IDIOMA_EN: Record<string, string> = {
+  Básico: "Basic",
+  Intermedio: "Intermediate",
+  Avanzado: "Advanced",
+  Nativo: "Native",
+};
+
+export function labelOf(value: string | undefined | null, map: Record<string, string>, isEN: boolean): string {
+  if (!value) return "";
+  if (!isEN) return value;
+  return map[value] ?? value;
+}
