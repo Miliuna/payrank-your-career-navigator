@@ -98,6 +98,8 @@ function ValidacionPage() {
   const [tituloPick, setTituloPick] = React.useState<"cv" | "recibo" | "academico" | "otro" | null>(null);
   const [tituloOtro, setTituloOtro] = React.useState("");
   const [antiguedad, setAntiguedad] = React.useState<string>("");
+  const [expTotalNum, setExpTotalNum] = React.useState<string>(extTotal != null ? String(extTotal) : "");
+  const [expIndNum, setExpIndNum] = React.useState<string>(extIndustria != null ? String(extIndustria) : "");
 
   const staleOk = !showStale || staleChoice === "igual" || (staleChoice === "cambio" && Number(nuevoSalario.replace(/[^\d]/g, "")) > 0);
   const variableOk = !showVariable || sinVariable || bono.trim().length > 0;
