@@ -714,7 +714,7 @@ function ResultadoPage() {
 
           <Card dark>
             <Eyebrow>HABLAR CON TU JEFE</Eyebrow>
-            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed">{str(s6.script_jefe)}</p>
+            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_jefe)}</p>
           </Card>
 
           <Card dark>
