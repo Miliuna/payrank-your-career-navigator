@@ -148,6 +148,12 @@ function ValidacionPage() {
       if (showTenure && /^\d{4}-\d{2}$/.test(antiguedad)) {
         nr.antiguedadDesde = antiguedad;
       }
+      if (showExperiencia) {
+        const t = Number(expTotalNum);
+        const i = Number(expIndNum);
+        if (isFinite(t) && t > 0) nr.experienciaTotalAnios = t;
+        if (isFinite(i) && i >= 0) nr.experienciaIndustriaAnios = i;
+      }
       return { ...s, respuestas: nr };
     });
     navigate({ to: "/diagnostico/perfil" });
