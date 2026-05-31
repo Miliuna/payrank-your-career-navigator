@@ -47,6 +47,39 @@ export type Database = {
         }
         Relationships: []
       }
+      codigos_acceso: {
+        Row: {
+          activo: boolean
+          codigo: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          tipo: string
+          usos_actuales: number
+          usos_maximos: number
+        }
+        Insert: {
+          activo?: boolean
+          codigo: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          tipo?: string
+          usos_actuales?: number
+          usos_maximos?: number
+        }
+        Update: {
+          activo?: boolean
+          codigo?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          tipo?: string
+          usos_actuales?: number
+          usos_maximos?: number
+        }
+        Relationships: []
+      }
       diagnosticos: {
         Row: {
           ajustes_inferencia: Json | null
@@ -56,6 +89,7 @@ export type Database = {
           anos_puesto_actual: string | null
           beneficios: string[] | null
           certificaciones: string[] | null
+          codigo_acceso_usado: string | null
           created_at: string
           datos_extraidos_documento: Json | null
           enps_feedback: string | null
@@ -107,6 +141,7 @@ export type Database = {
           anos_puesto_actual?: string | null
           beneficios?: string[] | null
           certificaciones?: string[] | null
+          codigo_acceso_usado?: string | null
           created_at?: string
           datos_extraidos_documento?: Json | null
           enps_feedback?: string | null
@@ -158,6 +193,7 @@ export type Database = {
           anos_puesto_actual?: string | null
           beneficios?: string[] | null
           certificaciones?: string[] | null
+          codigo_acceso_usado?: string | null
           created_at?: string
           datos_extraidos_documento?: Json | null
           enps_feedback?: string | null
