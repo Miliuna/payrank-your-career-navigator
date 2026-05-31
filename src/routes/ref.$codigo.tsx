@@ -1,20 +1,18 @@
-import * as React from "react";
-import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/ref/$codigo")({
-  component: RefPage,
-});
-
-function RefPage() {
-  const { codigo } = useParams({ from: "/ref/$codigo" });
-  const navigate = useNavigate();
-
-  React.useEffect(() => {
+  beforeLoad: ({ params }) => {
+    const codigo = (params.codigo ?? "").trim();
+    // Save synchronously on the client BEFORE the redirect, so the code
+    // survives even if the homepage's URL is later cleaned up.
     if (typeof window !== "undefined" && codigo) {
-      window.localStorage.setItem("payrank.codigoReferido", codigo);
+      try {
+        window.localStorage.setItem("payrank.codigoReferido", codigo);
+      } catch {
+        // localStorage may be unavailable (private mode, etc.) — the ?ref
+        // search param below is the fallback.
+      }
     }
-    navigate({ to: "/" });
-  }, [codigo, navigate]);
-
-  return null;
-}
+    throw redirect({ to: "/", search: codigo ? { ref: codigo } : {} });
+  },
+});
