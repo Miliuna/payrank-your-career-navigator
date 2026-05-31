@@ -44,19 +44,63 @@ function ValidacionPage() {
   const reciboMonthsOld = reciboFecha ? monthsAgo(reciboFecha) : null;
   const showStale = reciboFecha && reciboMonthsOld != null && reciboMonthsOld > 3;
 
-  // Bono sin monto: dispara si CUALQUIER documento lo menciona sin monto.
-  const bonoSinMontoFlag =
-    ex.bono_mencionado_sin_monto === true || ex.recibo_tiene_variable_sin_monto === true;
-  const showVariable = bonoSinMontoFlag && !r.bonoUltimo && !r.sinVariable;
+  // ── Escaneo transversal de bono/variable en todos los inputs ──
+  const FREQ_PATTERNS: Array<{ key: string; rx: RegExp }> = [
+    { key: "mensual", rx: /\b(mensual|monthly|por mes|al mes|cada mes)\b/i },
+    { key: "bimestral", rx: /\b(bimestral|bimonthly|bi-?monthly|cada dos meses)\b/i },
+    { key: "trimestral", rx: /\b(trimestral|quarterly|cada tres meses|cada trimestre)\b/i },
+    { key: "cuatrimestral", rx: /\b(cuatrimestral|cada cuatro meses)\b/i },
+    { key: "semestral", rx: /\b(semestral|semi-?annual|biannual|cada seis meses|semestralmente)\b/i },
+    { key: "anual", rx: /\b(anual|annual|yearly|por a[nñ]o|al a[nñ]o|cada a[nñ]o|anualmente)\b/i },
+  ];
+  const BONUS_RX = /\b(bono|bonos|bonus|variable|comisi[oó]n|comisiones|incentivo|incentivos|premio|premios)\b/i;
 
-  // Frecuencias de bono inconsistentes entre documentos.
-  const frecuenciasRaw = Array.isArray(ex.bono_frecuencias_detectadas)
-    ? (ex.bono_frecuencias_detectadas as string[]).filter((x) => typeof x === "string" && x.trim().length > 0)
+  const docs = state.documentos ?? {};
+  const bonusFields: Array<string | undefined> = [r.bonoUltimo, r.bonoFrecuencia];
+  const textosLibres: Array<{ txt: string; bonusField: boolean }> = [
+    { txt: r.descripcionPuesto ?? "", bonusField: false },
+    { txt: r.funcionesTexto ?? "", bonusField: false },
+    { txt: r.beneficiosOtro ?? "", bonusField: false },
+    { txt: r.bonoUltimo ?? "", bonusField: true },
+    { txt: r.bonoFrecuencia ?? "", bonusField: true },
+    { txt: docs.descriptivoTexto ?? "", bonusField: false },
+    { txt: docs.avisoTexto ?? "", bonusField: false },
+    { txt: docs.reciboTexto ?? "", bonusField: false },
+  ].filter((x) => x.txt.trim().length > 0);
+
+  const frecuenciasScan = new Set<string>();
+  for (const { txt, bonusField } of textosLibres) {
+    if (!bonusField && !BONUS_RX.test(txt)) continue;
+    for (const { key, rx } of FREQ_PATTERNS) {
+      if (rx.test(txt)) frecuenciasScan.add(key);
+    }
+  }
+  // Frecuencias extraídas por la IA (documentos) → normalizar a claves canónicas
+  const frecuenciasFromExtraction = Array.isArray(ex.bono_frecuencias_detectadas)
+    ? (ex.bono_frecuencias_detectadas as string[])
+        .filter((x) => typeof x === "string" && x.trim().length > 0)
+        .map((x) => x.trim().toLowerCase())
     : [];
-  const frecuenciasUnicas = Array.from(
-    new Set(frecuenciasRaw.map((x) => x.trim().toLowerCase())),
-  );
+  for (const f of frecuenciasFromExtraction) {
+    let matched = false;
+    for (const { key, rx } of FREQ_PATTERNS) {
+      if (rx.test(f) || key === f) { frecuenciasScan.add(key); matched = true; break; }
+    }
+    if (!matched) frecuenciasScan.add(f);
+  }
+  void bonusFields;
+  const frecuenciasUnicas = Array.from(frecuenciasScan);
   const showFrecuencia = frecuenciasUnicas.length >= 2 && !r.bonoFrecuencia && !r.sinVariable;
+
+  // Bono sin monto: dispara si CUALQUIER señal indica que hay variable
+  // (extracción de docs, frecuencia detectada en texto libre, o frecuencia ya elegida)
+  // y todavía no se especificó el monto.
+  const hayVariableDeclarada =
+    ex.bono_mencionado_sin_monto === true ||
+    ex.recibo_tiene_variable_sin_monto === true ||
+    frecuenciasUnicas.length > 0 ||
+    !!r.bonoFrecuencia;
+  const showVariable = hayVariableDeclarada && !r.bonoUltimo && !r.sinVariable;
 
   const tituloCv = typeof ex.titulo_cv === "string" ? ex.titulo_cv.trim() : "";
   const tituloRecibo = typeof ex.titulo_recibo === "string" ? ex.titulo_recibo.trim() : "";
@@ -219,8 +263,8 @@ function ValidacionPage() {
               <Label>{isEN ? "Variable / bonus" : "Componente variable"}</Label>
               <p className="font-body text-base text-hueso mb-4">
                 {isEN
-                  ? "We detected you have a variable component but the amount doesn't appear. What's the amount of your last bonus / variable received?"
-                  : "Detectamos que tenés un componente variable pero no aparece el monto. ¿Cuál es el monto de tu último bono o variable cobrado?"}
+                  ? "You indicated you have a variable component but didn't specify the amount. What's the amount of your last bonus / variable received?"
+                  : "Indicaste que tenés un componente variable pero no especificaste el monto. ¿Cuál es el monto de tu último bono o variable cobrado?"}
               </p>
               <input
                 type="text"
@@ -249,8 +293,8 @@ function ValidacionPage() {
               <Label>{isEN ? "Bonus frequency mismatch" : "Frecuencia de bono inconsistente"}</Label>
               <p className="font-body text-base text-hueso mb-4">
                 {isEN
-                  ? <>We detected inconsistent information about your variable component: in one place it says <em>{frecuenciasUnicas[0]}</em> and in another <em>{frecuenciasUnicas[1]}</em>. Which one is correct?</>
-                  : <>Detectamos información inconsistente sobre tu componente variable: en un campo dijiste <em>{frecuenciasUnicas[0]}</em> y en otro <em>{frecuenciasUnicas[1]}</em>. ¿Cuál es la correcta?</>}
+                  ? <>We detected inconsistent information about the frequency of your variable component: in one field you indicated <em>{frecuenciasUnicas[0]}</em> and in another <em>{frecuenciasUnicas[1]}</em>. Which one is correct?</>
+                  : <>Detectamos información inconsistente sobre la frecuencia de tu componente variable: en un campo indicaste <em>{frecuenciasUnicas[0]}</em> y en otro <em>{frecuenciasUnicas[1]}</em>. ¿Cuál es la correcta?</>}
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {frecuenciasUnicas.map((f) => (
