@@ -224,6 +224,100 @@ function PercentilesChart({
   );
 }
 
+type LeerVariant = "es-vos" | "es-tu" | "en";
+function leerVariant(pais: string): LeerVariant {
+  const p = pais.toLowerCase();
+  if (
+    p === "usa" || p === "eeuu" || p.includes("estados unidos") ||
+    p.includes("united states") || p.includes("ee.uu") ||
+    p === "uk" || p.includes("united kingdom") || p.includes("reino unido") ||
+    p.includes("australia") || p.includes("canad")
+  ) return "en";
+  if (p.includes("argentin") || p.includes("uruguay")) return "es-vos";
+  return "es-tu";
+}
+
+function HowToReadBox({ pais }: { pais: string }) {
+  const v = leerVariant(pais);
+  const isEN = v === "en";
+  const isPdf =
+    typeof document !== "undefined" && document.body.classList.contains("pdf-export");
+  const [open, setOpen] = React.useState(isPdf);
+
+  React.useEffect(() => {
+    const obs = new MutationObserver(() => {
+      if (document.body.classList.contains("pdf-export")) setOpen(true);
+    });
+    obs.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+
+  const title = isEN ? "How to read this data" : "¿Cómo leer estos datos?";
+
+  const contentEN = (
+    <>
+      <p>Percentiles show where your salary falls relative to the market for your specific profile:</p>
+      <p><strong>P25</strong> — The floor. If you're here, the market is paying 75% of comparable professionals more than you. This is urgent correction territory.</p>
+      <p><strong>P50</strong> — The market median. Half earn more, half earn less. If your profile has no strong differentiators, this is your negotiation benchmark.</p>
+      <p><strong>P75</strong> — The upper range. If your profile has concrete differentiators — valued certifications, measurable impact, scarce skills — this is your target. Asking for it requires backing it up.</p>
+      <p><strong>P90</strong> — The top 10%. Only reached with exceptional combinations of seniority, specialization, and demonstrable impact. Not a typical negotiation target — it's context.</p>
+      <p><strong>Compa-ratio</strong> — Compares your current salary to the adjusted P50 for your profile. At 1.00, you earn exactly the median. Below 0.90, any compensation manager recognizes it as a gap to correct — you're not asking for a raise, you're asking for a correction.</p>
+    </>
+  );
+
+  const contentVos = (
+    <>
+      <p>Los percentiles muestran dónde se ubica tu salario en relación al mercado para tu perfil específico:</p>
+      <p><strong>P25</strong> — El piso del rango. Si estás acá, el mercado te está pagando menos que al 75% de los profesionales comparables. Es zona de corrección urgente.</p>
+      <p><strong>P50</strong> — La mediana del mercado. La mitad gana más, la mitad gana menos. Si tu perfil no tiene diferenciadores fuertes, este es tu número de referencia para negociar.</p>
+      <p><strong>P75</strong> — El rango superior. Si tu perfil tiene diferenciadores concretos — certificaciones valoradas, impacto medible en resultados, skills escasos — este es tu rango objetivo. Pedirlo requiere poder fundamentarlo.</p>
+      <p><strong>P90</strong> — El top 10% del mercado. Solo se alcanza con combinaciones excepcionales de seniority, especialización e impacto demostrable. No es un objetivo de negociación habitual — es un dato de contexto.</p>
+      <p><strong>Compa-ratio</strong> — Compara tu salario actual contra el P50 ajustado a tu perfil. Si es 1.00, ganás exactamente la mediana. Si es menor a 0.90, cualquier gerente de compensaciones lo reconoce como una brecha a corregir — no estás pidiendo un aumento, estás pidiendo una corrección.</p>
+    </>
+  );
+
+  const contentTu = (
+    <>
+      <p>Los percentiles muestran dónde se ubica tu salario en relación al mercado para tu perfil específico:</p>
+      <p><strong>P25</strong> — El piso del rango. Si estás aquí, el mercado te está pagando menos que al 75% de los profesionales comparables. Es zona de corrección urgente.</p>
+      <p><strong>P50</strong> — La mediana del mercado. La mitad gana más, la mitad gana menos. Si tu perfil no tiene diferenciadores fuertes, este es tu número de referencia para negociar.</p>
+      <p><strong>P75</strong> — El rango superior. Si tu perfil tiene diferenciadores concretos — certificaciones valoradas, impacto medible en resultados, skills escasos — este es tu rango objetivo. Pedirlo requiere poder fundamentarlo.</p>
+      <p><strong>P90</strong> — El top 10% del mercado. Solo se alcanza con combinaciones excepcionales de seniority, especialización e impacto demostrable. No es un objetivo de negociación habitual — es un dato de contexto.</p>
+      <p><strong>Compa-ratio</strong> — Compara tu salario actual contra el P50 ajustado a tu perfil. Si es 1.00, ganas exactamente la mediana. Si es menor a 0.90, cualquier gerente de compensaciones lo reconoce como una brecha a corregir — no estás pidiendo un aumento, estás pidiendo una corrección.</p>
+    </>
+  );
+
+  const content = v === "en" ? contentEN : v === "es-vos" ? contentVos : contentTu;
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#F0EDE8",
+        color: "#0C0C0C",
+        borderLeft: "4px solid #2E4A6E",
+        padding: "14px 18px",
+      }}
+      className="text-[13px] leading-relaxed"
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between text-left font-ui uppercase tracking-[0.18em] text-[11px]"
+        style={{ color: "#0C0C0C" }}
+        aria-expanded={open}
+      >
+        <span>{title}</span>
+        <span aria-hidden className="pdf-hide">{open ? "−" : "+"}</span>
+      </button>
+      {open && (
+        <div className="mt-3 space-y-2 font-body">
+          {content}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 // ---------- Page ----------
 
