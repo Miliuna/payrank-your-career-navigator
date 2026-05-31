@@ -16,6 +16,7 @@ import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RefCodigoRouteImport } from './routes/ref.$codigo'
+import { Route as DiagnosticoValidacionRouteImport } from './routes/diagnostico.validacion'
 import { Route as DiagnosticoUploadRouteImport } from './routes/diagnostico.upload'
 import { Route as DiagnosticoProcesandoRouteImport } from './routes/diagnostico.procesando'
 import { Route as DiagnosticoPreguntasRouteImport } from './routes/diagnostico.preguntas'
@@ -60,6 +61,11 @@ const IndexRoute = IndexRouteImport.update({
 const RefCodigoRoute = RefCodigoRouteImport.update({
   id: '/ref/$codigo',
   path: '/ref/$codigo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiagnosticoValidacionRoute = DiagnosticoValidacionRouteImport.update({
+  id: '/diagnostico/validacion',
+  path: '/diagnostico/validacion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiagnosticoUploadRoute = DiagnosticoUploadRouteImport.update({
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
+  '/diagnostico/validacion': typeof DiagnosticoValidacionRoute
   '/ref/$codigo': typeof RefCodigoRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
+  '/diagnostico/validacion': typeof DiagnosticoValidacionRoute
   '/ref/$codigo': typeof RefCodigoRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/diagnostico/preguntas': typeof DiagnosticoPreguntasRoute
   '/diagnostico/procesando': typeof DiagnosticoProcesandoRoute
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
+  '/diagnostico/validacion': typeof DiagnosticoValidacionRoute
   '/ref/$codigo': typeof RefCodigoRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
     | '/diagnostico/upload'
+    | '/diagnostico/validacion'
     | '/ref/$codigo'
     | '/api/public/stripe-webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
     | '/diagnostico/upload'
+    | '/diagnostico/validacion'
     | '/ref/$codigo'
     | '/api/public/stripe-webhook'
   id:
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/diagnostico/preguntas'
     | '/diagnostico/procesando'
     | '/diagnostico/upload'
+    | '/diagnostico/validacion'
     | '/ref/$codigo'
     | '/api/public/stripe-webhook'
   fileRoutesById: FileRoutesById
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   DiagnosticoPreguntasRoute: typeof DiagnosticoPreguntasRoute
   DiagnosticoProcesandoRoute: typeof DiagnosticoProcesandoRoute
   DiagnosticoUploadRoute: typeof DiagnosticoUploadRoute
+  DiagnosticoValidacionRoute: typeof DiagnosticoValidacionRoute
   RefCodigoRoute: typeof RefCodigoRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
 }
@@ -301,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/ref/$codigo'
       fullPath: '/ref/$codigo'
       preLoaderRoute: typeof RefCodigoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/diagnostico/validacion': {
+      id: '/diagnostico/validacion'
+      path: '/diagnostico/validacion'
+      fullPath: '/diagnostico/validacion'
+      preLoaderRoute: typeof DiagnosticoValidacionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/diagnostico/upload': {
@@ -392,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiagnosticoPreguntasRoute: DiagnosticoPreguntasRoute,
   DiagnosticoProcesandoRoute: DiagnosticoProcesandoRoute,
   DiagnosticoUploadRoute: DiagnosticoUploadRoute,
+  DiagnosticoValidacionRoute: DiagnosticoValidacionRoute,
   RefCodigoRoute: RefCodigoRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
 }
