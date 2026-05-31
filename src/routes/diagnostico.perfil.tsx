@@ -267,8 +267,8 @@ function PerfilPage() {
             {busy
               ? (isEN ? "Saving…" : "Guardando…")
               : isEN
-                ? <>Yes, it's correct — continue <span aria-hidden>→</span></>
-                : <>Sí, es correcto — continuá <span aria-hidden>→</span></>}
+                ? <>Confirm and generate my PayRank <span aria-hidden>→</span></>
+                : <>Confirmar y generar mi PayRank <span aria-hidden>→</span></>}
           </button>
           <button
             type="button"
