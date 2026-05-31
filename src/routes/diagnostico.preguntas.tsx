@@ -856,8 +856,8 @@ function P13Certificaciones({ r, setR, certRawInput, onCertRawChange }: Props & 
   const add = () => {
     const v = certRawInput.trim();
     if (!v) return;
-    if (items.includes(v)) { onCertRawChange(""); return; }
-    setR({ certificaciones: [...items, v], sinCertificaciones: false });
+    if (items.includes(v)) { onCertRawChange(""); setR({ certificacionesPending: "" }); return; }
+    setR({ certificaciones: [...items, v], sinCertificaciones: false, certificacionesPending: "" });
     onCertRawChange("");
   };
   return (
