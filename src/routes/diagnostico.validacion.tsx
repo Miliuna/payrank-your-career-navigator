@@ -44,16 +44,36 @@ function ValidacionPage() {
   const reciboMonthsOld = reciboFecha ? monthsAgo(reciboFecha) : null;
   const showStale = reciboFecha && reciboMonthsOld != null && reciboMonthsOld > 3;
 
-  const showVariable = ex.recibo_tiene_variable_sin_monto === true && !r.bonoUltimo && !r.sinVariable;
+  // Bono sin monto: dispara si CUALQUIER documento lo menciona sin monto.
+  const bonoSinMontoFlag =
+    ex.bono_mencionado_sin_monto === true || ex.recibo_tiene_variable_sin_monto === true;
+  const showVariable = bonoSinMontoFlag && !r.bonoUltimo && !r.sinVariable;
+
+  // Frecuencias de bono inconsistentes entre documentos.
+  const frecuenciasRaw = Array.isArray(ex.bono_frecuencias_detectadas)
+    ? (ex.bono_frecuencias_detectadas as string[]).filter((x) => typeof x === "string" && x.trim().length > 0)
+    : [];
+  const frecuenciasUnicas = Array.from(
+    new Set(frecuenciasRaw.map((x) => x.trim().toLowerCase())),
+  );
+  const showFrecuencia = frecuenciasUnicas.length >= 2 && !r.bonoFrecuencia && !r.sinVariable;
 
   const tituloCv = typeof ex.titulo_cv === "string" ? ex.titulo_cv.trim() : "";
   const tituloRecibo = typeof ex.titulo_recibo === "string" ? ex.titulo_recibo.trim() : "";
-  const showTituloMismatch =
-    tituloCv && tituloRecibo && tituloCv.toLowerCase() !== tituloRecibo.toLowerCase() && !r.tituloElegido;
+  const tituloAcademico = typeof ex.titulo_cv_academico === "string" ? ex.titulo_cv_academico.trim() : "";
+  // Mismatch clásico CV vs recibo
+  const mismatchCvRecibo =
+    !!tituloCv && !!tituloRecibo && tituloCv.toLowerCase() !== tituloRecibo.toLowerCase();
+  // Caso ambiguo: solo CV (sin recibo) y además se detectó un grado académico → preguntamos
+  // para evitar que el sistema confunda el título académico con el puesto actual.
+  const mismatchCvAcademico =
+    !tituloRecibo && !!tituloCv && !!tituloAcademico &&
+    tituloCv.toLowerCase() !== tituloAcademico.toLowerCase();
+  const showTituloMismatch = (mismatchCvRecibo || mismatchCvAcademico) && !r.tituloElegido;
 
   const showTenure = !r.antiguedadDesde && (r.situacion === "empleado" || r.situacion === "contractor");
 
-  const anyWarning = showStale || showVariable || showTituloMismatch || showTenure;
+  const anyWarning = showStale || showVariable || showFrecuencia || showTituloMismatch || showTenure;
 
   // Si no hay nada que validar, saltar a perfil automáticamente
   React.useEffect(() => {
