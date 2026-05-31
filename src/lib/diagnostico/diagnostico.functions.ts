@@ -62,8 +62,12 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     equipo: (r.personasACargo as string) ?? null,
     interaccion_clevel: (r.interaccion as string) ?? null,
     idiomas: r.sinIdiomas ? null : (r.idiomas ?? null),
-    anos_experiencia_total: (r.expTotal as string) ?? null,
-    anos_experiencia_industria: (r.expIndustria as string) ?? null,
+    anos_experiencia_total: typeof r.experienciaTotalAnios === "number"
+      ? `${r.experienciaTotalAnios} años (calculado desde fechas del CV; confirmado por usuario)`
+      : (r.expTotal as string) ?? null,
+    anos_experiencia_industria: typeof r.experienciaIndustriaAnios === "number"
+      ? `${r.experienciaIndustriaAnios} años (calculado desde fechas del CV; confirmado por usuario)`
+      : (r.expIndustria as string) ?? null,
     anos_puesto_actual: null,
     formacion: Array.isArray(r.formacion) ? (r.formacion as string[]) : null,
     certificaciones: r.sinCertificaciones ? [] : (Array.isArray(r.certificaciones) ? (r.certificaciones as string[]) : null),
@@ -575,8 +579,10 @@ Extraé estos campos si están presentes:
 - nivel_jerarquico_inferido
 - industria_inferida
 - tipo_empresa_inferida
-- anos_experiencia_total_inferidos
-- anos_experiencia_industria_inferidos
+- anos_experiencia_total_inferidos (string/bucket si lo usás para mostrar; opcional)
+- anos_experiencia_industria_inferidos (string/bucket si lo usás para mostrar; opcional)
+- experiencia_total_anios (NÚMERO entero): calculá los AÑOS TOTALES DE EXPERIENCIA LABORAL desde la fecha más temprana que aparezca en la sección de experiencia laboral del CV hasta HOY (${new Date().getFullYear()}). Identificá TODAS las fechas de inicio de cada empleo (formatos comunes: "2010-2015", "ene 2018 - actualidad", "2005 – Presente", "Jul 2012 - Dic 2017"). Tomá la fecha de INICIO MÁS ANTIGUA y calculá la diferencia en años hasta hoy. Si un empleo dice "presente"/"actualidad"/"current", usá la fecha de hoy. NO sumes solapamientos de empleos paralelos: usá el lapso total (most recent end - earliest start). Devolvé un número entero. Si no hay CV o no hay fechas claras, null.
+- experiencia_industria_anios (NÚMERO entero): identificá la INDUSTRIA del puesto más reciente del CV (o del aviso/descripción si está en Modo C). Luego sumá los años de los empleos del CV cuya industria sea la misma o muy cercana (ej: banca y fintech; retail y e-commerce; consultoría estratégica y consultoría management). Devolvé un número entero. Si no hay CV o no se puede inferir, null.
 - formacion (array)
 - certificaciones (array)
 - idiomas (array con nivel si figura)

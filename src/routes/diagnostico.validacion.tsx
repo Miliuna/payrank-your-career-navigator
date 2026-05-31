@@ -73,7 +73,15 @@ function ValidacionPage() {
 
   const showTenure = !r.antiguedadDesde && (r.situacion === "empleado" || r.situacion === "contractor");
 
-  const anyWarning = showStale || showVariable || showFrecuencia || showTituloMismatch || showTenure;
+  // Experiencia calculada desde el CV — siempre pedimos confirmación si hay valores extraídos
+  const extTotal = typeof ex.experiencia_total_anios === "number" ? ex.experiencia_total_anios : null;
+  const extIndustria = typeof ex.experiencia_industria_anios === "number" ? ex.experiencia_industria_anios : null;
+  const industriaNombre = (r.industria === "Otra" ? r.industriaOtra : r.industria) || (isEN ? "your industry" : "tu industria");
+  const showExperiencia =
+    (extTotal != null || extIndustria != null) &&
+    (r.experienciaTotalAnios == null || r.experienciaIndustriaAnios == null);
+
+  const anyWarning = showStale || showVariable || showFrecuencia || showTituloMismatch || showTenure || showExperiencia;
 
   // Si no hay nada que validar, saltar a perfil automáticamente
   React.useEffect(() => {
@@ -90,6 +98,8 @@ function ValidacionPage() {
   const [tituloPick, setTituloPick] = React.useState<"cv" | "recibo" | "academico" | "otro" | null>(null);
   const [tituloOtro, setTituloOtro] = React.useState("");
   const [antiguedad, setAntiguedad] = React.useState<string>("");
+  const [expTotalNum, setExpTotalNum] = React.useState<string>(extTotal != null ? String(extTotal) : "");
+  const [expIndNum, setExpIndNum] = React.useState<string>(extIndustria != null ? String(extIndustria) : "");
 
   const staleOk = !showStale || staleChoice === "igual" || (staleChoice === "cambio" && Number(nuevoSalario.replace(/[^\d]/g, "")) > 0);
   const variableOk = !showVariable || sinVariable || bono.trim().length > 0;
@@ -104,8 +114,12 @@ function ValidacionPage() {
     tituloPick === "academico" ||
     (tituloPick === "otro" && tituloOtro.trim().length > 1);
   const tenureOk = !showTenure || /^\d{4}-\d{2}$/.test(antiguedad);
+  const expOk =
+    !showExperiencia ||
+    (Number(expTotalNum) > 0 && Number(expTotalNum) <= 70 &&
+      Number(expIndNum) >= 0 && Number(expIndNum) <= Number(expTotalNum));
 
-  const canContinue = staleOk && variableOk && frecuenciaOk && tituloOk && tenureOk;
+  const canContinue = staleOk && variableOk && frecuenciaOk && tituloOk && tenureOk && expOk;
 
   const onContinue = () => {
     setState((s) => {
@@ -133,6 +147,12 @@ function ValidacionPage() {
       }
       if (showTenure && /^\d{4}-\d{2}$/.test(antiguedad)) {
         nr.antiguedadDesde = antiguedad;
+      }
+      if (showExperiencia) {
+        const t = Number(expTotalNum);
+        const i = Number(expIndNum);
+        if (isFinite(t) && t > 0) nr.experienciaTotalAnios = t;
+        if (isFinite(i) && i >= 0) nr.experienciaIndustriaAnios = i;
       }
       return { ...s, respuestas: nr };
     });
@@ -304,7 +324,54 @@ function ValidacionPage() {
               />
             </Card>
           )}
+
+          {showExperiencia && (
+            <Card>
+              <Label>{isEN ? "Years of experience" : "Años de experiencia"}</Label>
+              <p className="font-body text-base text-hueso mb-4">
+                {isEN
+                  ? "We calculated these values from the dates in your CV. Confirm or correct them — the report uses these exact numbers."
+                  : "Calculamos estos valores a partir de las fechas de tu CV. Confirmá o corregilos — el reporte usa estos números exactos."}
+              </p>
+              <div className="grid md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block font-ui text-[10px] text-hueso/55 mb-2 uppercase tracking-wider">
+                    {isEN ? "Total experience (years)" : "Experiencia total (años)"}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={70}
+                    value={expTotalNum}
+                    onChange={(e) => setExpTotalNum(e.target.value)}
+                    className="w-full bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso py-3"
+                  />
+                </div>
+                <div>
+                  <label className="block font-ui text-[10px] text-hueso/55 mb-2 uppercase tracking-wider">
+                    {isEN ? `Experience in ${industriaNombre} (years)` : `Experiencia en ${industriaNombre} (años)`}
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={70}
+                    value={expIndNum}
+                    onChange={(e) => setExpIndNum(e.target.value)}
+                    className="w-full bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso py-3"
+                  />
+                </div>
+              </div>
+              {Number(expIndNum) > Number(expTotalNum) && (
+                <p className="mt-3 font-body text-sm text-red-300/90">
+                  {isEN
+                    ? "Industry experience can't be greater than total experience."
+                    : "La experiencia en la industria no puede ser mayor que la total."}
+                </p>
+              )}
+            </Card>
+          )}
         </div>
+
 
         <div className="mt-10">
           <button

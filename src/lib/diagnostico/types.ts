@@ -85,6 +85,8 @@ export type Respuestas = {
   sinVariable?: boolean;
   tituloElegido?: string;
   antiguedadDesde?: string; // YYYY-MM
+  experienciaTotalAnios?: number;
+  experienciaIndustriaAnios?: number;
 };
 
 export type DatosExtraidos = {
@@ -95,6 +97,8 @@ export type DatosExtraidos = {
   tipo_empresa_inferida?: string | null;
   anos_experiencia_total_inferidos?: string | number | null;
   anos_experiencia_industria_inferidos?: string | number | null;
+  experiencia_total_anios?: number | null;
+  experiencia_industria_anios?: number | null;
   formacion?: string[] | null;
   certificaciones?: string[] | null;
   idiomas?: Array<{ idioma?: string; nivel?: string; certificacion?: string } | string> | null;
