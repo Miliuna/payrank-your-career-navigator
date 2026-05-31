@@ -557,7 +557,10 @@ function P1Pais({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const [query, setQuery] = React.useState("");
-  const filtered = PAISES.filter((p) => p.toLowerCase().includes(query.toLowerCase()));
+  const filtered = PAISES.filter((p) => {
+    const q = query.toLowerCase();
+    return p.toLowerCase().includes(q) || (isEN && (PAISES_EN[p] ?? "").toLowerCase().includes(q));
+  });
   return (
     <>
       <QuestionTitle>{isEN ? "In which country does your role operate?" : "¿En qué país operás en tu rol?"}</QuestionTitle>
@@ -570,7 +573,7 @@ function P1Pais({ r, setR }: Props) {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-6">
         {filtered.map((p) => (
           <ChipOption key={p} selected={r.pais === p} onClick={() => setR({ pais: p })}>
-            {p}
+            {labelOf(p, PAISES_EN, isEN)}
           </ChipOption>
         ))}
       </div>
