@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
-import { TITULOS_MODO, TITULOS_MODO_EN } from "@/lib/diagnostico/data";
+import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, NIVELES, TIPOS_EMPRESA } from "@/lib/diagnostico/data";
 import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 
 export const Route = createFileRoute("/diagnostico/perfil")({
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/diagnostico/perfil")({
 
 function PerfilPage() {
   const navigate = useNavigate();
-  const { state } = useDiagnostico();
+  const { state, setState } = useDiagnostico();
   const { lang } = useLang();
   const isEN = lang === "EN";
   const r = state.respuestas;
@@ -119,20 +119,101 @@ function PerfilPage() {
       ? `${r.monedaAnterior} ${r.salarioAnterior.toLocaleString("es-AR")} (${isEN ? "last job" : "último trabajo"})`
       : dash);
 
+  // Handlers de validación de perfil editable
+  const updateRespuesta = <K extends keyof typeof r>(key: K, value: (typeof r)[K]) => {
+    setState((s) => ({ ...s, respuestas: { ...s.respuestas, [key]: value } }));
+  };
+  const rolActual = r.tituloElegido || (r.funciones && r.funciones[0]) || "";
+  const updateRol = (val: string) => {
+    if (val === "__otro__") {
+      setState((s) => ({ ...s, respuestas: { ...s.respuestas, tituloElegido: "" } }));
+    } else {
+      setState((s) => {
+        const fns = [...(s.respuestas.funciones ?? [])];
+        if (fns.length === 0) fns.push(val);
+        else fns[0] = val;
+        return { ...s, respuestas: { ...s.respuestas, funciones: fns, tituloElegido: val } };
+      });
+    }
+  };
+
   return (
     <DiagnosticoShell step={4} progress={80}>
       <StepFade k="perfil">
-        <p className="font-ui text-[10px] text-hueso/45 mb-3">{isEN ? "FINAL REVIEW" : "VALIDACIÓN FINAL"}</p>
+        <p className="font-ui text-[10px] text-hueso/45 mb-3">{isEN ? "PROFILE CONFIRMATION" : "CONFIRMACIÓN DE PERFIL"}</p>
         <h1 className="font-display text-3xl md:text-4xl mb-3 text-hueso leading-tight">
           {isEN
-            ? <>Before continuing, <span className="font-display-italic">confirm</span> your full profile</>
-            : <>Antes de continuar, <span className="font-display-italic">confirmá</span> tu perfil completo</>}
+            ? <>This is what we <span className="font-display-italic">understood</span> about your profile. Confirm or correct before generating your PayRank.</>
+            : <>Esto es lo que <span className="font-display-italic">entendimos</span> de tu perfil. Confirmá o corregí antes de generar tu PayRank.</>}
         </h1>
         <p className="font-body text-hueso/60 mb-10">
           {isEN
-            ? "Review your data. If something is incorrect, you can go back and correct it."
-            : "Revisá los datos. Si algo no es correcto, podés volver y corregirlo."}
+            ? "If you change any of these fields, the updated values are used to generate your report."
+            : "Si cambiás alguno de estos campos, los valores actualizados se usan para generar tu reporte."}
         </p>
+
+        {/* Sección editable de validación de perfil */}
+        <section className="border border-hueso/20 p-5 md:p-6 bg-hueso/[0.04] mb-8">
+          <p className="font-ui text-[10px] text-hueso/55 mb-5 uppercase tracking-wider">
+            {isEN ? "Profile core (editable)" : "Núcleo de perfil (editable)"}
+          </p>
+          <div className="grid md:grid-cols-2 gap-5">
+            <EditField label={isEN ? "Main role / function" : "Rol / función principal"}>
+              <select
+                value={FUNCIONES.includes(rolActual) ? rolActual : (rolActual ? "__otro__" : "")}
+                onChange={(e) => updateRol(e.target.value)}
+                className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
+              >
+                <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
+                {FUNCIONES.map((f) => <option key={f} value={f}>{f}</option>)}
+                <option value="__otro__">{isEN ? "Other (specify)" : "Otra (especificar)"}</option>
+              </select>
+              {(!FUNCIONES.includes(rolActual) || r.tituloElegido === "") && (
+                <input
+                  type="text"
+                  placeholder={isEN ? "Describe your role" : "Describí tu rol"}
+                  value={r.tituloElegido && !FUNCIONES.includes(r.tituloElegido) ? r.tituloElegido : ""}
+                  onChange={(e) => updateRespuesta("tituloElegido", e.target.value)}
+                  className="w-full mt-2 bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2"
+                />
+              )}
+            </EditField>
+
+            <EditField label={isEN ? "Industry / sector" : "Industria / sector"}>
+              <select
+                value={r.industria ?? ""}
+                onChange={(e) => updateRespuesta("industria", e.target.value)}
+                className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
+              >
+                <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
+                {INDUSTRIAS.map((i) => <option key={i} value={i}>{i}</option>)}
+              </select>
+            </EditField>
+
+            <EditField label={isEN ? "Seniority level" : "Nivel de seniority"}>
+              <select
+                value={r.nivel ?? ""}
+                onChange={(e) => updateRespuesta("nivel", e.target.value)}
+                className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
+              >
+                <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
+                {NIVELES.map((n) => <option key={n} value={n}>{n}</option>)}
+              </select>
+            </EditField>
+
+            <EditField label={isEN ? "Company type" : "Tipo de empresa"}>
+              <select
+                value={r.tipoEmpresa ?? ""}
+                onChange={(e) => updateRespuesta("tipoEmpresa", e.target.value)}
+                className="w-full bg-tinta border border-hueso/30 focus:border-hueso outline-none font-body text-base text-hueso py-2.5 px-3"
+              >
+                <option value="" disabled>{isEN ? "Select…" : "Seleccionar…"}</option>
+                {TIPOS_EMPRESA.map((t) => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </EditField>
+          </div>
+        </section>
+
 
         <div className="space-y-5">
           <Bloque
@@ -186,8 +267,8 @@ function PerfilPage() {
             {busy
               ? (isEN ? "Saving…" : "Guardando…")
               : isEN
-                ? <>Yes, it's correct — continue <span aria-hidden>→</span></>
-                : <>Sí, es correcto — continuá <span aria-hidden>→</span></>}
+                ? <>Confirm and generate my PayRank <span aria-hidden>→</span></>
+                : <>Confirmar y generar mi PayRank <span aria-hidden>→</span></>}
           </button>
           <button
             type="button"
@@ -227,3 +308,13 @@ function PerfilPage() {
     </DiagnosticoShell>
   );
 }
+
+function EditField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block font-ui text-[10px] text-hueso/55 mb-2 uppercase tracking-wider">{label}</label>
+      {children}
+    </div>
+  );
+}
+

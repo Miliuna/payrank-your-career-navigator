@@ -199,7 +199,7 @@ function InferenciaPage() {
 
   const confirm = () => {
     setState((s) => ({ ...s, inferenciaValidada: true }));
-    navigate({ to: "/diagnostico/perfil" });
+    navigate({ to: "/diagnostico/validacion" });
   };
 
   const dimensiones: { key: keyof Inferencia; label: string; valueKey: keyof Inferencia; justifKey: keyof Inferencia; opciones: string[] }[] = isEN
