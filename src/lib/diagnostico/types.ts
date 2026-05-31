@@ -110,7 +110,10 @@ export type DatosExtraidos = {
   recibo_fecha?: string | null;
   recibo_tiene_variable_sin_monto?: boolean | null;
   titulo_cv?: string | null;
+  titulo_cv_academico?: string | null;
   titulo_recibo?: string | null;
+  bono_frecuencias_detectadas?: string[] | null;
+  bono_mencionado_sin_monto?: boolean | null;
   [k: string]: unknown;
 };
 
