@@ -589,6 +589,10 @@ Extraé estos campos si están presentes:
 - tipo_salario_inferido (bruto/neto)
 - beneficios_inferidos (array)
 - linkedin_url (si figura)
+- recibo_fecha: si el documento es un recibo/liquidación, devolvé la fecha de emisión o período en formato ISO YYYY-MM-DD (o YYYY-MM si solo hay mes). Si no es un recibo o no aparece, null.
+- recibo_tiene_variable_sin_monto: true SOLO si el recibo menciona un componente variable / bono / comisión pero NO aparece el monto numérico. false si aparece el monto. null si no aplica.
+- titulo_cv: título o puesto que figura en el CV. null si no hay CV.
+- titulo_recibo: título o puesto que figura en el recibo de sueldo. null si no hay recibo.
 
 Para cada campo que NO puedas inferir con certeza del documento, devolvé null.
 No inventes datos que no están explícitamente en el documento.
