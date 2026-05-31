@@ -293,11 +293,17 @@ function PreguntasPage() {
 
   const next = () => {
     if (step === -1) { setStep(0); return; }
-    if (step === 12 && certRawInput.trim()) {
-      const v = certRawInput.trim();
-      const items = r.certificaciones ?? [];
-      if (!items.includes(v)) setR({ certificaciones: [...items, v], sinCertificaciones: false });
-      setCertRawInput("");
+    if (step === 12) {
+      const pending = (certRawInput.trim() || (r.certificacionesPending ?? "").trim());
+      if (pending) {
+        const items = r.certificaciones ?? [];
+        if (!items.includes(pending)) {
+          setR({ certificaciones: [...items, pending], sinCertificaciones: false, certificacionesPending: "" });
+        } else {
+          setR({ certificacionesPending: "" });
+        }
+        setCertRawInput("");
+      }
     }
     if (step < TOTAL - 1) setStep(step + 1);
     else navigate({ to: "/diagnostico/inferencia" });
@@ -434,7 +440,7 @@ function isValid(
     case 9: return !!r.expTotal;
     case 10: return !!r.expIndustria;
     case 11: return (r.formacion?.length ?? 0) > 0;
-    case 12: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim();
+    case 12: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
     case 13: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
     case 14: {
       if (!r.situacion) return false;
@@ -850,8 +856,8 @@ function P13Certificaciones({ r, setR, certRawInput, onCertRawChange }: Props & 
   const add = () => {
     const v = certRawInput.trim();
     if (!v) return;
-    if (items.includes(v)) { onCertRawChange(""); return; }
-    setR({ certificaciones: [...items, v], sinCertificaciones: false });
+    if (items.includes(v)) { onCertRawChange(""); setR({ certificacionesPending: "" }); return; }
+    setR({ certificaciones: [...items, v], sinCertificaciones: false, certificacionesPending: "" });
     onCertRawChange("");
   };
   return (
@@ -880,7 +886,11 @@ function P13Certificaciones({ r, setR, certRawInput, onCertRawChange }: Props & 
               ? "E.g.: PMP, AWS, Google Analytics, SHRM. Type each one and press Enter."
               : "Ej: PMP, AWS, Google Analytics, SHRM. Escribí cada una y presioná Enter."}
             value={certRawInput}
-            onChange={(e) => onCertRawChange(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value;
+              onCertRawChange(v);
+              setR({ certificacionesPending: v, sinCertificaciones: v.trim() ? false : r.sinCertificaciones });
+            }}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
           />
           {items.length > 0 && (

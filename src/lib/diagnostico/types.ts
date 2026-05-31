@@ -53,6 +53,7 @@ export type Respuestas = {
   formacion?: string[];
   certificaciones?: string[];
   sinCertificaciones?: boolean;
+  certificacionesPending?: string;
   herramientasIA?: string[];
   frecuenciaIA?: string;
   usoIA?: string[];
