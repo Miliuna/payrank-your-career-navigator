@@ -308,3 +308,13 @@ function PerfilPage() {
     </DiagnosticoShell>
   );
 }
+
+function EditField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block font-ui text-[10px] text-hueso/55 mb-2 uppercase tracking-wider">{label}</label>
+      {children}
+    </div>
+  );
+}
+
