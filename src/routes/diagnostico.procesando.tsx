@@ -94,7 +94,7 @@ function ProcesandoPage() {
               {MENSAJES[idx]}
             </p>
             <p className="mt-8 font-body text-sm text-hueso/45 max-w-md">
-              {isEN ? "This may take between 30 and 60 seconds." : "Esto puede tardar entre 30 y 60 segundos."}
+              {isEN ? "This may take 1 to 3 minutes." : "Esto puede tardar entre 1 y 3 minutos."}
             </p>
           </>
         ) : (
