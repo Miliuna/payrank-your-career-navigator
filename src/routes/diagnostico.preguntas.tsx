@@ -886,7 +886,11 @@ function P13Certificaciones({ r, setR, certRawInput, onCertRawChange }: Props & 
               ? "E.g.: PMP, AWS, Google Analytics, SHRM. Type each one and press Enter."
               : "Ej: PMP, AWS, Google Analytics, SHRM. Escribí cada una y presioná Enter."}
             value={certRawInput}
-            onChange={(e) => onCertRawChange(e.target.value)}
+            onChange={(e) => {
+              const v = e.target.value;
+              onCertRawChange(v);
+              setR({ certificacionesPending: v, sinCertificaciones: v.trim() ? false : r.sinCertificaciones });
+            }}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
           />
           {items.length > 0 && (
