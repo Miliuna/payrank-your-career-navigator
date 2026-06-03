@@ -794,6 +794,8 @@ function LandingEN() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {planesEN.map((plan) => {
               const d = plan.destacada;
+              const pricing = PRICING[region][plan.plan];
+              const suffix = pricing.suffix === "/año" ? "/yr" : pricing.suffix;
               return (
                 <div
                   key={plan.plan}
@@ -814,11 +816,11 @@ function LandingEN() {
                   </p>
                   <div className="mb-5 flex items-baseline gap-2">
                     <span className={`font-display text-5xl md:text-6xl ${d ? "text-hueso" : "text-tinta"}`}>
-                      {plan.precio}
+                      {pricing.display}
                     </span>
-                    {plan.sufijo && (
+                    {suffix && (
                       <span className={`font-body text-sm ${d ? "text-hueso/70" : "text-piedra"}`}>
-                        {plan.sufijo}
+                        {suffix}
                       </span>
                     )}
                   </div>
