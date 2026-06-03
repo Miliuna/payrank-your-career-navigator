@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useLang } from "@/lib/lang";
+import { SocialIconLinks } from "./SocialLinks";
 
 export function SiteFooter() {
   const { lang } = useLang();
@@ -37,6 +38,9 @@ export function SiteFooter() {
               </a>
             </div>
             <div>PayRank LLC · 30 N Gould St, Ste R · Sheridan, WY 82801</div>
+            <div className="mt-2">
+              <SocialIconLinks />
+            </div>
           </div>
         </div>
       </div>
