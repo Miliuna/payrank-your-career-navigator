@@ -17,21 +17,11 @@ export const Route = createFileRoute("/diagnostico/paywall")({
   component: PaywallPage,
 });
 
-const PLAN_INFO: Record<Plan, { nombre: string; precio: string; sufijo?: string }> = {
-  unico: { nombre: "GO", precio: "USD 29" },
-  pack3: { nombre: "PLUS", precio: "USD 69" },
-  anual: { nombre: "PRO", precio: "USD 149", sufijo: "/año" },
+const PLAN_NOMBRE: Record<Plan, string> = {
+  unico: "GO",
+  pack3: "PLUS",
+  anual: "PRO",
 };
-
-function getProPrice(pais?: string, paisOtro?: string): { precio: string; sufijo?: string } {
-  const highPriceCountries = ["estados unidos", "usa", "united states", "reino unido", "united kingdom", "uk", "gran bretaña", "great britain", "australia", "canadá", "canada"];
-  const raw = pais === "Otro" ? paisOtro : pais;
-  const normalized = (raw || "").toLowerCase().trim();
-  if (highPriceCountries.some((c) => normalized.includes(c))) {
-    return { precio: "USD 199", sufijo: "/año" };
-  }
-  return { precio: "USD 149", sufijo: "/año" };
-}
 
 const BENEFICIOS = [
   "Tu posición exacta en el mercado",
@@ -76,9 +66,13 @@ function PaywallPage() {
 
 
 
-  const basePlan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
-  const proPrice = state.plan === "anual" ? getProPrice(state.respuestas?.pais, state.respuestas?.paisOtro) : null;
-  const plan = proPrice ? { ...basePlan, ...proPrice } : basePlan;
+  const selectedPlan: Plan = state.plan ?? "unico";
+  const pricing = PRICING[region][selectedPlan];
+  const plan = {
+    nombre: PLAN_NOMBRE[selectedPlan],
+    precio: pricing.display,
+    sufijo: pricing.suffix,
+  };
   const isDev = import.meta.env.DEV;
 
   const onPrimaryClick = async () => {
@@ -87,7 +81,7 @@ function PaywallPage() {
     try {
       const selected = state.plan;
       const priceId = PRICING[region][selected].stripePriceId;
-      const planName = PLAN_INFO[selected].nombre;
+      const planName = PLAN_NOMBRE[selected];
       const { url } = await checkout({
         data: { id, plan: selected, priceId, planName, origin: window.location.origin },
       });
@@ -163,11 +157,9 @@ function PaywallPage() {
             <div className="mt-6 mb-3">
               <p className="font-ui text-[10px] text-hueso/55 mb-2">{isEN ? "CHOOSE YOUR PLAN" : "ELEGÍ TU PLAN"}</p>
               <div className="grid grid-cols-3 gap-2">
-                {(Object.keys(PLAN_INFO) as Plan[]).map((p) => {
+                {(Object.keys(PLAN_NOMBRE) as Plan[]).map((p) => {
                   const active = state.plan === p;
-                  const btnPrecio = isEN
-                    ? (p === "unico" ? "USD 39" : p === "pack3" ? "USD 99" : "USD 199")
-                    : PLAN_INFO[p].precio;
+                  const btnPrecio = PRICING[region][p].display;
                   return (
                     <button
                       key={p}
@@ -179,7 +171,7 @@ function PaywallPage() {
                           : "border-hueso/25 text-hueso hover:border-hueso/60"
                       }`}
                     >
-                      <div className="font-ui text-[9px] opacity-70">{PLAN_INFO[p].nombre}</div>
+                      <div className="font-ui text-[9px] opacity-70">{PLAN_NOMBRE[p]}</div>
                       <div className="font-display text-base leading-tight">{btnPrecio}</div>
                     </button>
                   );
