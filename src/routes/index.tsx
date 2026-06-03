@@ -863,9 +863,9 @@ function LandingEN() {
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">Price</td>
-                    <td className="py-4 px-4">USD 39</td>
-                    <td className="py-4 px-4">USD 99</td>
-                    <td className="py-4 px-4">USD 199/yr</td>
+                    <td className="py-4 px-4">{PRICING[region].unico.display}</td>
+                    <td className="py-4 px-4">{PRICING[region].pack3.display}</td>
+                    <td className="py-4 px-4">{PRICING[region].anual.display}/yr</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">PayRanks included</td>
