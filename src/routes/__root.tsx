@@ -105,6 +105,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,300;1,300&family=Outfit:wght@200;300;400;500&family=Josefin+Sans:wght@100;200;300;400&display=swap"
+        />
         <HeadContent />
       </head>
       <body>
