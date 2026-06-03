@@ -81,7 +81,7 @@ function PaywallPage() {
     try {
       const selected = state.plan;
       const priceId = PRICING[region][selected].stripePriceId;
-      const planName = PLAN_INFO[selected].nombre;
+      const planName = PLAN_NOMBRE[selected];
       const { url } = await checkout({
         data: { id, plan: selected, priceId, planName, origin: window.location.origin },
       });
