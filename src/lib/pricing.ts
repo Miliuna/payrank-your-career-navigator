@@ -28,15 +28,15 @@ export const PRICING: Record<Region, Record<Plan, PlanPricing>> = {
   LATAM: {
     unico: { amount: 29, display: "USD 29", stripePriceId: "price_1Tcbx1QmBsnwYHrwGHbA0gb3" },
     pack3: { amount: 69, display: "USD 69", stripePriceId: "price_1TccI9QmBsnwYHrwA7SMMIBI" },
-    anual: { amount: 119, display: "USD 119", suffix: "/año", stripePriceId: "price_1Tccv9QmBsnwYHrwdsj3szlB" },
+    anual: { amount: 149, display: "USD 149", suffix: "/año", stripePriceId: "price_1Tccv9QmBsnwYHrwdsj3szlB" },
   },
   ESPANA: {
-    unico: { amount: 39, display: "USD 39", stripePriceId: "price_1Tcc06QmBsnwYHrwfrjsYvmt" },
-    pack3: { amount: 89, display: "USD 89", stripePriceId: "price_1TccI9QmBsnwYHrwLQ6aRuVs" },
-    anual: { amount: 149, display: "USD 149", suffix: "/año", stripePriceId: "price_1TccvvQmBsnwYHrw6enC7S1o" },
+    unico: { amount: 35, display: "USD 35", stripePriceId: "price_1Tcc06QmBsnwYHrwfrjsYvmt" },
+    pack3: { amount: 85, display: "USD 85", stripePriceId: "price_1TccI9QmBsnwYHrwLQ6aRuVs" },
+    anual: { amount: 169, display: "USD 169", suffix: "/año", stripePriceId: "price_1TccvvQmBsnwYHrw6enC7S1o" },
   },
   INTERNACIONAL: {
-    unico: { amount: 49, display: "USD 49", stripePriceId: "price_1Tcc06QmBsnwYHrwc9lYBCAI" },
+    unico: { amount: 39, display: "USD 39", stripePriceId: "price_1Tcc06QmBsnwYHrwc9lYBCAI" },
     pack3: { amount: 99, display: "USD 99", stripePriceId: "price_1TccI9QmBsnwYHrwGL26gLiB" },
     anual: { amount: 199, display: "USD 199", suffix: "/yr", stripePriceId: "price_1TccwfQmBsnwYHrwB9aNHk8P" },
   },
