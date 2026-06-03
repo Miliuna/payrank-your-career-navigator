@@ -438,11 +438,10 @@ function LandingES() {
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">Precio</td>
-                    <td className="py-4 px-4">USD 29</td>
-                    <td className="py-4 px-4">USD 69</td>
+                    <td className="py-4 px-4">{PRICING[region].unico.display}</td>
+                    <td className="py-4 px-4">{PRICING[region].pack3.display}</td>
                     <td className="py-4 px-4">
-                      USD 149/año
-                      <span className="text-hueso/50 text-xs block">USD 199/año en USA, UK, Australia y Canadá</span>
+                      {PRICING[region].anual.display}/año
                     </td>
                   </tr>
                   <tr className="border-b border-hueso/20">
