@@ -338,24 +338,14 @@ function LandingES() {
         </div>
       </section>
 
-      {/* Social proof */}
-      <section className="bg-hueso text-tinta px-5 md:px-10 py-20 md:py-28">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="font-display text-5xl md:text-7xl mb-4" style={{ color: "#1A2B45" }}>+1.200</p>
-          <p className="font-ui text-[11px] uppercase tracking-widest mb-6 max-w-lg mx-auto" style={{ color: "#5A5550" }}>
-            PROFESIONALES EN LATAM YA SABEN EXACTAMENTE CUÁNTO VALE SU PERFIL EN EL MERCADO
-          </p>
-          <p className="font-body text-base max-w-[480px] mx-auto mb-10 leading-relaxed" style={{ color: "#5A5550" }}>
-            La mayoría lo descubrió en menos de tres minutos.
-          </p>
-          <Link
-            to="/modo"
-            className="inline-flex items-center gap-3 bg-tinta text-hueso px-8 py-4 font-ui text-[11px] hover:bg-tinta/90 transition-colors"
-          >
-            OBTENER MI PAYRANK
-            <span aria-hidden>→</span>
-          </Link>
-        </div>
+      {/* Early access banner */}
+      <section className="bg-hueso border-t border-b border-niebla/60 py-6 px-5 md:px-10">
+        <p
+          className="text-center font-ui text-[12px] uppercase tracking-[3px]"
+          style={{ color: "#2E4A6E" }}
+        >
+          ACCESO ANTICIPADO · DISPONIBLE AHORA
+        </p>
       </section>
 
       {/* Precios */}
