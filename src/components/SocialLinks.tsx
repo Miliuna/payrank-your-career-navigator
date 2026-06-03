@@ -78,6 +78,15 @@ export function SocialIconLinks({ className }: { className?: string }) {
       >
         <Linkedin size={20} />
       </a>
+      <a
+        href={urls.facebook}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Facebook"
+        className={linkClass}
+      >
+        <Facebook size={20} />
+      </a>
     </div>
   );
 }
