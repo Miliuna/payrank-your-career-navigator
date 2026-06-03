@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useLang } from "@/lib/lang";
+import { useRegion, PRICING } from "@/lib/pricing";
 
 function useCaptureReferralFromUrl() {
   React.useEffect(() => {
