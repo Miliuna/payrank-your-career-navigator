@@ -563,6 +563,7 @@ function LandingES() {
 // ─── EN Landing ─────────────────────────────────────────────────────────────
 
 function LandingEN() {
+  const { region } = useRegion();
   return (
     <div className="min-h-screen bg-tinta text-hueso">
       <SiteHeader />
