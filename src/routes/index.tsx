@@ -162,7 +162,7 @@ function LandingES() {
           <ul className="space-y-4 mb-14 max-w-2xl">
             {preguntasES.map((p) => (
               <li key={p} className="flex items-start gap-4 font-body text-base md:text-lg text-hueso/85">
-                <span className="mt-2 size-1.5 rounded-full bg-hueso shrink-0" />
+                <span className="font-display text-lg leading-none mt-1 shrink-0" style={{ color: "#2E4A6E" }}>—</span>
                 <span>{p}</span>
               </li>
             ))}
@@ -235,7 +235,7 @@ function LandingES() {
 
             {/* Columna derecha — PayRank */}
             <div className="bg-tinta text-hueso p-7 md:p-9 flex flex-col">
-              <p className="font-ui text-[10px] mb-3" style={{ color: "#2E4A6E" }}>TU PAYRANK</p>
+              <p className="font-ui text-[10px] mb-3 text-hueso">TU PAYRANK</p>
               <div className="font-body text-sm text-hueso mb-8 leading-relaxed">
                 <p>PayRank · Diagnóstico #PR-0047</p>
                 <p>Gerente de Marketing · FMCG · AMBA</p>
@@ -331,7 +331,7 @@ function LandingES() {
                 <p className="font-display text-5xl md:text-6xl text-[#C4BFB8] mb-6">{c.n}</p>
                 <h3 className="font-display text-2xl text-hueso mb-4">{c.titulo}</h3>
                 <p className="font-body text-sm text-hueso/70 leading-relaxed mb-8 flex-1">{c.texto}</p>
-                <p className="font-ui text-[10px] text-[#2E4A6E] border-t border-hueso/15 pt-4">{c.tag}</p>
+                <p className="font-ui text-[10px] text-hueso border-t border-hueso/15 pt-4">{c.tag}</p>
               </div>
             ))}
           </div>
@@ -579,7 +579,7 @@ function LandingEN() {
           <ul className="space-y-4 mb-14 max-w-2xl">
             {affirmationsEN.map((a) => (
               <li key={a} className="flex items-start gap-4 font-body text-base md:text-lg text-hueso/85">
-                <span className="mt-2 size-1.5 rounded-full bg-hueso shrink-0" />
+                <span className="font-display text-lg leading-none mt-1 shrink-0" style={{ color: "#2E4A6E" }}>—</span>
                 <span className="whitespace-pre-line">{a}</span>
               </li>
             ))}
@@ -652,7 +652,7 @@ function LandingEN() {
 
             {/* Right column — Your PayRank */}
             <div className="bg-tinta text-hueso p-7 md:p-9 flex flex-col">
-              <p className="font-ui text-[10px] mb-3" style={{ color: "#2E4A6E" }}>YOUR PAYRANK</p>
+              <p className="font-ui text-[10px] mb-3 text-hueso">YOUR PAYRANK</p>
               <div className="font-body text-sm text-hueso mb-8 leading-relaxed">
                 <p>PayRank · Report #PR-0047</p>
                 <p>Marketing Director · Consumer Goods · NYC Metro</p>
@@ -747,7 +747,7 @@ function LandingEN() {
                 <p className="font-display text-5xl md:text-6xl text-[#C4BFB8] mb-6">{c.n}</p>
                 <h3 className="font-display text-2xl text-hueso mb-4">{c.titulo}</h3>
                 <p className="font-body text-sm text-hueso/70 leading-relaxed mb-8 flex-1">{c.texto}</p>
-                <p className="font-ui text-[10px] text-[#2E4A6E] border-t border-hueso/15 pt-4">{c.tag}</p>
+                <p className="font-ui text-[10px] text-hueso border-t border-hueso/15 pt-4">{c.tag}</p>
               </div>
             ))}
           </div>

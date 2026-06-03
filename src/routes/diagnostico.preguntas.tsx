@@ -456,7 +456,10 @@ function isValid(
     case 15: {
       if (!r.coberturaMedicaTipo) return false;
       if (esCoberturaEmpleador(r.coberturaMedicaTipo) && !r.coberturaMedicaAlcance) return false;
-      return (r.beneficios?.length ?? 0) > 0;
+      const sel = r.beneficios ?? [];
+      const hasOther = sel.includes("Otro") || sel.includes("Other");
+      if (hasOther && !r.beneficiosOtro?.trim()) return false;
+      return sel.length > 0;
     }
     case 16: return !!r.descripcionPuesto?.trim();
     case 17: return !!r.genero;

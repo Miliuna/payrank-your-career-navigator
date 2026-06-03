@@ -1,13 +1,15 @@
 import * as React from "react";
-import { Instagram, Linkedin } from "lucide-react";
+import { Instagram, Linkedin, Facebook } from "lucide-react";
 import { useRegion } from "@/lib/pricing";
 
 function getSocialUrls(region: string) {
+  const facebook = "https://facebook.com/payrankofficial";
   if (region === "LATAM") {
     return {
       instagram: "https://instagram.com/payrankofficial",
       tiktok: "https://tiktok.com/@payrankofficial",
       linkedin: "https://linkedin.com/company/payrankofficial",
+      facebook,
     };
   }
   if (region === "ESPANA") {
@@ -15,12 +17,14 @@ function getSocialUrls(region: string) {
       instagram: "https://instagram.com/payrankes",
       tiktok: "https://tiktok.com/@payrankes",
       linkedin: "https://linkedin.com/company/payrankofficial",
+      facebook,
     };
   }
   return {
     instagram: "https://instagram.com/payrankusa",
     tiktok: "https://tiktok.com/@payrankusa",
     linkedin: "https://linkedin.com/company/payrankofficial",
+    facebook,
   };
 }
 
@@ -73,6 +77,15 @@ export function SocialIconLinks({ className }: { className?: string }) {
         className={linkClass}
       >
         <Linkedin size={20} />
+      </a>
+      <a
+        href={urls.facebook}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Facebook"
+        className={linkClass}
+      >
+        <Facebook size={20} />
       </a>
     </div>
   );
