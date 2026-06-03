@@ -235,7 +235,7 @@ function LandingES() {
 
             {/* Columna derecha — PayRank */}
             <div className="bg-tinta text-hueso p-7 md:p-9 flex flex-col">
-              <p className="font-ui text-[10px] mb-3" style={{ color: "#2E4A6E" }}>TU PAYRANK</p>
+              <p className="font-ui text-[10px] mb-3 text-hueso">TU PAYRANK</p>
               <div className="font-body text-sm text-hueso mb-8 leading-relaxed">
                 <p>PayRank · Diagnóstico #PR-0047</p>
                 <p>Gerente de Marketing · FMCG · AMBA</p>
