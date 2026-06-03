@@ -668,6 +668,16 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       throw new Error("GENERATION_FAILED");
     }
 
+    // Enviar email con el reporte (no bloqueante)
+    try {
+      await sendReportEmail({
+        id: record.id as string,
+        email: (record.mail as string | null) ?? null,
+        pais: (record.pais_rol as string | null) ?? null,
+      });
+    } catch (emailErr) {
+      console.error("[generateDiagnostico] email send error (non-blocking):", emailErr);
+    }
 
     return { id: record.id as string, link_unico: record.link_unico as string };
     } catch (err) {
