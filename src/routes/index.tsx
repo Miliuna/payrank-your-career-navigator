@@ -747,7 +747,7 @@ function LandingEN() {
                 <p className="font-display text-5xl md:text-6xl text-[#C4BFB8] mb-6">{c.n}</p>
                 <h3 className="font-display text-2xl text-hueso mb-4">{c.titulo}</h3>
                 <p className="font-body text-sm text-hueso/70 leading-relaxed mb-8 flex-1">{c.texto}</p>
-                <p className="font-ui text-[10px] text-[#2E4A6E] border-t border-hueso/15 pt-4">{c.tag}</p>
+                <p className="font-ui text-[10px] text-hueso border-t border-hueso/15 pt-4">{c.tag}</p>
               </div>
             ))}
           </div>
