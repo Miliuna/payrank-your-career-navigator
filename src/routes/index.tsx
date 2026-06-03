@@ -369,6 +369,8 @@ function LandingES() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {planesES.map((plan) => {
               const d = plan.destacada;
+              const pricing = PRICING[region][plan.plan];
+              const sufijo = pricing.suffix;
               return (
                 <div
                   key={plan.plan}
@@ -389,11 +391,11 @@ function LandingES() {
                   </p>
                   <div className="mb-5 flex items-baseline gap-2">
                     <span className={`font-display text-5xl md:text-6xl ${d ? "text-hueso" : "text-tinta"}`}>
-                      {plan.precio}
+                      {pricing.display}
                     </span>
-                    {plan.sufijo && (
+                    {sufijo && (
                       <span className={`font-body text-sm ${d ? "text-hueso/70" : "text-piedra"}`}>
-                        {plan.sufijo}
+                        {sufijo}
                       </span>
                     )}
                   </div>
