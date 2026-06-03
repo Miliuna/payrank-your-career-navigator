@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useLang } from "@/lib/lang";
+import { useRegion, PRICING } from "@/lib/pricing";
 
 function useCaptureReferralFromUrl() {
   React.useEffect(() => {
@@ -72,7 +73,7 @@ const planesES = [
     sufijo: "/año",
     italic: "Para quien quiere que PayRank lo acompañe.",
     descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.\n\nUSD 199/año en USA, UK, Australia y Canadá.",
+      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
     cta: "EMPEZAR CON PRO",
     plan: "anual" as const,
     destacada: false,
@@ -137,6 +138,7 @@ function Landing() {
 // ─── ES Landing ─────────────────────────────────────────────────────────────
 
 function LandingES() {
+  const { region } = useRegion();
   return (
     <div className="min-h-screen bg-tinta text-hueso">
       <SiteHeader />
@@ -367,6 +369,8 @@ function LandingES() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {planesES.map((plan) => {
               const d = plan.destacada;
+              const pricing = PRICING[region][plan.plan];
+              const sufijo = pricing.suffix;
               return (
                 <div
                   key={plan.plan}
@@ -387,11 +391,11 @@ function LandingES() {
                   </p>
                   <div className="mb-5 flex items-baseline gap-2">
                     <span className={`font-display text-5xl md:text-6xl ${d ? "text-hueso" : "text-tinta"}`}>
-                      {plan.precio}
+                      {pricing.display}
                     </span>
-                    {plan.sufijo && (
+                    {sufijo && (
                       <span className={`font-body text-sm ${d ? "text-hueso/70" : "text-piedra"}`}>
-                        {plan.sufijo}
+                        {sufijo}
                       </span>
                     )}
                   </div>
@@ -434,11 +438,10 @@ function LandingES() {
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">Precio</td>
-                    <td className="py-4 px-4">USD 29</td>
-                    <td className="py-4 px-4">USD 69</td>
+                    <td className="py-4 px-4">{PRICING[region].unico.display}</td>
+                    <td className="py-4 px-4">{PRICING[region].pack3.display}</td>
                     <td className="py-4 px-4">
-                      USD 149/año
-                      <span className="text-hueso/50 text-xs block">USD 199/año en USA, UK, Australia y Canadá</span>
+                      {PRICING[region].anual.display}/año
                     </td>
                   </tr>
                   <tr className="border-b border-hueso/20">
@@ -560,6 +563,7 @@ function LandingES() {
 // ─── EN Landing ─────────────────────────────────────────────────────────────
 
 function LandingEN() {
+  const { region } = useRegion();
   return (
     <div className="min-h-screen bg-tinta text-hueso">
       <SiteHeader />
@@ -790,6 +794,8 @@ function LandingEN() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {planesEN.map((plan) => {
               const d = plan.destacada;
+              const pricing = PRICING[region][plan.plan];
+              const suffix = pricing.suffix === "/año" ? "/yr" : pricing.suffix;
               return (
                 <div
                   key={plan.plan}
@@ -810,11 +816,11 @@ function LandingEN() {
                   </p>
                   <div className="mb-5 flex items-baseline gap-2">
                     <span className={`font-display text-5xl md:text-6xl ${d ? "text-hueso" : "text-tinta"}`}>
-                      {plan.precio}
+                      {pricing.display}
                     </span>
-                    {plan.sufijo && (
+                    {suffix && (
                       <span className={`font-body text-sm ${d ? "text-hueso/70" : "text-piedra"}`}>
-                        {plan.sufijo}
+                        {suffix}
                       </span>
                     )}
                   </div>
@@ -857,9 +863,9 @@ function LandingEN() {
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">Price</td>
-                    <td className="py-4 px-4">USD 39</td>
-                    <td className="py-4 px-4">USD 99</td>
-                    <td className="py-4 px-4">USD 199/yr</td>
+                    <td className="py-4 px-4">{PRICING[region].unico.display}</td>
+                    <td className="py-4 px-4">{PRICING[region].pack3.display}</td>
+                    <td className="py-4 px-4">{PRICING[region].anual.display}/yr</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">PayRanks included</td>
