@@ -66,9 +66,13 @@ function PaywallPage() {
 
 
 
-  const basePlan = PLAN_INFO[state.plan] ?? PLAN_INFO.unico;
-  const proPrice = state.plan === "anual" ? getProPrice(state.respuestas?.pais, state.respuestas?.paisOtro) : null;
-  const plan = proPrice ? { ...basePlan, ...proPrice } : basePlan;
+  const selectedPlan: Plan = state.plan ?? "unico";
+  const pricing = PRICING[region][selectedPlan];
+  const plan = {
+    nombre: PLAN_NOMBRE[selectedPlan],
+    precio: pricing.display,
+    sufijo: pricing.suffix,
+  };
   const isDev = import.meta.env.DEV;
 
   const onPrimaryClick = async () => {
