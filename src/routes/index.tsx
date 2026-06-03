@@ -652,7 +652,7 @@ function LandingEN() {
 
             {/* Right column — Your PayRank */}
             <div className="bg-tinta text-hueso p-7 md:p-9 flex flex-col">
-              <p className="font-ui text-[10px] mb-3" style={{ color: "#2E4A6E" }}>YOUR PAYRANK</p>
+              <p className="font-ui text-[10px] mb-3 text-hueso">YOUR PAYRANK</p>
               <div className="font-body text-sm text-hueso mb-8 leading-relaxed">
                 <p>PayRank · Report #PR-0047</p>
                 <p>Marketing Director · Consumer Goods · NYC Metro</p>
