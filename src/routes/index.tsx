@@ -162,7 +162,7 @@ function LandingES() {
           <ul className="space-y-4 mb-14 max-w-2xl">
             {preguntasES.map((p) => (
               <li key={p} className="flex items-start gap-4 font-body text-base md:text-lg text-hueso/85">
-                <span className="mt-2 size-1.5 rounded-full bg-hueso shrink-0" />
+                <span className="font-display text-lg leading-none mt-1 shrink-0" style={{ color: "#2E4A6E" }}>—</span>
                 <span>{p}</span>
               </li>
             ))}
