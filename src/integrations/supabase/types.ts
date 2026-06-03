@@ -92,6 +92,8 @@ export type Database = {
           codigo_acceso_usado: string | null
           created_at: string
           datos_extraidos_documento: Json | null
+          email_sent: boolean
+          email_sent_at: string | null
           enps_feedback: string | null
           enps_score: number | null
           equipo: string | null
@@ -145,6 +147,8 @@ export type Database = {
           codigo_acceso_usado?: string | null
           created_at?: string
           datos_extraidos_documento?: Json | null
+          email_sent?: boolean
+          email_sent_at?: string | null
           enps_feedback?: string | null
           enps_score?: number | null
           equipo?: string | null
@@ -198,6 +202,8 @@ export type Database = {
           codigo_acceso_usado?: string | null
           created_at?: string
           datos_extraidos_documento?: Json | null
+          email_sent?: boolean
+          email_sent_at?: string | null
           enps_feedback?: string | null
           enps_score?: number | null
           equipo?: string | null
