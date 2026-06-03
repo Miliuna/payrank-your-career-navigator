@@ -1,15 +1,34 @@
 import * as React from "react";
 import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { SocialIconLinks } from "./SocialLinks";
+
+function isEnglishCountry(pais: string): boolean {
+  const p = pais.toLowerCase();
+  return (
+    p === "usa" ||
+    p === "eeuu" ||
+    p.includes("estados unidos") ||
+    p.includes("united states") ||
+    p.includes("ee.uu") ||
+    p === "uk" ||
+    p.includes("united kingdom") ||
+    p.includes("reino unido") ||
+    p.includes("australia") ||
+    p.includes("canad")
+  );
+}
 
 export function ReportFooterActions({
   diagnosticoId,
   planElegido,
   linkUnico,
+  pais,
 }: {
   diagnosticoId: string;
   planElegido: string | null;
   linkUnico?: string;
+  pais?: string;
 }) {
   const [score, setScore] = React.useState<number | null>(null);
   const [feedback, setFeedback] = React.useState("");
@@ -54,6 +73,8 @@ export function ReportFooterActions({
     }
     setSent(true);
   };
+
+  const isEN = pais ? isEnglishCountry(pais) : false;
 
   return (
     <section className="bg-white" id="payrank-footer-actions">
@@ -260,6 +281,16 @@ export function ReportFooterActions({
             </div>
           </div>
         )}
+
+        {/* Social */}
+        <div className="pt-8 border-t" style={{ borderColor: "#E5E1DA" }}>
+          <p className="text-sm mb-3" style={{ color: "#0C0C0C" }}>
+            {isEN
+              ? "Follow us for market data, salary trends, and negotiation strategies"
+              : "Seguinos para datos de mercado, tendencias salariales y estrategias de negociación"}
+          </p>
+          <SocialIconLinks />
+        </div>
       </div>
     </section>
   );
