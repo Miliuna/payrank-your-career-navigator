@@ -198,8 +198,8 @@ function ValidacionPage() {
         nr.antiguedadDesde = antiguedad;
       }
       if (showExperiencia) {
-        const t = Number(expTotalNum);
-        const i = Number(expIndNum);
+        const t = expTotalNum.trim() === "" ? NaN : Number(expTotalNum);
+        const i = expIndNum.trim() === "" ? NaN : Number(expIndNum);
         if (isFinite(t) && t > 0) nr.experienciaTotalAnios = t;
         if (isFinite(i) && i >= 0) nr.experienciaIndustriaAnios = i;
       }
