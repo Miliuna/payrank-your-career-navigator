@@ -305,6 +305,18 @@ function PreguntasPage() {
         setCertRawInput("");
       }
     }
+    if (step === 15) {
+      const otherText = r.beneficiosOtro?.trim();
+      const items = r.beneficios ?? [];
+      const hasOther = items.includes("Otro") || items.includes("Other");
+      if (hasOther && otherText) {
+        const committed = items.filter((x) => x !== "Otro" && x !== "Other");
+        setR({
+          beneficios: committed.includes(otherText) ? committed : [...committed, otherText],
+          beneficiosOtro: "",
+        });
+      }
+    }
     if (step < TOTAL - 1) setStep(step + 1);
     else navigate({ to: "/diagnostico/inferencia" });
   };
@@ -457,9 +469,10 @@ function isValid(
       if (!r.coberturaMedicaTipo) return false;
       if (esCoberturaEmpleador(r.coberturaMedicaTipo) && !r.coberturaMedicaAlcance) return false;
       const sel = r.beneficios ?? [];
+      const committedBenefits = sel.filter((x) => x !== "Otro" && x !== "Other");
       const hasOther = sel.includes("Otro") || sel.includes("Other");
       if (hasOther && !r.beneficiosOtro?.trim()) return false;
-      return sel.length > 0;
+      return committedBenefits.length > 0 || (hasOther && !!r.beneficiosOtro?.trim());
     }
     case 16: return !!r.descripcionPuesto?.trim();
     case 17: return !!r.genero;
