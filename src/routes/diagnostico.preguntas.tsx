@@ -1209,6 +1209,8 @@ function P16Beneficios({ r, setR }: Props) {
   const sel = r.beneficios ?? [];
   const NINGUNO = isEN ? "None of the above" : "Ninguno de los anteriores";
   const bensDisplay = isEN ? BENEFICIOS_EN : BENEFICIOS;
+  const hasOther = sel.includes("Otro") || sel.includes("Other");
+  const otherText = r.beneficiosOtro?.trim() ?? "";
   const toggle = (opt: string) => {
     if (opt === NINGUNO) {
       setR({ beneficios: sel.includes(NINGUNO) ? [] : [NINGUNO], beneficiosOtro: "" });
@@ -1289,7 +1291,7 @@ function P16Beneficios({ r, setR }: Props) {
           </CardOption>
         ))}
       </div>
-      {(sel.includes("Otro") || sel.includes("Other")) && (
+      {hasOther && (
         <div className="mt-6">
           <TextInput
             placeholder={isEN ? "Specify the benefit(s)" : "Especificá el/los beneficios"}
@@ -1297,6 +1299,11 @@ function P16Beneficios({ r, setR }: Props) {
             onChange={(e) => setR({ beneficiosOtro: e.target.value })}
             autoFocus
           />
+          {!otherText && (
+            <p className="mt-2 font-body text-sm text-hueso/70">
+              {isEN ? "Specify the benefit" : "Especificá el beneficio"}
+            </p>
+          )}
         </div>
       )}
     </>
