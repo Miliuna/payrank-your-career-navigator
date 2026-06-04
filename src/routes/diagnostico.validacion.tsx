@@ -158,10 +158,15 @@ function ValidacionPage() {
     tituloPick === "academico" ||
     (tituloPick === "otro" && tituloOtro.trim().length > 1);
   const tenureOk = !showTenure || /^\d{4}-\d{2}$/.test(antiguedad);
+  // Lenient: empty inputs treated as 0; only enforce ranges and ind <= total when total > 0.
+  // Avoids silently blocking Continue when the CV only yielded one of the two numbers.
+  const tNum = expTotalNum.trim() === "" ? 0 : Number(expTotalNum);
+  const iNum = expIndNum.trim() === "" ? 0 : Number(expIndNum);
   const expOk =
     !showExperiencia ||
-    (Number(expTotalNum) > 0 && Number(expTotalNum) <= 70 &&
-      Number(expIndNum) >= 0 && Number(expIndNum) <= Number(expTotalNum));
+    (isFinite(tNum) && tNum >= 0 && tNum <= 70 &&
+      isFinite(iNum) && iNum >= 0 && iNum <= 70 &&
+      (tNum === 0 || iNum <= tNum));
 
   const canContinue = staleOk && variableOk && frecuenciaOk && tituloOk && tenureOk && expOk;
 
