@@ -426,8 +426,8 @@ function ResultadoPage() {
 
           {bool(s2.erosion_salarial_detectada) && (
             <Card dark>
-              <Eyebrow>EROSIÓN SALARIAL</Eyebrow>
-              <P>{str(s2.descripcion_erosion)}</P>
+              <p className="font-ui text-[10px] tracking-[0.18em] text-hueso mb-3">EROSIÓN SALARIAL</p>
+              <p className="font-body leading-relaxed text-justify text-hueso">{str(s2.descripcion_erosion)}</p>
             </Card>
           )}
 
