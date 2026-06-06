@@ -112,6 +112,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
       : (r.modalidad_trabajo as string) ?? null,
     beneficio_vacaciones_adicionales: (r.beneficio_vacaciones_adicionales as string) ?? null,
     beneficio_capacitacion: (r.beneficio_capacitacion as string) ?? null,
+    beneficios_adicionales_texto: (r.beneficiosAdicionalesTexto as string)?.trim() || null,
     beneficios_no_declarados: (() => {
       const noSe: string[] = [];
       if (r.beneficio_salud_tipo === "no_se") noSe.push("Cobertura médica");
