@@ -653,12 +653,18 @@ function ResultadoPage() {
           </>
         )}
 
-        {/* mensaje_si_hombre */}
+        {/* mensaje_si_hombre — sección alternativa cuando el usuario es hombre */}
         {!bool(s4.incluir) && !!s4.mensaje_si_hombre && (
-          <Card>
-            <Eyebrow>NOTA</Eyebrow>
-            <P muted>{str(s4.mensaje_si_hombre)}</P>
-          </Card>
+          <>
+            <Divider />
+            <Section>
+              <Eyebrow>04 · BRECHA DE GÉNERO</Eyebrow>
+              <H2>Lo que el mercado te muestra como hombre</H2>
+              <Card dark>
+                <P>{str(s4.mensaje_si_hombre)}</P>
+              </Card>
+            </Section>
+          </>
         )}
         </Band>
 
