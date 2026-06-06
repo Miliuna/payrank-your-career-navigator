@@ -102,6 +102,7 @@ export type Database = {
           beneficio_seguro_vida: string | null
           beneficio_vacaciones_adicionales: string | null
           beneficios: string[] | null
+          beneficios_adicionales_texto: string | null
           beneficios_no_declarados: string[] | null
           bono_monto: number | null
           bono_tipo: string | null
@@ -180,6 +181,7 @@ export type Database = {
           beneficio_seguro_vida?: string | null
           beneficio_vacaciones_adicionales?: string | null
           beneficios?: string[] | null
+          beneficios_adicionales_texto?: string | null
           beneficios_no_declarados?: string[] | null
           bono_monto?: number | null
           bono_tipo?: string | null
@@ -258,6 +260,7 @@ export type Database = {
           beneficio_seguro_vida?: string | null
           beneficio_vacaciones_adicionales?: string | null
           beneficios?: string[] | null
+          beneficios_adicionales_texto?: string | null
           beneficios_no_declarados?: string[] | null
           bono_monto?: number | null
           bono_tipo?: string | null
