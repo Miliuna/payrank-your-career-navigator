@@ -1328,6 +1328,7 @@ Frecuencia de uso de IA: ${v(d.frecuencia_ia)}
 Uso de IA para: ${v(d.uso_ia)}
 Situación laboral: ${v(d.situacion_laboral)}
 Salario bruto mensual actual: ${salario}
+Incremento salarial en los últimos 12 meses: ${d.incremento_ultimo_anio_pct != null ? `Sí — ${d.incremento_ultimo_anio_pct}%` : "No / no declarado"}
 Cobertura médica: ${v(d.beneficio_salud_tipo, "no declarado")} — Monto: ${v(d.beneficio_salud_monto, "no declarado")}
 Bono anual: ${v(d.bono_tipo, "no declarado")}
 Ticket/alimentación: ${v(d.beneficio_alimentacion_tipo, "no declarado")} — Monto: ${v(d.beneficio_alimentacion_monto, "no declarado")}
