@@ -114,15 +114,6 @@ export const TIEMPOS_SIN_TRABAJO = [
   "Menos de 3 meses", "3–6 meses", "6–12 meses", "Más de 1 año",
 ];
 
-export const BENEFICIOS = [
-  "Bono anual", "Auto corporativo",
-  "Celular corporativo", "Home office/Trabajo remoto", "Viáticos",
-  "Capacitación paga por la empresa", "Stock options/Equity",
-  "Comedor o ticket alimentario", "Días extra de vacaciones",
-  "Seguro de vida", "Plan de retiro complementario",
-  "Otro", "Ninguno de los anteriores",
-];
-
 // Tipo de cobertura médica por país (clave = valor en PAISES; "default" = fallback)
 export const COBERTURA_MEDICA_POR_PAIS: Record<string, { es: string[]; en: string[] }> = {
   Argentina: {

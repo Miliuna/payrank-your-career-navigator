@@ -86,14 +86,36 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     salario_actual: salario,
     moneda_actual: moneda,
     salario_tipo: (r.brutoNeto as string) ?? null,
-    beneficios: (() => {
-      const base = Array.isArray(r.beneficios) ? [...(r.beneficios as string[])] : [];
-      const tipo = (r.coberturaMedicaTipo as string | undefined) ?? null;
-      const alcance = (r.coberturaMedicaAlcance as string | undefined) ?? null;
-      if (tipo) {
-        base.unshift(alcance ? `Cobertura médica: ${tipo} — alcance: ${alcance}` : `Cobertura médica: ${tipo}`);
-      }
-      return base.length ? base : null;
+    beneficio_salud_tipo: (r.beneficio_salud_tipo as string) ?? null,
+    beneficio_salud_monto: (r.beneficio_salud_monto as number) ?? null,
+    bono_tipo: (r.bono_tipo as string) ?? null,
+    bono_monto: (r.bono_monto as number) ?? null,
+    equity: (r.equity as string) ?? null,
+    comisiones_tipo: (r.comisiones_tipo as string) ?? null,
+    comisiones_monto: (r.comisiones_monto as number) ?? null,
+    beneficio_alimentacion_tipo: (r.beneficio_alimentacion_tipo as string) ?? null,
+    beneficio_alimentacion_monto: (r.beneficio_alimentacion_monto as number) ?? null,
+    auto_corporativo: (r.auto_corporativo as string) ?? null,
+    beneficio_celular: (r.beneficio_celular as string) ?? null,
+    beneficio_movilidad_tipo: (r.beneficio_movilidad_tipo as string) ?? null,
+    beneficio_movilidad_monto: (r.beneficio_movilidad_monto as number) ?? null,
+    beneficio_seguro_vida: (r.beneficio_seguro_vida as string) ?? null,
+    beneficio_retiro: (r.beneficio_retiro as string) ?? null,
+    beneficio_401k_match: r.beneficio_401k_match === "con_porcentaje" && r.beneficio_401k_porcentaje
+      ? `Sí — ${r.beneficio_401k_porcentaje}%`
+      : (r.beneficio_401k_match as string) ?? null,
+    modalidad_trabajo: r.modalidad_trabajo === "hibrido" && r.modalidad_dias_presenciales
+      ? `Híbrido — ${r.modalidad_dias_presenciales} día(s) presencial(es)`
+      : (r.modalidad_trabajo as string) ?? null,
+    beneficio_vacaciones_adicionales: (r.beneficio_vacaciones_adicionales as string) ?? null,
+    beneficio_capacitacion: (r.beneficio_capacitacion as string) ?? null,
+    beneficios_no_declarados: (() => {
+      const noSe: string[] = [];
+      if (r.beneficio_salud_tipo === "no_se") noSe.push("Cobertura médica");
+      if (r.beneficio_seguro_vida === "no_se") noSe.push("Seguro de vida");
+      if (r.beneficio_retiro === "no_se") noSe.push("Plan de retiro complementario");
+      if (r.beneficio_401k_match === "no_se") noSe.push("Employer match 401k");
+      return noSe.length ? noSe : null;
     })(),
     puesto_descripcion: (baseDesc + contractorMeta + subCasoMeta + targetDirMeta) || null,
     linkedin_url: (r.linkedinUrl as string) ?? null,
