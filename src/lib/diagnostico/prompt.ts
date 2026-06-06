@@ -953,7 +953,7 @@ Tono por país:
 
 Scripts principales (en el flujo del reporte):
 1. Para conversación con el jefe actual (Modos A y B)
-2. Para entrevista con el reclutador (Modos A y C)
+2. Para entrevista con el reclutador (EXCLUSIVO Modo C — en Modos A, B y D este script NO debe existir en el output)
 
 Objeciones más comunes (en bloque expandible — no en el flujo principal):
 - "No es el momento por el presupuesto" → respuesta específica y contextualizada
@@ -1086,14 +1086,16 @@ La estructura exacta del JSON es:
     "floor_local": "string",
     "ceiling_local": "string",
     "explicacion_floor_ceiling": "string",
-    "respuesta_antes_de_conocer_rol": "string o null",
+    // CAMPO EXCLUSIVO DE MODO C: incluir SOLO si modo === "C". En Modos A, B y D OMITIR completamente la clave del JSON (no enviar null, no enviar string vacío, no enviar la clave).
+    "respuesta_antes_de_conocer_rol": "string — SOLO EN MODO C, OMITIR EN A/B/D",
     "argumento_1_mercado": "string — con datos específicos del perfil",
     "argumento_2_alcance_real": "string",
     "argumento_3_contexto": "string"
   },
   "seccion_6": {
     "script_jefe": "string — script completo adaptado al país con técnica del silencio al final",
-    "script_recruiter": "string — con técnica del silencio al final",
+    // CAMPO EXCLUSIVO DE MODO C: incluir SOLO si modo === "C". En Modos A, B y D OMITIR completamente la clave del JSON (no enviar null, no enviar string vacío, no enviar la clave).
+    "script_recruiter": "string — SOLO EN MODO C, OMITIR EN A/B/D, con técnica del silencio al final",
     "objecion_1": {
       "objecion": "No es el momento por el presupuesto",
       "respuesta": "string"
@@ -1267,7 +1269,10 @@ En seccion_5, argumento_2_alcance_real debe citar directamente las responsabilid
 En seccion_6, los scripts y las objeciones deben estar 100% orientados a negociación interna (con el jefe o RRHH de la empresa actual). Incluir respuestas específicas a estas objeciones:
 - "No hay presupuesto / budget freeze este año"
 - "Esperemos el próximo ciclo de revisión salarial"
-- "A todos les dimos el mismo ajuste"`;
+- "A todos les dimos el mismo ajuste"
+EXCLUSIONES OBLIGATORIAS DE MODO B (no incluir estos campos en el JSON de salida bajo ninguna circunstancia, ni como null ni como string vacío — omitir la clave por completo):
+- seccion_5.respuesta_antes_de_conocer_rol
+- seccion_6.script_recruiter`;
       }
       if (modo === "C") {
         const tieneOferta = descStr.includes("[SUBCASO-C: TIENE_OFERTA_CONCRETA]") || descStr.includes("Ya tengo una oferta concreta");
@@ -1275,13 +1280,19 @@ En seccion_6, los scripts y las objeciones deben estar 100% orientados a negocia
 ${tieneOferta
   ? "El usuario ya recibió una oferta concreta de la empresa objetivo. El diagnóstico debe: (1) evaluar si la oferta es competitiva vs. mercado de esa industria; (2) dar recomendación clara (aceptar / negociar / rechazar) en seccion_5; (3) definir piso y techo de negociación específicos."
   : "El usuario está en proceso de selección o entrevista con la empresa objetivo. El diagnóstico debe prepararlo para negociar la mejor oferta posible cuando llegue el momento."}
-Todos los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO definido arriba.`;
+Todos los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO definido arriba.
+CAMPOS OBLIGATORIOS EXCLUSIVOS DE MODO C (incluir SIEMPRE con contenido sustantivo, no null ni vacío):
+- seccion_5.respuesta_antes_de_conocer_rol: cómo responder si el reclutador pregunta la pretensión antes de conocer el rol completo.
+- seccion_6.script_recruiter: script completo para la entrevista con el reclutador, adaptado al país, terminando con la técnica del silencio.`;
       }
       if (modo === "D") {
         return `\n\nINSTRUCCIÓN DE MODO D — SALTO DE CARRERA:
 El usuario quiere dar su próximo salto profesional. La seccion_8 (hoja de ruta) es la sección más crítica de este diagnóstico.
 El ceiling en seccion_5 debe corresponder al rango del nivel que el usuario quiere alcanzar (ver "Dirección objetivo" en la descripción del puesto si fue declarada).
-El diagnóstico debe incluir: análisis de la brecha entre el nivel actual y el nivel objetivo, tres criterios concretos y accionables para el salto, y un tiempo realista.`;
+El diagnóstico debe incluir: análisis de la brecha entre el nivel actual y el nivel objetivo, tres criterios concretos y accionables para el salto, y un tiempo realista.
+EXCLUSIONES OBLIGATORIAS DE MODO D (no incluir estos campos en el JSON de salida bajo ninguna circunstancia, ni como null ni como string vacío — omitir la clave por completo):
+- seccion_5.respuesta_antes_de_conocer_rol
+- seccion_6.script_recruiter`;
       }
       return "";
     } catch (e) {
