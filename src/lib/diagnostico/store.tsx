@@ -2,6 +2,17 @@ import * as React from "react";
 import type { DiagnosticoState, Modo, Plan } from "./types";
 
 const STORAGE_KEY = "payrank.diagnostico";
+const REFERIDO_KEY = "payrank.codigoReferido";
+
+export function clearDiagnosticoStorage() {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(REFERIDO_KEY);
+  } catch {
+    /* ignore */
+  }
+}
 
 const initialState: DiagnosticoState = {
   modo: "A",

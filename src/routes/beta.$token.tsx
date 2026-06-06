@@ -1,5 +1,6 @@
 import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { clearDiagnosticoStorage } from "@/lib/diagnostico/store";
 
 const BETA_TOKEN_KEY = "payrank.betaToken";
 
@@ -13,8 +14,9 @@ function BetaEntryPage() {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (typeof window !== "undefined" && token) {
-      window.localStorage.setItem(BETA_TOKEN_KEY, token);
+    if (typeof window !== "undefined") {
+      clearDiagnosticoStorage();
+      if (token) window.localStorage.setItem(BETA_TOKEN_KEY, token);
     }
     navigate({ to: "/modo" });
   }, [token, navigate]);

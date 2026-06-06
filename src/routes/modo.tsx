@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { useDiagnostico } from "@/lib/diagnostico/store";
+import { useDiagnostico, clearDiagnosticoStorage } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
 import type { Modo, Plan } from "@/lib/diagnostico/types";
 
@@ -68,10 +68,15 @@ const situacionesEN: { id: Modo; titulo: string; descripcion: string }[] = [
 
 function ModoSelector() {
   const { plan } = Route.useSearch();
-  const { setState } = useDiagnostico();
+  const { setState, reset } = useDiagnostico();
   const { lang } = useLang();
   const isEN = lang === "EN";
   const situaciones = isEN ? situacionesEN : situacionesES;
+
+  React.useEffect(() => {
+    clearDiagnosticoStorage();
+    reset();
+  }, []);
   return (
     <div className="min-h-screen bg-hueso text-tinta">
       <SiteHeader />
