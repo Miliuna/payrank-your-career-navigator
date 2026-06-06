@@ -1083,7 +1083,7 @@ La estructura exacta del JSON es:
     "factores_amplificadores": ["string o null"],
     "contexto_especifico": "string o null",
     "argumento_negociacion": "string o null — adaptado al país",
-    "mensaje_si_hombre": "string o null"
+    "mensaje_si_hombre": "string — OBLIGATORIO cuando incluir=false porque el usuario es hombre. NUNCA null, NUNCA vacío. 3 a 5 oraciones siguiendo la guía de Sección 4."
   },
   "seccion_5": {
     "pretension_recomendada_local": "string",
