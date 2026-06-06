@@ -1086,14 +1086,16 @@ La estructura exacta del JSON es:
     "floor_local": "string",
     "ceiling_local": "string",
     "explicacion_floor_ceiling": "string",
-    "respuesta_antes_de_conocer_rol": "string o null",
+    // CAMPO EXCLUSIVO DE MODO C: incluir SOLO si modo === "C". En Modos A, B y D OMITIR completamente la clave del JSON (no enviar null, no enviar string vacío, no enviar la clave).
+    "respuesta_antes_de_conocer_rol": "string — SOLO EN MODO C, OMITIR EN A/B/D",
     "argumento_1_mercado": "string — con datos específicos del perfil",
     "argumento_2_alcance_real": "string",
     "argumento_3_contexto": "string"
   },
   "seccion_6": {
     "script_jefe": "string — script completo adaptado al país con técnica del silencio al final",
-    "script_recruiter": "string — con técnica del silencio al final",
+    // CAMPO EXCLUSIVO DE MODO C: incluir SOLO si modo === "C". En Modos A, B y D OMITIR completamente la clave del JSON (no enviar null, no enviar string vacío, no enviar la clave).
+    "script_recruiter": "string — SOLO EN MODO C, OMITIR EN A/B/D, con técnica del silencio al final",
     "objecion_1": {
       "objecion": "No es el momento por el presupuesto",
       "respuesta": "string"
