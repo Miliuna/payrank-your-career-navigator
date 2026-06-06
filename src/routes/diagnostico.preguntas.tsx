@@ -1134,6 +1134,50 @@ function P15Situacion({ r, setR, modo }: Props & { modo?: string }) {
           )}
         </div>
       )}
+
+      {(r.situacion === "empleado" || r.situacion === "freelance" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (
+        <div className="border-t border-hueso/10 pt-8 space-y-6">
+          <div>
+            <p className="font-body text-base text-hueso mb-3">
+              {isEN ? "Did you receive any salary increase in the last 12 months?" : "¿Recibiste algún incremento salarial en los últimos 12 meses?"}
+            </p>
+            <div className="flex gap-2">
+              <ChipOption
+                selected={r.incrementoUltimoAnio === "si"}
+                onClick={() => setR({ incrementoUltimoAnio: "si" })}
+              >
+                {isEN ? "Yes" : "Sí"}
+              </ChipOption>
+              <ChipOption
+                selected={r.incrementoUltimoAnio === "no"}
+                onClick={() => setR({ incrementoUltimoAnio: "no", incrementoUltimoAnioPct: undefined })}
+              >
+                No
+              </ChipOption>
+            </div>
+          </div>
+          {r.incrementoUltimoAnio === "si" && (
+            <div className="animate-in fade-in duration-300">
+              <p className="font-body text-base text-hueso mb-3">
+                {isEN ? "What percentage increase did you receive?" : "¿Qué porcentaje de incremento recibiste?"}
+              </p>
+              <div className="flex items-center gap-2 max-w-[200px]">
+                <TextInput
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0"
+                  value={r.incrementoUltimoAnioPct != null ? String(r.incrementoUltimoAnioPct) : ""}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "");
+                    setR({ incrementoUltimoAnioPct: digits ? Number(digits) : undefined });
+                  }}
+                />
+                <span className="font-body text-lg text-hueso">%</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }
