@@ -1602,6 +1602,18 @@ function P16Beneficios({ r, setR }: Props) {
             </div>
           </div>
 
+          {/* Beneficios adicionales — texto libre */}
+          <div className="flex flex-col gap-3 pt-4 border-t border-hueso/10">
+            <p className="font-body text-sm text-hueso/70">
+              {isEN ? "Any additional benefit not listed above?" : "¿Tenés algún beneficio adicional que no apareció en la lista?"}
+            </p>
+            <TextInput
+              placeholder={isEN ? "E.g.: gas, daycare, car, parking, gym membership..." : "Ej: gas, guardería, auto, estacionamiento, membresía gimnasio..."}
+              value={r.beneficiosAdicionalesTexto ?? ""}
+              onChange={(e) => setR({ beneficiosAdicionalesTexto: e.target.value })}
+            />
+          </div>
+
         </div>
       </div>
     </>

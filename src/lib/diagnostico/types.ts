@@ -91,6 +91,7 @@ export type Respuestas = {
   beneficio_capacitacion?: string;
   beneficios?: string[];
   beneficiosOtro?: string;
+  beneficiosAdicionalesTexto?: string;
   beneficios_no_declarados?: string[];
   descripcionPuesto?: string;
   genero?: string;

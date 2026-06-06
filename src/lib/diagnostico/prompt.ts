@@ -1340,6 +1340,7 @@ Employer match 401k: ${v(d.beneficio_401k_match, "no declarado")}
 Días adicionales de vacaciones: ${v(d.beneficio_vacaciones_adicionales, "no declarado")}
 Modalidad de trabajo: ${v(d.modalidad_trabajo, "no declarado")}
 Capacitación: ${v(d.beneficio_capacitacion, "no declarado")}
+Beneficios adicionales (texto libre): ${v(d.beneficios_adicionales_texto, "no declarado")}
 Ítems no declarados (no sé): ${v(d.beneficios_no_declarados, "ninguno")}
 Régimen freelance: ${v(d.regimen_impositivo, "no aplica")}
 Tipo de cliente: ${v(d.tipo_cliente_freelance, "no aplica")}

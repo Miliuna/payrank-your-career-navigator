@@ -1,0 +1,1 @@
+ALTER TABLE public.diagnosticos ADD COLUMN IF NOT EXISTS beneficios_adicionales_texto text NULL;
