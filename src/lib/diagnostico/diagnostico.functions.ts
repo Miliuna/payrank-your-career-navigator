@@ -47,7 +47,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     : "";
   const subCasoC = r.subCasoC as string | undefined;
   const subCasoMeta = subCasoC
-    ? `\n\n[Subcaso Modo C: ${subCasoC === "oferta" ? "Ya tengo una oferta concreta" : "Tengo una entrevista / estoy en proceso de selección"}]`
+    ? `[SUBCASO-C: ${subCasoC.includes("oferta") || subCasoC.includes("concreta") ? "TIENE_OFERTA_CONCRETA" : "EN_PROCESO_SELECCION"}]\n${subCasoC.slice(0, 800)}`
     : "";
   const targetDireccionD = r.targetDireccionD as string | undefined;
   const targetDirMeta = targetDireccionD

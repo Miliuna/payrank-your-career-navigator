@@ -1270,7 +1270,7 @@ En seccion_6, los scripts y las objeciones deben estar 100% orientados a negocia
 - "A todos les dimos el mismo ajuste"`;
       }
       if (modo === "C") {
-        const tieneOferta = descStr.includes("Ya tengo una oferta concreta");
+        const tieneOferta = descStr.includes("[SUBCASO-C: TIENE_OFERTA_CONCRETA]") || descStr.includes("Ya tengo una oferta concreta");
         return `\n\nINSTRUCCIÓN DE MODO C — ${tieneOferta ? "NEGOCIACIÓN DE OFERTA" : "PREPARACIÓN PARA ENTREVISTA"}:
 ${tieneOferta
   ? "El usuario ya recibió una oferta concreta de la empresa objetivo. El diagnóstico debe: (1) evaluar si la oferta es competitiva vs. mercado de esa industria; (2) dar recomendación clara (aceptar / negociar / rechazar) en seccion_5; (3) definir piso y techo de negociación específicos."
