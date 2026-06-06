@@ -953,7 +953,7 @@ Tono por país:
 
 Scripts principales (en el flujo del reporte):
 1. Para conversación con el jefe actual (Modos A y B)
-2. Para entrevista con el reclutador (Modos A y C)
+2. Para entrevista con el reclutador (EXCLUSIVO Modo C — en Modos A, B y D este script NO debe existir en el output)
 
 Objeciones más comunes (en bloque expandible — no en el flujo principal):
 - "No es el momento por el presupuesto" → respuesta específica y contextualizada
