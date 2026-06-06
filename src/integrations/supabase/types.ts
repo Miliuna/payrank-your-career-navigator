@@ -125,6 +125,7 @@ export type Database = {
           herramientas_ia: Json | null
           id: string
           idiomas: Json | null
+          incremento_ultimo_anio_pct: number | null
           industria: string | null
           inferencia_validada: boolean
           inferencia_valuacion: Json | null
@@ -202,6 +203,7 @@ export type Database = {
           herramientas_ia?: Json | null
           id?: string
           idiomas?: Json | null
+          incremento_ultimo_anio_pct?: number | null
           industria?: string | null
           inferencia_validada?: boolean
           inferencia_valuacion?: Json | null
@@ -279,6 +281,7 @@ export type Database = {
           herramientas_ia?: Json | null
           id?: string
           idiomas?: Json | null
+          incremento_ultimo_anio_pct?: number | null
           industria?: string | null
           inferencia_validada?: boolean
           inferencia_valuacion?: Json | null

@@ -65,6 +65,8 @@ export type Respuestas = {
   salarioAnterior?: number;
   monedaAnterior?: string;
   tiempoSinTrabajo?: string;
+  incrementoUltimoAnio?: "si" | "no";
+  incrementoUltimoAnioPct?: number;
   // Beneficios granulares v3
   beneficio_salud_tipo?: string;
   beneficio_salud_monto?: number;
