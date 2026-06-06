@@ -87,9 +87,28 @@ export type Database = {
           anos_experiencia_industria: string | null
           anos_experiencia_total: string | null
           anos_puesto_actual: string | null
+          auto_corporativo: string | null
+          beneficio_401k_match: string | null
+          beneficio_401k_porcentaje: string | null
+          beneficio_alimentacion_monto: number | null
+          beneficio_alimentacion_tipo: string | null
+          beneficio_capacitacion: string | null
+          beneficio_celular: string | null
+          beneficio_movilidad_monto: number | null
+          beneficio_movilidad_tipo: string | null
+          beneficio_retiro: string | null
+          beneficio_salud_monto: number | null
+          beneficio_salud_tipo: string | null
+          beneficio_seguro_vida: string | null
+          beneficio_vacaciones_adicionales: string | null
           beneficios: string[] | null
+          beneficios_no_declarados: string[] | null
+          bono_monto: number | null
+          bono_tipo: string | null
           certificaciones: string[] | null
           codigo_acceso_usado: string | null
+          comisiones_monto: number | null
+          comisiones_tipo: string | null
           created_at: string
           datos_extraidos_documento: Json | null
           email_sent: boolean
@@ -97,6 +116,7 @@ export type Database = {
           enps_feedback: string | null
           enps_score: number | null
           equipo: string | null
+          equity: string | null
           es_dato_seed: boolean
           formacion: string[] | null
           frecuencia_ia: string | null
@@ -112,6 +132,8 @@ export type Database = {
           link_unico: string
           linkedin_url: string | null
           mail: string | null
+          modalidad_dias_presenciales: string | null
+          modalidad_trabajo: string | null
           modo: string | null
           moneda_actual: string | null
           monto_pagado_usd: number | null
@@ -142,9 +164,28 @@ export type Database = {
           anos_experiencia_industria?: string | null
           anos_experiencia_total?: string | null
           anos_puesto_actual?: string | null
+          auto_corporativo?: string | null
+          beneficio_401k_match?: string | null
+          beneficio_401k_porcentaje?: string | null
+          beneficio_alimentacion_monto?: number | null
+          beneficio_alimentacion_tipo?: string | null
+          beneficio_capacitacion?: string | null
+          beneficio_celular?: string | null
+          beneficio_movilidad_monto?: number | null
+          beneficio_movilidad_tipo?: string | null
+          beneficio_retiro?: string | null
+          beneficio_salud_monto?: number | null
+          beneficio_salud_tipo?: string | null
+          beneficio_seguro_vida?: string | null
+          beneficio_vacaciones_adicionales?: string | null
           beneficios?: string[] | null
+          beneficios_no_declarados?: string[] | null
+          bono_monto?: number | null
+          bono_tipo?: string | null
           certificaciones?: string[] | null
           codigo_acceso_usado?: string | null
+          comisiones_monto?: number | null
+          comisiones_tipo?: string | null
           created_at?: string
           datos_extraidos_documento?: Json | null
           email_sent?: boolean
@@ -152,6 +193,7 @@ export type Database = {
           enps_feedback?: string | null
           enps_score?: number | null
           equipo?: string | null
+          equity?: string | null
           es_dato_seed?: boolean
           formacion?: string[] | null
           frecuencia_ia?: string | null
@@ -167,6 +209,8 @@ export type Database = {
           link_unico?: string
           linkedin_url?: string | null
           mail?: string | null
+          modalidad_dias_presenciales?: string | null
+          modalidad_trabajo?: string | null
           modo?: string | null
           moneda_actual?: string | null
           monto_pagado_usd?: number | null
@@ -197,9 +241,28 @@ export type Database = {
           anos_experiencia_industria?: string | null
           anos_experiencia_total?: string | null
           anos_puesto_actual?: string | null
+          auto_corporativo?: string | null
+          beneficio_401k_match?: string | null
+          beneficio_401k_porcentaje?: string | null
+          beneficio_alimentacion_monto?: number | null
+          beneficio_alimentacion_tipo?: string | null
+          beneficio_capacitacion?: string | null
+          beneficio_celular?: string | null
+          beneficio_movilidad_monto?: number | null
+          beneficio_movilidad_tipo?: string | null
+          beneficio_retiro?: string | null
+          beneficio_salud_monto?: number | null
+          beneficio_salud_tipo?: string | null
+          beneficio_seguro_vida?: string | null
+          beneficio_vacaciones_adicionales?: string | null
           beneficios?: string[] | null
+          beneficios_no_declarados?: string[] | null
+          bono_monto?: number | null
+          bono_tipo?: string | null
           certificaciones?: string[] | null
           codigo_acceso_usado?: string | null
+          comisiones_monto?: number | null
+          comisiones_tipo?: string | null
           created_at?: string
           datos_extraidos_documento?: Json | null
           email_sent?: boolean
@@ -207,6 +270,7 @@ export type Database = {
           enps_feedback?: string | null
           enps_score?: number | null
           equipo?: string | null
+          equity?: string | null
           es_dato_seed?: boolean
           formacion?: string[] | null
           frecuencia_ia?: string | null
@@ -222,6 +286,8 @@ export type Database = {
           link_unico?: string
           linkedin_url?: string | null
           mail?: string | null
+          modalidad_dias_presenciales?: string | null
+          modalidad_trabajo?: string | null
           modo?: string | null
           moneda_actual?: string | null
           monto_pagado_usd?: number | null
