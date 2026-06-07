@@ -723,10 +723,12 @@ function ResultadoPage() {
             <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_jefe)}</p>
           </Card>
 
-          <Card dark>
-            <Eyebrow>HABLAR CON UN RECRUITER</Eyebrow>
-            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_recruiter)}</p>
-          </Card>
+          {str(s6.script_recruiter) !== "—" && (
+            <Card dark>
+              <Eyebrow>HABLAR CON UN RECRUITER</Eyebrow>
+              <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_recruiter)}</p>
+            </Card>
+          )}
 
           <Eyebrow>OBJECIONES Y RESPUESTAS</Eyebrow>
           {[s6.objecion_1, s6.objecion_2, s6.objecion_3].filter(Boolean).map((o, i) => {
