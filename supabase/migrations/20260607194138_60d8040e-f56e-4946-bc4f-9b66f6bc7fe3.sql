@@ -1,0 +1,1 @@
+ALTER TABLE public.diagnosticos ADD COLUMN IF NOT EXISTS bono_moneda text;
