@@ -829,7 +829,7 @@ export const extractFromDocument = createServerFn({ method: "POST" })
 
     // Límite temporal por rate limit de Anthropic Tier 1 (30k tpm).
     const TEXT_MAX_CHARS = 6_000;
-    const PDF_MAX_TOKENS = 800;
+    const PDF_MAX_TOKENS = 2000;
     const TEXT_MAX_TOKENS = 1000;
 
     let userContent;
