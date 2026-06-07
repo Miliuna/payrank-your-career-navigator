@@ -70,6 +70,7 @@ export type Respuestas = {
   // Beneficios granulares v3
   beneficio_salud_tipo?: string;
   beneficio_salud_monto?: number;
+  beneficio_salud_prestadora?: string;
   bono_tipo?: string;
   bono_monto?: number;
   equity?: string;
@@ -146,6 +147,10 @@ export type DatosExtraidos = {
   titulo_recibo?: string | null;
   bono_frecuencias_detectadas?: string[] | null;
   bono_mencionado_sin_monto?: boolean | null;
+  pais_inferido?: string | null;
+  empresa_actual?: string | null;
+  fecha_ingreso_empresa_actual?: string | null;
+  nombre_prestadora_salud?: string | null;
   [k: string]: unknown;
 };
 

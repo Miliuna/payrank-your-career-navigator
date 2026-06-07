@@ -109,6 +109,18 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
     if (matched.length) out.herramientasIA = Array.from(new Set(matched));
   }
 
+  const pais = findOption(PAISES, asString(d.pais_inferido));
+  if (pais) out.pais = pais;
+
+  const fechaIngreso = asString(d.fecha_ingreso_empresa_actual);
+  if (fechaIngreso) {
+    const m = fechaIngreso.match(/^(\d{4})-(\d{2})/);
+    if (m) out.antiguedadDesde = `${m[1]}-${m[2]}`;
+  }
+
+  const prestadora = asString(d.nombre_prestadora_salud);
+  if (prestadora) out.beneficio_salud_prestadora = prestadora;
+
   return out;
 }
 
