@@ -310,7 +310,7 @@ function HowToReadBox({ pais }: { pais: string }) {
         <span aria-hidden className="pdf-hide">{open ? "−" : "+"}</span>
       </button>
       {open && (
-        <div className="mt-3 space-y-2 font-body">
+        <div className="mt-3 space-y-2 font-body text-justify">
           {content}
         </div>
       )}
@@ -507,13 +507,13 @@ function ResultadoPage() {
                     <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
                   </Card>
                 </div>
-                <p className="font-body text-xs text-hueso/55 leading-relaxed">
+                <p className="font-body text-xs text-hueso/55 leading-relaxed text-justify">
                   Tipo de cambio utilizado: {fxLabel}
                   {tc?.valor ? ` · 1 USD = ${tc.valor.toLocaleString("es-AR")} ${monedaLocal}` : ""}
                   {" · Al: "}{fxFecha}
                 </p>
                 {monedaLocal === "ARS" && (
-                  <p className="font-body text-xs text-hueso/55 leading-relaxed mt-2">
+                  <p className="font-body text-xs text-hueso/55 leading-relaxed mt-2 text-justify">
                     En Argentina existen múltiples tipos de cambio (oficial, MEP, CCL, informal).
                     Este reporte usa el tipo de cambio oficial BNA porque los salarios formales en
                     relación de dependencia se liquidan en pesos a ese tipo. Si tu empresa liquida
@@ -734,7 +734,7 @@ function ResultadoPage() {
             return (
               <Card key={i}>
                 <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-2">Objeción {i + 1}</p>
-                <p className="font-body text-hueso italic mb-3">"{str(obj.objecion)}"</p>
+                <p className="font-body text-hueso italic mb-3 text-justify">"{str(obj.objecion)}"</p>
                 <p className="font-body text-hueso/80 text-justify">{str(obj.respuesta)}</p>
               </Card>
             );
@@ -825,8 +825,8 @@ function ResultadoPage() {
             <div className="space-y-3">
               {arr<R>(s8.criterios_para_el_salto).map((c, i) => (
                 <Card key={i}>
-                  <p className="font-body text-hueso mb-2">{str(c.criterio)}</p>
-                  <p className="font-body text-sm text-hueso/65">{str(c.estrategia_concreta)}</p>
+                  <p className="font-body text-hueso mb-2 text-justify">{str(c.criterio)}</p>
+                  <p className="font-body text-sm text-hueso/65 text-justify">{str(c.estrategia_concreta)}</p>
                 </Card>
               ))}
             </div>
