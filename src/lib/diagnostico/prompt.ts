@@ -1353,6 +1353,27 @@ CAMPOS OBLIGATORIOS EXCLUSIVOS DE MODO C (incluir SIEMPRE con contenido sustanti
 - seccion_5.respuesta_antes_de_conocer_rol: cómo responder si el reclutador pregunta pretensión antes de conocer el rol completo.
 - seccion_6.script_recruiter: script completo para entrevista con reclutador, adaptado al país, terminando con técnica del silencio.
 
+MODO C — ORDEN OBLIGATORIO DE SECCIONES:
+
+El usuario tiene una entrevista o una oferta. Su urgencia es máxima.
+El reporte debe entregar primero lo que necesita ahora.
+
+ORDEN DE GENERACIÓN:
+1. seccion_5 (pretensión salarial — floor, ceiling, número recomendado) — VA PRIMERA
+2. seccion_6 (scripts de negociación — script recruiter completo) — VA SEGUNDA
+3. seccion_5b (argumentos de negociación — los 3 argumentos) — VA TERCERA
+4. seccion_6b (objeciones y respuestas) — VA CUARTA
+5. seccion_1 (perfil identificado) — VA QUINTA
+6. seccion_2 (posición en el mercado) — VA SEXTA
+7. seccion_3 (compensación total) — VA SÉPTIMA
+8. seccion_7 (skills e IA) — VA OCTAVA
+9. seccion_8 (hoja de ruta) — VA AL FINAL
+
+HABLAR CON TU JEFE en Modo C: el campo script_jefe debe generarse como cadena vacía "". No renderizar. No incluir placeholder ni guión.
+
+LONGITUD OBJETIVO MODO C: máximo 7 páginas. Es el reporte más corto. La urgencia del usuario no admite densidad alta.
+
+
 ════════════════════════════════════════════════════════
 ESTRUCTURA DEL REPORTE — 8 SECCIONES EN ORDEN ESTRICTO
 ════════════════════════════════════════════════════════
