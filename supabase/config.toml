@@ -1,1 +1,4 @@
 project_id = "qasygsyviwvukfufogqa"
+
+[functions.submit-nps]
+verify_jwt = false
