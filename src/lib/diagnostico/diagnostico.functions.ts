@@ -774,6 +774,10 @@ CRÍTICO — Distinción formación vs. rol laboral: Los títulos universitarios
 - titulo_recibo: título o puesto que figura en el recibo de sueldo. null si no hay recibo.
 - bono_frecuencias_detectadas: array de strings con TODAS las frecuencias distintas de pago de bono/variable/comisión que aparezcan mencionadas en cualquier documento (recibo, CV, descriptivo, aviso). Valores posibles: "mensual", "trimestral", "cuatrimestral", "semestral", "anual", "por proyecto", "puntual". Si en distintos documentos aparecen frecuencias distintas, incluí todas. Si no se menciona ninguna, devolvé [].
 - bono_mencionado_sin_monto: true si CUALQUIER documento menciona la existencia de un bono / componente variable / comisión sin especificar el monto numérico. false si se menciona con monto. null si no se menciona en ningún lado.
+- pais_inferido: país donde opera la empresa del puesto más reciente. Si la empresa es conocida (TGS, YPF, Techint, MercadoLibre, Globant, Banco Galicia, HSBC Argentina, etc.), inferí "Argentina" directamente. Si no se puede inferir, null.
+- empresa_actual: nombre exacto de la empresa del puesto más reciente tal como figura en el documento. null si no figura.
+- fecha_ingreso_empresa_actual: fecha de ingreso a la empresa más reciente en formato YYYY-MM-DD o YYYY-MM. Si dice "julio 2025" devolvé "2025-07". Si no figura, null.
+- nombre_prestadora_salud: nombre de la obra social o prepaga tal como figura en el recibo (Swiss Medical, OSDE, Medicus, etc.). null si no figura o no hay recibo.
 
 Para cada campo que NO puedas inferir con certeza del documento, devolvé null.
 No inventes datos que no están explícitamente en el documento.
