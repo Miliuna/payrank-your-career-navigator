@@ -1361,11 +1361,10 @@ function P16Beneficios({ r, setR }: Props) {
             ))}
           </div>
           {(r.beneficio_salud_tipo === "individual" || r.beneficio_salud_tipo === "familiar") && (
-            <TextInput
-              type="number"
+            <MontoInput
               placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-              value={r.beneficio_salud_monto != null ? String(r.beneficio_salud_monto) : ""}
-              onChange={(e) => setR({ beneficio_salud_monto: toNum(e.target.value) })}
+              valor={r.beneficio_salud_monto}
+              onValor={(v) => setR({ beneficio_salud_monto: v })}
             />
           )}
         </div>
