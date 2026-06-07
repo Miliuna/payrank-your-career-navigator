@@ -1523,11 +1523,10 @@ function P16Beneficios({ r, setR }: Props) {
               ))}
             </div>
             {r.beneficio_movilidad_tipo === "con_monto" && (
-              <TextInput
-                type="number"
+              <MontoInput
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-                value={r.beneficio_movilidad_monto != null ? String(r.beneficio_movilidad_monto) : ""}
-                onChange={(e) => setR({ beneficio_movilidad_monto: toNum(e.target.value) })}
+                valor={r.beneficio_movilidad_monto}
+                onValor={(v) => setR({ beneficio_movilidad_monto: v })}
               />
             )}
           </div>
