@@ -248,29 +248,11 @@ function UploadPage() {
           ))}
         </ul>
 
-        <div className="mt-6 max-w-2xl">
-          <label htmlFor="linkedin-url" className="font-ui text-[10px] text-hueso/50 mb-2 block uppercase tracking-wider">
-            {isEN ? "Or paste your LinkedIn profile URL" : "O pegá la URL de tu perfil de LinkedIn"}
-          </label>
-          <input
-            id="linkedin-url"
-            type="url"
-            inputMode="url"
-            placeholder={isEN ? "https://linkedin.com/in/your-profile" : "https://linkedin.com/in/tu-perfil"}
-            value={linkedin}
-            onChange={(e) => setLinkedin(e.target.value)}
-            disabled={busy}
-            className={cn(
-              "w-full bg-transparent border-b outline-none font-body text-base text-hueso placeholder:text-hueso/30 py-3 transition-colors disabled:opacity-50",
-              linkedinTouched && !linkedinValid ? "border-red-400/70" : "border-hueso/30 focus:border-hueso",
-            )}
-          />
-          {linkedinTouched && !linkedinValid && (
-            <p className="mt-2 font-body text-xs text-red-300/90">
-              {isEN ? "Paste a valid URL starting with linkedin.com" : "Pegá una URL válida que empiece con linkedin.com"}
-            </p>
-          )}
-        </div>
+        <p className="font-body text-sm text-hueso/60 leading-relaxed mt-6 max-w-2xl border-l-2 border-hueso/20 pl-4">
+          {isEN
+            ? "If you want us to analyze your profile, download your CV from LinkedIn: go to your profile → More → Save as PDF, and upload it here."
+            : "Si querés que analicemos tu perfil, descargá tu CV desde LinkedIn: andá a tu perfil → Más → Guardar como PDF, y subilo en el paso anterior."}
+        </p>
       </div>
 
       {extractError ? (
@@ -385,17 +367,14 @@ function UploadPage() {
               : `Hasta ${MAX_FILES} archivos. Formatos aceptados: PDF y Word. Tus documentos se procesan para extraer datos y no se almacenan como archivo.`}
           </p>
 
-          {(files.length > 0 || (linkedinTouched && linkedinValid)) && !busy && (
+          {files.length > 0 && !busy && (
             <div className="mt-8">
               <button
                 type="button"
                 onClick={procesar}
-                disabled={linkedinTouched && !linkedinValid}
-                className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso disabled:opacity-50"
+                className="font-ui text-[11px] tracking-[0.2em] text-hueso border-b border-hueso/60 pb-1 hover:border-hueso"
               >
-                {files.length > 0
-                  ? (isEN ? "PROCESS DOCUMENTS →" : "PROCESAR DOCUMENTOS →")
-                  : (isEN ? "CONTINUE WITH LINKEDIN →" : "CONTINUAR CON LINKEDIN →")}
+                {isEN ? "PROCESS DOCUMENTS →" : "PROCESAR DOCUMENTOS →"}
               </button>
             </div>
           )}
