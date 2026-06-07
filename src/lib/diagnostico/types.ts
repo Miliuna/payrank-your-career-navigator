@@ -70,6 +70,7 @@ export type Respuestas = {
   // Beneficios granulares v3
   beneficio_salud_tipo?: string;
   beneficio_salud_monto?: number;
+  beneficio_salud_prestadora?: string;
   bono_tipo?: string;
   bono_monto?: number;
   equity?: string;
