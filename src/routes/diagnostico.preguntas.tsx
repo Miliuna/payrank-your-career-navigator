@@ -1259,6 +1259,50 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
   );
 }
 
+function MontoInput({
+  placeholder, valor, onValor, moneda, onMoneda, monedaOpciones,
+}: {
+  placeholder: string;
+  valor?: number;
+  onValor: (v: number | undefined) => void;
+  moneda?: string;
+  onMoneda?: (m: string) => void;
+  monedaOpciones?: string[];
+}) {
+  const formatted = valor != null ? new Intl.NumberFormat("es-AR").format(valor) : "";
+  const handleChange = (raw: string) => {
+    const digits = raw.replace(/\D/g, "");
+    if (!digits) { onValor(undefined); return; }
+    onValor(Number(digits));
+  };
+  return (
+    <div className="flex gap-3 items-end">
+      <div className="flex-1">
+        <TextInput
+          type="text"
+          inputMode="numeric"
+          placeholder={placeholder}
+          value={formatted}
+          onChange={(e) => handleChange(e.target.value)}
+        />
+      </div>
+      {onMoneda && monedaOpciones && (
+        <div>
+          <select
+            value={moneda ?? ""}
+            onChange={(e) => onMoneda(e.target.value)}
+            className="bg-tinta border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso py-3 pr-2"
+          >
+            {monedaOpciones.map((m) => (
+              <option key={m} value={m} className="bg-tinta">{m}</option>
+            ))}
+          </select>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function P16Beneficios({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
