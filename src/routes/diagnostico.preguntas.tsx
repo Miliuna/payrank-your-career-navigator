@@ -56,9 +56,11 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
   if (tipoEmp) out.tipoEmpresa = tipoEmp;
   const nivel = findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
   if (nivel) out.nivel = nivel;
-  const expTot = findOption(EXP_TOTAL, asString(d.anos_experiencia_total_inferidos));
+  const expTotStr = asString(d.anos_experiencia_total_inferidos) ?? bucketExpTotal(d.experiencia_total_anios);
+  const expTot = findOption(EXP_TOTAL, expTotStr);
   if (expTot) out.expTotal = expTot;
-  const expInd = findOption(EXP_INDUSTRIA, asString(d.anos_experiencia_industria_inferidos));
+  const expIndStr = asString(d.anos_experiencia_industria_inferidos) ?? bucketExpIndustria(d.experiencia_industria_anios);
+  const expInd = findOption(EXP_INDUSTRIA, expIndStr);
   if (expInd) out.expIndustria = expInd;
 
   const form = asArrayStr(d.formacion);
