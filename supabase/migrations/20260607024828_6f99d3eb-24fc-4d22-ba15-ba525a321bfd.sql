@@ -1,0 +1,1 @@
+GRANT USAGE ON SCHEMA public TO anon; GRANT INSERT ON TABLE public.nps_responses TO anon; GRANT SELECT ON TABLE public.nps_responses TO service_role;
