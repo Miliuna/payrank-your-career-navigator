@@ -1438,11 +1438,10 @@ function P16Beneficios({ r, setR }: Props) {
               ))}
             </div>
             {r.comisiones_tipo === "con_monto" && (
-              <TextInput
-                type="number"
+              <MontoInput
                 placeholder={isEN ? "Average monthly commissions (optional)" : "Promedio mensual de comisiones (opcional)"}
-                value={r.comisiones_monto != null ? String(r.comisiones_monto) : ""}
-                onChange={(e) => setR({ comisiones_monto: toNum(e.target.value) })}
+                valor={r.comisiones_monto}
+                onValor={(v) => setR({ comisiones_monto: v })}
               />
             )}
           </div>
