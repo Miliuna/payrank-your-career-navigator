@@ -856,9 +856,9 @@ function ResultadoPage() {
                   {ajustes.map((a, i) => (
                     <Card key={i}>
                       <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Antes</p>
-                      <p className="font-body text-hueso/65 italic mb-3">{str(a.antes)}</p>
+                      <p className="font-body text-hueso/65 italic mb-3 text-justify">{str(a.antes)}</p>
                       <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Después</p>
-                      <p className="font-body text-hueso mb-3">{str(a.despues)}</p>
+                      <p className="font-body text-hueso mb-3 text-justify">{str(a.despues)}</p>
                       {!!a.impacto_estimado && (
                         <p className="font-body text-xs text-hueso/55">Impacto: {str(a.impacto_estimado)}</p>
                       )}
