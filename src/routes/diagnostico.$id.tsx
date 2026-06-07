@@ -845,24 +845,29 @@ function ResultadoPage() {
             </Card>
           )}
 
-          {arr<R>(s8.ajustes_cv).length > 0 && (
-            <div>
-              <Eyebrow>AJUSTES SUGERIDOS</Eyebrow>
-              <div className="space-y-3">
-                {arr<R>(s8.ajustes_cv).map((a, i) => (
-                  <Card key={i}>
-                    <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Antes</p>
-                    <p className="font-body text-hueso/65 italic mb-3">{str(a.antes, "—")}</p>
-                    <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Después</p>
-                    <p className="font-body text-hueso mb-3">{str(a.despues, "—")}</p>
-                    {!!a.impacto_estimado && (
-                      <p className="font-body text-xs text-hueso/55">Impacto: {str(a.impacto_estimado)}</p>
-                    )}
-                  </Card>
-                ))}
+          {(() => {
+            const ajustes = arr<R>(s8.ajustes_cv).filter(
+              (a) => str(a.antes) !== "—" || str(a.despues) !== "—"
+            );
+            return ajustes.length > 0 ? (
+              <div>
+                <Eyebrow>AJUSTES SUGERIDOS</Eyebrow>
+                <div className="space-y-3">
+                  {ajustes.map((a, i) => (
+                    <Card key={i}>
+                      <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Antes</p>
+                      <p className="font-body text-hueso/65 italic mb-3">{str(a.antes)}</p>
+                      <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Después</p>
+                      <p className="font-body text-hueso mb-3">{str(a.despues)}</p>
+                      {!!a.impacto_estimado && (
+                        <p className="font-body text-xs text-hueso/55">Impacto: {str(a.impacto_estimado)}</p>
+                      )}
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            ) : null;
+          })()}
         </Section>
 
         {/* FREELANCE */}
