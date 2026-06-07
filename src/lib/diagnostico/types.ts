@@ -73,6 +73,7 @@ export type Respuestas = {
   beneficio_salud_prestadora?: string;
   bono_tipo?: string;
   bono_monto?: number;
+  bono_moneda?: string;
   equity?: string;
   comisiones_tipo?: string;
   comisiones_monto?: number;

@@ -104,6 +104,7 @@ export type Database = {
           beneficios: string[] | null
           beneficios_adicionales_texto: string | null
           beneficios_no_declarados: string[] | null
+          bono_moneda: string | null
           bono_monto: number | null
           bono_tipo: string | null
           certificaciones: string[] | null
@@ -183,6 +184,7 @@ export type Database = {
           beneficios?: string[] | null
           beneficios_adicionales_texto?: string | null
           beneficios_no_declarados?: string[] | null
+          bono_moneda?: string | null
           bono_monto?: number | null
           bono_tipo?: string | null
           certificaciones?: string[] | null
@@ -262,6 +264,7 @@ export type Database = {
           beneficios?: string[] | null
           beneficios_adicionales_texto?: string | null
           beneficios_no_declarados?: string[] | null
+          bono_moneda?: string | null
           bono_monto?: number | null
           bono_tipo?: string | null
           certificaciones?: string[] | null

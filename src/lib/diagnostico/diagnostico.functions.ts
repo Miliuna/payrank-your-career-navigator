@@ -93,6 +93,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     beneficio_salud_monto: (r.beneficio_salud_monto as number) ?? null,
     bono_tipo: (r.bono_tipo as string) ?? null,
     bono_monto: (r.bono_monto as number) ?? null,
+    bono_moneda: (r.bono_moneda as string) ?? null,
     equity: (r.equity as string) ?? null,
     comisiones_tipo: (r.comisiones_tipo as string) ?? null,
     comisiones_monto: (r.comisiones_monto as number) ?? null,

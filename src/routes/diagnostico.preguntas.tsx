@@ -1259,6 +1259,50 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
   );
 }
 
+function MontoInput({
+  placeholder, valor, onValor, moneda, onMoneda, monedaOpciones,
+}: {
+  placeholder: string;
+  valor?: number;
+  onValor: (v: number | undefined) => void;
+  moneda?: string;
+  onMoneda?: (m: string) => void;
+  monedaOpciones?: string[];
+}) {
+  const formatted = valor != null ? new Intl.NumberFormat("es-AR").format(valor) : "";
+  const handleChange = (raw: string) => {
+    const digits = raw.replace(/\D/g, "");
+    if (!digits) { onValor(undefined); return; }
+    onValor(Number(digits));
+  };
+  return (
+    <div className="flex gap-3 items-end">
+      <div className="flex-1">
+        <TextInput
+          type="text"
+          inputMode="numeric"
+          placeholder={placeholder}
+          value={formatted}
+          onChange={(e) => handleChange(e.target.value)}
+        />
+      </div>
+      {onMoneda && monedaOpciones && (
+        <div>
+          <select
+            value={moneda ?? ""}
+            onChange={(e) => onMoneda(e.target.value)}
+            className="bg-tinta border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso py-3 pr-2"
+          >
+            {monedaOpciones.map((m) => (
+              <option key={m} value={m} className="bg-tinta">{m}</option>
+            ))}
+          </select>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function P16Beneficios({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -1317,11 +1361,10 @@ function P16Beneficios({ r, setR }: Props) {
             ))}
           </div>
           {(r.beneficio_salud_tipo === "individual" || r.beneficio_salud_tipo === "familiar") && (
-            <TextInput
-              type="number"
+            <MontoInput
               placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-              value={r.beneficio_salud_monto != null ? String(r.beneficio_salud_monto) : ""}
-              onChange={(e) => setR({ beneficio_salud_monto: toNum(e.target.value) })}
+              valor={r.beneficio_salud_monto}
+              onValor={(v) => setR({ beneficio_salud_monto: v })}
             />
           )}
         </div>
@@ -1345,7 +1388,7 @@ function P16Beneficios({ r, setR }: Props) {
                   selected={r.bono_tipo === val}
                   onClick={() => setR({
                     bono_tipo: r.bono_tipo === val ? undefined : val,
-                    ...(val !== "con_monto" ? { bono_monto: undefined } : {}),
+                    ...(val !== "con_monto" ? { bono_monto: undefined, bono_moneda: undefined } : { bono_moneda: r.bono_moneda ?? "ARS" }),
                   })}
                 >
                   {label}
@@ -1353,11 +1396,13 @@ function P16Beneficios({ r, setR }: Props) {
               ))}
             </div>
             {r.bono_tipo === "con_monto" && (
-              <TextInput
-                type="number"
+              <MontoInput
                 placeholder={isEN ? "Annual bonus amount (optional)" : "Monto del bono anual (opcional)"}
-                value={r.bono_monto != null ? String(r.bono_monto) : ""}
-                onChange={(e) => setR({ bono_monto: toNum(e.target.value) })}
+                valor={r.bono_monto}
+                onValor={(v) => setR({ bono_monto: v })}
+                moneda={r.bono_moneda ?? "ARS"}
+                onMoneda={(m) => setR({ bono_moneda: m })}
+                monedaOpciones={["ARS", "USD", "EUR"]}
               />
             )}
           </div>
@@ -1393,11 +1438,10 @@ function P16Beneficios({ r, setR }: Props) {
               ))}
             </div>
             {r.comisiones_tipo === "con_monto" && (
-              <TextInput
-                type="number"
+              <MontoInput
                 placeholder={isEN ? "Average monthly commissions (optional)" : "Promedio mensual de comisiones (opcional)"}
-                value={r.comisiones_monto != null ? String(r.comisiones_monto) : ""}
-                onChange={(e) => setR({ comisiones_monto: toNum(e.target.value) })}
+                valor={r.comisiones_monto}
+                onValor={(v) => setR({ comisiones_monto: v })}
               />
             )}
           </div>
@@ -1430,11 +1474,10 @@ function P16Beneficios({ r, setR }: Props) {
               ))}
             </div>
             {r.beneficio_alimentacion_tipo === "con_monto" && (
-              <TextInput
-                type="number"
+              <MontoInput
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-                value={r.beneficio_alimentacion_monto != null ? String(r.beneficio_alimentacion_monto) : ""}
-                onChange={(e) => setR({ beneficio_alimentacion_monto: toNum(e.target.value) })}
+                valor={r.beneficio_alimentacion_monto}
+                onValor={(v) => setR({ beneficio_alimentacion_monto: v })}
               />
             )}
           </div>
@@ -1480,11 +1523,10 @@ function P16Beneficios({ r, setR }: Props) {
               ))}
             </div>
             {r.beneficio_movilidad_tipo === "con_monto" && (
-              <TextInput
-                type="number"
+              <MontoInput
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-                value={r.beneficio_movilidad_monto != null ? String(r.beneficio_movilidad_monto) : ""}
-                onChange={(e) => setR({ beneficio_movilidad_monto: toNum(e.target.value) })}
+                valor={r.beneficio_movilidad_monto}
+                onValor={(v) => setR({ beneficio_movilidad_monto: v })}
               />
             )}
           </div>
