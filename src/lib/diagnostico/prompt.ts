@@ -1582,6 +1582,28 @@ Si la industria del puesto objetivo difiere de la industria del perfil del usuar
 
   const modeInstructionBlock = (() => {
     try {
+      if (modo === "A") {
+        return `\n\nINSTRUCCIÓN DE MODO A — DIAGNÓSTICO DE COMPETITIVIDAD:
+
+MODO A — TONO Y ENCUADRE OBLIGATORIO:
+
+El usuario pagó para saber, no para recibir una orden de acción.
+Puede estar en proceso de toma de conciencia — no necesariamente va a negociar mañana.
+
+ENCUADRE SISTÉMICO OBLIGATORIO: Inmediatamente después de mostrar el compa-ratio en seccion_2, incluir este párrafo exacto o una variante fiel al mismo sentido:
+
+"Que tu compensación esté [por debajo del / en línea con el / por encima del] mercado no es el resultado de una decisión tuya — es el resultado de cómo fluye la información salarial. Las empresas acceden a estos datos de forma sistemática. Vos los tenés ahora."
+
+TONO DE OPCIONALIDAD EN SCRIPTS: Antes del script del jefe en seccion_6, incluir obligatoriamente este conector:
+
+"Si decidís tener la conversación, estas son las palabras exactas para abrirla."
+
+No presentar el script como paso natural o inevitable. Es una herramienta disponible, no una instrucción.
+
+SCRIPT RECRUITER EN MODO A: El campo script_recruiter debe generarse como cadena vacía "". No renderizar. No incluir placeholder ni guión.
+
+SECCIÓN GÉNERO PARA USUARIOS MASCULINOS SIN EQUIPO A CARGO: Si el usuario es hombre Y no tiene personas a cargo Y no mencionó dirección de equipos futuros, omitir completamente la sección de brecha de género. No incluir datos de brecha de terceros. No dejar sección vacía.`;
+      }
       if (modo === "B") {
         return `\n\nINSTRUCCIÓN DE MODO B — NEGOCIACIÓN INTERNA:
 El usuario está en una negociación salarial activa con su empleador actual. El alcance real que describió en "Descripción del puesto" es el argumento central.
