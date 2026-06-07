@@ -166,23 +166,12 @@ function UploadPage() {
 
   const procesar = async () => {
     if (busy) return;
-    if (files.length === 0 && !linkedinTouched) return;
-    if (linkedinTouched && !linkedinValid) return;
+    if (files.length === 0) return;
     setBusy(true);
     setExtractError(false);
     try {
-      const linkedinUrl = linkedin.trim();
-      // Persist LinkedIn URL to state immediately
-      if (linkedinUrl) {
-        setState((s) => ({ ...s, respuestas: { ...s.respuestas, linkedinUrl } }));
-      }
-
       const textoBlocks: string[] = [];
       const pdfFallbacks: { name: string; base64: string }[] = [];
-
-      if (linkedinUrl) {
-        textoBlocks.push(`LinkedIn URL: ${linkedinUrl}`);
-      }
 
       for (const f of files) {
         const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
@@ -203,18 +192,6 @@ function UploadPage() {
           const txt = await f.text();
           textoBlocks.push(`=== Documento: ${f.name} ===\n${txt}`);
         }
-      }
-
-      // Si solo hay LinkedIn URL sin documentos, no podemos extraer mucho:
-      // saltamos la extracción y pasamos al formulario manual con la URL ya guardada.
-      if (files.length === 0 && linkedinUrl) {
-        setState((s) => ({
-          ...s,
-          datosExtraidos: null,
-          pasosOverride: [],
-        }));
-        navigate({ to: "/diagnostico/preguntas" });
-        return;
       }
 
       let extracted: DatosExtraidos;
@@ -239,7 +216,7 @@ function UploadPage() {
         ...s,
         datosExtraidos: extracted,
         pasosOverride: [],
-        documentos: { ...s.documentos, cvNombre: files.map((f) => f.name).join(", "), linkedinUrl: linkedinUrl || undefined },
+        documentos: { ...s.documentos, cvNombre: files.map((f) => f.name).join(", ") },
       }));
       navigate({ to: "/diagnostico/preguntas" });
     } catch (e) {
