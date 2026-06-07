@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
+import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, SYSTEM_PROMPT_B_MODO_C, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!, {
