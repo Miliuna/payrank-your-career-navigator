@@ -1592,7 +1592,30 @@ En seccion_6, los scripts y las objeciones deben estar 100% orientados a negocia
 - "A todos les dimos el mismo ajuste"
 EXCLUSIONES OBLIGATORIAS DE MODO B (no incluir estos campos en el JSON de salida bajo ninguna circunstancia, ni como null ni como string vacío — omitir la clave por completo):
 - seccion_5.respuesta_antes_de_conocer_rol
-- seccion_6.script_recruiter`;
+- seccion_6.script_recruiter
+
+MODO B — REGLA DE CALIBRACIÓN OBLIGATORIA:
+
+El usuario está negociando con su empleador actual, no con una empresa nueva.
+
+BENCHMARK: Usar siempre el rango de mercado del puesto que el usuario ejerce HOY en el tipo de empresa actual. No el puesto objetivo. No el nivel al que aspira.
+
+PRETENSIÓN: Calcular sobre el rango del puesto actual ajustado por los diferenciadores del perfil. El techo de una negociación interna es estructuralmente menor al de una oferta externa — no superar el P75 del rango actual como ceiling salvo diferenciadores excepcionales documentados.
+
+EXCEPCIÓN: Si el usuario declara explícitamente que quiere negociar un cambio de nivel además del ajuste salarial, generar dos números separados con etiquetas claras:
+— "Para tu rol actual reconocido formalmente: $X"
+— "Si negociás el cambio de nivel simultáneamente: $Y"
+
+SECCIÓN OBLIGATORIA NUEVA — después de objeciones y respuestas, agregar siempre en Modo B:
+
+Campo: proximos_pasos_si_pide_tiempo
+Contenido obligatorio:
+"Si tu jefe dice 'lo pienso' o 'lo veo con RRHH', esto es lo que hacés:
+1. Fijar un plazo en la misma conversación: 'Perfecto, ¿podemos tener una respuesta antes del [fecha — 10 días desde hoy]?'
+2. No presionar ni escribir al día siguiente.
+3. Si no hay respuesta al plazo: un mensaje corto — 'Quería retomar la conversación que tuvimos. ¿Tenés novedades?'
+4. Si la respuesta es negativa: pedir los criterios exactos para una revisión futura y dejar constancia escrita."`;
+
       }
       if (modo === "C") {
         const tieneOferta = descStr.includes("[SUBCASO-C: TIENE_OFERTA_CONCRETA]") || descStr.includes("Ya tengo una oferta concreta");
