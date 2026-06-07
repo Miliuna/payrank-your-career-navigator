@@ -1388,7 +1388,7 @@ function P16Beneficios({ r, setR }: Props) {
                   selected={r.bono_tipo === val}
                   onClick={() => setR({
                     bono_tipo: r.bono_tipo === val ? undefined : val,
-                    ...(val !== "con_monto" ? { bono_monto: undefined } : {}),
+                    ...(val !== "con_monto" ? { bono_monto: undefined, bono_moneda: undefined } : { bono_moneda: r.bono_moneda ?? "ARS" }),
                   })}
                 >
                   {label}
@@ -1396,11 +1396,13 @@ function P16Beneficios({ r, setR }: Props) {
               ))}
             </div>
             {r.bono_tipo === "con_monto" && (
-              <TextInput
-                type="number"
+              <MontoInput
                 placeholder={isEN ? "Annual bonus amount (optional)" : "Monto del bono anual (opcional)"}
-                value={r.bono_monto != null ? String(r.bono_monto) : ""}
-                onChange={(e) => setR({ bono_monto: toNum(e.target.value) })}
+                valor={r.bono_monto}
+                onValor={(v) => setR({ bono_monto: v })}
+                moneda={r.bono_moneda ?? "ARS"}
+                onMoneda={(m) => setR({ bono_moneda: m })}
+                monedaOpciones={["ARS", "USD", "EUR"]}
               />
             )}
           </div>
