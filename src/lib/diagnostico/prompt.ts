@@ -1009,6 +1009,13 @@ REGLA OBLIGATORIA: Cuando el campo "Años de experiencia total" sea menor a lo q
 
 NUNCA usés el campo de años de experiencia como único input para determinar el rango si contradice la evidencia del perfil completo.
 
+ADVERTENCIA POR CV INCOMPLETO: Si el perfil del usuario tiene tres o más campos críticos como "no declarado" (años de experiencia, nivel jerárquico, industria, tipo de empresa, formación), incluir al inicio de seccion_1 — dentro del campo "descripcion_perfil" — la siguiente advertencia visible:
+
+"Este diagnóstico fue generado con información parcial. Los campos [listar los que faltan] no pudieron inferirse de los documentos provistos. El rango calculado puede ser menos preciso de lo habitual. Para mejorar la precisión, podés actualizar tu perfil con esos datos."
+
+Si el perfil tiene todos los campos críticos completos, no incluir ninguna advertencia.
+
+
 ════════════════════════════════════════════════════════
 LO QUE NO HACÉS — NUNCA
 ════════════════════════════════════════════════════════
