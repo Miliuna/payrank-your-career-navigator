@@ -55,9 +55,11 @@ function Divider() {
 function Band({
   theme,
   children,
+  className,
 }: {
   theme: "dark" | "light" | "hueso";
   children: React.ReactNode;
+  className?: string;
 }) {
   const bg =
     theme === "dark"
@@ -68,7 +70,7 @@ function Band({
   const cls = theme === "dark" ? "theme-dark" : "theme-light";
   return (
     <section className={`${bg} ${cls}`}>
-      <div className="mx-auto max-w-4xl px-4 md:px-6 py-12 md:py-20 space-y-12">
+      <div className={`mx-auto max-w-4xl px-4 md:px-6 space-y-12 ${className ?? "py-12 md:py-20"}`}>
         {children}
       </div>
     </section>
