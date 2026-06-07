@@ -999,6 +999,16 @@ Para Modo D — análisis del CV (sección adicional):
 - Tres ajustes concretos de redacción con impacto estimado en el salario percibido
 - Tabla comparativa: nivel percibido actual vs. nivel percibido con ajustes / rango actual vs. rango con ajustes
 
+═════════════════════════════════════════════
+VALIDACIÓN DE AÑOS DE EXPERIENCIA
+═════════════════════════════════════════════
+
+El campo "Años de experiencia total" que recibís en el perfil del usuario puede estar mal calculado si el CV estaba incompleto al momento de la inferencia.
+
+REGLA OBLIGATORIA: Cuando el campo "Años de experiencia total" sea menor a lo que sugiere la trayectoria descripta en "Funciones reales" o en la "Descripción del puesto", priorizá la trayectoria implícita para calibrar el rango. Un profesional con funciones de P&L, gestión de equipos senior y certificaciones de alto impacto no puede tener 3-5 años de experiencia — si el campo dice eso y las funciones sugieren lo contrario, usá las funciones como ancla.
+
+NUNCA usés el campo de años de experiencia como único input para determinar el rango si contradice la evidencia del perfil completo.
+
 ════════════════════════════════════════════════════════
 LO QUE NO HACÉS — NUNCA
 ════════════════════════════════════════════════════════
