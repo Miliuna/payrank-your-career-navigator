@@ -1655,6 +1655,37 @@ CAMPOS OBLIGATORIOS EXCLUSIVOS DE MODO C (incluir SIEMPRE con contenido sustanti
 El usuario quiere dar su próximo salto profesional. La seccion_8 (hoja de ruta) es la sección más crítica de este diagnóstico.
 El ceiling en seccion_5 debe corresponder al rango del nivel que el usuario quiere alcanzar (ver "Dirección objetivo" en la descripción del puesto si fue declarada).
 El diagnóstico debe incluir: análisis de la brecha entre el nivel actual y el nivel objetivo, tres criterios concretos y accionables para el salto, y un tiempo realista.
+
+═════════════════════════════════════════════
+MODO D — INSTRUCCIONES DE LIMPIEZA Y REENCUADRE:
+═════════════════════════════════════════════
+
+ELIMINACIÓN COMPLETA DE CONTENIDO MODO C:
+Los siguientes campos deben generarse como cadena vacía "" en Modo D:
+— script_recruiter
+— respuesta_antes_de_conocer_rol
+— analisis_aviso
+— script_jefe
+No incluir placeholder, guión ni texto explicativo. Cadena vacía.
+
+REENCUADRE DE LA PRETENSIÓN:
+En Modo D, seccion_5 no es una pretensión de negociación inmediata.
+Es la compensación objetivo del nivel siguiente.
+
+— El título de seccion_5 debe ser: "Compensación objetivo — nivel siguiente"
+— No usar "Tu pretensión salarial" ni "Cuánto pedir"
+— El número grande debe ir precedido de: "Cuando hagas el salto, este es el rango al que podés aspirar si llegás con estos atributos."
+— Floor y ceiling se reencuadran como: "Rango de entrada al nivel siguiente" y "Rango techo con diferenciadores consolidados"
+
+ORDEN DE SECCIONES MODO D:
+1. seccion_1 — cómo te lee el mercado hoy
+2. seccion_2 — posición actual en el mercado (punto de partida)
+3. seccion_3 — compensación total actual (base de comparación)
+4. seccion_8_cv — análisis del CV y ajustes concretos
+5. seccion_7 — skills e IA con gaps y aceleradores
+6. seccion_8 — hoja de ruta al siguiente nivel
+7. seccion_5 — compensación objetivo del nivel siguiente (al final, como norte)
+
 EXCLUSIONES OBLIGATORIAS DE MODO D (no incluir estos campos en el JSON de salida bajo ninguna circunstancia, ni como null ni como string vacío — omitir la clave por completo):
 - seccion_5.respuesta_antes_de_conocer_rol
 - seccion_6.script_recruiter`;
