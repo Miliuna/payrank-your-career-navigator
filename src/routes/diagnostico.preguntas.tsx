@@ -41,6 +41,23 @@ function findOption(opts: readonly string[], val: string | null): string | null 
     ?? null;
 }
 
+function bucketExpTotal(n: unknown): string | null {
+  if (typeof n !== "number" || !Number.isFinite(n)) return null;
+  if (n < 3) return "Menos de 3 años";
+  if (n < 7) return "3–7 años";
+  if (n < 12) return "7–12 años";
+  if (n < 20) return "12–20 años";
+  return "Más de 20 años";
+}
+
+function bucketExpIndustria(n: unknown): string | null {
+  if (typeof n !== "number" || !Number.isFinite(n)) return null;
+  if (n < 2) return "Menos de 2 años";
+  if (n < 5) return "2–5 años";
+  if (n < 10) return "5–10 años";
+  return "Más de 10 años";
+}
+
 /**
  * Mapea el JSON extraído por la IA a parciales de Respuestas.
  * SOLO Categoría A (campos inferibles de un CV/recibo). Los campos
