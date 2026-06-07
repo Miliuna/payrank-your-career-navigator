@@ -257,7 +257,7 @@ function PerfilPage() {
             items={[
               { k: isEN ? "Employment situation" : "Situación laboral", v: situacionLabel },
               { k: isEN ? "Salary" : "Salario", v: salarioStr },
-              { k: isEN ? "Benefits" : "Beneficios", v: (r.beneficios ?? []).join(" · ") },
+              { k: isEN ? "Benefits" : "Beneficios", v: beneficiosStr },
             ]}
           />
         </div>
