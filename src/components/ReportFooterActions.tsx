@@ -61,10 +61,12 @@ export function ReportFooterActions({
     if (score === null) return;
     setSending(true);
     setError(null);
-    const { error: err } = await supabase.from("nps_responses").insert({
-      diagnostico_id: diagnosticoId || null,
+    const { error: err } = await supabase.functions.invoke("submit-nps", {
+      body: {
+        diagnostico_id: diagnosticoId,
       score,
       comentario: feedback.trim() || null,
+      },
     });
     setSending(false);
     if (err) {
