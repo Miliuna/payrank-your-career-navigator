@@ -669,9 +669,10 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
       return parsed as Record<string, unknown>;
     }
 
+    const systemPromptB = record.modo === "C" ? SYSTEM_PROMPT_B_MODO_C : SYSTEM_PROMPT_B;
     const [partA, partB] = await Promise.all([
       genPart(promptA, "parteA", SYSTEM_PROMPT),
-      genPart(promptB, "parteB", SYSTEM_PROMPT_B),
+      genPart(promptB, "parteB", systemPromptB),
     ]);
     const parsed: Record<string, unknown> = { ...partA, ...partB };
 
