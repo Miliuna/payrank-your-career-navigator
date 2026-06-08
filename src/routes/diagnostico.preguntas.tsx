@@ -358,9 +358,13 @@ function PreguntasPage() {
   };
 
   const valid = isValid(step, r, modo, certRawInput);
-  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step)
+  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step) && step !== 9 && step !== 10
     ? resumenExtraccion(step, datos!, isEN)
     : null;
+  const inferidoDesdeCV = hasDoc && (
+    (step === 9 && tieneExtraccion(9, datos!)) ||
+    (step === 10 && tieneExtraccion(10, datos!))
+  );
 
   // Cabecera de progreso
   const progressHeader = step === -1
