@@ -306,7 +306,9 @@ function PreguntasPage() {
     if (!hasDoc) return null;
     const arr: number[] = [];
     for (let i = 0; i < TOTAL; i++) {
-      if (!EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
+      // Pasos 9 y 10 (años de experiencia total / industria) siempre se muestran,
+      // aunque vengan pre-completados desde el CV, para que el usuario pueda verificar/editar.
+      if (i === 9 || i === 10 || !EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
     }
     return arr;
   }, [hasDoc, datos, overrides]);
@@ -356,9 +358,13 @@ function PreguntasPage() {
   };
 
   const valid = isValid(step, r, modo, certRawInput);
-  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step)
+  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step) && step !== 9 && step !== 10
     ? resumenExtraccion(step, datos!, isEN)
     : null;
+  const inferidoDesdeCV = hasDoc && (
+    (step === 9 && tieneExtraccion(9, datos!)) ||
+    (step === 10 && tieneExtraccion(10, datos!))
+  );
 
   // Cabecera de progreso
   const progressHeader = step === -1
@@ -398,7 +404,14 @@ function PreguntasPage() {
         ) : extraccionTexto ? (
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
-          renderStep(step, r, setR, modo, isEN, certRawInput, setCertRawInput)
+          <>
+            {renderStep(step, r, setR, modo, isEN, certRawInput, setCertRawInput)}
+            {inferidoDesdeCV && (
+              <p className="font-body text-sm text-hueso/60 mt-4 leading-relaxed border-l-2 border-hueso/30 pl-4">
+                {isEN ? "Double-check this — we inferred it from your CV." : "Verificá este dato — lo inferimos de tu CV."}
+              </p>
+            )}
+          </>
         )}
       </StepFade>
       {!extraccionTexto && <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />}
