@@ -48,10 +48,15 @@ function buildBeneficiosStr(r: Respuestas, isEN: boolean): string {
       : { con_monto: "Bono anual (con monto)", sin_monto: "Bono anual (sin monto)", no_tengo: "Sin bono anual" };
     let b = map[r.bono_tipo] ?? r.bono_tipo;
     if (r.bono_monto != null) {
-      b += ` — ${t("monto", "amount")}: ${r.bono_monto}`;
+      b += ` — ${t("monto", "amount")}: ${r.bono_moneda ? `${r.bono_moneda} ` : ""}${r.bono_monto}`;
+    } else if (r.bono_moneda) {
+      b += ` — ${t("moneda", "currency")}: ${r.bono_moneda}`;
     }
     if (r.bonoFrecuencia) {
       b += ` — ${t("frecuencia", "frequency")}: ${r.bonoFrecuencia}`;
+    }
+    if (r.bonoUltimo) {
+      b += ` — ${t("último bono", "last bonus")}: ${r.bonoUltimo}`;
     }
     parts.push(b);
   }
