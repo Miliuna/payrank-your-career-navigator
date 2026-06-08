@@ -404,7 +404,14 @@ function PreguntasPage() {
         ) : extraccionTexto ? (
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
-          renderStep(step, r, setR, modo, isEN, certRawInput, setCertRawInput)
+          <>
+            {renderStep(step, r, setR, modo, isEN, certRawInput, setCertRawInput)}
+            {inferidoDesdeCV && (
+              <p className="font-body text-sm text-hueso/60 mt-4 leading-relaxed border-l-2 border-hueso/30 pl-4">
+                {isEN ? "Double-check this — we inferred it from your CV." : "Verificá este dato — lo inferimos de tu CV."}
+              </p>
+            )}
+          </>
         )}
       </StepFade>
       {!extraccionTexto && <NavButtons onBack={back} onNext={next} nextDisabled={!valid} />}
