@@ -84,7 +84,18 @@ export function DownloadPdfButton({
       // Pagination: slice canvas vertically
       const pxPerPt = canvas.width / contentW;
       const pageSliceHpx = Math.floor(contentH * pxPerPt);
-      const totalPages = Math.max(1, Math.ceil(canvas.height / pageSliceHpx));
+      let totalPages = Math.max(1, Math.ceil(canvas.height / pageSliceHpx));
+
+      // Skip a trailing near-empty page caused by bottom padding overflow.
+      // If the last slice has less than 80px of real content, drop it.
+      if (totalPages > 1) {
+        const lastSliceHpx = canvas.height - (totalPages - 1) * pageSliceHpx;
+        if (lastSliceHpx < 80) {
+          totalPages -= 1;
+        }
+      }
+
+
 
       for (let i = 0; i < totalPages; i++) {
         if (i > 0) pdf.addPage();
