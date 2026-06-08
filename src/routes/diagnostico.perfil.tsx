@@ -401,7 +401,6 @@ function PerfilPage() {
           <Bloque
             titulo={isEN ? "Block 4 · Your current compensation" : "Bloque 4 · Tu compensación actual"}
             items={[
-              { k: isEN ? "Employment situation" : "Situación laboral", v: situacionLabel },
               { k: isEN ? "Salary" : "Salario", v: salarioStr },
               { k: isEN ? "Benefits" : "Beneficios", v: beneficiosStr },
             ]}
