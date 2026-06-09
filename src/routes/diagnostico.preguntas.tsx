@@ -324,7 +324,7 @@ function PreguntasPage() {
 
   const next = () => {
     if (step === -1) { setStep(0); return; }
-    if (step === 12) {
+    if (step === 13) {
       const pending = (certRawInput.trim() || (r.certificacionesPending ?? "").trim());
       if (pending) {
         const items = r.certificaciones ?? [];
