@@ -248,11 +248,6 @@ function UploadPage() {
           ))}
         </ul>
 
-        <p className="font-body text-sm text-hueso/60 leading-relaxed mt-6 max-w-2xl border-l-2 border-hueso/20 pl-4">
-          {isEN
-            ? "If you want us to analyze your profile, download your CV from LinkedIn: go to your profile → More → Save as PDF, and upload it here."
-            : "Si querés que analicemos tu perfil, descargá tu CV desde LinkedIn: andá a tu perfil → Más → Guardar como PDF, y subilo en el paso anterior."}
-        </p>
       </div>
 
       {extractError ? (
