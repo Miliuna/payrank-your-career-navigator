@@ -282,7 +282,7 @@ const TOTAL = 19;
 // Categoría A: campos inferibles del documento. El resto (alcance, equipo,
 // funciones, interacción, situación, salario, beneficios, descripción, género,
 // contacto) son Categoría B — siempre se preguntan al usuario.
-const EXTRACTABLE_STEPS = new Set([1, 2, 3, 8, 9, 10, 11, 12, 13]);
+const EXTRACTABLE_STEPS = new Set([2, 3, 4, 9, 10, 11, 12, 13, 14]);
 
 function PreguntasPage() {
   const navigate = useNavigate();
