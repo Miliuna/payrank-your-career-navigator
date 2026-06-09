@@ -30,7 +30,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
       case "A":
         return {
           items: [
-            "CV or LinkedIn profile (URL or PDF)",
+            "CV (PDF)",
             "Job description — if you have one",
             "Pay stub or salary slip — if you have one",
           ],
@@ -39,7 +39,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
       case "B":
         return {
           items: [
-            "CV or LinkedIn profile (URL or PDF)",
+            "CV (PDF)",
             "Job description — if you have one",
             "Pay stub or salary slip — recommended for this mode",
           ],
@@ -48,7 +48,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
       case "C":
         return {
           items: [
-            "CV or LinkedIn profile (URL or PDF)",
+            "CV (PDF)",
             "Job posting you're applying to — recommended for this mode",
           ],
           legend: "CV · JOB POSTING",
@@ -56,7 +56,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
       case "D":
         return {
           items: [
-            "CV or LinkedIn profile (URL or PDF)",
+            "CV (PDF)",
             "Job description — if you have one",
             "Pay stub or salary slip — if you have one",
           ],
@@ -68,7 +68,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
     case "A":
       return {
         items: [
-          "CV o perfil de LinkedIn (URL o PDF)",
+          "CV (PDF)",
           "Descriptivo de puesto — si lo tenés",
           "Recibo de sueldo o liquidación — si lo tenés",
         ],
@@ -77,7 +77,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
     case "B":
       return {
         items: [
-          "CV o perfil de LinkedIn (URL o PDF)",
+          "CV (PDF)",
           "Descriptivo de puesto — si lo tenés",
           "Recibo de sueldo o liquidación — recomendado para este modo",
         ],
@@ -86,7 +86,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
     case "C":
       return {
         items: [
-          "CV o perfil de LinkedIn (URL o PDF)",
+          "CV (PDF)",
           "Aviso de empleo al que te postulás — recomendado para este modo",
         ],
         legend: "CV · AVISO DE EMPLEO",
@@ -94,7 +94,7 @@ function docsForModo(modo: Modo, isEN: boolean): DocsConfig {
     case "D":
       return {
         items: [
-          "CV o perfil de LinkedIn (URL o PDF)",
+          "CV (PDF)",
           "Descriptivo de puesto — si lo tenés",
           "Recibo de sueldo o liquidación — si lo tenés",
         ],
