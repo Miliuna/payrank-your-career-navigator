@@ -134,27 +134,27 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
 }
 
 const STEP_TITULO_ES: Record<number, string> = {
-  1: "¿En qué industria trabajás?",
-  2: "¿En qué tipo de empresa trabajás?",
-  3: "¿Cuál es tu nivel jerárquico?",
-  8: "¿Qué idiomas usás en tu trabajo?",
-  9: "¿Cuántos años de experiencia total tenés?",
-  10: "¿Cuántos años de experiencia tenés en esta industria?",
-  11: "¿Cuál es tu formación?",
-  12: "¿Tenés certificaciones profesionales?",
-  13: "¿Qué herramientas de IA usás?",
+  2: "¿En qué industria trabajás?",
+  3: "¿En qué tipo de empresa trabajás?",
+  4: "¿Cuál es tu nivel jerárquico?",
+  9: "¿Qué idiomas usás en tu trabajo?",
+  10: "¿Cuántos años de experiencia total tenés?",
+  11: "¿Cuántos años de experiencia tenés en esta industria?",
+  12: "¿Cuál es tu formación?",
+  13: "¿Tenés certificaciones profesionales?",
+  14: "¿Qué herramientas de IA usás?",
 };
 
 const STEP_TITULO_EN: Record<number, string> = {
-  1: "What industry do you work in?",
-  2: "What type of company do you work at?",
-  3: "What is your hierarchical level?",
-  8: "What languages do you use at work?",
-  9: "How many years of total experience do you have?",
-  10: "How many years of experience in this industry?",
-  11: "What is your educational background?",
-  12: "Do you have professional certifications?",
-  13: "What AI tools do you use?",
+  2: "What industry do you work in?",
+  3: "What type of company do you work at?",
+  4: "What is your hierarchical level?",
+  9: "What languages do you use at work?",
+  10: "How many years of total experience do you have?",
+  11: "How many years of experience in this industry?",
+  12: "What is your educational background?",
+  13: "Do you have professional certifications?",
+  14: "What AI tools do you use?",
 };
 
 // ───────────── EN option arrays ─────────────
