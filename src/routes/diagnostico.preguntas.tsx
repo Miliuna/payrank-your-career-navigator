@@ -80,11 +80,20 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
   const expInd = findOption(EXP_INDUSTRIA, expIndStr);
   if (expInd) out.expIndustria = expInd;
 
+  const formMatched: string[] = [];
+  const tituloAcad = asString(d.titulo_cv_academico);
+  if (tituloAcad) {
+    const m = findOption(FORMACIONES, tituloAcad);
+    if (m) formMatched.push(m);
+  }
   const form = asArrayStr(d.formacion);
   if (form) {
-    const matched = form.map((f) => findOption(FORMACIONES, f) ?? null).filter(Boolean) as string[];
-    if (matched.length) out.formacion = Array.from(new Set(matched));
+    for (const f of form) {
+      const m = findOption(FORMACIONES, f);
+      if (m) formMatched.push(m);
+    }
   }
+  if (formMatched.length) out.formacion = Array.from(new Set(formMatched));
 
   const certs = asArrayStr(d.certificaciones);
   if (certs) out.certificaciones = certs;
