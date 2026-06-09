@@ -235,22 +235,22 @@ function resumenExtraccion(step: number, d: DatosExtraidos, isEN: boolean): { ti
   const titulo = STEP_TITULO[step] ?? "";
   const v = (() => {
     switch (step) {
-      case 1: {
+      case 2: {
         const m = findOption(INDUSTRIAS, asString(d.industria_inferida));
         return isEN && m ? (INDUSTRIAS_EN[m] ?? m) : m;
       }
-      case 2: {
+      case 3: {
         const m = findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
         if (!m) return null;
         if (!isEN) return m;
         const idx = TIPOS_EMPRESA.indexOf(m);
         return idx >= 0 ? TIPOS_EMPRESA_EN[idx] : m;
       }
-      case 3: {
+      case 4: {
         const m = findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
         return isEN && m ? (NIVELES_EN[m] ?? m) : m;
       }
-      case 8: {
+      case 9: {
         const arr = Array.isArray(d.idiomas) ? d.idiomas : null;
         if (!arr || !arr.length) return null;
         return arr.map((i) => {
@@ -260,11 +260,11 @@ function resumenExtraccion(step: number, d: DatosExtraidos, isEN: boolean): { ti
           return `${i.idioma ?? ""}${lvlDisplay ? ` (${lvlDisplay})` : ""}`;
         }).filter(Boolean).join(" · ");
       }
-      case 9: return asString(d.anos_experiencia_total_inferidos);
-      case 10: return asString(d.anos_experiencia_industria_inferidos);
-      case 11: { const a = asArrayStr(d.formacion); return a ? a.join(" · ") : null; }
-      case 12: { const a = asArrayStr(d.certificaciones); return a ? a.join(" · ") : null; }
-      case 13: { const a = asArrayStr(d.herramientas_ia_inferidas); return a ? a.join(" · ") : null; }
+      case 10: return asString(d.anos_experiencia_total_inferidos);
+      case 11: return asString(d.anos_experiencia_industria_inferidos);
+      case 12: { const a = asArrayStr(d.formacion); return a ? a.join(" · ") : null; }
+      case 13: { const a = asArrayStr(d.certificaciones); return a ? a.join(" · ") : null; }
+      case 14: { const a = asArrayStr(d.herramientas_ia_inferidas); return a ? a.join(" · ") : null; }
       default: return null;
     }
   })();
