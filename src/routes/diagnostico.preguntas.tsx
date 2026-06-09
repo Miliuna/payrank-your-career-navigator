@@ -483,20 +483,7 @@ function isValid(
   switch (step) {
     case -1: return !!r.subCasoC;
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
-    case 1: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
-    case 2: return !!r.tipoEmpresa;
-    case 3: return !!r.nivel && (r.nivel !== "Otro" || !!r.nivelOtro?.trim());
-    case 4: return !!r.alcance;
-    case 5: return !!r.personasACargo;
-    case 6: return ((r.funciones?.length ?? 0) > 0) || !!r.funcionesTexto?.trim();
-    case 7: return !!r.interaccion;
-    case 8: return !!r.sinIdiomas || ((r.idiomas?.length ?? 0) > 0 && r.idiomas!.every((i) => i.idioma.trim() && i.nivel));
-    case 9: return !!r.expTotal;
-    case 10: return !!r.expIndustria;
-    case 11: return (r.formacion?.length ?? 0) > 0;
-    case 12: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
-    case 13: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
-    case 14: {
+    case 1: {
       if (!r.situacion) return false;
       if (modo === "C") return true; // salario opcional en Modo C
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
@@ -507,6 +494,19 @@ function isValid(
       if (r.trabajaActualmente === "no") return !!r.salarioAnterior && !!r.monedaAnterior && !!r.tiempoSinTrabajo;
       return false;
     }
+    case 2: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
+    case 3: return !!r.tipoEmpresa;
+    case 4: return !!r.nivel && (r.nivel !== "Otro" || !!r.nivelOtro?.trim());
+    case 5: return !!r.alcance;
+    case 6: return !!r.personasACargo;
+    case 7: return ((r.funciones?.length ?? 0) > 0) || !!r.funcionesTexto?.trim();
+    case 8: return !!r.interaccion;
+    case 9: return !!r.sinIdiomas || ((r.idiomas?.length ?? 0) > 0 && r.idiomas!.every((i) => i.idioma.trim() && i.nivel));
+    case 10: return !!r.expTotal;
+    case 11: return !!r.expIndustria;
+    case 12: return (r.formacion?.length ?? 0) > 0;
+    case 13: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
+    case 14: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
     case 15: return true;
     case 16: return !!r.descripcionPuesto?.trim();
     case 17: return !!r.genero;
