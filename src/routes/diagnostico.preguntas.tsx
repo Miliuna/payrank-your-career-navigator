@@ -526,20 +526,20 @@ function renderStep(
 ) {
   switch (step) {
     case 0: return <P1Pais r={r} setR={setR} />;
-    case 1: return <P2Industria r={r} setR={setR} />;
-    case 2: return <P3TipoEmpresa r={r} setR={setR} />;
-    case 3: return <P4Nivel r={r} setR={setR} />;
-    case 4: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={isEN ? ALCANCES_EN : ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
-    case 5: return <SimpleCards title={isEN ? "Do you have people reporting to you?" : "¿Tenés personas a cargo?"} options={isEN ? PERSONAS_A_CARGO_EN : PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
-    case 6: return <P7Funciones r={r} setR={setR} />;
-    case 7: return <SimpleCards title={isEN ? "How do you interact with senior management?" : "¿Cómo interactuás con la alta dirección?"} options={isEN ? INTERACCIONES_EN : INTERACCIONES} value={r.interaccion} onChange={(v) => setR({ interaccion: v })} />;
-    case 8: return <P9Idiomas r={r} setR={setR} />;
-    case 9: return <SimpleCards title={isEN ? "How many years of total career experience do you have?" : "¿Cuántos años de experiencia total tenés en tu carrera?"} options={isEN ? EXP_TOTAL_EN : EXP_TOTAL} value={r.expTotal} onChange={(v) => setR({ expTotal: v })} />;
-    case 10: return <SimpleCards title={isEN ? "How many years of experience in this industry?" : "¿Cuántos años de experiencia tenés en esta industria?"} options={isEN ? EXP_INDUSTRIA_EN : EXP_INDUSTRIA} value={r.expIndustria} onChange={(v) => setR({ expIndustria: v })} />;
-    case 11: return <P12Formacion r={r} setR={setR} />;
-    case 12: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
-    case 13: return <P14HerramientasIA r={r} setR={setR} />;
-    case 14: return <P15Situacion r={r} setR={setR} modo={modo} />;
+    case 1: return <P15Situacion r={r} setR={setR} modo={modo} />;
+    case 2: return <P2Industria r={r} setR={setR} />;
+    case 3: return <P3TipoEmpresa r={r} setR={setR} />;
+    case 4: return <P4Nivel r={r} setR={setR} />;
+    case 5: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={isEN ? ALCANCES_EN : ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
+    case 6: return <SimpleCards title={isEN ? "Do you have people reporting to you?" : "¿Tenés personas a cargo?"} options={isEN ? PERSONAS_A_CARGO_EN : PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
+    case 7: return <P7Funciones r={r} setR={setR} />;
+    case 8: return <SimpleCards title={isEN ? "How do you interact with senior management?" : "¿Cómo interactuás con la alta dirección?"} options={isEN ? INTERACCIONES_EN : INTERACCIONES} value={r.interaccion} onChange={(v) => setR({ interaccion: v })} />;
+    case 9: return <P9Idiomas r={r} setR={setR} />;
+    case 10: return <SimpleCards title={isEN ? "How many years of total career experience do you have?" : "¿Cuántos años de experiencia total tenés en tu carrera?"} options={isEN ? EXP_TOTAL_EN : EXP_TOTAL} value={r.expTotal} onChange={(v) => setR({ expTotal: v })} />;
+    case 11: return <SimpleCards title={isEN ? "How many years of experience in this industry?" : "¿Cuántos años de experiencia tenés en esta industria?"} options={isEN ? EXP_INDUSTRIA_EN : EXP_INDUSTRIA} value={r.expIndustria} onChange={(v) => setR({ expIndustria: v })} />;
+    case 12: return <P12Formacion r={r} setR={setR} />;
+    case 13: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
+    case 14: return <P14HerramientasIA r={r} setR={setR} />;
     case 15: return <P16Beneficios r={r} setR={setR} />;
     case 16: return <P17Descripcion r={r} setR={setR} modo={modo} />;
     case 17: return <P18Genero r={r} setR={setR} />;
