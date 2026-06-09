@@ -134,27 +134,27 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
 }
 
 const STEP_TITULO_ES: Record<number, string> = {
-  1: "¿En qué industria trabajás?",
-  2: "¿En qué tipo de empresa trabajás?",
-  3: "¿Cuál es tu nivel jerárquico?",
-  8: "¿Qué idiomas usás en tu trabajo?",
-  9: "¿Cuántos años de experiencia total tenés?",
-  10: "¿Cuántos años de experiencia tenés en esta industria?",
-  11: "¿Cuál es tu formación?",
-  12: "¿Tenés certificaciones profesionales?",
-  13: "¿Qué herramientas de IA usás?",
+  2: "¿En qué industria trabajás?",
+  3: "¿En qué tipo de empresa trabajás?",
+  4: "¿Cuál es tu nivel jerárquico?",
+  9: "¿Qué idiomas usás en tu trabajo?",
+  10: "¿Cuántos años de experiencia total tenés?",
+  11: "¿Cuántos años de experiencia tenés en esta industria?",
+  12: "¿Cuál es tu formación?",
+  13: "¿Tenés certificaciones profesionales?",
+  14: "¿Qué herramientas de IA usás?",
 };
 
 const STEP_TITULO_EN: Record<number, string> = {
-  1: "What industry do you work in?",
-  2: "What type of company do you work at?",
-  3: "What is your hierarchical level?",
-  8: "What languages do you use at work?",
-  9: "How many years of total experience do you have?",
-  10: "How many years of experience in this industry?",
-  11: "What is your educational background?",
-  12: "Do you have professional certifications?",
-  13: "What AI tools do you use?",
+  2: "What industry do you work in?",
+  3: "What type of company do you work at?",
+  4: "What is your hierarchical level?",
+  9: "What languages do you use at work?",
+  10: "How many years of total experience do you have?",
+  11: "How many years of experience in this industry?",
+  12: "What is your educational background?",
+  13: "Do you have professional certifications?",
+  14: "What AI tools do you use?",
 };
 
 // ───────────── EN option arrays ─────────────
@@ -235,22 +235,22 @@ function resumenExtraccion(step: number, d: DatosExtraidos, isEN: boolean): { ti
   const titulo = STEP_TITULO[step] ?? "";
   const v = (() => {
     switch (step) {
-      case 1: {
+      case 2: {
         const m = findOption(INDUSTRIAS, asString(d.industria_inferida));
         return isEN && m ? (INDUSTRIAS_EN[m] ?? m) : m;
       }
-      case 2: {
+      case 3: {
         const m = findOption(TIPOS_EMPRESA, asString(d.tipo_empresa_inferida));
         if (!m) return null;
         if (!isEN) return m;
         const idx = TIPOS_EMPRESA.indexOf(m);
         return idx >= 0 ? TIPOS_EMPRESA_EN[idx] : m;
       }
-      case 3: {
+      case 4: {
         const m = findOption(NIVELES, asString(d.nivel_jerarquico_inferido));
         return isEN && m ? (NIVELES_EN[m] ?? m) : m;
       }
-      case 8: {
+      case 9: {
         const arr = Array.isArray(d.idiomas) ? d.idiomas : null;
         if (!arr || !arr.length) return null;
         return arr.map((i) => {
@@ -260,11 +260,11 @@ function resumenExtraccion(step: number, d: DatosExtraidos, isEN: boolean): { ti
           return `${i.idioma ?? ""}${lvlDisplay ? ` (${lvlDisplay})` : ""}`;
         }).filter(Boolean).join(" · ");
       }
-      case 9: return asString(d.anos_experiencia_total_inferidos);
-      case 10: return asString(d.anos_experiencia_industria_inferidos);
-      case 11: { const a = asArrayStr(d.formacion); return a ? a.join(" · ") : null; }
-      case 12: { const a = asArrayStr(d.certificaciones); return a ? a.join(" · ") : null; }
-      case 13: { const a = asArrayStr(d.herramientas_ia_inferidas); return a ? a.join(" · ") : null; }
+      case 10: return asString(d.anos_experiencia_total_inferidos);
+      case 11: return asString(d.anos_experiencia_industria_inferidos);
+      case 12: { const a = asArrayStr(d.formacion); return a ? a.join(" · ") : null; }
+      case 13: { const a = asArrayStr(d.certificaciones); return a ? a.join(" · ") : null; }
+      case 14: { const a = asArrayStr(d.herramientas_ia_inferidas); return a ? a.join(" · ") : null; }
       default: return null;
     }
   })();
@@ -282,7 +282,7 @@ const TOTAL = 19;
 // Categoría A: campos inferibles del documento. El resto (alcance, equipo,
 // funciones, interacción, situación, salario, beneficios, descripción, género,
 // contacto) son Categoría B — siempre se preguntan al usuario.
-const EXTRACTABLE_STEPS = new Set([1, 2, 3, 8, 9, 10, 11, 12, 13]);
+const EXTRACTABLE_STEPS = new Set([2, 3, 4, 9, 10, 11, 12, 13, 14]);
 
 function PreguntasPage() {
   const navigate = useNavigate();
@@ -315,16 +315,16 @@ function PreguntasPage() {
     if (!hasDoc) return null;
     const arr: number[] = [];
     for (let i = 0; i < TOTAL; i++) {
-      // Pasos 9 y 10 (años de experiencia total / industria) siempre se muestran,
+      // Pasos 10 y 11 (años de experiencia total / industria) siempre se muestran,
       // aunque vengan pre-completados desde el CV, para que el usuario pueda verificar/editar.
-      if (i === 9 || i === 10 || !EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
+      if (i === 10 || i === 11 || !EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
     }
     return arr;
   }, [hasDoc, datos, overrides]);
 
   const next = () => {
     if (step === -1) { setStep(0); return; }
-    if (step === 12) {
+    if (step === 13) {
       const pending = (certRawInput.trim() || (r.certificacionesPending ?? "").trim());
       if (pending) {
         const items = r.certificaciones ?? [];
@@ -367,12 +367,12 @@ function PreguntasPage() {
   };
 
   const valid = isValid(step, r, modo, certRawInput);
-  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step) && step !== 9 && step !== 10
+  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step) && step !== 10 && step !== 11
     ? resumenExtraccion(step, datos!, isEN)
     : null;
   const inferidoDesdeCV = hasDoc && (
-    (step === 9 && tieneExtraccion(9, datos!)) ||
-    (step === 10 && tieneExtraccion(10, datos!))
+    (step === 10 && tieneExtraccion(10, datos!)) ||
+    (step === 11 && tieneExtraccion(11, datos!))
   );
 
   // Cabecera de progreso
@@ -483,20 +483,7 @@ function isValid(
   switch (step) {
     case -1: return !!r.subCasoC;
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
-    case 1: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
-    case 2: return !!r.tipoEmpresa;
-    case 3: return !!r.nivel && (r.nivel !== "Otro" || !!r.nivelOtro?.trim());
-    case 4: return !!r.alcance;
-    case 5: return !!r.personasACargo;
-    case 6: return ((r.funciones?.length ?? 0) > 0) || !!r.funcionesTexto?.trim();
-    case 7: return !!r.interaccion;
-    case 8: return !!r.sinIdiomas || ((r.idiomas?.length ?? 0) > 0 && r.idiomas!.every((i) => i.idioma.trim() && i.nivel));
-    case 9: return !!r.expTotal;
-    case 10: return !!r.expIndustria;
-    case 11: return (r.formacion?.length ?? 0) > 0;
-    case 12: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
-    case 13: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
-    case 14: {
+    case 1: {
       if (!r.situacion) return false;
       if (modo === "C") return true; // salario opcional en Modo C
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
@@ -507,6 +494,19 @@ function isValid(
       if (r.trabajaActualmente === "no") return !!r.salarioAnterior && !!r.monedaAnterior && !!r.tiempoSinTrabajo;
       return false;
     }
+    case 2: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
+    case 3: return !!r.tipoEmpresa;
+    case 4: return !!r.nivel && (r.nivel !== "Otro" || !!r.nivelOtro?.trim());
+    case 5: return !!r.alcance;
+    case 6: return !!r.personasACargo;
+    case 7: return ((r.funciones?.length ?? 0) > 0) || !!r.funcionesTexto?.trim();
+    case 8: return !!r.interaccion;
+    case 9: return !!r.sinIdiomas || ((r.idiomas?.length ?? 0) > 0 && r.idiomas!.every((i) => i.idioma.trim() && i.nivel));
+    case 10: return !!r.expTotal;
+    case 11: return !!r.expIndustria;
+    case 12: return (r.formacion?.length ?? 0) > 0;
+    case 13: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
+    case 14: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
     case 15: return true;
     case 16: return !!r.descripcionPuesto?.trim();
     case 17: return !!r.genero;
@@ -526,20 +526,20 @@ function renderStep(
 ) {
   switch (step) {
     case 0: return <P1Pais r={r} setR={setR} />;
-    case 1: return <P2Industria r={r} setR={setR} />;
-    case 2: return <P3TipoEmpresa r={r} setR={setR} />;
-    case 3: return <P4Nivel r={r} setR={setR} />;
-    case 4: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={isEN ? ALCANCES_EN : ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
-    case 5: return <SimpleCards title={isEN ? "Do you have people reporting to you?" : "¿Tenés personas a cargo?"} options={isEN ? PERSONAS_A_CARGO_EN : PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
-    case 6: return <P7Funciones r={r} setR={setR} />;
-    case 7: return <SimpleCards title={isEN ? "How do you interact with senior management?" : "¿Cómo interactuás con la alta dirección?"} options={isEN ? INTERACCIONES_EN : INTERACCIONES} value={r.interaccion} onChange={(v) => setR({ interaccion: v })} />;
-    case 8: return <P9Idiomas r={r} setR={setR} />;
-    case 9: return <SimpleCards title={isEN ? "How many years of total career experience do you have?" : "¿Cuántos años de experiencia total tenés en tu carrera?"} options={isEN ? EXP_TOTAL_EN : EXP_TOTAL} value={r.expTotal} onChange={(v) => setR({ expTotal: v })} />;
-    case 10: return <SimpleCards title={isEN ? "How many years of experience in this industry?" : "¿Cuántos años de experiencia tenés en esta industria?"} options={isEN ? EXP_INDUSTRIA_EN : EXP_INDUSTRIA} value={r.expIndustria} onChange={(v) => setR({ expIndustria: v })} />;
-    case 11: return <P12Formacion r={r} setR={setR} />;
-    case 12: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
-    case 13: return <P14HerramientasIA r={r} setR={setR} />;
-    case 14: return <P15Situacion r={r} setR={setR} modo={modo} />;
+    case 1: return <P15Situacion r={r} setR={setR} modo={modo} />;
+    case 2: return <P2Industria r={r} setR={setR} />;
+    case 3: return <P3TipoEmpresa r={r} setR={setR} />;
+    case 4: return <P4Nivel r={r} setR={setR} />;
+    case 5: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={isEN ? ALCANCES_EN : ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
+    case 6: return <SimpleCards title={isEN ? "Do you have people reporting to you?" : "¿Tenés personas a cargo?"} options={isEN ? PERSONAS_A_CARGO_EN : PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
+    case 7: return <P7Funciones r={r} setR={setR} />;
+    case 8: return <SimpleCards title={isEN ? "How do you interact with senior management?" : "¿Cómo interactuás con la alta dirección?"} options={isEN ? INTERACCIONES_EN : INTERACCIONES} value={r.interaccion} onChange={(v) => setR({ interaccion: v })} />;
+    case 9: return <P9Idiomas r={r} setR={setR} />;
+    case 10: return <SimpleCards title={isEN ? "How many years of total career experience do you have?" : "¿Cuántos años de experiencia total tenés en tu carrera?"} options={isEN ? EXP_TOTAL_EN : EXP_TOTAL} value={r.expTotal} onChange={(v) => setR({ expTotal: v })} />;
+    case 11: return <SimpleCards title={isEN ? "How many years of experience in this industry?" : "¿Cuántos años de experiencia tenés en esta industria?"} options={isEN ? EXP_INDUSTRIA_EN : EXP_INDUSTRIA} value={r.expIndustria} onChange={(v) => setR({ expIndustria: v })} />;
+    case 12: return <P12Formacion r={r} setR={setR} />;
+    case 13: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
+    case 14: return <P14HerramientasIA r={r} setR={setR} />;
     case 15: return <P16Beneficios r={r} setR={setR} />;
     case 16: return <P17Descripcion r={r} setR={setR} modo={modo} />;
     case 17: return <P18Genero r={r} setR={setR} />;
