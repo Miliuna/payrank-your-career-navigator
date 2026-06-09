@@ -123,6 +123,15 @@ function UploadPage() {
     }
   }, [search.modo, state.modo, setState]);
 
+  // Si ya subió documentos previamente (extracción válida en estado),
+  // no volver a mostrar el upload — saltar directo a las preguntas.
+  React.useEffect(() => {
+    if (state.datosExtraidos) {
+      navigate({ to: "/diagnostico/preguntas", replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const modo: Modo = search.modo ?? state.modo;
   const docsCfg = docsForModo(modo, isEN);
 
