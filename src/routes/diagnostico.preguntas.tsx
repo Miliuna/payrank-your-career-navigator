@@ -315,9 +315,9 @@ function PreguntasPage() {
     if (!hasDoc) return null;
     const arr: number[] = [];
     for (let i = 0; i < TOTAL; i++) {
-      // Pasos 9 y 10 (años de experiencia total / industria) siempre se muestran,
+      // Pasos 10 y 11 (años de experiencia total / industria) siempre se muestran,
       // aunque vengan pre-completados desde el CV, para que el usuario pueda verificar/editar.
-      if (i === 9 || i === 10 || !EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
+      if (i === 10 || i === 11 || !EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
     }
     return arr;
   }, [hasDoc, datos, overrides]);
