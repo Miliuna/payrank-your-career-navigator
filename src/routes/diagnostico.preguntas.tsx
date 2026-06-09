@@ -367,12 +367,12 @@ function PreguntasPage() {
   };
 
   const valid = isValid(step, r, modo, certRawInput);
-  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step) && step !== 9 && step !== 10
+  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step) && step !== 10 && step !== 11
     ? resumenExtraccion(step, datos!, isEN)
     : null;
   const inferidoDesdeCV = hasDoc && (
-    (step === 9 && tieneExtraccion(9, datos!)) ||
-    (step === 10 && tieneExtraccion(10, datos!))
+    (step === 10 && tieneExtraccion(10, datos!)) ||
+    (step === 11 && tieneExtraccion(11, datos!))
   );
 
   // Cabecera de progreso
