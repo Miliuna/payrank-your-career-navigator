@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { Loader2 } from "lucide-react";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";

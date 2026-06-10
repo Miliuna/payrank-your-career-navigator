@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
 import { simulatePayment, applyAccessCode, createCheckoutSession } from "@/lib/diagnostico/diagnostico.functions";
 import { useLang } from "@/lib/lang";
