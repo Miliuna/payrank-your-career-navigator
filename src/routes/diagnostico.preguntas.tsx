@@ -523,7 +523,7 @@ function isValid(
     case 11: return !!r.expIndustria;
     case 12: return (r.formacion?.length ?? 0) > 0;
     case 13: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
-    case 14: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
+    case 14: return !!r.sinIA || ((r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0);
     case 15: return true;
     case 16: return true;
     case 17: return !!r.genero;
