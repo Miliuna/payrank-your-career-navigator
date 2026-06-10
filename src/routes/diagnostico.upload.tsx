@@ -173,53 +173,48 @@ function UploadPage() {
       reader.readAsDataURL(file);
     });
 
+  const detectarTipoDocumento = (filename: string): "cv" | "recibo" | "descriptivo" => {
+    const lower = filename.toLowerCase();
+    if (/cv|resume|perfil|linkedin/.test(lower)) return "cv";
+    if (/recibo|liquidacion|liquidación|payslip|sueldo/.test(lower)) return "recibo";
+    return "descriptivo";
+  };
+
   const procesar = async () => {
     if (busy) return;
     if (files.length === 0) return;
     setBusy(true);
     setExtractError(false);
     try {
-      const textoBlocks: string[] = [];
-      const pdfFallbacks: { name: string; base64: string }[] = [];
+      const results: DatosExtraidos[] = [];
 
       for (const f of files) {
+        const tipo = detectarTipoDocumento(f.name);
         const isPdf = f.type === "application/pdf" || f.name.toLowerCase().endsWith(".pdf");
+
         if (isPdf) {
           try {
             const txt = await extractPdfText(f);
             if (txt && txt.length > 50) {
-              textoBlocks.push(`=== Documento: ${f.name} ===\n${txt}`);
+              const prefixed = `[TIPO: ${tipo}]\n\n${txt.slice(0, 100_000)}`;
+              results.push((await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos);
             } else {
               throw new Error("PDF sin texto extraíble");
             }
           } catch (err) {
             console.warn(`[upload] PDF.js falló para ${f.name}, usando base64 truncado:`, err);
             const b64 = await fileToBase64Local(f);
-            pdfFallbacks.push({ name: f.name, base64: b64 });
+            const b64Truncated = b64.slice(0, 15_000);
+            results.push((await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos);
           }
         } else {
           const txt = await f.text();
-          textoBlocks.push(`=== Documento: ${f.name} ===\n${txt}`);
+          const prefixed = `[TIPO: ${tipo}]\n\n${txt.slice(0, 100_000)}`;
+          results.push((await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos);
         }
       }
 
-      let extracted: DatosExtraidos;
-
-      if (pdfFallbacks.length === 0) {
-        const concatenated = textoBlocks.join("\n\n").slice(0, 100_000);
-        extracted = (await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos;
-      } else {
-        const results: DatosExtraidos[] = [];
-        if (textoBlocks.length > 0) {
-          const concatenated = textoBlocks.join("\n\n").slice(0, 100_000);
-          results.push((await extract({ data: { kind: "text", text: concatenated } })) as DatosExtraidos);
-        }
-        for (const p of pdfFallbacks) {
-          const b64Truncated = p.base64.slice(0, 15_000);
-          results.push((await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos);
-        }
-        extracted = mergeExtractions(results);
-      }
+      const extracted = mergeExtractions(results);
 
       console.log("[upload] datosExtraidos:", extracted);
 
