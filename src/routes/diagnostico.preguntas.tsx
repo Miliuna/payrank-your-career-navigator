@@ -559,7 +559,7 @@ function renderStep(
     case 13: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
     case 14: return <P14HerramientasIA r={r} setR={setR} />;
     case 15: return <P16Beneficios r={r} setR={setR} />;
-    case 16: return <P17Descripcion r={r} setR={setR} modo={modo} />;
+    case 16: return <P17Motivacion r={r} setR={setR} isEN={isEN} />;
     case 17: return <P18Genero r={r} setR={setR} />;
     case 18: return <P19Contacto r={r} setR={setR} />;
     default: return null;
