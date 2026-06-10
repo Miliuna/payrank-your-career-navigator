@@ -747,8 +747,8 @@ const EXTRACT_USER_INSTRUCTIONS = `El documento puede estar truncado. Extraé to
 Extraé estos campos si están presentes:
 - nombre_inferido
 - titulo_puesto
-- nivel_jerarquico_inferido
-- industria_inferida
+- nivel_jerarquico_inferido: devolvé EXACTAMENTE uno de estos strings (copiado textual): "Junior/Analista", "Semi-senior", "Senior/Especialista", "Manager/Líder de equipo", "Senior Manager/Gerente", "Director/Head", "C-Level/VP", "Otro". Ejemplos: "Senior" → "Senior/Especialista"; "Gerente" → "Senior Manager/Gerente"; "Jefe" → "Manager/Líder de equipo"; "Coordinador" → "Semi-senior". Si no podés inferir, null.
+- industria_inferida: devolvé EXACTAMENTE uno de estos strings (copiado textual): "Tecnología/Software", "Finanzas/Banca", "Consumo masivo/Retail", "Industrial/Manufactura", "Consultoría/Servicios profesionales", "Salud/Pharma", "Seguros", "Educación", "Medios/Entretenimiento", "Energía", "Real Estate", "Gobierno/Sector público", "Otra". Ejemplos de mapeo: "Infraestructura / Energía / Gas" → "Energía"; "Oil & Gas" → "Energía"; "Banca" → "Finanzas/Banca"; "Minería" → "Industrial/Manufactura". Si no podés inferir, null.
 - tipo_empresa_inferida
 - anos_experiencia_total_inferidos (string/bucket si lo usás para mostrar; opcional)
 - anos_experiencia_industria_inferidos (string/bucket si lo usás para mostrar; opcional)
@@ -776,7 +776,7 @@ CRÍTICO — Distinción formación vs. rol laboral: Los títulos universitarios
 - bono_frecuencias_detectadas: array de strings con TODAS las frecuencias distintas de pago de bono/variable/comisión que aparezcan mencionadas en cualquier documento (recibo, CV, descriptivo, aviso). Valores posibles: "mensual", "trimestral", "cuatrimestral", "semestral", "anual", "por proyecto", "puntual". Si en distintos documentos aparecen frecuencias distintas, incluí todas. Si no se menciona ninguna, devolvé [].
 - bono_mencionado_sin_monto: true si CUALQUIER documento menciona la existencia de un bono / componente variable / comisión sin especificar el monto numérico. false si se menciona con monto. null si no se menciona en ningún lado.
 - pais_inferido: país donde opera la empresa del puesto más reciente. Si la empresa es conocida (TGS, YPF, Techint, MercadoLibre, Globant, Banco Galicia, HSBC Argentina, etc.), inferí "Argentina" directamente. Si no se puede inferir, null.
-- tipo_empresa_inferida: clasificá el tipo de empresa del puesto más reciente usando estas categorías: "multinacional", "grande nacional", "mediana empresa", "startup", "pyme", "organismo público", "ONG", "consultoría". Si la empresa es conocida (TGS, YPF, Techint, Pampa Energía, Banco Galicia, Banco Nación, HSBC Argentina → "grande nacional"; MercadoLibre, Globant, OLX, Despegar → "multinacional"; empresas del Estado → "organismo público"), inferí directamente. Si no podés inferir con certeza, null. Devolvé exactamente UNA categoría, la más precisa. Nunca devolver más de una.
+- tipo_empresa_inferida: devolvé EXACTAMENTE uno de estos strings (copiado textual): "Startup / PyME (1–99 empleados)", "Empresa mediana (100–999 empleados)", "Empresa grande nacional (1.000–4.999 empleados)", "Multinacional / Enterprise (+5.000 empleados)". Devolvé exactamente UNA categoría. Ejemplos: TGS, YPF, Techint, Banco Galicia → "Empresa grande nacional (1.000–4.999 empleados)"; MercadoLibre, Globant, Accenture, Google → "Multinacional / Enterprise (+5.000 empleados)". Si no podés inferir, null.
 - empresa_actual: nombre exacto de la empresa del puesto más reciente tal como figura en el documento. null si no figura.
 - fecha_ingreso_empresa_actual: fecha de ingreso a la empresa más reciente en formato YYYY-MM-DD o YYYY-MM. Si dice "julio 2025" devolvé "2025-07". Si no figura, null.
 - nombre_prestadora_salud: nombre de la obra social o prepaga tal como figura en el recibo (Swiss Medical, OSDE, Medicus, etc.). null si no figura o no hay recibo.
