@@ -409,6 +409,7 @@ function PerfilPage() {
         )}
       </StepFade>
     </DiagnosticoShell>
+    </>
   );
 }
 
