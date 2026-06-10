@@ -335,13 +335,13 @@ function ValidacionPage() {
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
                 {tituloCv && (
-                  <Pick selected={tituloPick === "cv"} onClick={() => setTituloPick("cv")}>{tituloCv}</Pick>
+                  <Pick selected={tituloPick === "cv"} onClick={() => { setTituloPick("cv"); setState((s) => ({ ...s, respuestas: { ...s.respuestas, tituloElegido: tituloCv } })); }}>{tituloCv}</Pick>
                 )}
                 {tituloRecibo && (
-                  <Pick selected={tituloPick === "recibo"} onClick={() => setTituloPick("recibo")}>{tituloRecibo}</Pick>
+                  <Pick selected={tituloPick === "recibo"} onClick={() => { setTituloPick("recibo"); setState((s) => ({ ...s, respuestas: { ...s.respuestas, tituloElegido: tituloRecibo } })); }}>{tituloRecibo}</Pick>
                 )}
                 {tituloAcademico && !mismatchCvRecibo && (
-                  <Pick selected={tituloPick === "academico"} onClick={() => setTituloPick("academico")}>{tituloAcademico}</Pick>
+                  <Pick selected={tituloPick === "academico"} onClick={() => { setTituloPick("academico"); setState((s) => ({ ...s, respuestas: { ...s.respuestas, tituloElegido: tituloAcademico } })); }}>{tituloAcademico}</Pick>
                 )}
                 <Pick selected={tituloPick === "otro"} onClick={() => setTituloPick("otro")}>{isEN ? "Other" : "Otro"}</Pick>
               </div>
