@@ -555,7 +555,7 @@ function renderStep(
     case 4: return <P4Nivel r={r} setR={setR} />;
     case 5: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={isEN ? ALCANCES_EN : ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
     case 6: return <SimpleCards title={isEN ? "Do you have people reporting to you?" : "¿Tenés personas a cargo?"} options={isEN ? PERSONAS_A_CARGO_EN : PERSONAS_A_CARGO} value={r.personasACargo} onChange={(v) => setR({ personasACargo: v })} />;
-    case 7: return <P7Funciones r={r} setR={setR} />;
+    case 7: return <P7Funciones r={r} setR={setR} datosExtraidos={datos} />;
     case 8: return <SimpleCards title={isEN ? "How do you interact with senior management?" : "¿Cómo interactuás con la alta dirección?"} options={isEN ? INTERACCIONES_EN : INTERACCIONES} value={r.interaccion} onChange={(v) => setR({ interaccion: v })} />;
     case 9: return <P9Idiomas r={r} setR={setR} />;
     case 10: return <SimpleCards title={isEN ? "How many years of total career experience do you have?" : "¿Cuántos años de experiencia total tenés en tu carrera?"} options={isEN ? EXP_TOTAL_EN : EXP_TOTAL} value={r.expTotal} onChange={(v) => setR({ expTotal: v })} />;
