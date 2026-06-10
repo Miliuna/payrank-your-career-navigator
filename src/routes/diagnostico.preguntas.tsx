@@ -1506,37 +1506,96 @@ function P16Beneficios({ r, setR }: Props) {
             {isEN ? "B — Variable compensation" : "B — Compensación variable"}
           </p>
 
-          {/* Bono anual */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">{isEN ? "Annual bonus" : "Bono anual"}</p>
-            <div className="grid grid-cols-1 gap-2">
-              {(isEN
-                ? [["con_monto","Yes, I know the amount"],["sin_monto","Yes, but I don't know the amount"],["no_tengo","I don't have one"]]
-                : [["con_monto","Sí, sé el monto"],["sin_monto","Sí, no sé el monto"],["no_tengo","No tengo"]]
-              ).map(([val, label]) => (
-                <CardOption
-                  key={val}
-                  selected={r.bono_tipo === val}
-                  onClick={() => setR({
-                    bono_tipo: r.bono_tipo === val ? undefined : val,
-                    ...(val !== "con_monto" ? { bono_monto: undefined, bono_moneda: undefined } : { bono_moneda: r.bono_moneda ?? "ARS" }),
-                  })}
-                >
-                  {label}
-                </CardOption>
-              ))}
-            </div>
-            {r.bono_tipo === "con_monto" && (
-              <MontoInput
-                placeholder={isEN ? "Annual bonus amount (optional)" : "Monto del bono anual (opcional)"}
-                valor={r.bono_monto}
-                onValor={(v) => setR({ bono_monto: v })}
-                moneda={r.bono_moneda ?? "ARS"}
-                onMoneda={(m) => setR({ bono_moneda: m })}
-                monedaOpciones={["ARS", "USD", "EUR"]}
-              />
-            )}
-          </div>
+          {/* Bono anual — target + realización */}
+          {(() => {
+            const targetOpts: Array<[string, string, string]> = isEN
+              ? [
+                  ["no_tengo", "I don't have a bonus", ""],
+                  ["hasta_1", "Up to 1 gross monthly salary", "Estimated"],
+                  ["1_2", "1 to 2 gross monthly salaries", "Estimated"],
+                  ["2_3", "2 to 3 gross monthly salaries", "Estimated"],
+                  ["3_5", "3 to 5 gross monthly salaries", "Estimated"],
+                  ["mas_5", "More than 5 gross monthly salaries", "Estimated"],
+                ]
+              : [
+                  ["no_tengo", "No tengo bono", ""],
+                  ["hasta_1", "Hasta 1 sueldo bruto mensual", "Estimado"],
+                  ["1_2", "1 a 2 sueldos brutos mensuales", "Estimado"],
+                  ["2_3", "2 a 3 sueldos brutos mensuales", "Estimado"],
+                  ["3_5", "3 a 5 sueldos brutos mensuales", "Estimado"],
+                  ["mas_5", "Más de 5 sueldos brutos mensuales", "Estimado"],
+                ];
+            const midpoints: Record<string, number> = {
+              hasta_1: 0.5, "1_2": 1.5, "2_3": 2.5, "3_5": 4, mas_5: 6,
+            };
+            const salario = r.salario ?? 0;
+            const moneda = r.moneda ?? "ARS";
+            const mid = r.bono_target_sueldos ? midpoints[r.bono_target_sueldos] : 0;
+            const estimado = salario && mid ? Math.round(salario * mid) : 0;
+            const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
+            const realOpts: Array<[string, string]> = isEN
+              ? [
+                  ["completo", "Full (100% of target)"],
+                  ["parcial", "Partial (between 50% and 99%)"],
+                  ["minimo", "Minimal (less than 50%)"],
+                  ["no_recibi", "I didn't receive it that year"],
+                ]
+              : [
+                  ["completo", "Completo (100% del target)"],
+                  ["parcial", "Parcial (entre 50% y 99%)"],
+                  ["minimo", "Mínimo (menos del 50%)"],
+                  ["no_recibi", "No lo recibí ese año"],
+                ];
+            return (
+              <>
+                <div className="flex flex-col gap-2">
+                  <p className="font-body text-sm text-hueso/70">
+                    {isEN ? "What is your annual bonus target?" : "¿Cuál es el target de tu bono anual?"}
+                  </p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {targetOpts.map(([val, label]) => (
+                      <CardOption
+                        key={val}
+                        selected={r.bono_target_sueldos === val}
+                        onClick={() => setR({
+                          bono_target_sueldos: r.bono_target_sueldos === val ? undefined : val,
+                          ...(val === "no_tengo" ? { bono_realizacion: undefined } : {}),
+                        })}
+                      >
+                        {label}
+                      </CardOption>
+                    ))}
+                  </div>
+                  {r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo" && estimado > 0 && (
+                    <p className="font-body text-sm text-hueso/60">
+                      {isEN ? `Estimated: $${fmt(estimado)} ${moneda} annually` : `Estimado: $${fmt(estimado)} ${moneda} anuales`}
+                    </p>
+                  )}
+                </div>
+
+                {r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo" && (
+                  <div className="flex flex-col gap-2">
+                    <p className="font-body text-sm text-hueso/70">
+                      {isEN ? "Did you receive your bonus last year?" : "¿El año pasado recibiste tu bono?"}
+                    </p>
+                    <div className="grid grid-cols-1 gap-2">
+                      {realOpts.map(([val, label]) => (
+                        <CardOption
+                          key={val}
+                          selected={r.bono_realizacion === val}
+                          onClick={() => setR({
+                            bono_realizacion: r.bono_realizacion === val ? undefined : val,
+                          })}
+                        >
+                          {label}
+                        </CardOption>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           {/* Equity */}
           <div className="flex flex-col gap-2">
