@@ -77,7 +77,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
       ? `${r.experienciaIndustriaAnios} años (calculado desde fechas del CV; confirmado por usuario)`
       : (r.expIndustria as string) ?? null,
     anos_puesto_actual: null,
-    formacion: Array.isArray(r.formacion) ? (r.formacion as string[]) : null,
+    formacion: typeof r.formacion === "string" && r.formacion ? [r.formacion] : null,
     certificaciones: r.sinCertificaciones ? [] : (Array.isArray(r.certificaciones) ? (r.certificaciones as string[]) : null),
     herramientas_ia: Array.isArray(r.herramientasIA) ? r.herramientasIA : null,
     frecuencia_ia: (r.frecuenciaIA as string) ?? null,

@@ -340,7 +340,7 @@ function PerfilPage() {
             items={[
               { k: isEN ? "Total experience" : "Experiencia total", v: r.experienciaTotalAnios != null ? `${r.experienciaTotalAnios} ${isEN ? "years" : "años"}` : r.expTotal },
               { k: isEN ? "Industry experience" : "Experiencia en industria", v: r.experienciaIndustriaAnios != null ? `${r.experienciaIndustriaAnios} ${isEN ? "years" : "años"}` : r.expIndustria },
-              { k: isEN ? "Education" : "Formación", v: (r.formacion ?? []).join(" · ") },
+              { k: isEN ? "Education" : "Formación", v: r.formacion ?? "" },
               { k: isEN ? "Certifications" : "Certificaciones", v: r.sinCertificaciones ? (isEN ? "None" : "Ninguna") : (r.certificaciones ?? []).join(" · ") },
               { k: isEN ? "Languages" : "Idiomas", v: r.sinIdiomas ? (isEN ? "English only" : "Solo español") : (r.idiomas ?? []).map((i) => `${i.idioma} (${i.nivel}${i.certificacion ? `, ${i.certificacion}` : ""})`).join(" · ") },
               { k: isEN ? "AI tools" : "Herramientas de IA", v: (r.herramientasIA ?? []).join(" · ") + (r.frecuenciaIA ? ` — ${r.frecuenciaIA}` : "") },
