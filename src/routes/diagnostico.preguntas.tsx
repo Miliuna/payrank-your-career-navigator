@@ -1118,13 +1118,21 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
           <div key={s.id}>
             <CardOption
               selected={r.situacion === s.id}
-              onClick={() => setR({
-                situacion: s.id,
-                salario: undefined, moneda: undefined, brutoNeto: undefined,
-                trabajaActualmente: undefined, salarioAnterior: undefined,
-                monedaAnterior: undefined, tiempoSinTrabajo: undefined,
-                contractorHoras: undefined, contractorPago: undefined,
-              })}
+              onClick={() => {
+                const esEmpleado = s.id === "empleado";
+                setR({
+                  situacion: s.id,
+                  salario: esEmpleado ? r.salario : undefined,
+                  moneda: esEmpleado ? r.moneda : undefined,
+                  brutoNeto: esEmpleado ? r.brutoNeto : undefined,
+                  trabajaActualmente: undefined,
+                  salarioAnterior: undefined,
+                  monedaAnterior: undefined,
+                  tiempoSinTrabajo: undefined,
+                  contractorHoras: undefined,
+                  contractorPago: undefined,
+                });
+              }}
             >
               {isEN ? (SITUACIONES_LABELS_EN[s.id] ?? s.label) : s.label}
             </CardOption>
