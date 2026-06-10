@@ -33,7 +33,7 @@ export function SiteFooter() {
             <div>PROFESSIONAL SALARY INTELLIGENCE</div>
             <div>
               payrank.co ·{" "}
-              <a href="mailto:hello@payrank.co" className="hover:opacity-80 transition-opacity">
+              <a href="mailto:hello@payrank.co" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 hello@payrank.co
               </a>
             </div>
