@@ -782,12 +782,11 @@ function P7Funciones({ r, setR, datosExtraidos }: Props & { datosExtraidos?: imp
     const inferred = datosExtraidos?.funciones_inferidas;
     if (!Array.isArray(inferred) || inferred.length === 0) return;
     const matches = FUNCIONES.filter((opt) => {
-      const o = opt.toLowerCase();
+      const oWords = opt.toLowerCase().replace(/[/&]/g, " ").split(/\s+/).filter((w) => w.length > 3);
       return inferred.some((inf) => {
         if (typeof inf !== "string") return false;
-        const i = inf.toLowerCase().trim();
-        if (!i) return false;
-        return o.includes(i) || i.includes(o);
+        const i = inf.toLowerCase();
+        return oWords.some((w) => i.includes(w));
       });
     });
     if (matches.length > 0) {
