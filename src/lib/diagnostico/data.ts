@@ -246,6 +246,24 @@ export const GENEROS = [
   "Prefiero no incluir este análisis",
 ];
 
+export const MOTIVACIONES = [
+  "Recibí una oferta externa y quiero evaluar si vale la pena",
+  "Me negaron un aumento o llevo más de 12 meses sin revisión salarial",
+  "Mis responsabilidades crecieron pero mi sueldo no se actualizó",
+  "Creo que colegas en roles similares ganan más que yo",
+  "Quiero prepararme para una negociación salarial",
+  "Solo quiero saber dónde estoy parado en el mercado",
+];
+
+export const MOTIVACIONES_EN = [
+  "I received an external offer and want to evaluate if it's worth it",
+  "I was denied a raise or have been more than 12 months without a salary review",
+  "My responsibilities grew but my salary wasn't updated",
+  "I think colleagues in similar roles earn more than me",
+  "I want to prepare for a salary negotiation",
+  "I just want to know where I stand in the market",
+];
+
 export const TOTAL_PREGUNTAS = 19;
 
 // ============= EN label maps (display only — canonical value stays Spanish) =============
