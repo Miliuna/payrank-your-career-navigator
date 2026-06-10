@@ -962,10 +962,10 @@ function P12Formacion({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const options = isEN ? FORMACIONES_EN : FORMACIONES;
-  const sel = r.formacion ?? [];
+  const selected = r.formacion && r.formacion.length > 0 ? r.formacion[0] : undefined;
   const handleClick = (opt: string) => {
-    if (sel.includes(opt)) setR({ formacion: [] });
-    else setR({ formacion: [opt] });
+    // Selección estrictamente única (radio): siempre reemplaza por un único valor.
+    setR({ formacion: [opt] });
   };
   return (
     <>
@@ -975,11 +975,12 @@ function P12Formacion({ r, setR }: Props) {
       </QuestionHint>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {options.map((opt) => (
-          <CardOption key={opt} selected={sel.includes(opt)} onClick={() => handleClick(opt)}>
+          <CardOption key={opt} selected={selected === opt} onClick={() => handleClick(opt)}>
             {opt}
           </CardOption>
         ))}
       </div>
+
     </>
   );
 }
