@@ -7,6 +7,7 @@ import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
 import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, INDUSTRIAS_EN, NIVELES, NIVELES_EN, PAISES_EN, TIPOS_EMPRESA, TIPOS_EMPRESA_EN, labelOf } from "@/lib/diagnostico/data";
 import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
+import { LoadingOverlay } from "@/components/diagnostico/LoadingOverlay";
 import type { Respuestas } from "@/lib/diagnostico/types";
 
 function buildBeneficiosItems(r: Respuestas, isEN: boolean): { k: string; v: string }[] {
@@ -236,6 +237,7 @@ function PerfilPage() {
 
   return (
     <DiagnosticoShell step={4} progress={80}>
+      <LoadingOverlay show={busy} />
       <StepFade k="perfil">
         <p className="font-ui text-[10px] text-hueso/45 mb-3">{isEN ? "PROFILE CONFIRMATION" : "CONFIRMACIÓN DE PERFIL"}</p>
         <h1 className="font-display text-3xl md:text-4xl mb-3 text-hueso leading-tight">

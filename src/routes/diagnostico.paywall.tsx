@@ -8,6 +8,7 @@ import { simulatePayment, applyAccessCode, createCheckoutSession } from "@/lib/d
 import { useLang } from "@/lib/lang";
 import type { Plan } from "@/lib/diagnostico/types";
 import { PRICING, useRegion } from "@/lib/pricing";
+import { LoadingOverlay } from "@/components/diagnostico/LoadingOverlay";
 
 const searchSchema = z.object({ id: z.string().uuid() });
 
@@ -136,6 +137,7 @@ function PaywallPage() {
 
   return (
     <div className="min-h-screen bg-hueso text-tinta">
+      <LoadingOverlay show={busy || codigoBusy} />
       <header className="fixed top-0 inset-x-0 z-50 bg-hueso">
         <div className="mx-auto max-w-3xl px-5 md:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="font-display text-tinta text-xl">PayRank</Link>
