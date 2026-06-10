@@ -90,7 +90,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
       ? Math.round(r.incrementoUltimoAnioPct)
       : null,
     beneficio_salud_tipo: (r.beneficio_salud_tipo as string) ?? null,
-    beneficio_salud_monto: (r.beneficio_salud_monto as number) ?? null,
+    beneficio_salud_prestadora: (r.beneficio_salud_prestadora as string) ?? null,
     bono_tipo: (r.bono_tipo as string) ?? null,
     bono_monto: (r.bono_monto as number) ?? null,
     bono_moneda: (r.bono_moneda as string) ?? null,

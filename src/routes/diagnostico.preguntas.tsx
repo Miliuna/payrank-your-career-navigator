@@ -1418,29 +1418,29 @@ function P16Beneficios({ r, setR }: Props) {
             {isEN ? "A — Health coverage" : "A — Cobertura médica"}
           </p>
           <div className="grid grid-cols-1 gap-2">
-            {(isEN
-              ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
-              : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]]
-            ).map(([val, label]) => (
-              <CardOption
-                key={val}
-                selected={r.beneficio_salud_tipo === val}
-                onClick={() => setR({
-                  beneficio_salud_tipo: r.beneficio_salud_tipo === val ? undefined : val,
-                  ...(val !== "individual" && val !== "familiar" ? { beneficio_salud_monto: undefined } : {}),
-                })}
-              >
-                {label}
-              </CardOption>
-            ))}
-          </div>
-          {(r.beneficio_salud_tipo === "individual" || r.beneficio_salud_tipo === "familiar") && (
-            <MontoInput
-              placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-              valor={r.beneficio_salud_monto}
-              onValor={(v) => setR({ beneficio_salud_monto: v })}
-            />
-          )}
+          {(isEN
+            ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+            : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]]
+          ).map(([val, label]) => (
+            <CardOption
+              key={val}
+              selected={r.beneficio_salud_tipo === val}
+              onClick={() => setR({
+                beneficio_salud_tipo: r.beneficio_salud_tipo === val ? undefined : val,
+                ...(val !== "individual" && val !== "familiar" ? { beneficio_salud_prestadora: undefined } : {}),
+              })}
+            >
+              {label}
+            </CardOption>
+          ))}
+        </div>
+        {(r.beneficio_salud_tipo === "individual" || r.beneficio_salud_tipo === "familiar") && (
+          <TextInput
+            placeholder={isEN ? "Name of provider (e.g., Blue Cross, Aetna, Cigna)" : "Nombre de la prestadora (ej: OSDE, Swiss Medical, Medicus, Galeno, OMINT)"}
+            value={r.beneficio_salud_prestadora ?? ""}
+            onChange={(e) => setR({ beneficio_salud_prestadora: e.target.value || undefined })}
+          />
+        )}
         </div>
 
         {/* GRUPO B — Compensación variable */}
