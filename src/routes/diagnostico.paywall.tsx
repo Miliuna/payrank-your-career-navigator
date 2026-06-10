@@ -8,6 +8,7 @@ import { simulatePayment, applyAccessCode, createCheckoutSession } from "@/lib/d
 import { useLang } from "@/lib/lang";
 import type { Plan } from "@/lib/diagnostico/types";
 import { PRICING, useRegion } from "@/lib/pricing";
+import { LoadingOverlay } from "@/components/diagnostico/LoadingOverlay";
 
 const searchSchema = z.object({ id: z.string().uuid() });
 
