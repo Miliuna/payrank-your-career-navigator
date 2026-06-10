@@ -131,7 +131,10 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
   if (prestadora) out.beneficio_salud_prestadora = prestadora;
 
   const tituloCv = asString(d.titulo_cv);
-  if (tituloCv && !out.tituloElegido) out.tituloElegido = tituloCv;
+  if (tituloCv && !out.tituloElegido) {
+    const matchedFuncion = findOption(FUNCIONES, tituloCv);
+    out.tituloElegido = matchedFuncion ?? tituloCv;
+  }
 
   // Salario desde recibo
   const salarioInferido = d.salario_actual_inferido;
