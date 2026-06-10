@@ -41,6 +41,23 @@ function findOption(opts: readonly string[], val: string | null): string | null 
     ?? null;
 }
 
+function paisToMoneda(pais?: string, paisOtro?: string): string {
+  const p = (pais === "Otro" ? paisOtro : pais) ?? "";
+  switch (p) {
+    case "Argentina": return "ARS";
+    case "México": return "MXN";
+    case "Chile": return "CLP";
+    case "Colombia": return "COP";
+    case "Perú": return "PEN";
+    case "Uruguay": return "UYU";
+    case "Brasil": return "BRL";
+    case "Ecuador": return "USD";
+    case "Estados Unidos": return "USD";
+    case "España": return "EUR";
+    default: return "USD";
+  }
+}
+
 function bucketExpTotal(n: unknown): string | null {
   if (typeof n !== "number" || !Number.isFinite(n)) return null;
   if (n < 3) return "Menos de 3 años";
@@ -1375,7 +1392,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
                       setR({ incrementoUltimoAnioMonto: monto, incrementoUltimoAnioPct: pct });
                     }}
                   />
-                  <span className="font-body text-lg text-hueso">{r.moneda || "ARS"}</span>
+                  <span className="font-body text-lg text-hueso">{r.moneda || paisToMoneda(r.pais, r.paisOtro)}</span>
                 </div>
               </div>
             </div>
@@ -1386,7 +1403,8 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
       {(r.situacion === "empleado" || r.situacion === "freelance" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
         const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
         const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
-        const monedaBono = r.bono_moneda ?? "ARS";
+        const monedaPaisBono = paisToMoneda(r.pais, r.paisOtro);
+        const monedaBono = r.bono_moneda ?? monedaPaisBono;
         const realOpts: Array<[string, string]> = isEN
           ? [
               ["completo", "Yes, in full"],
@@ -1445,10 +1463,10 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
                 <MontoInput
                   placeholder="0"
                   valor={r.bono_monto}
-                  onValor={(v) => setR({ bono_monto: v, bono_moneda: r.bono_moneda ?? "ARS" })}
+                  onValor={(v) => setR({ bono_monto: v, bono_moneda: r.bono_moneda ?? monedaPaisBono })}
                   moneda={monedaBono}
                   onMoneda={(m) => setR({ bono_moneda: m })}
-                  monedaOpciones={["ARS", "USD", "EUR"]}
+                  monedaOpciones={Array.from(new Set([monedaPaisBono, "USD", "EUR"]))}
                 />
                 {r.bono_monto != null && r.bono_monto > 0 && (
                   <p className="font-body text-sm text-hueso/60">
@@ -1740,7 +1758,7 @@ function P16Beneficios({ r, setR }: Props) {
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
                 valor={r.beneficio_alimentacion_monto}
                 onValor={(v) => setR({ beneficio_alimentacion_monto: v })}
-                etiquetaMoneda="ARS"
+                etiquetaMoneda={paisToMoneda(r.pais, r.paisOtro)}
               />
             )}
           </div>
@@ -1790,7 +1808,7 @@ function P16Beneficios({ r, setR }: Props) {
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
                 valor={r.beneficio_movilidad_monto}
                 onValor={(v) => setR({ beneficio_movilidad_monto: v })}
-                etiquetaMoneda="ARS"
+                etiquetaMoneda={paisToMoneda(r.pais, r.paisOtro)}
               />
             )}
           </div>
