@@ -102,6 +102,7 @@ export type Respuestas = {
   whatsapp?: string;
   linkedinUrl?: string;
   herramientasIAOtra?: string;
+  sinIA?: boolean;
   // Contractor sub-flow
   contractorHoras?: "40h" | "menos40" | "proyecto";
   contractorPago?: "usd" | "local" | "mixto";
