@@ -236,8 +236,9 @@ function PerfilPage() {
   };
 
   return (
+    <>
+    <LoadingOverlay show={busy} />
     <DiagnosticoShell step={4} progress={80}>
-      <LoadingOverlay show={busy} />
       <StepFade k="perfil">
         <p className="font-ui text-[10px] text-hueso/45 mb-3">{isEN ? "PROFILE CONFIRMATION" : "CONFIRMACIÓN DE PERFIL"}</p>
         <h1 className="font-display text-3xl md:text-4xl mb-3 text-hueso leading-tight">
