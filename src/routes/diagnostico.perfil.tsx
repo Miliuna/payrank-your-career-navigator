@@ -347,7 +347,9 @@ function PerfilPage() {
             titulo={isEN ? "Block 4 · Your current compensation" : "Bloque 4 · Tu compensación actual"}
             items={[
               { k: isEN ? "Salary" : "Salario", v: salarioStr },
-              { k: isEN ? "Benefits" : "Beneficios", v: beneficiosStr },
+              ...(beneficiosItems.length
+                ? beneficiosItems
+                : [{ k: isEN ? "Benefits" : "Beneficios", v: dash }]),
             ]}
           />
         </div>
