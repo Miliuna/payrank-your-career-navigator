@@ -1580,6 +1580,9 @@ function P16Beneficios({ r, setR }: Props) {
                   <p className="font-body text-sm text-hueso/70">
                     {isEN ? "What is your annual bonus target?" : "¿Cuál es el target de tu bono anual?"}
                   </p>
+                  <p className="font-body text-xs text-hueso/50">
+                    {isEN ? "The target bonus corresponds to a full year of work." : "El bono target es el que corresponde a un año completo de trabajo."}
+                  </p>
                   <div className="grid grid-cols-1 gap-2">
                     {targetOpts.map(([val, label]) => (
                       <CardOption
