@@ -362,6 +362,7 @@ function PerfilPage() {
             disabled={busy}
             className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
           >
+            {busy && <Loader2 className="w-4 h-4 animate-spin" />}
             {busy
               ? (isEN ? "Saving…" : "Guardando…")
               : isEN
