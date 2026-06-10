@@ -213,7 +213,7 @@ function PerfilPage() {
       ? `${r.monedaAnterior} ${r.salarioAnterior.toLocaleString("es-AR")} (${isEN ? "last job" : "último trabajo"})`
       : dash);
 
-  const beneficiosStr = buildBeneficiosStr(r, isEN);
+  const beneficiosItems = buildBeneficiosItems(r, isEN);
 
   // Handlers de validación de perfil editable
   const updateRespuesta = <K extends keyof typeof r>(key: K, value: (typeof r)[K]) => {
