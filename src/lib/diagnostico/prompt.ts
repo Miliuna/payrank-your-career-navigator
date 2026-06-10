@@ -923,13 +923,16 @@ Estructura:
 4. Por qué persiste la brecha en ese contexto (razón de mercado, sin tono político)
 5. El argumento concreto para la negociación, adaptado al contexto cultural del país (Corrección 4 — adaptación cultural)
 
-Si el usuario es hombre:
+Si el usuario es hombre Y tiene personas a cargo:
 - En seccion_4, seteá "incluir": false y completá OBLIGATORIAMENTE el campo "mensaje_si_hombre" con un texto sustantivo de 3 a 5 oraciones (NUNCA null, NUNCA string vacío, NUNCA placeholder genérico). El mensaje debe:
   1. Reconocer que para su perfil específico los datos no muestran brecha de género en su contra.
   2. Explicar la brecha de género del mercado como dato de contexto relevante para él como profesional — usar el porcentaje de brecha que correspondería a su nivel jerárquico y país según la tabla de Corrección 4, expresado como "en tu nivel y mercado, las mujeres con tu mismo perfil ganan en promedio X% menos".
   3. Traducir por qué ese dato le importa a él: equidad salarial dentro de equipos que lidera o liderará, riesgo de rotación de talento femenino bien calificado, sesgos inconscientes en procesos de revisión salarial y promoción, y lectura de cultura organizacional al evaluar empresas.
   4. Cerrar con una acción concreta posible: revisar la equidad salarial de su equipo, pedir data desagregada por género en su próxima revisión, o usarlo como criterio al evaluar ofertas.
 - El texto debe estar redactado en la variante lingüística del país del usuario y mantener el tono profesional del resto del reporte. No usar lenguaje moralista ni político.
+
+Si el usuario es hombre Y NO tiene personas a cargo:
+- En seccion_4, seteá "incluir": false y "mensaje_si_hombre": null. Omitir completamente esta sección del reporte. No generar ningún texto de brecha de género.
 
 SECCIÓN 5 — "LO QUE DEBERÍAS PEDIR Y CÓMO DEFENDERLO"
 
