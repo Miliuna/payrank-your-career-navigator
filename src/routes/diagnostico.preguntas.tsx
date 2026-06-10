@@ -1463,10 +1463,10 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
                 <MontoInput
                   placeholder="0"
                   valor={r.bono_monto}
-                  onValor={(v) => setR({ bono_monto: v, bono_moneda: r.bono_moneda ?? "ARS" })}
+                  onValor={(v) => setR({ bono_monto: v, bono_moneda: r.bono_moneda ?? monedaPaisBono })}
                   moneda={monedaBono}
                   onMoneda={(m) => setR({ bono_moneda: m })}
-                  monedaOpciones={["ARS", "USD", "EUR"]}
+                  monedaOpciones={Array.from(new Set([monedaPaisBono, "USD", "EUR"]))}
                 />
                 {r.bono_monto != null && r.bono_monto > 0 && (
                   <p className="font-body text-sm text-hueso/60">
