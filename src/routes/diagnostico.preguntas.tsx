@@ -1747,96 +1747,15 @@ function P16Beneficios({ r, setR }: Props) {
   );
 }
 
-function P17Descripcion({ r, setR, modo }: Props & { modo?: string }) {
-  const { lang } = useLang();
-  const isEN = lang === "EN";
-  if (modo === "B") {
-    return (
-      <>
-        <QuestionTitle>{isEN ? "Does your role go beyond your job title?" : "¿Tu rol va más allá del título de tu puesto?"}</QuestionTitle>
-        <QuestionHint>
-          {isEN
-            ? "Describe what you actually do: decisions you make, projects you lead, impact you generate — even if they're not in your formal description. This is the central argument for your negotiation."
-            : "Describí lo que hacés de verdad: decisiones que tomás, proyectos que liderás, impacto que generás — aunque no estén en tu descripción formal. Esto es el argumento central de tu negociación."}
-        </QuestionHint>
-        <TextArea
-          placeholder={isEN
-            ? "Describe the real scope of your role: decisions, projects, responsibilities that exceed your title, concrete business impact."
-            : "Describí el alcance real de tu puesto: decisiones, proyectos, responsabilidades que exceden tu título, impacto concreto en el negocio."}
-          value={r.descripcionPuesto ?? ""}
-          onChange={(e) => setR({ descripcionPuesto: e.target.value })}
-          className="min-h-48"
-        />
-      </>
-    );
-  }
-  if (modo === "C") {
-    return (
-      <>
-        <QuestionTitle>{isEN ? "What experience do you want to highlight for this role?" : "¿Qué experiencia querés destacar para este rol?"}</QuestionTitle>
-        <QuestionHint>
-          {isEN
-            ? "Describe the most relevant parts of your career for the role you're applying to. This is used to build your arguments with the target company."
-            : "Describí lo más relevante de tu trayectoria para el puesto al que aplicás. Esto se usa para construir tus argumentos frente a la empresa objetivo."}
-        </QuestionHint>
-        <TextArea
-          placeholder={isEN
-            ? "Describe the achievements, projects, and skills most relevant to the role you're applying for."
-            : "Describí los logros, proyectos y habilidades más relevantes para el rol al que aplicás."}
-          value={r.descripcionPuesto ?? ""}
-          onChange={(e) => setR({ descripcionPuesto: e.target.value })}
-          className="min-h-48"
-        />
-      </>
-    );
-  }
-  if (modo === "D") {
-    return (
-      <>
-        <QuestionTitle>{isEN ? "Tell us about your current role and where you're headed" : "Contanos sobre tu rol actual y adónde apuntás"}</QuestionTitle>
-        <QuestionHint>
-          {isEN
-            ? "Describe your current role and the next move you want to make. The diagnostic maps the route between both."
-            : "Describí tu puesto actual y el próximo salto que querés dar. El diagnóstico traza la ruta entre ambos."}
-        </QuestionHint>
-        <TextArea
-          placeholder={isEN
-            ? "Describe your current role: responsibilities, decisions, and real scope."
-            : "Describí tu puesto actual: responsabilidades, decisiones y alcance real."}
-          value={r.descripcionPuesto ?? ""}
-          onChange={(e) => setR({ descripcionPuesto: e.target.value })}
-          className="min-h-48"
-        />
-        <div className="mt-6">
-          <p className="font-body text-base text-hueso mb-3">{isEN ? "Where are you aiming?" : "¿A dónde apuntás?"}</p>
-          <TextArea
-            placeholder={isEN
-              ? "Describe the next role or level you want to reach: title, type of company, responsibilities you want to take on."
-              : "Describí el siguiente rol o nivel que querés alcanzar: título, tipo de empresa, responsabilidades que buscás asumir."}
-            value={r.targetDireccionD ?? ""}
-            onChange={(e) => setR({ targetDireccionD: e.target.value })}
-            className="min-h-32"
-          />
-        </div>
-      </>
-    );
-  }
-  // Modo A (default)
+function P17Motivacion({ r, setR, isEN }: Props & { isEN: boolean }) {
+  const options = isEN ? MOTIVACIONES_EN : MOTIVACIONES;
   return (
-    <>
-      <QuestionTitle>{isEN ? "Tell us about your role" : "Contanos sobre tu puesto"}</QuestionTitle>
-      <QuestionHint>
-        {isEN ? "The more detail, the more precise your PayRank." : "Cuanto más detalle, más preciso tu PayRank."}
-      </QuestionHint>
-      <TextArea
-        placeholder={isEN
-          ? "Describe your role, main responsibilities, who you report to, and what decisions you make."
-          : "Describí tu puesto, responsabilidades principales, a quién reportás y qué decisiones tomás."}
-        value={r.descripcionPuesto ?? ""}
-        onChange={(e) => setR({ descripcionPuesto: e.target.value })}
-        className="min-h-48"
-      />
-    </>
+    <SimpleCards
+      title={isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?"}
+      options={options}
+      value={r.motivacion}
+      onChange={(v) => setR({ motivacion: v })}
+    />
   );
 }
 
