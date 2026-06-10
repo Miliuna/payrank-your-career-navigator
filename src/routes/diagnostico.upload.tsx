@@ -221,6 +221,8 @@ function UploadPage() {
         extracted = mergeExtractions(results);
       }
 
+      console.log("[upload] datosExtraidos:", extracted);
+
       setState((s) => ({
         ...s,
         datosExtraidos: extracted,
