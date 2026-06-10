@@ -1,6 +1,7 @@
 import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
+import { Loader2 } from "lucide-react";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
@@ -361,6 +362,7 @@ function PerfilPage() {
             disabled={busy}
             className="inline-flex items-center justify-center gap-3 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
           >
+            {busy && <Loader2 className="w-4 h-4 animate-spin" />}
             {busy
               ? (isEN ? "Saving…" : "Guardando…")
               : isEN
@@ -394,8 +396,9 @@ function PerfilPage() {
               type="button"
               onClick={simulateAndGenerate}
               disabled={busy}
-              className="inline-flex items-center justify-center bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
+              className="inline-flex items-center justify-center gap-2 bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
             >
+              {busy && <Loader2 className="w-4 h-4 animate-spin" />}
               {busy ? (isEN ? "Generating…" : "Generando…") : (isEN ? "Simulate payment and generate PayRank" : "Simular pago y generar PayRank")}
             </button>
             {err && <p className="mt-3 text-xs text-red-300/90 font-body">{err}</p>}

@@ -2,6 +2,7 @@ import * as React from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { Loader2 } from "lucide-react";
 import { useDiagnostico, setPlan } from "@/lib/diagnostico/store";
 import { simulatePayment, applyAccessCode, createCheckoutSession } from "@/lib/diagnostico/diagnostico.functions";
 import { useLang } from "@/lib/lang";
@@ -268,7 +269,10 @@ function PaywallPage() {
               disabled={busy}
               className="w-full inline-flex items-center justify-between bg-hueso text-tinta px-5 py-3 font-ui text-[11px] hover:bg-hueso/90 disabled:opacity-50 transition-colors"
             >
-              {busy ? (isEN ? "REDIRECTING TO CHECKOUT…" : "REDIRIGIENDO AL PAGO…") : (isEN ? "PAY AND GET MY PAYRANK" : "PAGAR Y OBTENER MI PAYRANK")}
+              <span className="inline-flex items-center gap-2">
+                {busy && <Loader2 className="w-4 h-4 animate-spin" />}
+                {busy ? (isEN ? "REDIRECTING TO CHECKOUT…" : "REDIRIGIENDO AL PAGO…") : (isEN ? "PAY AND GET MY PAYRANK" : "PAGAR Y OBTENER MI PAYRANK")}
+              </span>
               <span aria-hidden>→</span>
             </button>
 
@@ -287,8 +291,9 @@ function PaywallPage() {
                 type="button"
                 onClick={onSimulate}
                 disabled={busy}
-                className="inline-flex items-center justify-center bg-tinta text-hueso px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
+                className="inline-flex items-center justify-center gap-2 bg-tinta text-hueso px-5 py-3 font-ui text-[11px] hover:opacity-90 disabled:opacity-50 transition-opacity"
               >
+                {busy && <Loader2 className="w-4 h-4 animate-spin" />}
                 {busy ? "Generando…" : "Simular pago y generar PayRank"}
               </button>
             </div>
