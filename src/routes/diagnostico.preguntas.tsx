@@ -1403,7 +1403,8 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
       {(r.situacion === "empleado" || r.situacion === "freelance" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
         const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
         const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
-        const monedaBono = r.bono_moneda ?? "ARS";
+        const monedaPaisBono = paisToMoneda(r.pais, r.paisOtro);
+        const monedaBono = r.bono_moneda ?? monedaPaisBono;
         const realOpts: Array<[string, string]> = isEN
           ? [
               ["completo", "Yes, in full"],
