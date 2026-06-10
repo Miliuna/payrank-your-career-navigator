@@ -98,6 +98,7 @@ export type Database = {
           beneficio_movilidad_tipo: string | null
           beneficio_retiro: string | null
           beneficio_salud_monto: number | null
+          beneficio_salud_prestadora: string | null
           beneficio_salud_tipo: string | null
           beneficio_seguro_vida: string | null
           beneficio_vacaciones_adicionales: string | null
@@ -178,6 +179,7 @@ export type Database = {
           beneficio_movilidad_tipo?: string | null
           beneficio_retiro?: string | null
           beneficio_salud_monto?: number | null
+          beneficio_salud_prestadora?: string | null
           beneficio_salud_tipo?: string | null
           beneficio_seguro_vida?: string | null
           beneficio_vacaciones_adicionales?: string | null
@@ -258,6 +260,7 @@ export type Database = {
           beneficio_movilidad_tipo?: string | null
           beneficio_retiro?: string | null
           beneficio_salud_monto?: number | null
+          beneficio_salud_prestadora?: string | null
           beneficio_salud_tipo?: string | null
           beneficio_seguro_vida?: string | null
           beneficio_vacaciones_adicionales?: string | null
