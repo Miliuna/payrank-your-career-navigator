@@ -327,6 +327,11 @@ function PreguntasPage() {
     setState((s) => ({ ...s, respuestas: { ...s.respuestas, ...mapExtraccionAResp(datos) } }));
   }, [datos, setState]);
 
+  // Scroll al tocar cada paso para que el título y primer campo se vean arriba
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [step]);
+
   // Pasos pendientes (en modo documento) = pasos sin extracción válida o forzados a override
   const pendientes = React.useMemo(() => {
     if (!hasDoc) return null;
