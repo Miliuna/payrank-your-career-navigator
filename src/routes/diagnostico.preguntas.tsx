@@ -994,14 +994,22 @@ function P14HerramientasIA({ r, setR }: Props) {
   const isEN = lang === "EN";
   const tools = r.herramientasIA ?? [];
   const usos = r.usoIA ?? [];
+  const sinIA = r.sinIA ?? false;
   const toolOptions = isEN ? [...HERRAMIENTAS_IA.slice(0, -1), "Other"] : HERRAMIENTAS_IA;
   const toggleTool = (t: string) => {
-    if (tools.includes(t)) setR({ herramientasIA: tools.filter((x) => x !== t) });
-    else setR({ herramientasIA: [...tools, t] });
+    if (tools.includes(t)) setR({ herramientasIA: tools.filter((x) => x !== t), sinIA: false });
+    else setR({ herramientasIA: [...tools, t], sinIA: false });
   };
   const toggleUso = (u: string) => {
     if (usos.includes(u)) setR({ usoIA: usos.filter((x) => x !== u) });
     else setR({ usoIA: [...usos, u] });
+  };
+  const toggleSinIA = () => {
+    if (sinIA) {
+      setR({ sinIA: false });
+    } else {
+      setR({ sinIA: true, herramientasIA: [], frecuenciaIA: undefined, usoIA: [], herramientasIAOtra: undefined });
+    }
   };
   return (
     <>
@@ -1013,8 +1021,11 @@ function P14HerramientasIA({ r, setR }: Props) {
             {t}
           </ChipOption>
         ))}
+        <ChipOption selected={sinIA} onClick={toggleSinIA}>
+          {isEN ? "I don't use AI tools" : "NO USO HERRAMIENTAS DE IA"}
+        </ChipOption>
       </div>
-      {(tools.includes("Otra") || tools.includes("Other")) && (
+      {(tools.includes("Otra") || tools.includes("Other")) && !sinIA && (
         <div className="mb-10 animate-in fade-in duration-300">
           <TextInput
             placeholder={isEN ? "Specify here" : "Especificá acá"}
@@ -1025,27 +1036,31 @@ function P14HerramientasIA({ r, setR }: Props) {
         </div>
       )}
 
-      <div className="border-t border-hueso/10 pt-8 mb-10">
-        <h2 className="font-display text-2xl mb-5 text-hueso">{isEN ? "How often do you use them?" : "¿Con qué frecuencia las usás?"}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {(isEN ? FRECUENCIAS_IA_EN : FRECUENCIAS_IA).map((f) => (
-            <CardOption key={f} selected={r.frecuenciaIA === f} onClick={() => setR({ frecuenciaIA: f })}>
-              {f}
-            </CardOption>
-          ))}
-        </div>
-      </div>
+      {!sinIA && (
+        <>
+          <div className="border-t border-hueso/10 pt-8 mb-10">
+            <h2 className="font-display text-2xl mb-5 text-hueso">{isEN ? "How often do you use them?" : "¿Con qué frecuencia las usás?"}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {(isEN ? FRECUENCIAS_IA_EN : FRECUENCIAS_IA).map((f) => (
+                <CardOption key={f} selected={r.frecuenciaIA === f} onClick={() => setR({ frecuenciaIA: f })}>
+                  {f}
+                </CardOption>
+              ))}
+            </div>
+          </div>
 
-      <div className="border-t border-hueso/10 pt-8">
-        <h2 className="font-display text-2xl mb-5 text-hueso">{isEN ? "What do you mainly use them for?" : "¿Para qué las usás principalmente?"}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {(isEN ? USOS_IA_EN : USOS_IA).map((u) => (
-            <CardOption key={u} selected={usos.includes(u)} onClick={() => toggleUso(u)}>
-              {u}
-            </CardOption>
-          ))}
-        </div>
-      </div>
+          <div className="border-t border-hueso/10 pt-8">
+            <h2 className="font-display text-2xl mb-5 text-hueso">{isEN ? "What do you mainly use them for?" : "¿Para qué las usás principalmente?"}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {(isEN ? USOS_IA_EN : USOS_IA).map((u) => (
+                <CardOption key={u} selected={usos.includes(u)} onClick={() => toggleUso(u)}>
+                  {u}
+                </CardOption>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
