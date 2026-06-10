@@ -1542,8 +1542,11 @@ function MontoInput({
   monedaOpciones?: string[];
   etiquetaMoneda?: string;
 }) {
+  const { lang } = useLang();
+  const isEN = lang === "EN";
   const formatted = valor != null ? new Intl.NumberFormat("es-AR").format(valor) : "";
   const handleChange = (raw: string) => {
+    // Solo dígitos: ignoramos puntos, comas y cualquier separador. Sin decimales.
     const digits = raw.replace(/\D/g, "");
     if (!digits) { onValor(undefined); return; }
     onValor(Number(digits));
@@ -1558,6 +1561,11 @@ function MontoInput({
           value={formatted}
           onChange={(e) => handleChange(e.target.value)}
         />
+        <p className="font-body text-[11px] text-hueso/40 mt-1">
+          {isEN
+            ? "Enter a whole number, no decimals. Periods are added automatically."
+            : "Ingresá un número entero, sin decimales. Los puntos los agregamos automáticamente."}
+        </p>
       </div>
       {etiquetaMoneda && (
         <div className="font-body text-lg text-hueso/70 py-3">{etiquetaMoneda}</div>
@@ -1578,6 +1586,7 @@ function MontoInput({
     </div>
   );
 }
+
 
 function P16Beneficios({ r, setR }: Props) {
   const { lang } = useLang();
