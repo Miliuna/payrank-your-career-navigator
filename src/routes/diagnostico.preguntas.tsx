@@ -1334,7 +1334,7 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
 }
 
 function MontoInput({
-  placeholder, valor, onValor, moneda, onMoneda, monedaOpciones,
+  placeholder, valor, onValor, moneda, onMoneda, monedaOpciones, etiquetaMoneda,
 }: {
   placeholder: string;
   valor?: number;
@@ -1342,6 +1342,7 @@ function MontoInput({
   moneda?: string;
   onMoneda?: (m: string) => void;
   monedaOpciones?: string[];
+  etiquetaMoneda?: string;
 }) {
   const formatted = valor != null ? new Intl.NumberFormat("es-AR").format(valor) : "";
   const handleChange = (raw: string) => {
@@ -1360,6 +1361,9 @@ function MontoInput({
           onChange={(e) => handleChange(e.target.value)}
         />
       </div>
+      {etiquetaMoneda && (
+        <div className="font-body text-lg text-hueso/70 py-3">{etiquetaMoneda}</div>
+      )}
       {onMoneda && monedaOpciones && (
         <div>
           <select
@@ -1552,6 +1556,7 @@ function P16Beneficios({ r, setR }: Props) {
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
                 valor={r.beneficio_alimentacion_monto}
                 onValor={(v) => setR({ beneficio_alimentacion_monto: v })}
+                etiquetaMoneda="ARS"
               />
             )}
           </div>
@@ -1601,6 +1606,7 @@ function P16Beneficios({ r, setR }: Props) {
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
                 valor={r.beneficio_movilidad_monto}
                 onValor={(v) => setR({ beneficio_movilidad_monto: v })}
+                etiquetaMoneda="ARS"
               />
             )}
           </div>
