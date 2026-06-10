@@ -1547,11 +1547,11 @@ function P16Beneficios({ r, setR }: Props) {
                 ]
               : [
                   ["no_tengo", "No tengo bono", ""],
-                  ["hasta_1", "Hasta 1 sueldo bruto mensual", "Estimado"],
-                  ["1_2", "1 a 2 sueldos brutos mensuales", "Estimado"],
-                  ["2_3", "2 a 3 sueldos brutos mensuales", "Estimado"],
-                  ["3_5", "3 a 5 sueldos brutos mensuales", "Estimado"],
-                  ["mas_5", "Más de 5 sueldos brutos mensuales", "Estimado"],
+                  ["hasta_1", "Hasta 1 sueldo bruto mensual (monto anual)", "Estimado"],
+                  ["1_2", "1 a 2 sueldos brutos mensuales (monto anual)", "Estimado"],
+                  ["2_3", "2 a 3 sueldos brutos mensuales (monto anual)", "Estimado"],
+                  ["3_5", "3 a 5 sueldos brutos mensuales (monto anual)", "Estimado"],
+                  ["mas_5", "Más de 5 sueldos brutos mensuales (monto anual)", "Estimado"],
                 ];
             const midpoints: Record<string, number> = {
               hasta_1: 0.5, "1_2": 1.5, "2_3": 2.5, "3_5": 4, mas_5: 6,
@@ -1579,6 +1579,9 @@ function P16Beneficios({ r, setR }: Props) {
                 <div className="flex flex-col gap-2">
                   <p className="font-body text-sm text-hueso/70">
                     {isEN ? "What is your annual bonus target?" : "¿Cuál es el target de tu bono anual?"}
+                  </p>
+                  <p className="font-body text-xs text-hueso/50">
+                    {isEN ? "The target bonus corresponds to a full year of work." : "El bono target es el que corresponde a un año completo de trabajo."}
                   </p>
                   <div className="grid grid-cols-1 gap-2">
                     {targetOpts.map(([val, label]) => (
