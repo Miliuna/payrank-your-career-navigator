@@ -132,7 +132,32 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
 
   const tituloCv = asString(d.titulo_cv);
   if (tituloCv && !out.tituloElegido) {
-    const matchedFuncion = findOption(FUNCIONES, tituloCv);
+    const sinonimos: Record<string, string> = {
+      "project manager": "Gestión de proyectos / PMO",
+      "pmo": "Gestión de proyectos / PMO",
+      "gerente de proyectos": "Gestión de proyectos / PMO",
+      "coordinador de proyectos": "Gestión de proyectos / PMO",
+      "product manager": "Tecnología/Producto",
+      "product owner": "Tecnología/Producto",
+      "desarrollador": "Desarrollo de software/Web",
+      "developer": "Desarrollo de software/Web",
+      "analista": "Data/Analytics",
+      "data analyst": "Data/Analytics",
+      "gerente de rrhh": "RRHH/Talento",
+      "hr manager": "RRHH/Talento",
+      "jefe de personas": "RRHH/Talento",
+      "gerente comercial": "Ventas/Comercial",
+      "sales manager": "Ventas/Comercial",
+      "gerente de marketing": "Marketing",
+      "marketing manager": "Marketing",
+      "gerente de finanzas": "Finanzas/Contabilidad",
+      "finance manager": "Finanzas/Contabilidad",
+      "gerente general": "Estrategia",
+      "director": "Estrategia",
+    };
+    const tituloLower = tituloCv.toLowerCase();
+    const sinonimo = Object.entries(sinonimos).find(([k]) => tituloLower.includes(k))?.[1];
+    const matchedFuncion = sinonimo ?? findOption(FUNCIONES, tituloCv);
     out.tituloElegido = matchedFuncion ?? tituloCv;
   }
 
