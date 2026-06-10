@@ -16,7 +16,7 @@ export const Route = createFileRoute("/diagnostico/upload")({
   validateSearch: (s: Record<string, unknown>): Search => ({
     modo: (s.modo === "A" || s.modo === "B" || s.modo === "C" || s.modo === "D") ? s.modo : undefined,
   }),
-  head: () => ({ meta: [{ title: "Subí tu documento — PayRank" }] }),
+  head: () => ({ meta: [{ title: "Subí tus documentos — PayRank" }] }),
   component: UploadPage,
 });
 
@@ -178,13 +178,13 @@ function UploadPage() {
       <p className="font-ui text-[10px] text-hueso/50 mb-4">{isEN ? TITULOS_MODO_EN[modo] : TITULOS_MODO[modo]}</p>
       <h1 className="font-display text-3xl md:text-5xl mb-4 text-hueso leading-tight">
         {isEN
-          ? <>Upload your document and <span className="font-display-italic">skip the form</span></>
-          : <>Subí tu documento y te <span className="font-display-italic">ahorramos el formulario</span></>}
+          ? <>Upload your documents and <span className="font-display-italic">we pre-fill your profile</span></>
+          : <>Subí tus documentos y <span className="font-display-italic">pre-completamos tu perfil</span></>}
       </h1>
       <p className="font-body text-base md:text-lg text-hueso/70 mb-8 leading-relaxed max-w-2xl">
         {isEN
-          ? "AI reads your documents and pre-fills your profile automatically. We only ask what we can't find."
-          : "La IA lee tus documentos y pre-completa tu perfil automáticamente. Solo te preguntamos lo que no encontremos."}
+          ? "AI extracts what it can from your documents. You confirm and fill in the rest — the process is shorter and more precise."
+          : "La IA extrae lo que puede de tus documentos. Vos confirmás y completás el resto — el proceso es más corto y más preciso."}
       </p>
 
       {extractError ? (
