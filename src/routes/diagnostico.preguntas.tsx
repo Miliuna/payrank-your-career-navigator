@@ -431,7 +431,7 @@ function PreguntasPage() {
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
           <>
-            {renderStep(step, r, setR, modo, isEN, certRawInput, setCertRawInput)}
+            {renderStep(step, r, setR, modo, isEN, datos, certRawInput, setCertRawInput)}
             {inferidoDesdeCV && (
               <p className="font-body text-sm text-hueso/60 mt-4 leading-relaxed border-l-2 border-hueso/30 pl-4">
                 {isEN ? "Double-check this — we inferred it from your CV." : "Verificá este dato — lo inferimos de tu CV."}
@@ -538,12 +538,13 @@ function renderStep(
   setR: (p: Partial<typeof r>) => void,
   modo: string,
   isEN: boolean,
+  datos: import("@/lib/diagnostico/types").DatosExtraidos | null,
   certRawInput?: string,
   onCertRawChange?: (v: string) => void,
 ) {
   switch (step) {
     case 0: return <P1Pais r={r} setR={setR} />;
-    case 1: return <P15Situacion r={r} setR={setR} modo={modo} />;
+    case 1: return <P15Situacion r={r} setR={setR} modo={modo} datosExtraidos={datos} />;
     case 2: return <P2Industria r={r} setR={setR} />;
     case 3: return <P3TipoEmpresa r={r} setR={setR} />;
     case 4: return <P4Nivel r={r} setR={setR} />;
@@ -1059,7 +1060,7 @@ const SITUACIONES_DESC_EN: Record<string, string> = {
   contractor: "You have a contract with a company (usually international) with fixed weekly hours, but without formal local employment relationship.",
 };
 
-function P15Situacion({ r, setR, modo }: Props & { modo?: string }) {
+function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string; datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   return (
@@ -1098,6 +1099,20 @@ function P15Situacion({ r, setR, modo }: Props & { modo?: string }) {
 
       {r.situacion === "empleado" && (
         <div className="border-t border-hueso/10 pt-8 space-y-6">
+          {datosExtraidos?.recibo_fecha && r.salario && (() => {
+            const reciboDate = new Date(datosExtraidos.recibo_fecha + "-01");
+            const hoy = new Date();
+            const diffDias = Math.floor((hoy.getTime() - reciboDate.getTime()) / (1000 * 60 * 60 * 24));
+            if (diffDias > 60) {
+              const mes = reciboDate.toLocaleDateString("es-AR", { month: "long", year: "numeric" });
+              return (
+                <div className="border border-hueso/30 bg-hueso/5 p-4 text-sm font-body text-hueso/75 leading-relaxed">
+                  Encontramos <strong>${r.salario.toLocaleString("es-AR")}</strong> en tu recibo de {mes}. Si tu salario cambió desde entonces, actualizá el monto abajo.
+                </div>
+              );
+            }
+            return null;
+          })()}
           <SalarioInput
             label={isEN ? "What is your current gross monthly salary?" : "¿Cuál es tu salario bruto mensual actual?"}
             valor={r.salario}
