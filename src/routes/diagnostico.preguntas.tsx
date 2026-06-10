@@ -828,8 +828,8 @@ function P7Funciones({ r, setR, datosExtraidos }: Props & { datosExtraidos?: imp
       <div className="mt-8 pt-8 border-t border-hueso/10">
         <p className="font-body text-sm text-hueso/60 mb-3">
           {isEN
-            ? "Or if you prefer, paste your job description or responsibilities here and AI will extract the functions."
-            : "O si preferís, pegá tu descripción de puesto o responsabilidades acá y la IA extrae las funciones."}
+            ? "Is there anything you didn't find in the list? You can add it here (optional)."
+            : "¿Hay algo que no encontraste en la lista? Podés agregarlo acá (opcional)."}
         </p>
         <TextArea
           placeholder={isEN ? "Paste your job description..." : "Pegá tu descripción de puesto..."}
