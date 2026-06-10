@@ -770,11 +770,31 @@ function P4Nivel({ r, setR }: Props) {
   );
 }
 
-function P7Funciones({ r, setR }: Props) {
+function P7Funciones({ r, setR, datosExtraidos }: Props & { datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const sel = r.funciones ?? [];
   const funcsDisplay = isEN ? FUNCIONES_EN : FUNCIONES;
+  const prefilledRef = React.useRef(false);
+  React.useEffect(() => {
+    if (prefilledRef.current) return;
+    if ((r.funciones?.length ?? 0) > 0) { prefilledRef.current = true; return; }
+    const inferred = datosExtraidos?.funciones_inferidas;
+    if (!Array.isArray(inferred) || inferred.length === 0) return;
+    const matches = FUNCIONES.filter((opt) => {
+      const o = opt.toLowerCase();
+      return inferred.some((inf) => {
+        if (typeof inf !== "string") return false;
+        const i = inf.toLowerCase().trim();
+        if (!i) return false;
+        return o.includes(i) || i.includes(o);
+      });
+    });
+    if (matches.length > 0) {
+      prefilledRef.current = true;
+      setR({ funciones: matches });
+    }
+  }, [datosExtraidos, r.funciones, setR]);
   const toggle = (opt: string) => {
     if (sel.includes(opt)) setR({ funciones: sel.filter((x) => x !== opt) });
     else setR({ funciones: [...sel, opt] });
