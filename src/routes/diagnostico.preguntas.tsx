@@ -130,6 +130,23 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
   const prestadora = asString(d.nombre_prestadora_salud);
   if (prestadora) out.beneficio_salud_prestadora = prestadora;
 
+  // Salario desde recibo
+  const salarioInferido = d.salario_actual_inferido;
+  if (salarioInferido != null) {
+    const num = typeof salarioInferido === "number" ? salarioInferido : Number(String(salarioInferido).replace(/[^0-9]/g, ""));
+    if (!isNaN(num) && num > 0) out.salario = num;
+  }
+  const monedaInferida = asString(d.moneda_inferida);
+  if (monedaInferida) {
+    const monedaUp = monedaInferida.toUpperCase();
+    if (["ARS", "USD", "EUR", "MXN", "CLP", "COP", "BRL"].includes(monedaUp)) out.moneda = monedaUp;
+  }
+  const tipoSalario = asString(d.tipo_salario_inferido);
+  if (tipoSalario) {
+    const t = tipoSalario.toLowerCase();
+    if (t === "bruto" || t === "neto") out.brutoNeto = t as "bruto" | "neto";
+  }
+
   return out;
 }
 
