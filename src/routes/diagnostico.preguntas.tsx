@@ -1376,9 +1376,114 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
           )}
         </div>
       )}
+
+      {(r.situacion === "empleado" || r.situacion === "freelance" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
+        const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
+        const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
+        const monedaBono = r.bono_moneda ?? "ARS";
+        const realOpts: Array<[string, string]> = isEN
+          ? [
+              ["completo", "Yes, in full"],
+              ["parcial", "Partially"],
+              ["no_recibi", "No, I didn't receive it"],
+            ]
+          : [
+              ["completo", "Sí, completo"],
+              ["parcial", "Parcialmente"],
+              ["no_recibi", "No lo cobré"],
+            ];
+        return (
+          <div className="border-t border-hueso/10 pt-8 flex flex-col gap-5">
+            {/* Q1 — ¿Tenés bono variable? */}
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-base text-hueso">
+                {isEN ? "Do you have a variable bonus?" : "¿Tenés bono variable?"}
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <CardOption
+                  selected={r.bono_target_sueldos === "no_tengo"}
+                  onClick={() => setR({
+                    bono_target_sueldos: "no_tengo",
+                    bono_monto: undefined,
+                    bono_moneda: undefined,
+                    bono_realizacion: undefined,
+                  })}
+                >
+                  {isEN ? "No bonus" : "No tengo bono"}
+                </CardOption>
+                <CardOption
+                  selected={!!tieneBono}
+                  onClick={() => setR({
+                    bono_target_sueldos: tieneBono ? undefined : "si_tengo",
+                    ...(tieneBono ? { bono_monto: undefined, bono_moneda: undefined, bono_realizacion: undefined } : {}),
+                  })}
+                >
+                  {isEN ? "Yes, I have a bonus" : "Sí tengo bono"}
+                </CardOption>
+              </div>
+            </div>
+
+            {/* Q2 — Monto anual del bono */}
+            {tieneBono && (
+              <div className="flex flex-col gap-2">
+                <p className="font-body text-sm text-hueso/70">
+                  {isEN
+                    ? "How much do you earn in bonuses in a typical year?"
+                    : "¿Cuánto cobrás de bono en un año típico?"}
+                </p>
+                <p className="font-body text-xs text-hueso/50">
+                  {isEN
+                    ? "Add up all payments throughout the year — whether annual, semi-annual, or quarterly."
+                    : "Sumá todos los pagos del año — sea anual, semestral o trimestral."}
+                </p>
+                <MontoInput
+                  placeholder="0"
+                  valor={r.bono_monto}
+                  onValor={(v) => setR({ bono_monto: v, bono_moneda: r.bono_moneda ?? "ARS" })}
+                  moneda={monedaBono}
+                  onMoneda={(m) => setR({ bono_moneda: m })}
+                  monedaOpciones={["ARS", "USD", "EUR"]}
+                />
+                {r.bono_monto != null && r.bono_monto > 0 && (
+                  <p className="font-body text-sm text-hueso/60">
+                    {isEN
+                      ? `Annual bonus: $${fmt(r.bono_monto)} ${monedaBono}`
+                      : `Bono anual: $${fmt(r.bono_monto)} ${monedaBono}`}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Q3 — ¿Lo cobraste completo el año pasado? */}
+            {tieneBono && (
+              <div className="flex flex-col gap-2">
+                <p className="font-body text-sm text-hueso/70">
+                  {isEN
+                    ? "Did you receive your full bonus last year?"
+                    : "¿El año pasado lo cobraste completo?"}
+                </p>
+                <div className="grid grid-cols-1 gap-2">
+                  {realOpts.map(([val, label]) => (
+                    <CardOption
+                      key={val}
+                      selected={r.bono_realizacion === val}
+                      onClick={() => setR({
+                        bono_realizacion: r.bono_realizacion === val ? undefined : val,
+                      })}
+                    >
+                      {label}
+                    </CardOption>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </>
   );
 }
+
 
 function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
   label: string; valor?: number; moneda?: string;
@@ -1546,110 +1651,8 @@ function P16Beneficios({ r, setR }: Props) {
             {isEN ? "B — Variable compensation" : "B — Compensación variable"}
           </p>
 
-          {/* Bono variable — 3 preguntas en secuencia */}
-          {(() => {
-            const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
-            const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
-            const monedaBono = r.bono_moneda ?? "ARS";
-            const realOpts: Array<[string, string]> = isEN
-              ? [
-                  ["completo", "Yes, in full"],
-                  ["parcial", "Partially"],
-                  ["no_recibi", "No, I didn't receive it"],
-                ]
-              : [
-                  ["completo", "Sí, completo"],
-                  ["parcial", "Parcialmente"],
-                  ["no_recibi", "No lo cobré"],
-                ];
-            return (
-              <>
-                {/* Q1 — ¿Tenés bono variable? */}
-                <div className="flex flex-col gap-2">
-                  <p className="font-body text-sm text-hueso/70">
-                    {isEN ? "Do you have a variable bonus?" : "¿Tenés bono variable?"}
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <CardOption
-                      selected={r.bono_target_sueldos === "no_tengo"}
-                      onClick={() => setR({
-                        bono_target_sueldos: "no_tengo",
-                        bono_monto: undefined,
-                        bono_moneda: undefined,
-                        bono_realizacion: undefined,
-                      })}
-                    >
-                      {isEN ? "No bonus" : "No tengo bono"}
-                    </CardOption>
-                    <CardOption
-                      selected={!!tieneBono}
-                      onClick={() => setR({
-                        bono_target_sueldos: tieneBono ? undefined : "si_tengo",
-                        ...(tieneBono ? { bono_monto: undefined, bono_moneda: undefined, bono_realizacion: undefined } : {}),
-                      })}
-                    >
-                      {isEN ? "Yes, I have a bonus" : "Sí tengo bono"}
-                    </CardOption>
-                  </div>
-                </div>
+          {/* Bono variable: movido al paso de Situación, después del incremento salarial */}
 
-                {/* Q2 — Monto anual del bono */}
-                {tieneBono && (
-                  <div className="flex flex-col gap-2">
-                    <p className="font-body text-sm text-hueso/70">
-                      {isEN
-                        ? "How much do you earn in bonuses in a typical year?"
-                        : "¿Cuánto cobrás de bono en un año típico?"}
-                    </p>
-                    <p className="font-body text-xs text-hueso/50">
-                      {isEN
-                        ? "Add up all payments throughout the year — whether annual, semi-annual, or quarterly."
-                        : "Sumá todos los pagos del año — sea anual, semestral o trimestral."}
-                    </p>
-                    <MontoInput
-                      placeholder="0"
-                      valor={r.bono_monto}
-                      onValor={(v) => setR({ bono_monto: v, bono_moneda: r.bono_moneda ?? "ARS" })}
-                      moneda={monedaBono}
-                      onMoneda={(m) => setR({ bono_moneda: m })}
-                      monedaOpciones={["ARS", "USD", "EUR"]}
-                    />
-                    {r.bono_monto != null && r.bono_monto > 0 && (
-                      <p className="font-body text-sm text-hueso/60">
-                        {isEN
-                          ? `Annual bonus: $${fmt(r.bono_monto)} ${monedaBono}`
-                          : `Bono anual: $${fmt(r.bono_monto)} ${monedaBono}`}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* Q3 — ¿Lo cobraste completo el año pasado? */}
-                {tieneBono && (
-                  <div className="flex flex-col gap-2">
-                    <p className="font-body text-sm text-hueso/70">
-                      {isEN
-                        ? "Did you receive your full bonus last year?"
-                        : "¿El año pasado lo cobraste completo?"}
-                    </p>
-                    <div className="grid grid-cols-1 gap-2">
-                      {realOpts.map(([val, label]) => (
-                        <CardOption
-                          key={val}
-                          selected={r.bono_realizacion === val}
-                          onClick={() => setR({
-                            bono_realizacion: r.bono_realizacion === val ? undefined : val,
-                          })}
-                        >
-                          {label}
-                        </CardOption>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </>
-            );
-          })()}
 
           {/* Equity */}
           <div className="flex flex-col gap-2">
