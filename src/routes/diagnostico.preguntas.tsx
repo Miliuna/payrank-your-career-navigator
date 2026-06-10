@@ -130,6 +130,9 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
   const prestadora = asString(d.nombre_prestadora_salud);
   if (prestadora) out.beneficio_salud_prestadora = prestadora;
 
+  const tituloCv = asString(d.titulo_cv);
+  if (tituloCv && !out.tituloElegido) out.tituloElegido = tituloCv;
+
   // Salario desde recibo
   const salarioInferido = d.salario_actual_inferido;
   if (salarioInferido != null) {
