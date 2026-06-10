@@ -1392,7 +1392,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
                       setR({ incrementoUltimoAnioMonto: monto, incrementoUltimoAnioPct: pct });
                     }}
                   />
-                  <span className="font-body text-lg text-hueso">{r.moneda || "ARS"}</span>
+                  <span className="font-body text-lg text-hueso">{r.moneda || paisToMoneda(r.pais, r.paisOtro)}</span>
                 </div>
               </div>
             </div>
