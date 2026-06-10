@@ -984,7 +984,10 @@ Objeciones más comunes (en bloque expandible — no en el flujo principal):
 - "¿De dónde sacás esos números?" → respuesta que protege al usuario y es completamente creíble
 
 REGLA DE TIEMPO VERBAL EN SCRIPTS (P-05):
-El primer párrafo de todo script de negociación (script_jefe y script_recruiter) debe usar presente indicativo, nunca condicional ni subjuntivo. CORRECTO: "Quiero hablar con vos sobre mi compensación." INCORRECTO: "Quería hablar con vos", "Quisiera plantear", "Me gustaría conversar". El condicional en la apertura señala inseguridad antes de que empiece la conversación. Presente indicativo siempre.
+El primer párrafo de todo script de negociación (script_jefe y script_recruiter) debe usar presente indicativo, nunca condicional ni subjuntivo. CORRECTO (Argentina/Uruguay): "Quiero hablar con vos sobre mi compensación."
+CORRECTO (Colombia/México/Chile/Perú y resto de LATAM): "Quiero hablar contigo sobre mi compensación."
+CORRECTO (España): "Quiero hablar contigo sobre mi compensación."
+CORRECTO (USA/anglófonos): "I'd like to talk with you about my compensation." INCORRECTO: "Quería hablar con vos", "Quisiera plantear", "Me gustaría conversar". El condicional en la apertura señala inseguridad antes de que empiece la conversación. Presente indicativo siempre.
 
 AL FINAL DE CADA SCRIPT — SIEMPRE (Corrección 9):
 "Después de decir tu número: silencio.
