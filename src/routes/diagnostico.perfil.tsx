@@ -8,146 +8,94 @@ import { TITULOS_MODO, TITULOS_MODO_EN, FUNCIONES, INDUSTRIAS, INDUSTRIAS_EN, NI
 import { createDiagnostico, simulatePayment } from "@/lib/diagnostico/diagnostico.functions";
 import type { Respuestas } from "@/lib/diagnostico/types";
 
-function buildBeneficiosStr(r: Respuestas, isEN: boolean): string {
-  const parts: string[] = [];
+function buildBeneficiosItems(r: Respuestas, isEN: boolean): { k: string; v: string }[] {
+  const items: { k: string; v: string }[] = [];
   const t = (es: string, en: string) => (isEN ? en : es);
+  const push = (k: string, v: string | undefined | null) => {
+    if (v && v.trim()) items.push({ k, v });
+  };
 
-  // Legacy array
-  if (r.beneficios?.length) {
-    parts.push(...r.beneficios);
-  }
-  if (r.beneficiosOtro) {
-    parts.push(r.beneficiosOtro);
-  }
-  if (r.beneficiosAdicionalesTexto) {
-    parts.push(r.beneficiosAdicionalesTexto);
-  }
-  if (r.beneficios_no_declarados?.length) {
-    parts.push(...r.beneficios_no_declarados);
-  }
-
-  // Health coverage
   if (r.beneficio_salud_tipo) {
     const map: Record<string, string> = isEN
-      ? { individual: "Individual health coverage", familiar: "Family health coverage", publica: "Public coverage only", no_tengo: "No health coverage", no_se: "Don't know health coverage" }
-      : { individual: "Cobertura médica individual", familiar: "Cobertura médica familiar", publica: "Solo cobertura pública", no_tengo: "Sin cobertura médica", no_se: "No sé cobertura médica" };
-    let h = map[r.beneficio_salud_tipo] ?? r.beneficio_salud_tipo;
-    if (r.beneficio_salud_prestadora) {
-      h += ` — ${r.beneficio_salud_prestadora}`;
-    }
-    parts.push(h);
+      ? { individual: "Individual", familiar: "Family group", publica: "Public coverage only", no_tengo: "None", no_se: "Don't know" }
+      : { individual: "Individual", familiar: "Grupo familiar", publica: "Solo cobertura pública", no_tengo: "No tengo", no_se: "No sé" };
+    const tipo = map[r.beneficio_salud_tipo] ?? r.beneficio_salud_tipo;
+    const v = r.beneficio_salud_prestadora ? `${tipo} — ${r.beneficio_salud_prestadora}` : tipo;
+    push(t("Cobertura médica", "Health coverage"), v);
   }
 
-  // Bonus
   if (r.bono_tipo) {
     const map: Record<string, string> = isEN
-      ? { con_monto: "Annual bonus (known amount)", sin_monto: "Annual bonus (amount unknown)", no_tengo: "No annual bonus" }
-      : { con_monto: "Bono anual (con monto)", sin_monto: "Bono anual (sin monto)", no_tengo: "Sin bono anual" };
-    let b = map[r.bono_tipo] ?? r.bono_tipo;
-    if (r.bono_monto != null) {
-      b += ` — ${t("monto", "amount")}: ${r.bono_moneda ? `${r.bono_moneda} ` : ""}${r.bono_monto}`;
-    } else if (r.bono_moneda) {
-      b += ` — ${t("moneda", "currency")}: ${r.bono_moneda}`;
-    }
-    if (r.bonoFrecuencia) {
-      b += ` — ${t("frecuencia", "frequency")}: ${r.bonoFrecuencia}`;
-    }
-    if (r.bonoUltimo) {
-      b += ` — ${t("último bono", "last bonus")}: ${r.bonoUltimo}`;
-    }
-    parts.push(b);
+      ? { con_monto: "Yes (with amount)", sin_monto: "Yes (amount unknown)", no_tengo: "No" }
+      : { con_monto: "Sí (con monto)", sin_monto: "Sí (sin monto)", no_tengo: "No tengo" };
+    let v = map[r.bono_tipo] ?? r.bono_tipo;
+    if (r.bono_monto != null) v += ` — ${r.bono_moneda ? `${r.bono_moneda} ` : ""}${r.bono_monto.toLocaleString("es-AR")}`;
+    else if (r.bono_moneda) v += ` — ${r.bono_moneda}`;
+    if (r.bonoFrecuencia) v += ` · ${t("frecuencia", "frequency")}: ${r.bonoFrecuencia}`;
+    if (r.bonoUltimo) v += ` · ${t("último", "last")}: ${r.bonoUltimo}`;
+    push(t("Bono anual", "Annual bonus"), v);
   }
 
-  // Equity
-  if (r.equity) {
-    parts.push(r.equity === "si" ? t("Equity / RSUs / Stock options", "Equity / RSUs / Stock options") : t("Sin equity", "No equity"));
-  }
-
-  // Commissions
   if (r.comisiones_tipo) {
     const map: Record<string, string> = isEN
-      ? { con_monto: "Commissions (known amount)", sin_monto: "Commissions (amount unknown)", no_tengo: "No commissions" }
-      : { con_monto: "Comisiones (con monto)", sin_monto: "Comisiones (sin monto)", no_tengo: "Sin comisiones" };
-    let c = map[r.comisiones_tipo] ?? r.comisiones_tipo;
-    if (r.comisiones_monto != null) {
-      c += ` — ${t("monto", "amount")}: ${r.comisiones_monto}`;
-    }
-    parts.push(c);
+      ? { con_monto: "Yes (with amount)", sin_monto: "Yes (amount unknown)", no_tengo: "No" }
+      : { con_monto: "Sí (con monto)", sin_monto: "Sí (sin monto)", no_tengo: "No tengo" };
+    let v = map[r.comisiones_tipo] ?? r.comisiones_tipo;
+    if (r.comisiones_monto != null) v += ` — ${r.comisiones_monto.toLocaleString("es-AR")}`;
+    push(t("Comisiones", "Commissions"), v);
   }
 
-  // Meal / food benefit
+  if (r.equity) push(t("Equity / RSUs / Stock options", "Equity / RSUs / Stock options"), r.equity === "si" ? t("Sí", "Yes") : t("No", "No"));
+
   if (r.beneficio_alimentacion_tipo) {
     const map: Record<string, string> = isEN
-      ? { con_monto: "Meal allowance (known amount)", sin_monto: "Meal allowance (amount unknown)", no_tengo: "No meal allowance" }
-      : { con_monto: "Ticket alimentario (con monto)", sin_monto: "Ticket alimentario (sin monto)", no_tengo: "Sin ticket alimentario" };
-    let a = map[r.beneficio_alimentacion_tipo] ?? r.beneficio_alimentacion_tipo;
-    if (r.beneficio_alimentacion_monto != null) {
-      a += ` — ${t("monto", "amount")}: ${r.beneficio_alimentacion_monto}`;
-    }
-    parts.push(a);
+      ? { con_monto: "Yes (with amount)", sin_monto: "Yes (amount unknown)", no_tengo: "No" }
+      : { con_monto: "Sí (con monto)", sin_monto: "Sí (sin monto)", no_tengo: "No tengo" };
+    let v = map[r.beneficio_alimentacion_tipo] ?? r.beneficio_alimentacion_tipo;
+    if (r.beneficio_alimentacion_monto != null) v += ` — ARS ${r.beneficio_alimentacion_monto.toLocaleString("es-AR")}`;
+    push(t("Ticket alimentario", "Meal allowance"), v);
   }
 
-  // Corporate car
-  if (r.auto_corporativo) {
-    parts.push(r.auto_corporativo === "si" ? t("Auto corporativo", "Company car") : t("Sin auto corporativo", "No company car"));
-  }
-
-  // Phone
-  if (r.beneficio_celular) {
-    parts.push(r.beneficio_celular === "si" ? t("Celular corporativo", "Company phone") : t("Sin celular corporativo", "No company phone"));
-  }
-
-  // Mobility
   if (r.beneficio_movilidad_tipo) {
     const map: Record<string, string> = isEN
-      ? { con_monto: "Mobility allowance (known amount)", sin_monto: "Mobility allowance (amount unknown)", no_tengo: "No mobility allowance" }
-      : { con_monto: "Movilidad (con monto)", sin_monto: "Movilidad (sin monto)", no_tengo: "Sin movilidad" };
-    let m = map[r.beneficio_movilidad_tipo] ?? r.beneficio_movilidad_tipo;
-    if (r.beneficio_movilidad_monto != null) {
-      m += ` — ${t("monto", "amount")}: ${r.beneficio_movilidad_monto}`;
-    }
-    parts.push(m);
+      ? { con_monto: "Yes (with amount)", sin_monto: "Yes (amount unknown)", no_tengo: "No" }
+      : { con_monto: "Sí (con monto)", sin_monto: "Sí (sin monto)", no_tengo: "No tengo" };
+    let v = map[r.beneficio_movilidad_tipo] ?? r.beneficio_movilidad_tipo;
+    if (r.beneficio_movilidad_monto != null) v += ` — ARS ${r.beneficio_movilidad_monto.toLocaleString("es-AR")}`;
+    push(t("Movilidad", "Mobility"), v);
   }
 
-  // Life insurance
-  if (r.beneficio_seguro_vida) {
-    parts.push(r.beneficio_seguro_vida === "si" ? t("Seguro de vida", "Life insurance") : t("Sin seguro de vida", "No life insurance"));
-  }
+  if (r.auto_corporativo) push(t("Auto corporativo", "Company car"), r.auto_corporativo === "si" ? t("Sí", "Yes") : t("No", "No"));
+  if (r.beneficio_celular) push(t("Celular corporativo", "Company phone"), r.beneficio_celular === "si" ? t("Sí", "Yes") : t("No", "No"));
+  if (r.beneficio_seguro_vida) push(t("Seguro de vida", "Life insurance"), r.beneficio_seguro_vida === "si" ? t("Sí", "Yes") : t("No", "No"));
+  if (r.beneficio_retiro) push(t("Plan de retiro", "Retirement plan"), r.beneficio_retiro === "si" ? t("Sí", "Yes") : t("No", "No"));
 
-  // Retirement
-  if (r.beneficio_retiro) {
-    parts.push(r.beneficio_retiro === "si" ? t("Plan de retiro", "Retirement plan") : t("Sin plan de retiro", "No retirement plan"));
-  }
-
-  // 401k / match
   if (r.beneficio_401k_match) {
-    let k = r.beneficio_401k_match === "si" ? t("401(k) match", "401(k) match") : t("Sin 401(k) match", "No 401(k) match");
-    if (r.beneficio_401k_porcentaje) {
-      k += ` — ${t("porcentaje", "percentage")}: ${r.beneficio_401k_porcentaje}`;
-    }
-    parts.push(k);
+    let v = r.beneficio_401k_match === "si" || r.beneficio_401k_match === "con_porcentaje" ? t("Sí", "Yes") : t("No", "No");
+    if (r.beneficio_401k_porcentaje) v += ` — ${r.beneficio_401k_porcentaje}%`;
+    push("401(k) match", v);
   }
 
-  // Work modality
   if (r.modalidad_trabajo) {
-    let w = isEN ? `Work mode: ${r.modalidad_trabajo}` : `Modalidad: ${r.modalidad_trabajo}`;
-    if (r.modalidad_dias_presenciales) {
-      w += ` — ${t("días presenciales", "in-office days")}: ${r.modalidad_dias_presenciales}`;
-    }
-    parts.push(w);
+    let v = r.modalidad_trabajo;
+    if (r.modalidad_dias_presenciales) v += ` · ${t("días presenciales", "in-office days")}: ${r.modalidad_dias_presenciales}`;
+    push(t("Modalidad de trabajo", "Work mode"), v);
   }
 
-  // Extra vacation
-  if (r.beneficio_vacaciones_adicionales && r.beneficio_vacaciones_adicionales !== "no") {
-    parts.push(isEN ? `Extra vacation: ${r.beneficio_vacaciones_adicionales}` : `Vacaciones adicionales: ${r.beneficio_vacaciones_adicionales}`);
+  if (r.beneficio_vacaciones_adicionales) {
+    push(t("Vacaciones adicionales", "Extra vacation"), r.beneficio_vacaciones_adicionales === "no" ? t("No", "No") : r.beneficio_vacaciones_adicionales);
   }
 
-  // Training
-  if (r.beneficio_capacitacion) {
-    parts.push(r.beneficio_capacitacion === "si" ? t("Capacitación / desarrollo", "Training / development") : t("Sin capacitación", "No training"));
-  }
+  if (r.beneficio_capacitacion) push(t("Capacitación / desarrollo", "Training / development"), r.beneficio_capacitacion === "si" ? t("Sí", "Yes") : t("No", "No"));
 
-  return parts.join(" · ");
+  const otros: string[] = [];
+  if (r.beneficios?.length) otros.push(...r.beneficios);
+  if (r.beneficiosOtro) otros.push(r.beneficiosOtro);
+  if (r.beneficios_no_declarados?.length) otros.push(...r.beneficios_no_declarados);
+  if (otros.length) push(t("Otros beneficios", "Other benefits"), otros.join(" · "));
+  if (r.beneficiosAdicionalesTexto) push(t("Notas adicionales", "Additional notes"), r.beneficiosAdicionalesTexto);
+
+  return items;
 }
 
 export const Route = createFileRoute("/diagnostico/perfil")({
@@ -265,7 +213,7 @@ function PerfilPage() {
       ? `${r.monedaAnterior} ${r.salarioAnterior.toLocaleString("es-AR")} (${isEN ? "last job" : "último trabajo"})`
       : dash);
 
-  const beneficiosStr = buildBeneficiosStr(r, isEN);
+  const beneficiosItems = buildBeneficiosItems(r, isEN);
 
   // Handlers de validación de perfil editable
   const updateRespuesta = <K extends keyof typeof r>(key: K, value: (typeof r)[K]) => {
@@ -399,7 +347,9 @@ function PerfilPage() {
             titulo={isEN ? "Block 4 · Your current compensation" : "Bloque 4 · Tu compensación actual"}
             items={[
               { k: isEN ? "Salary" : "Salario", v: salarioStr },
-              { k: isEN ? "Benefits" : "Beneficios", v: beneficiosStr },
+              ...(beneficiosItems.length
+                ? beneficiosItems
+                : [{ k: isEN ? "Benefits" : "Beneficios", v: dash }]),
             ]}
           />
         </div>
