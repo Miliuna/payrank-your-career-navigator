@@ -21,11 +21,11 @@ export function SiteFooter() {
         >
           <div className="font-ui">
             © 2026 PayRank LLC ·{" "}
-            <Link to="/politica-privacidad" className="hover:opacity-80 transition-opacity">
+            <Link to="/politica-privacidad" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
               {isEN ? "Privacy Policy" : "Política de Privacidad"}
             </Link>{" "}
             ·{" "}
-            <Link to="/terminos-condiciones" className="hover:opacity-80 transition-opacity">
+            <Link to="/terminos-condiciones" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
               {isEN ? "Terms" : "Términos"}
             </Link>
           </div>
