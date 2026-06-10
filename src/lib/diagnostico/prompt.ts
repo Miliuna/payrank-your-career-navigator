@@ -848,6 +848,15 @@ SECCIÓN 1 — "ESTO ES LO QUE SOS EN EL MERCADO"
 
 Empezás con una descripción del perfil del usuario en lenguaje humano. No es un resumen del formulario. Es una lectura de quién es esta persona profesionalmente y qué lugar ocupa en el mercado.
 
+INSTRUCCIÓN — MOTIVACIÓN DEL USUARIO (P-02):
+El campo "Motivación declarada" describe por qué el usuario viene a PayRank hoy. Usá ese dato para calibrar el tono de apertura del reporte (seccion_1):
+- "Recibí una oferta externa y quiero evaluar si vale la pena" → abrir con la oportunidad como catalizador, no como ansiedad.
+- "Me negaron un aumento o llevo más de 12 meses sin revisión salarial" → abrir reconociendo esa tensión directamente. "Hay algo que los datos confirman en tu caso..."
+- "Mis responsabilidades crecieron pero mi sueldo no se actualizó" → abrir con la brecha título/funciones como dato central.
+- "Creo que colegas en roles similares ganan más que yo" → abrir con el dato de posición en el mercado como respuesta directa.
+- "Quiero prepararme para una negociación salarial" → abrir orientado a acción. El diagnóstico es una herramienta, no solo un dato.
+- "Solo quiero saber dónde estoy parado en el mercado" → tono informativo, sin urgencia artificial.
+
 Estructura:
 - Párrafo de apertura: describís el perfil en términos de lo que hace realmente — funciones, alcance, equipo, interlocutores. No de su título.
 - Si detectás discrepancia título/funciones: la mencionás acá, antes de cualquier número. Es el gancho. "Algo que llama la atención en tu perfil..."
@@ -912,6 +921,9 @@ Para cada beneficio Clase A o B que aparezca en la tabla:
 incluir el tratamiento fiscal aplicable según la Corrección 13.
 No calcular impacto fiscal individual — explicar la regla.
 
+REGLA DE CONSISTENCIA EN TABLA DE BENEFICIOS (P-03):
+Si un ítem de beneficio tiene una estimación de mercado que fue usada en el cálculo del total, la celda de valor NO puede decir "No valorizado". Debe mostrar el monto estimado con la nota "estimación de mercado" entre paréntesis. Ejemplo: "$280.000 (estimación de mercado)". "No valorizado" se reserva exclusivamente para ítems que fueron excluidos del total por falta de datos suficientes.
+
 SECCIÓN 4 — "LA BRECHA DE GÉNERO" (solo si se solicitó)
 
 Card con fondo oscuro. El dato más incómodo del reporte entregado con la mayor claridad posible.
@@ -933,6 +945,9 @@ Si el usuario es hombre Y tiene personas a cargo:
 
 Si el usuario es hombre Y NO tiene personas a cargo:
 - En seccion_4, seteá "incluir": false y "mensaje_si_hombre": null. Omitir completamente esta sección del reporte. No generar ningún texto de brecha de género.
+
+REGLA DE TIEMPO VERBAL EN SECCIÓN GÉNERO (P-04):
+Si el campo "Personas a cargo" indica que el usuario YA tiene equipo (cualquier valor distinto de "No, trabajo de forma individual"), usar presente indicativo en toda la sección: "como líder de equipo", "tu rol de conducción", "el equipo que gestionás". NUNCA usar condicional futuro ("si en algún momento liderás", "cuando tengas equipo"). El condicional invalida el análisis para alguien que ya ejerce esa función.
 
 SECCIÓN 5 — "LO QUE DEBERÍAS PEDIR Y CÓMO DEFENDERLO"
 
@@ -967,6 +982,9 @@ Objeciones más comunes (en bloque expandible — no en el flujo principal):
 - "No es el momento por el presupuesto" → respuesta específica y contextualizada
 - "Ya todos recibieron el mismo ajuste" → respuesta que diferencia ajuste general de ajuste por alcance real
 - "¿De dónde sacás esos números?" → respuesta que protege al usuario y es completamente creíble
+
+REGLA DE TIEMPO VERBAL EN SCRIPTS (P-05):
+El primer párrafo de todo script de negociación (script_jefe y script_recruiter) debe usar presente indicativo, nunca condicional ni subjuntivo. CORRECTO: "Quiero hablar con vos sobre mi compensación." INCORRECTO: "Quería hablar con vos", "Quisiera plantear", "Me gustaría conversar". El condicional en la apertura señala inseguridad antes de que empiece la conversación. Presente indicativo siempre.
 
 AL FINAL DE CADA SCRIPT — SIEMPRE (Corrección 9):
 "Después de decir tu número: silencio.
@@ -1701,6 +1719,7 @@ EXCLUSIONES OBLIGATORIAS DE MODO D (no incluir estos campos en el JSON de salida
   })();
 
   return `${fxBlock(tipoCambio)}Situación de consulta: ${modoDesc}${targetJobBlock}
+Motivación declarada del usuario: ${v(d.motivacion, "no declarado")}
 
 PERFIL DEL USUARIO:
 País donde opera el rol: ${v(d.pais_rol)}
