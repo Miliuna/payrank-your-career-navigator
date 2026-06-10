@@ -1255,7 +1255,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
               </ChipOption>
               <ChipOption
                 selected={r.incrementoUltimoAnio === "no"}
-                onClick={() => setR({ incrementoUltimoAnio: "no", incrementoUltimoAnioPct: undefined })}
+                onClick={() => setR({ incrementoUltimoAnio: "no", incrementoUltimoAnioPct: undefined, incrementoUltimoAnioMonto: undefined })}
               >
                 No
               </ChipOption>
@@ -1266,18 +1266,41 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
               <p className="font-body text-base text-hueso mb-3">
                 {isEN ? "What percentage increase did you receive?" : "¿Qué porcentaje de incremento recibiste?"}
               </p>
-              <div className="flex items-center gap-2 max-w-[200px]">
-                <TextInput
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="0"
-                  value={r.incrementoUltimoAnioPct != null ? String(r.incrementoUltimoAnioPct) : ""}
-                  onChange={(e) => {
-                    const digits = e.target.value.replace(/\D/g, "");
-                    setR({ incrementoUltimoAnioPct: digits ? Number(digits) : undefined });
-                  }}
-                />
-                <span className="font-body text-lg text-hueso">%</span>
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 max-w-[200px]">
+                  <TextInput
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={r.incrementoUltimoAnioPct != null ? String(r.incrementoUltimoAnioPct) : ""}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "");
+                      const pct = digits ? Number(digits) : undefined;
+                      const monto = pct != null && typeof r.salario === "number" && r.salario > 0
+                        ? Math.round((r.salario * pct) / 100)
+                        : undefined;
+                      setR({ incrementoUltimoAnioPct: pct, incrementoUltimoAnioMonto: monto });
+                    }}
+                  />
+                  <span className="font-body text-lg text-hueso">%</span>
+                </div>
+                <div className="flex items-center gap-2 max-w-[260px]">
+                  <TextInput
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="0"
+                    value={r.incrementoUltimoAnioMonto != null ? String(r.incrementoUltimoAnioMonto) : ""}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, "");
+                      const monto = digits ? Number(digits) : undefined;
+                      const pct = monto != null && typeof r.salario === "number" && r.salario > 0
+                        ? Math.round((monto / r.salario) * 100)
+                        : undefined;
+                      setR({ incrementoUltimoAnioMonto: monto, incrementoUltimoAnioPct: pct });
+                    }}
+                  />
+                  <span className="font-body text-lg text-hueso">{r.moneda || "ARS"}</span>
+                </div>
               </div>
             </div>
           )}
