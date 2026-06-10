@@ -525,7 +525,7 @@ function isValid(
     case 13: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
     case 14: return (r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0;
     case 15: return true;
-    case 16: return !!r.descripcionPuesto?.trim();
+    case 16: return true;
     case 17: return !!r.genero;
     case 18: return !!r.email && /\S+@\S+\.\S+/.test(r.email);
     default: return true;
