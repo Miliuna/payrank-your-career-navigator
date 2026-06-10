@@ -96,6 +96,7 @@ export type Respuestas = {
   beneficiosAdicionalesTexto?: string;
   beneficios_no_declarados?: string[];
   descripcionPuesto?: string;
+  motivacion?: string;
   genero?: string;
   email?: string;
   whatsapp?: string;
