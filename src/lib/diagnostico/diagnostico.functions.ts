@@ -740,6 +740,11 @@ type Json = string | number | boolean | null | { [k: string]: Json } | Json[];
 
 const EXTRACT_SYSTEM = `Extraé datos profesionales y de compensación del documento siguiendo las instrucciones al pie de la letra. Respond ONLY with raw JSON. Do not use markdown code blocks, backticks, or any formatting wrappers. Your response must start with { and end with }. No text before or after the JSON object.
 
+El documento puede comenzar con una etiqueta [TIPO: cv], [TIPO: recibo] o [TIPO: descriptivo]. Usá esa etiqueta para priorizar qué campos extraer:
+- [TIPO: cv]: priorizar nivel_jerarquico_inferido, industria_inferida, experiencia_total_anios, experiencia_industria_anios, formacion, certificaciones, idiomas, herramientas_ia_inferidas, funciones_inferidas, alcance_inferido, equipo_inferido, titulo_cv, titulo_cv_academico
+- [TIPO: recibo]: priorizar salario_actual_inferido, moneda_inferida, tipo_salario_inferido, empresa_actual, titulo_recibo, fecha_ingreso_empresa_actual, nombre_prestadora_salud, recibo_fecha, recibo_tiene_variable_sin_monto, bono_frecuencias_detectadas, bono_mencionado_sin_monto, pais_inferido, tipo_empresa_inferida
+- [TIPO: descriptivo]: priorizar industria_inferida, tipo_empresa_inferida, funciones_inferidas, alcance_inferido, equipo_inferido, nivel_jerarquico_inferido
+
 REGLA CRÍTICA — herramientas_ia_inferidas: incluir EXCLUSIVAMENTE herramientas de IA generativa o machine learning (ChatGPT, Claude, Gemini, Copilot, GitHub Copilot, Midjourney, Perplexity, Notion AI, DALL-E, Cursor, Whisper, ElevenLabs, Runway, Jasper, Synthesia, Stable Diffusion, etc.). NUNCA incluir software de gestión, encuestas, ERP, CRM, BI, HRIS ni productividad: Qualtrics, SuccessFactors, SAP, Workday, Slik, Salesforce, HubSpot, Excel, Power BI, Tableau, Looker, Google Analytics, Jira, Asana, Slack, Office, y similares NO son herramientas de IA. Si no hay herramientas de IA generativa, devolver [].`;
 
 const EXTRACT_USER_INSTRUCTIONS = `El documento puede estar truncado. Extraé toda la información disponible del fragmento recibido.
