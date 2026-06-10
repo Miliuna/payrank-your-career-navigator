@@ -32,11 +32,8 @@ function buildBeneficiosStr(r: Respuestas, isEN: boolean): string {
       ? { individual: "Individual health coverage", familiar: "Family health coverage", publica: "Public coverage only", no_tengo: "No health coverage", no_se: "Don't know health coverage" }
       : { individual: "Cobertura médica individual", familiar: "Cobertura médica familiar", publica: "Solo cobertura pública", no_tengo: "Sin cobertura médica", no_se: "No sé cobertura médica" };
     let h = map[r.beneficio_salud_tipo] ?? r.beneficio_salud_tipo;
-    if (r.beneficio_salud_monto != null) {
-      h += ` — ${t("monto mensual", "monthly amount")}: ${r.beneficio_salud_monto}`;
-    }
     if (r.beneficio_salud_prestadora) {
-      h += ` (${r.beneficio_salud_prestadora})`;
+      h += ` — ${r.beneficio_salud_prestadora}`;
     }
     parts.push(h);
   }
