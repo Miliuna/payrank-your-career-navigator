@@ -1606,6 +1606,7 @@ function P16Beneficios({ r, setR }: Props) {
                 placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
                 valor={r.beneficio_movilidad_monto}
                 onValor={(v) => setR({ beneficio_movilidad_monto: v })}
+                etiquetaMoneda="ARS"
               />
             )}
           </div>
