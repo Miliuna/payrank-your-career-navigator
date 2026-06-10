@@ -76,7 +76,7 @@ export const EXP_INDUSTRIA = [
 export const FORMACIONES = [
   "Secundario completo", "Terciario/Tecnicatura", "Universitario incompleto",
   "Universitario completo", "Posgrado/Especialización", "Maestría",
-  "Doctorado", "Certificaciones profesionales",
+  "Doctorado",
 ];
 
 export const HERRAMIENTAS_IA = [
