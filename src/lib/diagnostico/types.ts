@@ -75,6 +75,8 @@ export type Respuestas = {
   bono_tipo?: string;
   bono_monto?: number;
   bono_moneda?: string;
+  bono_target_sueldos?: string;
+  bono_realizacion?: string;
   equity?: string;
   comisiones_tipo?: string;
   comisiones_monto?: number;
