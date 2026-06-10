@@ -241,7 +241,7 @@ const EXP_INDUSTRIA_EN = [
 const FORMACIONES_EN = [
   "High school diploma", "Technical degree", "Incomplete university",
   "University degree", "Postgraduate/Specialization", "Master's degree",
-  "Doctorate", "Professional certifications",
+  "Doctorate",
 ];
 
 const FRECUENCIAS_IA_EN = [
@@ -961,14 +961,26 @@ function P9Idiomas({ r, setR }: Props) {
 function P12Formacion({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
+  const options = isEN ? FORMACIONES_EN : FORMACIONES;
+  const sel = r.formacion ?? [];
+  const handleClick = (opt: string) => {
+    if (sel.includes(opt)) setR({ formacion: [] });
+    else setR({ formacion: [opt] });
+  };
   return (
-    <MultiCards
-      title={isEN ? "What is your educational background?" : "¿Cuál es tu formación?"}
-      hint={isEN ? "You can select multiple." : "Podés seleccionar varias."}
-      options={isEN ? FORMACIONES_EN : FORMACIONES}
-      value={r.formacion}
-      onChange={(v) => setR({ formacion: v })}
-    />
+    <>
+      <QuestionTitle>{isEN ? "What is your educational background?" : "¿Cuál es tu formación?"}</QuestionTitle>
+      <QuestionHint>
+        {isEN ? "Select your highest level of education attained." : "Seleccioná tu mayor nivel de estudios alcanzado."}
+      </QuestionHint>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {options.map((opt) => (
+          <CardOption key={opt} selected={sel.includes(opt)} onClick={() => handleClick(opt)}>
+            {opt}
+          </CardOption>
+        ))}
+      </div>
+    </>
   );
 }
 
