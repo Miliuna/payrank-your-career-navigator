@@ -1547,11 +1547,11 @@ function P16Beneficios({ r, setR }: Props) {
                 ]
               : [
                   ["no_tengo", "No tengo bono", ""],
-                  ["hasta_1", "Hasta 1 sueldo bruto mensual", "Estimado"],
-                  ["1_2", "1 a 2 sueldos brutos mensuales", "Estimado"],
-                  ["2_3", "2 a 3 sueldos brutos mensuales", "Estimado"],
-                  ["3_5", "3 a 5 sueldos brutos mensuales", "Estimado"],
-                  ["mas_5", "Más de 5 sueldos brutos mensuales", "Estimado"],
+                  ["hasta_1", "Hasta 1 sueldo bruto mensual (monto anual)", "Estimado"],
+                  ["1_2", "1 a 2 sueldos brutos mensuales (monto anual)", "Estimado"],
+                  ["2_3", "2 a 3 sueldos brutos mensuales (monto anual)", "Estimado"],
+                  ["3_5", "3 a 5 sueldos brutos mensuales (monto anual)", "Estimado"],
+                  ["mas_5", "Más de 5 sueldos brutos mensuales (monto anual)", "Estimado"],
                 ];
             const midpoints: Record<string, number> = {
               hasta_1: 0.5, "1_2": 1.5, "2_3": 2.5, "3_5": 4, mas_5: 6,
