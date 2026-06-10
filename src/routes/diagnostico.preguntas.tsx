@@ -41,6 +41,23 @@ function findOption(opts: readonly string[], val: string | null): string | null 
     ?? null;
 }
 
+function paisToMoneda(pais?: string, paisOtro?: string): string {
+  const p = (pais === "Otro" ? paisOtro : pais) ?? "";
+  switch (p) {
+    case "Argentina": return "ARS";
+    case "México": return "MXN";
+    case "Chile": return "CLP";
+    case "Colombia": return "COP";
+    case "Perú": return "PEN";
+    case "Uruguay": return "UYU";
+    case "Brasil": return "BRL";
+    case "Ecuador": return "USD";
+    case "Estados Unidos": return "USD";
+    case "España": return "EUR";
+    default: return "USD";
+  }
+}
+
 function bucketExpTotal(n: unknown): string | null {
   if (typeof n !== "number" || !Number.isFinite(n)) return null;
   if (n < 3) return "Menos de 3 años";
