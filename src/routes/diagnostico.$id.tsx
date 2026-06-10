@@ -81,7 +81,7 @@ const ThemeStyles = () => (
     .theme-light { --hueso: oklch(0.15 0 0); --tinta: oklch(1 0 0); color: #0C0C0C; }
     .theme-light h2 { color: #1A2B45 !important; }
     .theme-light .eyebrow { color: #2E4A6E !important; }
-    .theme-light .p-body { color: #0C0C0C !important; text-align: left; font-size: 1.0625rem; }
+    .theme-light .p-body { color: #0C0C0C !important; text-align: justify; font-size: 1.0625rem; }
     .theme-light .card-alert { background: #F0EDE8 !important; border: 0 !important; border-left: 3px solid #2E4A6E !important; }
     .theme-light table { border-color: #E5E1DA; }
     .theme-light table thead tr { background: #1A2B45 !important; }
