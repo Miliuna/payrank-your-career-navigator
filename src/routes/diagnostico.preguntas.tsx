@@ -93,7 +93,12 @@ function mapExtraccionAResp(d: DatosExtraidos): Record<string, unknown> {
       if (m) formMatched.push(m);
     }
   }
-  if (formMatched.length) out.formacion = Array.from(new Set(formMatched));
+  if (formMatched.length) {
+    // Selección única: nos quedamos con el mayor nivel alcanzado (último en el orden de FORMACIONES)
+    out.formacion = formMatched.reduce((best, cur) =>
+      FORMACIONES.indexOf(cur) > FORMACIONES.indexOf(best) ? cur : best
+    );
+  }
 
   const certs = asArrayStr(d.certificaciones);
   if (certs) out.certificaciones = certs;
@@ -557,7 +562,7 @@ function isValid(
     case 9: return !!r.sinIdiomas || ((r.idiomas?.length ?? 0) > 0 && r.idiomas!.every((i) => i.idioma.trim() && i.nivel));
     case 10: return !!r.expTotal;
     case 11: return !!r.expIndustria;
-    case 12: return (r.formacion?.length ?? 0) > 0;
+    case 12: return !!r.formacion;
     case 13: return !!r.sinCertificaciones || (r.certificaciones?.length ?? 0) > 0 || !!certRawInput?.trim() || !!r.certificacionesPending?.trim();
     case 14: return !!r.sinIA || ((r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0);
     case 15: return true;
@@ -962,10 +967,10 @@ function P12Formacion({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const options = isEN ? FORMACIONES_EN : FORMACIONES;
-  const selected = r.formacion && r.formacion.length > 0 ? r.formacion[0] : undefined;
+  const selected = r.formacion;
   const handleClick = (opt: string) => {
-    // Selección estrictamente única (radio): siempre reemplaza por un único valor.
-    setR({ formacion: [opt] });
+    // Selección estrictamente única (radio): el valor es un string único.
+    setR({ formacion: opt });
   };
   return (
     <>

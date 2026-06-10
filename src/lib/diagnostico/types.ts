@@ -50,7 +50,7 @@ export type Respuestas = {
   sinIdiomas?: boolean;
   expTotal?: string;
   expIndustria?: string;
-  formacion?: string[];
+  formacion?: string;
   certificaciones?: string[];
   sinCertificaciones?: boolean;
   certificacionesPending?: string;
