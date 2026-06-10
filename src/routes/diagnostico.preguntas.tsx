@@ -1546,80 +1546,91 @@ function P16Beneficios({ r, setR }: Props) {
             {isEN ? "B — Variable compensation" : "B — Compensación variable"}
           </p>
 
-          {/* Bono anual — target + realización */}
+          {/* Bono variable — 3 preguntas en secuencia */}
           {(() => {
-            const targetOpts: Array<[string, string, string]> = isEN
-              ? [
-                  ["no_tengo", "I don't have a bonus", ""],
-                  ["hasta_1", "Up to 1 gross monthly salary", "Estimated"],
-                  ["1_2", "1 to 2 gross monthly salaries", "Estimated"],
-                  ["2_3", "2 to 3 gross monthly salaries", "Estimated"],
-                  ["3_5", "3 to 5 gross monthly salaries", "Estimated"],
-                  ["mas_5", "More than 5 gross monthly salaries", "Estimated"],
-                ]
-              : [
-                  ["no_tengo", "No tengo bono", ""],
-                  ["hasta_1", "Hasta 1 sueldo bruto mensual (monto anual)", "Estimado"],
-                  ["1_2", "1 a 2 sueldos brutos mensuales (monto anual)", "Estimado"],
-                  ["2_3", "2 a 3 sueldos brutos mensuales (monto anual)", "Estimado"],
-                  ["3_5", "3 a 5 sueldos brutos mensuales (monto anual)", "Estimado"],
-                  ["mas_5", "Más de 5 sueldos brutos mensuales (monto anual)", "Estimado"],
-                ];
-            const midpoints: Record<string, number> = {
-              hasta_1: 0.5, "1_2": 1.5, "2_3": 2.5, "3_5": 4, mas_5: 6,
-            };
-            const salario = r.salario ?? 0;
-            const moneda = r.moneda ?? "ARS";
-            const mid = r.bono_target_sueldos ? midpoints[r.bono_target_sueldos] : 0;
-            const estimado = salario && mid ? Math.round(salario * mid) : 0;
+            const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
             const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
+            const monedaBono = r.bono_moneda ?? "ARS";
             const realOpts: Array<[string, string]> = isEN
               ? [
-                  ["completo", "Full (100% of target)"],
-                  ["parcial", "Partial (between 50% and 99%)"],
-                  ["minimo", "Minimal (less than 50%)"],
-                  ["no_recibi", "I didn't receive it that year"],
+                  ["completo", "Yes, in full"],
+                  ["parcial", "Partially"],
+                  ["no_recibi", "No, I didn't receive it"],
                 ]
               : [
-                  ["completo", "Completo (100% del target)"],
-                  ["parcial", "Parcial (entre 50% y 99%)"],
-                  ["minimo", "Mínimo (menos del 50%)"],
-                  ["no_recibi", "No lo recibí ese año"],
+                  ["completo", "Sí, completo"],
+                  ["parcial", "Parcialmente"],
+                  ["no_recibi", "No lo cobré"],
                 ];
             return (
               <>
+                {/* Q1 — ¿Tenés bono variable? */}
                 <div className="flex flex-col gap-2">
                   <p className="font-body text-sm text-hueso/70">
-                    {isEN ? "What is your annual bonus target?" : "¿Cuál es el target de tu bono anual?"}
+                    {isEN ? "Do you have a variable bonus?" : "¿Tenés bono variable?"}
                   </p>
-                  <p className="font-body text-xs text-hueso/50">
-                    {isEN ? "The target bonus corresponds to a full year of work." : "El bono target es el que corresponde a un año completo de trabajo."}
-                  </p>
-                  <div className="grid grid-cols-1 gap-2">
-                    {targetOpts.map(([val, label]) => (
-                      <CardOption
-                        key={val}
-                        selected={r.bono_target_sueldos === val}
-                        onClick={() => setR({
-                          bono_target_sueldos: r.bono_target_sueldos === val ? undefined : val,
-                          ...(val === "no_tengo" ? { bono_realizacion: undefined } : {}),
-                        })}
-                      >
-                        {label}
-                      </CardOption>
-                    ))}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <CardOption
+                      selected={r.bono_target_sueldos === "no_tengo"}
+                      onClick={() => setR({
+                        bono_target_sueldos: "no_tengo",
+                        bono_monto: undefined,
+                        bono_moneda: undefined,
+                        bono_realizacion: undefined,
+                      })}
+                    >
+                      {isEN ? "No bonus" : "No tengo bono"}
+                    </CardOption>
+                    <CardOption
+                      selected={!!tieneBono}
+                      onClick={() => setR({
+                        bono_target_sueldos: tieneBono ? undefined : "si_tengo",
+                        ...(tieneBono ? { bono_monto: undefined, bono_moneda: undefined, bono_realizacion: undefined } : {}),
+                      })}
+                    >
+                      {isEN ? "Yes, I have a bonus" : "Sí tengo bono"}
+                    </CardOption>
                   </div>
-                  {r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo" && estimado > 0 && (
-                    <p className="font-body text-sm text-hueso/60">
-                      {isEN ? `Estimated: $${fmt(estimado)} ${moneda} annually` : `Estimado: $${fmt(estimado)} ${moneda} anuales`}
-                    </p>
-                  )}
                 </div>
 
-                {r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo" && (
+                {/* Q2 — Monto anual del bono */}
+                {tieneBono && (
                   <div className="flex flex-col gap-2">
                     <p className="font-body text-sm text-hueso/70">
-                      {isEN ? "Did you receive your bonus last year?" : "¿El año pasado recibiste tu bono?"}
+                      {isEN
+                        ? "How much do you earn in bonuses in a typical year?"
+                        : "¿Cuánto cobrás de bono en un año típico?"}
+                    </p>
+                    <p className="font-body text-xs text-hueso/50">
+                      {isEN
+                        ? "Add up all payments throughout the year — whether annual, semi-annual, or quarterly."
+                        : "Sumá todos los pagos del año — sea anual, semestral o trimestral."}
+                    </p>
+                    <MontoInput
+                      placeholder="0"
+                      valor={r.bono_monto}
+                      onValor={(v) => setR({ bono_monto: v, bono_moneda: r.bono_moneda ?? "ARS" })}
+                      moneda={monedaBono}
+                      onMoneda={(m) => setR({ bono_moneda: m })}
+                      monedaOpciones={["ARS", "USD", "EUR"]}
+                    />
+                    {r.bono_monto != null && r.bono_monto > 0 && (
+                      <p className="font-body text-sm text-hueso/60">
+                        {isEN
+                          ? `Annual bonus: $${fmt(r.bono_monto)} ${monedaBono}`
+                          : `Bono anual: $${fmt(r.bono_monto)} ${monedaBono}`}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Q3 — ¿Lo cobraste completo el año pasado? */}
+                {tieneBono && (
+                  <div className="flex flex-col gap-2">
+                    <p className="font-body text-sm text-hueso/70">
+                      {isEN
+                        ? "Did you receive your full bonus last year?"
+                        : "¿El año pasado lo cobraste completo?"}
                     </p>
                     <div className="grid grid-cols-1 gap-2">
                       {realOpts.map(([val, label]) => (
