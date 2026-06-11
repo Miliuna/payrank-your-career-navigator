@@ -256,7 +256,11 @@ function ValidacionPage() {
                   inputMode="numeric"
                   placeholder={isEN ? "Current monthly amount (numbers only)" : "Monto actual mensual (solo números)"}
                   value={nuevoSalario}
-                  onChange={(e) => setNuevoSalario(e.target.value)}
+                  onChange={(e) => {
+                    // Solo dígitos enteros: ignoramos comas, puntos y cualquier separador decimal.
+                    const digits = e.target.value.replace(/\D/g, "");
+                    setNuevoSalario(digits ? new Intl.NumberFormat("es-AR").format(Number(digits)) : "");
+                  }}
                   className="w-full mt-2 bg-transparent border-b border-hueso/30 focus:border-hueso outline-none font-body text-lg text-hueso placeholder:text-hueso/30 py-3"
                 />
               )}
