@@ -1690,7 +1690,7 @@ function P16Beneficios({ r, setR }: Props) {
         </div>
         {(r.beneficio_salud_tipo === "individual" || r.beneficio_salud_tipo === "familiar") && (
           <TextInput
-            placeholder={isEN ? "Name of provider (e.g., Blue Cross, Aetna, Cigna)" : "Nombre de la prestadora (ej: OSDE, Swiss Medical, Medicus, Galeno, OMINT)"}
+            placeholder={placeholderPrestadora(r.pais, r.paisOtro, isEN)}
             value={r.beneficio_salud_prestadora ?? ""}
             onChange={(e) => setR({ beneficio_salud_prestadora: e.target.value || undefined })}
           />
