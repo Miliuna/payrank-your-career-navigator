@@ -13,6 +13,8 @@ export function DownloadPdfButton({
     const el = document.getElementById(targetId);
     if (!el) return;
     setLoading(true);
+    const btn = document.activeElement as HTMLElement | null;
+    btn?.scrollIntoView({ behavior: "smooth", block: "center" });
     document.body.classList.add("pdf-export");
     document.documentElement.style.fontSize = "18px";
     // small delay so styles apply
@@ -129,26 +131,36 @@ export function DownloadPdfButton({
   };
 
   return (
-    <div className="flex justify-center py-10 bg-white">
-      <button
-        onClick={handleDownload}
-        disabled={loading}
-        style={{
-          backgroundColor: "#1A2B45",
-          color: "#F5F2ED",
-          fontFamily: "Arial, sans-serif",
-          letterSpacing: "0.18em",
-          textTransform: "uppercase",
-          padding: "16px 32px",
-          fontSize: "13px",
-          fontWeight: 700,
-          border: "none",
-          cursor: loading ? "wait" : "pointer",
-          opacity: loading ? 0.7 : 1,
-        }}
-      >
-        {loading ? "Generando PDF…" : "Descargar mi PayRank (PDF)"}
-      </button>
-    </div>
+    <>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+      <div className="flex justify-center py-10 bg-white">
+        <button
+          onClick={handleDownload}
+          disabled={loading}
+          style={{
+            backgroundColor: "#1A2B45",
+            color: "#F5F2ED",
+            fontFamily: "Arial, sans-serif",
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            padding: "16px 32px",
+            fontSize: "13px",
+            fontWeight: 700,
+            border: "none",
+            cursor: loading ? "wait" : "pointer",
+            opacity: loading ? 0.7 : 1,
+          }}
+        >
+          {loading ? (
+            <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ animation: "spin 1s linear infinite" }}>
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+              </svg>
+              Generando PDF…
+            </span>
+          ) : "Descargar mi PayRank (PDF)"}
+        </button>
+      </div>
+    </>
   );
 }
