@@ -58,6 +58,25 @@ function paisToMoneda(pais?: string, paisOtro?: string): string {
   }
 }
 
+function placeholderPrestadora(pais?: string, paisOtro?: string, isEN?: boolean): string {
+  const p = (pais === "Otro" ? paisOtro : pais) ?? "";
+  const map: Record<string, { es: string; en: string }> = {
+    Argentina: { es: "ej: OSDE, Swiss Medical, Medicus, Galeno, OMINT", en: "e.g., OSDE, Swiss Medical, Medicus, Galeno, OMINT" },
+    México: { es: "ej: GNP Salud, AXA, Metlife, Allianz, IMSS Voluntario", en: "e.g., GNP Salud, AXA, Metlife, Allianz, IMSS Voluntary" },
+    Colombia: { es: "ej: Sura, Compensar, Sanitas, Nueva EPS, Colmédica", en: "e.g., Sura, Compensar, Sanitas, Nueva EPS, Colmedica" },
+    Perú: { es: "ej: Rímac, Pacífico, Mapfre, La Positiva, EsSalud Potestativo", en: "e.g., Rimac, Pacifico, Mapfre, La Positiva, EsSalud Potestativo" },
+    Chile: { es: "ej: Banmédica, Colmena, Cruz Blanca, Consalud, Isapre Vida Tres", en: "e.g., Banmedica, Colmena, Cruz Blanca, Consalud, Isapre Vida Tres" },
+    Uruguay: { es: "ej: CASMU, Médica Uruguaya, SEMM, Mucam, SMI", en: "e.g., CASMU, Medica Uruguaya, SEMM, Mucam, SMI" },
+    Brasil: { es: "ej: Amil, Bradesco Saúde, SulAmérica, Unimed, NotreDame Intermédica", en: "e.g., Amil, Bradesco Saude, SulAmerica, Unimed, NotreDame Intermedica" },
+    España: { es: "ej: Sanitas, Adeslas, Asisa, DKV, Mapfre Salud", en: "e.g., Sanitas, Adeslas, Asisa, DKV, Mapfre Salud" },
+    "Estados Unidos": { es: "ej: Blue Cross, Aetna, UnitedHealth, Cigna, Kaiser", en: "e.g., Blue Cross, Aetna, UnitedHealth, Cigna, Kaiser" },
+    Ecuador: { es: "ej: Ecuasanitas, BMI, Salud S.A., AXA Colpatria, IESS Voluntario", en: "e.g., Ecuasanitas, BMI, Salud S.A., AXA Colpatria, IESS Voluntary" },
+  };
+  const found = map[p];
+  if (found) return isEN ? `Name of provider (${found.en})` : `Nombre de la prestadora (${found.es})`;
+  return isEN ? "Name of your health provider or insurer" : "Nombre de tu prestadora o aseguradora médica";
+}
+
 function bucketExpTotal(n: unknown): string | null {
   if (typeof n !== "number" || !Number.isFinite(n)) return null;
   if (n < 3) return "Menos de 3 años";
@@ -1671,7 +1690,7 @@ function P16Beneficios({ r, setR }: Props) {
         </div>
         {(r.beneficio_salud_tipo === "individual" || r.beneficio_salud_tipo === "familiar") && (
           <TextInput
-            placeholder={isEN ? "Name of provider (e.g., Blue Cross, Aetna, Cigna)" : "Nombre de la prestadora (ej: OSDE, Swiss Medical, Medicus, Galeno, OMINT)"}
+            placeholder={placeholderPrestadora(r.pais, r.paisOtro, isEN)}
             value={r.beneficio_salud_prestadora ?? ""}
             onChange={(e) => setR({ beneficio_salud_prestadora: e.target.value || undefined })}
           />
