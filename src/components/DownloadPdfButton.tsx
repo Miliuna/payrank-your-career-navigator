@@ -88,11 +88,13 @@ export function DownloadPdfButton({
       const pageSliceHpx = Math.floor(contentH * pxPerPt);
       let totalPages = Math.max(1, Math.ceil(canvas.height / pageSliceHpx));
 
-      // Skip a trailing near-empty page caused by bottom padding overflow.
-      // If the last slice has less than 80px of real content, drop it.
+      // Skip trailing near-empty pages caused by bottom padding overflow.
+      // Scan from the bottom of the last slice to find real pixel content.
+      // Drop the last page if it has less than 15% of a full page of real content.
       if (totalPages > 1) {
         const lastSliceHpx = canvas.height - (totalPages - 1) * pageSliceHpx;
-        if (lastSliceHpx < 80) {
+        const minContentPx = Math.floor(pageSliceHpx * 0.15);
+        if (lastSliceHpx < minContentPx) {
           totalPages -= 1;
         }
       }
