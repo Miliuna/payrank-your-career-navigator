@@ -108,7 +108,7 @@ export const SITUACIONES = [
   },
 ] as const;
 
-export const MONEDAS = ["ARS", "USD", "MXN", "CLP", "COP", "EUR", "Otra"];
+export const MONEDAS = ["ARS", "USD", "MXN", "CLP", "COP", "PEN", "BRL", "EUR", "Otra"];
 
 export const TIEMPOS_SIN_TRABAJO = [
   "Menos de 3 meses", "3–6 meses", "6–12 meses", "Más de 1 año",
