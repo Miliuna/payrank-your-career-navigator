@@ -62,7 +62,7 @@ PRINCIPIO 5 — CADA SECCIÓN PREPARA LA SIGUIENTE
 El orden del reporte no es arbitrario. Es un recorrido emocional diseñado: el usuario primero entiende dónde está, luego procesa la brecha si existe, luego sabe qué hacer, luego tiene el guión, luego ve cómo puede valer más, luego tiene un plan. No saltes este orden.
 
 PRINCIPIO 6 — LOS PERCENTILES SE TRADUCEN, NO SE ELIMINAN
-Nunca decís "estás en el percentil 35". Decís "el 65% de los profesionales con tu perfil gana más que vos hoy". Mismo dato, lenguaje humano. La tabla técnica de percentiles existe como referencia secundaria para quien la quiera, pero el mensaje principal siempre se expresa en términos de personas reales.
+Nunca decís "estás en el percentil 35". Decís "el 65% de los profesionales con tu perfil gana más que tú hoy (en Argentina/Uruguay: 'que vos hoy')". Mismo dato, lenguaje humano. La tabla técnica de percentiles existe como referencia secundaria para quien la quiera, pero el mensaje principal siempre se expresa en términos de personas reales.
 
 ════════════════════════════════════════════════════════
 CORRECCIÓN 1 — BASE DE COMPARACIÓN ESTÁNDAR
@@ -393,7 +393,7 @@ Descuento por: self-employment tax, ausencia de benefits del empleador
 Otros países: × 0.65 como estimación conservadora
 
 Declarar explícitamente en el reporte:
-"Tu facturación de [X] mensual equivale a un salario bruto de aproximadamente [X × factor] en relación de dependencia — considerando las cargas, beneficios y costos operativos que asumís vos en lugar de un empleador."
+"Tu facturación de [X] mensual equivale a un salario bruto de aproximadamente [X × factor] en relación de dependencia — considerando las cargas, beneficios y costos operativos que asumes tú en lugar de un empleador (AR/UY: 'asumís vos')."
 
 PASO 2 — POSICIONAMIENTO VS. MERCADO:
 Comparar el equivalente calculado con el rango de mercado del perfil en relación de dependencia.
@@ -874,7 +874,7 @@ El momento de verdad. Claro, directo, sin rodeos.
 
 Estructura:
 1. Párrafo en lenguaje humano: el rango y el punto medio en moneda local y en USD
-2. Cuántas personas ganan más (NUNCA "percentil X" — SIEMPRE "el Y% de los profesionales con tu perfil gana más que vos hoy")
+2. Cuántas personas ganan más (NUNCA "percentil X" — SIEMPRE "el Y% de los profesionales con tu perfil gana más que tú hoy (en Argentina/Uruguay: 'que vos hoy')")
 3. Badge de posicionamiento: BAJO MERCADO / EN MERCADO / SOBRE MERCADO
 4. Compa-ratio con interpretación en lenguaje humano (Corrección 6)
 5. Erosión salarial si aplica (Corrección 8)
@@ -915,7 +915,7 @@ Cada fila debe indicar su fuente de datos en el campo descripción:
 Al pie de la tabla incluir siempre:
 "Los ítems marcados como 'estimación de mercado' usan rangos de referencia
 para tu industria, nivel y país. Los ítems 'no declarados' no están incluidos
-en el total — si los tenés, tu compensación total real es mayor."
+en el total — si los tienes, tu compensación total real es mayor (AR/UY: 'si los tenés')."
 
 Para cada beneficio Clase A o B que aparezca en la tabla:
 incluir el tratamiento fiscal aplicable según la Corrección 13.
@@ -1071,7 +1071,7 @@ La estructura exacta del JSON es:
   },
   "seccion_2": {
     "rango_texto": "string — el rango en lenguaje humano sin percentiles",
-    "porcentaje_gana_mas": "string — el X% de los profesionales con tu perfil gana más que vos hoy",
+    "porcentaje_gana_mas": "string — el X% de los profesionales con tu perfil gana más que tú hoy (en Argentina/Uruguay: 'que vos hoy')",
     "posicionamiento": "Bajo mercado/En mercado/Sobre mercado",
     "compa_ratio": "string — número con dos decimales, ej: 0.87",
     "interpretacion_compa_ratio": "string — en lenguaje humano",
@@ -1254,7 +1254,7 @@ PRINCIPIOS:
 3. SISTEMA 1 PRIMERO: conexión emocional antes que números.
 4. DATOS PERSONALES: brecha de género, IA, tendencias — siempre en términos de esta persona específica.
 5. CADA SECCIÓN PREPARA LA SIGUIENTE.
-6. PERCENTILES TRADUCIDOS: nunca "estás en percentil 35", sí "el 65% con tu perfil gana más que vos hoy".
+6. PERCENTILES TRADUCIDOS: nunca "estás en percentil 35", sí "el 65% con tu perfil gana más que tú hoy (AR/UY: 'que vos hoy')".
 
 ═══ CORRECCIÓN 1 — SBTA ═══
 Todos los rangos sobre SALARIO BRUTO TOTAL ANUAL = 12 sueldos + equivalente legal por país:
@@ -1405,9 +1405,9 @@ ParteB genera SOLO: seccion_5, seccion_6, seccion_7, seccion_8, freelance. Las s
 
 SECCIÓN 1 — "ESTO ES LO QUE SOS EN EL MERCADO": descripción del perfil en lenguaje humano (no resumen de formulario), mención de discrepancia título/funciones si existe, nivel de confianza con justificación en 2 líneas.
 
-SECCIÓN 2 — "ACÁ ESTÁ TU NÚMERO": rango y punto medio en moneda local y USD; "el Y% gana más que vos hoy" (nunca "percentil X"); badge BAJO/EN/SOBRE; compa-ratio en lenguaje humano; erosión si aplica; diagnóstico específico 2-3 párrafos; tabla percentiles P25/P50★/P75/P90 + tu salario; benchmark usado y por qué; bono target % y monto mensual; SBTA usuario y SBTA P50; lista ajustes aplicados con %.
+SECCIÓN 2 — "ACÁ ESTÁ TU NÚMERO": rango y punto medio en moneda local y USD; "el Y% gana más que tú hoy (en Argentina/Uruguay: 'que vos hoy')" (nunca "percentil X"); badge BAJO/EN/SOBRE; compa-ratio en lenguaje humano; erosión si aplica; diagnóstico específico 2-3 párrafos; tabla percentiles P25/P50★/P75/P90 + tu salario; benchmark usado y por qué; bono target % y monto mensual; SBTA usuario y SBTA P50; lista ajustes aplicados con %.
 
-SECCIÓN 3 — "LO QUE REALMENTE TE PAGAN": tabla compensación (base + cada beneficio + total) con campo fuente_dato ("Declarado por el usuario"/"Estimación de mercado"/"No declarado"); comparación total vs mercado típico; análisis narrativo; Director+ alerta compensación variable; beneficios faltantes accionables. Pie tabla: "Ítems 'estimación de mercado' usan rangos de referencia. 'No declarados' no incluidos en total — si los tenés, tu compensación real es mayor." Cada Clase A/B incluye tratamiento fiscal (regla, sin calcular individual).
+SECCIÓN 3 — "LO QUE REALMENTE TE PAGAN": tabla compensación (base + cada beneficio + total) con campo fuente_dato ("Declarado por el usuario"/"Estimación de mercado"/"No declarado"); comparación total vs mercado típico; análisis narrativo; Director+ alerta compensación variable; beneficios faltantes accionables. Pie tabla: "Ítems 'estimación de mercado' usan rangos de referencia. 'No declarados' no incluidos en total — si los tienes, tu compensación real es mayor (AR/UY: 'si los tenés')." Cada Clase A/B incluye tratamiento fiscal (regla, sin calcular individual).
 
 SECCIÓN 4 — "BRECHA DE GÉNERO" (solo si solicitada): número primero en $/mes y $/año (nunca solo %); contexto por nivel (Corr 4); factores amplificadores si aplican; por qué persiste (razón de mercado, sin tono político); argumento de negociación adaptado al país.
 Si hombre: incluir=false + mensaje_si_hombre OBLIGATORIO 3-5 oraciones sustantivas (jamás null/vacío/genérico): (1) reconocer que para su perfil no hay brecha en su contra; (2) explicar brecha de mercado para su nivel/país con % de Corr 4 ("en tu nivel y mercado, las mujeres con tu mismo perfil ganan en promedio X% menos"); (3) por qué le importa: equidad en equipos que lidera, riesgo rotación talento femenino, sesgos en revisiones, lectura cultura organizacional al evaluar ofertas; (4) acción concreta: revisar equidad de su equipo, pedir data desagregada en próxima revisión, criterio al evaluar empresas. Variante lingüística del país, tono profesional, sin moralismo.
@@ -1571,6 +1571,9 @@ Todos los rangos, percentiles, salarios, pretensiones y números monetarios van 
 }
 
 export function buildUserPrompt(d: AnyRecord, tipoCambio?: TipoCambioInput): string {
+  const esRioplatense = d.pais_rol === "Argentina" || d.pais_rol === "Uruguay";
+  const vos = (ar: string, otro: string) => esRioplatense ? ar : otro;
+
   const modo = typeof d.modo === "string" ? d.modo : "";
   const modoDesc = MODO_DESCRIPCION[modo] ?? v(d.modo);
   const isModeWithTarget = modo === "C";
@@ -1616,7 +1619,7 @@ Puede estar en proceso de toma de conciencia — no necesariamente va a negociar
 
 ENCUADRE SISTÉMICO OBLIGATORIO: Inmediatamente después de mostrar el compa-ratio en seccion_2, incluir este párrafo exacto o una variante fiel al mismo sentido:
 
-"Que tu compensación esté [por debajo del / en línea con el / por encima del] mercado no es el resultado de una decisión tuya — es el resultado de cómo fluye la información salarial. Las empresas acceden a estos datos de forma sistemática. Vos los tenés ahora."
+"Que tu compensación esté [por debajo del / en línea con el / por encima del] mercado no es el resultado de una decisión tuya — es el resultado de cómo fluye la información salarial. Las empresas acceden a estos datos de forma sistemática. ${vos("Vos los tenés ahora.", "Tú los tienes ahora.")}"
 
 TONO DE OPCIONALIDAD EN SCRIPTS: Antes del script del jefe en seccion_6, incluir obligatoriamente este conector:
 
