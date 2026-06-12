@@ -868,8 +868,9 @@ function P7Funciones({ r, setR, datosExtraidos }: Props & { datosExtraidos?: imp
       const oWords = opt.toLowerCase().replace(/[/&]/g, " ").split(/\s+/).filter((w) => w.length > 3);
       return inferred.some((inf) => {
         if (typeof inf !== "string") return false;
-        const i = inf.toLowerCase();
-        return oWords.some((w) => i.includes(w));
+        const i = inf.toLowerCase().replace(/[/&]/g, " ");
+        const iWords = i.split(/\s+/).filter((w) => w.length > 3);
+        return oWords.some((w) => i.includes(w)) || iWords.some((w) => opt.toLowerCase().includes(w));
       });
     });
     if (matches.length > 0) {
