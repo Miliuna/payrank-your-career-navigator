@@ -2042,7 +2042,7 @@ function P17Motivacion({ r, setR, isEN, modo }: Props & { isEN: boolean; modo: s
     ? (isEN ? MOTIVACIONES_B_EN : MOTIVACIONES_B)
     : (isEN ? MOTIVACIONES_EN : MOTIVACIONES);
   const title = modo === "B"
-    ? (isEN ? "What brought you to ask for a raise?" : "¿Qué te llevó a querer pedir un aumento?")
+    ? (isEN ? "What brought you to seek a salary review?" : "¿Qué te llevó a buscar una revisión salarial?")
     : (isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?");
   return (
     <SimpleCards
