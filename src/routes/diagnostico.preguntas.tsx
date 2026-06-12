@@ -1419,7 +1419,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {(r.situacion === "empleado" || r.situacion === "freelance" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
+      {(r.situacion === "empleado" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
         const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
         const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
         const monedaPaisBono = paisToMoneda(r.pais, r.paisOtro);
