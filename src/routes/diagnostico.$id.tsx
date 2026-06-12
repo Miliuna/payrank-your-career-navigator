@@ -32,7 +32,7 @@ const limpiarScript = (s: string): string => {
     .replace(/[«»"“”'‘’`]/g, "")
     .split(/\n+/)
     .map((p) => p.trim())
-    .filter(Boolean)
+    .filter((p) => p !== "" && !/^[-—–*_]{2,}$/.test(p))
     .join("\n\n")
     .trim();
 };
