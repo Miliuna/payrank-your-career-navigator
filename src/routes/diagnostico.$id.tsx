@@ -149,8 +149,11 @@ function parseNum(v: unknown): number | null {
   const n = parseFloat(s);
   return isFinite(n) ? n : null;
 }
-function fmtUSD(n: number): string {
-  return "USD " + Math.round(n).toLocaleString("en-US");
+function fmtUSD(n: number, currency: string = "USD"): string {
+  // Values from the prompt come expressed in thousands (e.g. 2.1 == 2.1K).
+  const abs = Math.abs(n);
+  const body = abs >= 10 ? `${Math.round(n)}K` : `${n.toFixed(1)}K`;
+  return `${currency} ${body}`;
 }
 
 function PercentilesChart({
