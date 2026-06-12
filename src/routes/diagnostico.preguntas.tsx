@@ -395,7 +395,7 @@ function PreguntasPage() {
   // Orden de pasos. Para freelance/contractor, Beneficios (paso lógico 15) va
   // inmediatamente después de Situación (paso 1), que incluye horas trabajadas
   // y monto mensual. El resto del flujo (empleado/búsqueda) no cambia.
-  const esIndep = r.situacion === "freelance" || r.situacion === "contractor";
+  const esIndep = r.situacion === "contractor";
   const orden = React.useMemo(() => {
     const base = Array.from({ length: TOTAL }, (_, i) => i);
     if (!esIndep) return base;
@@ -593,7 +593,7 @@ function isValid(
       if (!r.situacion) return false;
       if (modo === "C") return true; // salario opcional en Modo C
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
-      if (r.situacion === "freelance") return !!r.salario && !!r.moneda;
+      
       if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
       // busqueda
       if (r.trabajaActualmente === "si") return !!r.salario && !!r.moneda;
@@ -1189,7 +1189,7 @@ function P14HerramientasIA({ r, setR }: Props) {
 const SITUACIONES_LABELS_EN: Record<string, string> = {
   empleado: "I am currently employed",
   busqueda: "I am actively job searching",
-  freelance: "I am a freelance or independent consultant",
+  
   contractor: "I work as a contractor or under a service contract",
 };
 const SITUACIONES_DESC_EN: Record<string, string> = {
@@ -1278,17 +1278,6 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {r.situacion === "freelance" && (
-        <div className="border-t border-hueso/10 pt-8">
-          <SalarioInput
-            label={isEN ? "How much do you earn per month on average?" : "¿Cuánto cobrás mensualmente en promedio?"}
-            valor={r.salario}
-            moneda={r.moneda}
-            onValor={(v) => setR({ salario: v })}
-            onMoneda={(m) => setR({ moneda: m })}
-          />
-        </div>
-      )}
 
       {r.situacion === "contractor" && (
         <div className="border-t border-hueso/10 pt-8 space-y-6 animate-in fade-in duration-300">
@@ -1364,7 +1353,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {(r.situacion === "empleado" || r.situacion === "freelance" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (
+      {(r.situacion === "empleado" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (
         <div className="border-t border-hueso/10 pt-8 space-y-6">
           <div>
             <p className="font-body text-base text-hueso mb-3">
@@ -1648,7 +1637,7 @@ function P16Beneficios({ r, setR }: Props) {
   const isEN = lang === "EN";
   const pais = (r.pais === "Otro" ? r.paisOtro : r.pais) ?? "";
   const isUSA = pais === "Estados Unidos";
-  const esIndep = r.situacion === "freelance" || r.situacion === "contractor";
+  const esIndep = r.situacion === "contractor";
 
   // Si el usuario es freelance/contractor, limpiamos campos que no aplican
   // para evitar que queden valores antiguos en el estado.

@@ -57,7 +57,7 @@ export type Respuestas = {
   herramientasIA?: string[];
   frecuenciaIA?: string;
   usoIA?: string[];
-  situacion?: "empleado" | "busqueda" | "freelance" | "contractor";
+  situacion?: "empleado" | "busqueda" | "contractor";
   salario?: number;
   moneda?: string;
   brutoNeto?: "bruto" | "neto";

@@ -207,8 +207,8 @@ function PerfilPage() {
   }
 
   const situacionLabel = isEN
-    ? (r.situacion === "empleado" ? "Employed" : r.situacion === "busqueda" ? "Active job search" : r.situacion === "freelance" ? "Freelance / independent consultant" : r.situacion === "contractor" ? "Contractor" : dash)
-    : (r.situacion === "empleado" ? "Empleado/a" : r.situacion === "busqueda" ? "En búsqueda activa" : r.situacion === "freelance" ? "Freelance / consultor/a" : r.situacion === "contractor" ? "Contractor" : dash);
+    ? (r.situacion === "empleado" ? "Employed" : r.situacion === "busqueda" ? "Active job search" : r.situacion === "contractor" ? "Contractor" : dash)
+    : (r.situacion === "empleado" ? "Empleado/a" : r.situacion === "busqueda" ? "En búsqueda activa" : r.situacion === "contractor" ? "Contractor" : dash);
   const salarioStr = r.salario && r.moneda
     ? `${r.moneda} ${r.salario.toLocaleString("es-AR")}${r.brutoNeto ? ` (${r.brutoNeto})` : ""}`
     : (r.salarioAnterior && r.monedaAnterior
