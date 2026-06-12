@@ -864,7 +864,7 @@ function P7Funciones({ r, setR, datosExtraidos }: Props & { datosExtraidos?: imp
     if ((r.funciones?.length ?? 0) > 0) { prefilledRef.current = true; return; }
     const inferred = datosExtraidos?.funciones_inferidas;
     if (!Array.isArray(inferred) || inferred.length === 0) return;
-    const matches = FUNCIONES.filter((opt) => {
+    const matches = funcsDisplay.filter((opt) => {
       const oWords = opt.toLowerCase().replace(/[/&]/g, " ").split(/\s+/).filter((w) => w.length > 3);
       return inferred.some((inf) => {
         if (typeof inf !== "string") return false;
