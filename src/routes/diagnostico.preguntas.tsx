@@ -1638,6 +1638,35 @@ function P16Beneficios({ r, setR }: Props) {
   const isUSA = pais === "Estados Unidos";
   const esIndep = r.situacion === "freelance" || r.situacion === "contractor";
 
+  // Si el usuario es freelance/contractor, limpiamos campos que no aplican
+  // para evitar que queden valores antiguos en el estado.
+  React.useEffect(() => {
+    if (!esIndep) return;
+    const clear: Partial<typeof r> = {};
+    if (r.equity !== undefined) clear.equity = undefined;
+    if (r.beneficio_seguro_vida !== undefined) clear.beneficio_seguro_vida = undefined;
+    if (r.beneficio_retiro !== undefined) clear.beneficio_retiro = undefined;
+    if (r.beneficio_401k_match !== undefined) clear.beneficio_401k_match = undefined;
+    if (r.beneficio_401k_porcentaje !== undefined) clear.beneficio_401k_porcentaje = undefined;
+    if (r.auto_corporativo !== undefined) clear.auto_corporativo = undefined;
+    if (r.beneficio_movilidad_tipo !== undefined) clear.beneficio_movilidad_tipo = undefined;
+    if (r.beneficio_movilidad_monto !== undefined) clear.beneficio_movilidad_monto = undefined;
+    if (r.beneficio_alimentacion_tipo !== undefined) clear.beneficio_alimentacion_tipo = undefined;
+    if (r.beneficio_alimentacion_monto !== undefined) clear.beneficio_alimentacion_monto = undefined;
+    if (r.bono_target_sueldos !== undefined) clear.bono_target_sueldos = undefined;
+    if (r.bono_monto !== undefined) clear.bono_monto = undefined;
+    if (r.bono_moneda !== undefined) clear.bono_moneda = undefined;
+    if (r.bono_realizacion !== undefined) clear.bono_realizacion = undefined;
+    if (r.beneficio_capacitacion !== undefined) clear.beneficio_capacitacion = undefined;
+    // Cobertura médica: si el valor pertenece al esquema empleado, reseteamos
+    if (r.beneficio_salud_tipo && !["empresa_paga","yo_pago","no_tengo","no_se"].includes(r.beneficio_salud_tipo)) {
+      clear.beneficio_salud_tipo = undefined;
+      clear.beneficio_salud_prestadora = undefined;
+    }
+    if (Object.keys(clear).length > 0) setR(clear);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [esIndep]);
+
   const ticketLabel = isEN
     ? "Meal allowance / food benefit"
     : pais === "México" ? "Vales de despensa"
