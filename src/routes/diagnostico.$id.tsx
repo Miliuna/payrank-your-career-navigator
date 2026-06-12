@@ -160,9 +160,18 @@ function parseNum(v: unknown): number | null {
   return isFinite(n) ? n : null;
 }
 function fmtUSD(n: number, currency: string = "USD"): string {
-  // Values from the prompt come expressed in thousands (e.g. 2.1 == 2.1K).
+  // Raw values (e.g. 1593, 2100, 1_250_000). Format with K/M suffix.
   const abs = Math.abs(n);
-  const body = abs >= 10 ? `${Math.round(n)}K` : `${n.toFixed(1)}K`;
+  let body: string;
+  if (abs >= 1_000_000) {
+    body = `${(n / 1_000_000).toFixed(1)}M`;
+  } else if (abs >= 10_000) {
+    body = `${Math.round(n / 1000)}K`;
+  } else if (abs >= 1000) {
+    body = `${(n / 1000).toFixed(1)}K`;
+  } else {
+    body = `${Math.round(n)}`;
+  }
   return `${currency} ${body}`;
 }
 
