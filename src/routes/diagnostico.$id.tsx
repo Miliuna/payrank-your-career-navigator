@@ -29,9 +29,8 @@ const bool = (v: unknown): boolean => v === true;
 const limpiarScript = (s: string): string => {
   if (!s || s === "—") return s;
   return s
-    .replace(/[«»"“”'‘’`]/g, "")
     .split(/\n+/)
-    .map((p) => p.trim())
+    .map((p) => p.trim().replace(/^[«»"“”`]+|[«»"“”`]+$/g, "").trim())
     .filter((p) => p !== "" && !/^[-—–*_]{2,}$/.test(p))
     .join("\n\n")
     .trim();
