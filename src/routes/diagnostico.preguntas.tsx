@@ -392,6 +392,18 @@ function PreguntasPage() {
   const hasDoc = !!datos;
   const overrides = React.useMemo(() => new Set(state.pasosOverride ?? []), [state.pasosOverride]);
 
+  // Orden de pasos. Para freelance/contractor, Beneficios (paso lógico 15) va
+  // inmediatamente después de Situación (paso 1), que incluye horas trabajadas
+  // y monto mensual. El resto del flujo (empleado/búsqueda) no cambia.
+  const esIndep = r.situacion === "freelance" || r.situacion === "contractor";
+  const orden = React.useMemo(() => {
+    const base = Array.from({ length: TOTAL }, (_, i) => i);
+    if (!esIndep) return base;
+    return [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
+  }, [esIndep]);
+  // step = índice visual de navegación; stepLogico = pregunta que se muestra.
+  const stepLogico = step === -1 ? -1 : (orden[step] ?? step);
+
   // Pre-cargar respuestas desde extracción una sola vez al entrar
   React.useEffect(() => {
     if (appliedRef.current || !datos) return;
@@ -408,17 +420,17 @@ function PreguntasPage() {
   const pendientes = React.useMemo(() => {
     if (!hasDoc) return null;
     const arr: number[] = [];
-    for (let i = 0; i < TOTAL; i++) {
+    for (const i of orden) {
       // Pasos 10 y 11 (años de experiencia total / industria) siempre se muestran,
       // aunque vengan pre-completados desde el CV, para que el usuario pueda verificar/editar.
       if (i === 10 || i === 11 || !EXTRACTABLE_STEPS.has(i) || !tieneExtraccion(i, datos!) || overrides.has(i)) arr.push(i);
     }
     return arr;
-  }, [hasDoc, datos, overrides]);
+  }, [hasDoc, datos, overrides, orden]);
 
   const next = () => {
     if (step === -1) { setStep(0); return; }
-    if (step === 13) {
+    if (stepLogico === 13) {
       const pending = (certRawInput.trim() || (r.certificacionesPending ?? "").trim());
       if (pending) {
         const items = r.certificaciones ?? [];
@@ -430,7 +442,7 @@ function PreguntasPage() {
         setCertRawInput("");
       }
     }
-    if (step === 15) {
+    if (stepLogico === 15) {
       const otherText = r.beneficiosOtro?.trim();
       const items = r.beneficios ?? [];
       const hasOther = items.includes("Otro") || items.includes("Other");
@@ -456,17 +468,17 @@ function PreguntasPage() {
   const onCambiar = () => {
     setState((s) => ({
       ...s,
-      pasosOverride: Array.from(new Set([...(s.pasosOverride ?? []), step])),
+      pasosOverride: Array.from(new Set([...(s.pasosOverride ?? []), stepLogico])),
     }));
   };
 
-  const valid = isValid(step, r, modo, certRawInput);
-  const extraccionTexto = step >= 0 && hasDoc && EXTRACTABLE_STEPS.has(step) && !overrides.has(step) && step !== 10 && step !== 11
-    ? resumenExtraccion(step, datos!, isEN)
+  const valid = isValid(stepLogico, r, modo, certRawInput);
+  const extraccionTexto = stepLogico >= 0 && hasDoc && EXTRACTABLE_STEPS.has(stepLogico) && !overrides.has(stepLogico) && stepLogico !== 10 && stepLogico !== 11
+    ? resumenExtraccion(stepLogico, datos!, isEN)
     : null;
   const inferidoDesdeCV = hasDoc && (
-    (step === 10 && tieneExtraccion(10, datos!)) ||
-    (step === 11 && tieneExtraccion(11, datos!))
+    (stepLogico === 10 && tieneExtraccion(10, datos!)) ||
+    (stepLogico === 11 && tieneExtraccion(11, datos!))
   );
 
   // Cabecera de progreso
@@ -474,7 +486,7 @@ function PreguntasPage() {
     ? (isEN ? "PREVIOUS STEP" : "PASO PREVIO")
     : (hasDoc && pendientes
       ? (() => {
-          const idx = pendientes.indexOf(step);
+          const idx = pendientes.indexOf(stepLogico);
           const totalPend = pendientes.length;
           if (idx >= 0) return isEN ? `FIELD ${idx + 1} OF ${totalPend} TO CONFIRM` : `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
           return isEN ? "FIELD CONFIRMED" : "CAMPO CONFIRMADO";
@@ -484,7 +496,7 @@ function PreguntasPage() {
   const pct = step === -1
     ? 8
     : (hasDoc && pendientes && pendientes.length > 0
-      ? Math.round(((Math.max(pendientes.indexOf(step), 0) + 1) / pendientes.length) * 50) + 10
+      ? Math.round(((Math.max(pendientes.indexOf(stepLogico), 0) + 1) / pendientes.length) * 50) + 10
       : Math.round(((step + 1) / TOTAL) * 50) + 10);
 
   return (
@@ -508,7 +520,7 @@ function PreguntasPage() {
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
           <>
-            {renderStep(step, r, setR, modo, isEN, datos, certRawInput, setCertRawInput)}
+            {renderStep(stepLogico, r, setR, modo, isEN, datos, certRawInput, setCertRawInput)}
             {inferidoDesdeCV && (
               <p className="font-body text-sm text-hueso/60 mt-4 leading-relaxed border-l-2 border-hueso/30 pl-4">
                 {isEN ? "Double-check this — we inferred it from your CV." : "Verificá este dato — lo inferimos de tu CV."}
