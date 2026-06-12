@@ -594,9 +594,6 @@ function isValid(
       if (modo === "C") return true; // salario opcional en Modo C
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
       if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
-      // busqueda
-      if (r.trabajaActualmente === "si") return !!r.salario && !!r.moneda;
-      if (r.trabajaActualmente === "no") return !!r.salarioAnterior && !!r.monedaAnterior && !!r.tiempoSinTrabajo;
       return false;
     }
     case 2: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
@@ -1187,7 +1184,6 @@ function P14HerramientasIA({ r, setR }: Props) {
 
 const SITUACIONES_LABELS_EN: Record<string, string> = {
   empleado: "I am currently employed",
-  busqueda: "I am actively job searching",
   contractor: "I work as a contractor or under a service contract",
 };
 const SITUACIONES_DESC_EN: Record<string, string> = {
@@ -1306,51 +1302,8 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {r.situacion === "busqueda" && (
-        <div className="border-t border-hueso/10 pt-8 space-y-6">
-          <div>
-            <p className="font-body text-base text-hueso mb-3">
-              {isEN ? "Are you currently working while searching?" : "¿Estás trabajando actualmente mientras buscás?"}
-            </p>
-            <div className="flex gap-2">
-              <ChipOption selected={r.trabajaActualmente === "si"} onClick={() => setR({ trabajaActualmente: "si" })}>{isEN ? "Yes" : "Sí"}</ChipOption>
-              <ChipOption selected={r.trabajaActualmente === "no"} onClick={() => setR({ trabajaActualmente: "no" })}>No</ChipOption>
-            </div>
-          </div>
-          {r.trabajaActualmente === "si" && (
-            <SalarioInput
-              label={isEN ? "What is your current gross monthly salary?" : "¿Cuál es tu salario bruto mensual actual?"}
-              valor={r.salario}
-              moneda={r.moneda}
-              onValor={(v) => setR({ salario: v })}
-              onMoneda={(m) => setR({ moneda: m })}
-            />
-          )}
-          {r.trabajaActualmente === "no" && (
-            <>
-              <SalarioInput
-                label={isEN ? "How much did you earn in your last job?" : "¿Cuánto ganabas en tu último trabajo?"}
-                valor={r.salarioAnterior}
-                moneda={r.monedaAnterior}
-                onValor={(v) => setR({ salarioAnterior: v })}
-                onMoneda={(m) => setR({ monedaAnterior: m })}
-              />
-              <div>
-                <p className="font-body text-base text-hueso mb-3">{isEN ? "How long ago did you leave that job?" : "¿Hace cuánto dejaste ese trabajo?"}</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {(isEN ? TIEMPOS_SIN_TRABAJO_EN : TIEMPOS_SIN_TRABAJO).map((t) => (
-                    <CardOption key={t} selected={r.tiempoSinTrabajo === t} onClick={() => setR({ tiempoSinTrabajo: t })}>
-                      {t}
-                    </CardOption>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      )}
 
-      {(r.situacion === "empleado" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (
+      {(r.situacion === "empleado" || r.situacion === "contractor") && (
         <div className="border-t border-hueso/10 pt-8 space-y-6">
           <div>
             <p className="font-body text-base text-hueso mb-3">
@@ -1417,7 +1370,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {(r.situacion === "empleado" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
+      {(r.situacion === "empleado" || r.situacion === "contractor") && (() => {
         const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
         const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
         const monedaPaisBono = paisToMoneda(r.pais, r.paisOtro);
