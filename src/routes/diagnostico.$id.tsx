@@ -24,6 +24,16 @@ const str = (v: unknown, fb = "—"): string => {
 const arr = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
 const bool = (v: unknown): boolean => v === true;
 
+// Quita comillas envolventes por párrafo en scripts (el modelo a veces encierra cada párrafo)
+const limpiarScript = (s: string): string => {
+  if (!s || s === "—") return s;
+  return s
+    .split(/\n+/)
+    .map((p) => p.trim().replace(/^[«"“”'']+/, "").replace(/[«»"“”'']+$/, "").trim())
+    .filter(Boolean)
+    .join("\n\n");
+};
+
 // ---------- UI primitives ----------
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
