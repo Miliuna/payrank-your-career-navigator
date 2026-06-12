@@ -989,6 +989,9 @@ CORRECTO (Colombia/México/Chile/Perú y resto de LATAM): "Quiero hablar contigo
 CORRECTO (España): "Quiero hablar contigo sobre mi compensación."
 CORRECTO (USA/anglófonos): "I'd like to talk with you about my compensation." INCORRECTO: "Quería hablar con vos", "Quisiera plantear", "Me gustaría conversar". El condicional en la apertura señala inseguridad antes de que empiece la conversación. Presente indicativo siempre.
 
+REGLA DE FORMATO EN SCRIPTS (P-06):
+Cada script (script_jefe y script_recruiter) es UN ÚNICO discurso continuo: párrafos separados por saltos de línea, sin viñetas y sin líneas separadoras ("---", "***" o similares). PROHIBIDO encerrar los párrafos entre comillas — ni cada párrafo por separado ni el bloque completo. No usar comillas («», "", '') en ningún punto del script, salvo cita textual de un tercero. La interfaz ya presenta el script como bloque de cita; las comillas las agrega el diseño, no el texto.
+
 AL FINAL DE CADA SCRIPT — SIEMPRE (Corrección 9):
 "Después de decir tu número: silencio.
 No justifiques, no expliques, no ofrezcas concesiones antes de que te las pidan.
@@ -1431,6 +1434,7 @@ Objeciones (bloque expandible):
 - "Ya todos recibieron el mismo ajuste" → diferenciar ajuste general de ajuste por alcance real.
 - "¿De dónde sacás esos números?" → respuesta creíble que protege al usuario.
 AL FINAL DE CADA SCRIPT — TÉCNICA DEL SILENCIO (Corr 9, literal).
+FORMATO DE SCRIPTS: cada script es un único bloque continuo, párrafos separados por saltos de línea, SIN comillas por párrafo ni en el bloque completo, sin separadores "---".
 
 SECCIÓN 7 — "LO QUE MUEVE TU NÚMERO":
 1. Tabla skills/certificaciones con impacto estimado en rango — específicas por industria/función/nivel (Corr 7).
