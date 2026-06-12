@@ -1672,10 +1672,19 @@ function P16Beneficios({ r, setR }: Props) {
           <p className="font-body text-sm uppercase tracking-widest text-hueso/50">
             {isEN ? "A — Health coverage" : "A — Cobertura médica"}
           </p>
+          {esIndep && (
+            <p className="font-body text-sm text-hueso/70">
+              {isEN ? "Do you have health coverage? Who pays for it?" : "¿Tenés cobertura médica? ¿Quién la paga?"}
+            </p>
+          )}
           <div className="grid grid-cols-1 gap-2">
-          {(isEN
-            ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
-            : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]]
+          {(esIndep
+            ? (isEN
+              ? [["empresa_paga","The company/client pays for it"],["yo_pago","I pay for it"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              : [["empresa_paga","La paga la empresa/cliente"],["yo_pago","La pago yo"],["no_tengo","No tengo"],["no_se","No sé"]])
+            : (isEN
+              ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]])
           ).map(([val, label]) => (
             <CardOption
               key={val}
