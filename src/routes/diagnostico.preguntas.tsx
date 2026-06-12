@@ -1660,10 +1660,10 @@ function P16Beneficios({ r, setR }: Props) {
           <div className="grid grid-cols-1 gap-2">
           {(esIndep
             ? (isEN
-              ? [["empresa_paga","The company/client pays for it"],["yo_pago","I pay for it"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              ? [["empresa_paga","The company/client pays for it"],["yo_pago","I pay for it"],["no_tengo","I don't have it"],["no_se","Not sure"]]
               : [["empresa_paga","La paga la empresa/cliente"],["yo_pago","La pago yo"],["no_tengo","No tengo"],["no_se","No sé"]])
             : (isEN
-              ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Not sure"]]
               : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]])
           ).map(([val, label]) => (
             <CardOption
@@ -1858,7 +1858,7 @@ function P16Beneficios({ r, setR }: Props) {
           <div className="flex flex-col gap-2">
             <p className="font-body text-sm text-hueso/70">{isEN ? "Life insurance" : "Seguro de vida"}</p>
             <div className="grid grid-cols-3 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"], ["no_se", isEN ? "Don't know" : "No sé"]].map(([val, label]) => (
+              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"], ["no_se", isEN ? "Not sure" : "No sé"]].map(([val, label]) => (
                 <CardOption key={val} {...pick("beneficio_seguro_vida", val)}>{label}</CardOption>
               ))}
             </div>
@@ -1868,7 +1868,7 @@ function P16Beneficios({ r, setR }: Props) {
           <div className="flex flex-col gap-2">
             <p className="font-body text-sm text-hueso/70">{isEN ? "Supplemental retirement plan" : "Plan de retiro complementario"}</p>
             <div className="grid grid-cols-3 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"], ["no_se", isEN ? "Don't know" : "No sé"]].map(([val, label]) => (
+              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"], ["no_se", isEN ? "Not sure" : "No sé"]].map(([val, label]) => (
                 <CardOption key={val} {...pick("beneficio_retiro", val)}>{label}</CardOption>
               ))}
             </div>
@@ -1880,7 +1880,7 @@ function P16Beneficios({ r, setR }: Props) {
               <p className="font-body text-sm text-hueso/70">{isEN ? "Employer 401(k) match" : "Employer match 401k"}</p>
               <div className="grid grid-cols-1 gap-2">
                 {(isEN
-                  ? [["con_porcentaje","Yes, I know the %"],["no","No"],["no_se","Don't know"]]
+                  ? [["con_porcentaje","Yes, I know the %"],["no","No"],["no_se","Not sure"]]
                   : [["con_porcentaje","Sí, sé el %"],["no","No"],["no_se","No sé"]]
                 ).map(([val, label]) => (
                   <CardOption
