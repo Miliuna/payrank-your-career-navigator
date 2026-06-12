@@ -1660,10 +1660,10 @@ function P16Beneficios({ r, setR }: Props) {
           <div className="grid grid-cols-1 gap-2">
           {(esIndep
             ? (isEN
-              ? [["empresa_paga","The company/client pays for it"],["yo_pago","I pay for it"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              ? [["empresa_paga","The company/client pays for it"],["yo_pago","I pay for it"],["no_tengo","I don't have it"],["no_se","Not sure"]]
               : [["empresa_paga","La paga la empresa/cliente"],["yo_pago","La pago yo"],["no_tengo","No tengo"],["no_se","No sé"]])
             : (isEN
-              ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Not sure"]]
               : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]])
           ).map(([val, label]) => (
             <CardOption
