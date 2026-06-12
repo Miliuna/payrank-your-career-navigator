@@ -1649,6 +1649,7 @@ En seccion_6, los scripts y las objeciones deben estar 100% orientados a negocia
 EXCLUSIONES OBLIGATORIAS DE MODO B (no incluir estos campos en el JSON de salida bajo ninguna circunstancia, ni como null ni como string vacío — omitir la clave por completo):
 - seccion_5.respuesta_antes_de_conocer_rol
 - seccion_6.script_recruiter
+- seccion_8 (hoja de ruta / próximo nivel): NO incluir en Modo B. El usuario está negociando en su rol actual, no planificando un salto de carrera. Si se incluye seccion_8, el reporte pierde foco y credibilidad. Omitir completamente.
 
 MODO B — REGLA DE CALIBRACIÓN OBLIGATORIA:
 
