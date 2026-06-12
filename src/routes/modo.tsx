@@ -34,7 +34,7 @@ const situacionesES: { id: Modo; titulo: string; descripcion: string }[] = [
   },
   {
     id: "C",
-    titulo: "Tengo una oferta o entrevista",
+    titulo: "Estoy en búsqueda, tengo una entrevista o recibí una oferta",
     descripcion: "Sabé exactamente cuánto pedir, cómo fundamentarlo y qué decir cuando te pregunten cuánto querés ganar.",
   },
   {
@@ -57,7 +57,7 @@ const situacionesEN: { id: Modo; titulo: string; descripcion: string }[] = [
   },
   {
     id: "C",
-    titulo: "I have an offer or interview",
+    titulo: "I'm job searching, have an interview, or received an offer",
     descripcion: "Know exactly what to ask for, how to justify it, and what to say when asked how much you want to earn.",
   },
   {
