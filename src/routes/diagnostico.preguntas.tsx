@@ -730,7 +730,7 @@ function MultiCards({ title, hint, options, value, onChange }: {
 }
 
 function P1Pais({ r, setR }: Props) {
-  const { lang } = useLang();
+  const { lang, setLang } = useLang();
   const isEN = lang === "EN";
   const [query, setQuery] = React.useState("");
   const filtered = PAISES.filter((p) => {
@@ -748,7 +748,10 @@ function P1Pais({ r, setR }: Props) {
       />
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-6">
         {filtered.map((p) => (
-          <ChipOption key={p} selected={r.pais === p} onClick={() => setR({ pais: p })}>
+          <ChipOption key={p} selected={r.pais === p} onClick={() => {
+            setR({ pais: p });
+            if (p === "Estados Unidos") setLang("EN");
+          }}>
             {labelOf(p, PAISES_EN, isEN)}
           </ChipOption>
         ))}
