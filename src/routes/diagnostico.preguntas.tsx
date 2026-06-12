@@ -593,7 +593,6 @@ function isValid(
       if (!r.situacion) return false;
       if (modo === "C") return true; // salario opcional en Modo C
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
-      
       if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
       // busqueda
       if (r.trabajaActualmente === "si") return !!r.salario && !!r.moneda;
@@ -1189,7 +1188,6 @@ function P14HerramientasIA({ r, setR }: Props) {
 const SITUACIONES_LABELS_EN: Record<string, string> = {
   empleado: "I am currently employed",
   busqueda: "I am actively job searching",
-  
   contractor: "I work as a contractor or under a service contract",
 };
 const SITUACIONES_DESC_EN: Record<string, string> = {
@@ -1277,7 +1275,6 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
           </div>
         </div>
       )}
-
 
       {r.situacion === "contractor" && (
         <div className="border-t border-hueso/10 pt-8 space-y-6 animate-in fade-in duration-300">
@@ -1420,7 +1417,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {(r.situacion === "empleado" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
+      {(r.situacion === "empleado" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
         const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
         const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
         const monedaPaisBono = paisToMoneda(r.pais, r.paisOtro);

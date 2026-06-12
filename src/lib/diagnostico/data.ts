@@ -100,7 +100,6 @@ export const USOS_IA = [
 export const SITUACIONES = [
   { id: "empleado", label: "Estoy empleado/a actualmente", descripcion: "" },
   { id: "busqueda", label: "Estoy en búsqueda activa", descripcion: "" },
-  
   {
     id: "contractor",
     label: "Trabajo como contractor o bajo contrato de servicios",
