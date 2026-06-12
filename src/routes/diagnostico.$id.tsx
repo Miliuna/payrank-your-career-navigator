@@ -383,6 +383,7 @@ function ResultadoPage() {
   const s7 = (res.seccion_7 as R) ?? {};
   const s8 = (res.seccion_8 as R) ?? {};
   const fl = (res.freelance as R) ?? {};
+  const isEN = leerVariant(String(row.pais_rol ?? "")) === "en";
 
   return (
     <div className="min-h-screen bg-white">
@@ -399,17 +400,17 @@ function ResultadoPage() {
 
         {/* SECCIÓN 1 */}
         <Section>
-          <Eyebrow>01 · TU PERFIL</Eyebrow>
-          <H2>Quién sos en el mercado</H2>
+          <Eyebrow>01 · {isEN ? "YOUR PROFILE" : "TU PERFIL"}</Eyebrow>
+          <H2>{isEN ? "Who you are in the market" : "Quién sos en el mercado"}</H2>
           <P>{str(s1.descripcion_perfil)}</P>
 
           {bool(s1.discrepancia_detectada) && (
             <Card dark>
-              <Eyebrow>DISCREPANCIA TÍTULO / FUNCIONES</Eyebrow>
+              <Eyebrow>{isEN ? "TITLE / ROLE DISCREPANCY" : "DISCREPANCIA TÍTULO / FUNCIONES"}</Eyebrow>
               <P>{str(s1.descripcion_discrepancia)}</P>
               {!!s1.nivel_real_inferido && (
                 <p className="mt-3 font-body text-sm text-hueso/70">
-                  Nivel real inferido: <span className="text-hueso">{str(s1.nivel_real_inferido)}</span>
+                  {isEN ? "Inferred real level:" : "Nivel real inferido:"} <span className="text-hueso">{str(s1.nivel_real_inferido)}</span>
                 </p>
               )}
             </Card>
@@ -422,8 +423,8 @@ function ResultadoPage() {
         {/* SECCIÓN 2 */}
 
         <Section>
-          <Eyebrow>02 · EL NÚMERO</Eyebrow>
-          <H2>Cuánto valés hoy en el mercado</H2>
+          <Eyebrow>02 · {isEN ? "THE NUMBER" : "EL NÚMERO"}</Eyebrow>
+          <H2>{isEN ? "What you're worth today" : "Cuánto valés hoy en el mercado"}</H2>
 
           <p className="font-display text-3xl md:text-4xl text-hueso">{str(s2.rango_texto)}</p>
 
@@ -453,7 +454,7 @@ function ResultadoPage() {
 
           {bool(s2.erosion_salarial_detectada) && (
             <Card dark>
-              <p className="font-ui text-[10px] tracking-[0.18em] text-hueso mb-3">EROSIÓN SALARIAL</p>
+              <p className="font-ui text-[10px] tracking-[0.18em] text-hueso mb-3">{isEN ? "SALARY EROSION" : "EROSIÓN SALARIAL"}</p>
               <p className="font-body leading-relaxed text-justify text-hueso">{str(s2.descripcion_erosion)}</p>
             </Card>
           )}
@@ -491,12 +492,12 @@ function ResultadoPage() {
             if (usdOnly) {
               return (
                 <Card>
-                  <Eyebrow>RANGO USD</Eyebrow>
+                  <Eyebrow>USD RANGE</Eyebrow>
                   <KV k="P25" v={str(s2.p25_usd)} />
                   <KV k="P50" v={str(s2.p50_usd)} />
                   <KV k="P75" v={str(s2.p75_usd)} />
                   <KV k="P90" v={str(s2.p90_usd)} />
-                  <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
+                  <KV k={isEN ? "Your salary" : "Tu salario"} v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
                 </Card>
               );
             }
@@ -504,12 +505,12 @@ function ResultadoPage() {
             if (euroOnly) {
               return (
                 <Card>
-                  <Eyebrow>RANGO EN EUR</Eyebrow>
+                  <Eyebrow>EUR RANGE</Eyebrow>
                   <KV k="P25" v={str(s2.p25_local)} />
                   <KV k="P50" v={str(s2.p50_local)} />
                   <KV k="P75" v={str(s2.p75_local)} />
                   <KV k="P90" v={str(s2.p90_local)} />
-                  <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
+                  <KV k={isEN ? "Your salary" : "Tu salario"} v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
                 </Card>
               );
             }
@@ -518,26 +519,26 @@ function ResultadoPage() {
               <>
                 <div className="grid md:grid-cols-2 gap-4">
                   <Card>
-                    <Eyebrow>RANGO EN MONEDA LOCAL · {str(s2.moneda_local)}</Eyebrow>
+                    <Eyebrow>{isEN ? "LOCAL CURRENCY RANGE" : "RANGO EN MONEDA LOCAL"} · {str(s2.moneda_local)}</Eyebrow>
                     <KV k="P25" v={str(s2.p25_local)} />
                     <KV k="P50" v={str(s2.p50_local)} />
                     <KV k="P75" v={str(s2.p75_local)} />
                     <KV k="P90" v={str(s2.p90_local)} />
-                    <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
+                    <KV k={isEN ? "Your salary" : "Tu salario"} v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
                   </Card>
                   <Card>
-                    <Eyebrow>RANGO EN USD</Eyebrow>
+                    <Eyebrow>USD RANGE</Eyebrow>
                     <KV k="P25" v={str(s2.p25_usd)} />
                     <KV k="P50" v={str(s2.p50_usd)} />
                     <KV k="P75" v={str(s2.p75_usd)} />
                     <KV k="P90" v={str(s2.p90_usd)} />
-                    <KV k="Tu salario" v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
+                    <KV k={isEN ? "Your salary" : "Tu salario"} v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
                   </Card>
                 </div>
                 <p className="font-body text-xs text-hueso/55 leading-relaxed text-justify">
-                  Tipo de cambio utilizado: {fxLabel}
+                  {isEN ? "Exchange rate used:" : "Tipo de cambio utilizado:"} {fxLabel}
                   {tc?.valor ? ` · 1 USD = ${tc.valor.toLocaleString("es-AR")} ${monedaLocal}` : ""}
-                  {" · Al: "}{fxFecha}
+                  {" · "}{isEN ? "As of:" : "Al:"}{fxFecha}
                 </p>
                 {monedaLocal === "ARS" && (
                   <p className="font-body text-xs text-hueso/55 leading-relaxed mt-2 text-justify">
@@ -561,7 +562,7 @@ function ResultadoPage() {
 
           {arr<string>(s2.ajustes_aplicados).length > 0 && (
             <div>
-              <Eyebrow>AJUSTES APLICADOS</Eyebrow>
+              <Eyebrow>{isEN ? "ADJUSTMENTS APPLIED" : "AJUSTES APLICADOS"}</Eyebrow>
               <ul className="space-y-1">
                 {arr<string>(s2.ajustes_aplicados).map((a, i) => (
                   <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
@@ -579,16 +580,16 @@ function ResultadoPage() {
         {/* SECCIÓN 3 */}
 
         <Section>
-          <Eyebrow>03 · COMPENSACIÓN TOTAL</Eyebrow>
-          <H2>Tu paquete completo, valorizado</H2>
+          <Eyebrow>03 · {isEN ? "TOTAL COMPENSATION" : "COMPENSACIÓN TOTAL"}</Eyebrow>
+          <H2>{isEN ? "Your complete package, valued" : "Tu paquete completo, valorizado"}</H2>
 
           <div className="overflow-x-auto border border-hueso/15">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-hueso/[0.04] text-left">
-                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Componente</th>
-                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Tuyo</th>
-                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Mercado</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">{isEN ? "Component" : "Componente"}</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">{isEN ? "Yours" : "Tuyo"}</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">{isEN ? "Market" : "Mercado"}</th>
                 </tr>
               </thead>
               <tbody>
@@ -619,14 +620,14 @@ function ResultadoPage() {
 
           {!!s3.alerta_compensacion_variable && (
             <Card dark>
-              <Eyebrow>ALERTA · COMPENSACIÓN VARIABLE</Eyebrow>
+              <Eyebrow>{isEN ? "ALERT · VARIABLE COMPENSATION" : "ALERTA · COMPENSACIÓN VARIABLE"}</Eyebrow>
               <P>{str(s3.alerta_compensacion_variable)}</P>
             </Card>
           )}
 
           {arr<string>(s3.beneficios_faltantes).length > 0 && (
             <div>
-              <Eyebrow>BENEFICIOS QUE TE FALTAN</Eyebrow>
+              <Eyebrow>{isEN ? "BENEFITS YOU'RE MISSING" : "BENEFICIOS QUE TE FALTAN"}</Eyebrow>
               <ul className="space-y-1">
                 {arr<string>(s3.beneficios_faltantes).map((b, i) => (
                   <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
@@ -644,19 +645,19 @@ function ResultadoPage() {
           <>
             <Divider />
             <Section>
-              <Eyebrow>04 · BRECHA DE GÉNERO</Eyebrow>
-              <H2>Lo que el mercado te debe</H2>
+              <Eyebrow>04 · {isEN ? "GENDER GAP" : "BRECHA DE GÉNERO"}</Eyebrow>
+              <H2>{isEN ? "What the market owes you" : "Lo que el mercado te debe"}</H2>
 
               <Card dark>
-                <KV k="Brecha %" v={str(s4.brecha_porcentaje)} />
-                <KV k="Brecha mensual" v={<span className="font-display">{str(s4.brecha_mensual_local)}</span>} />
-                <KV k="Brecha anual" v={<span className="font-display">{str(s4.brecha_anual_local)}</span>} />
-                <KV k="Nivel" v={str(s4.nivel_jerarquico_brecha)} />
+                <KV k={isEN ? "Gap %" : "Brecha %"} v={str(s4.brecha_porcentaje)} />
+                <KV k={isEN ? "Monthly gap" : "Brecha mensual"} v={<span className="font-display">{str(s4.brecha_mensual_local)}</span>} />
+                <KV k={isEN ? "Annual gap" : "Brecha anual"} v={<span className="font-display">{str(s4.brecha_anual_local)}</span>} />
+                <KV k={isEN ? "Level" : "Nivel"} v={str(s4.nivel_jerarquico_brecha)} />
               </Card>
 
               {arr<string>(s4.factores_amplificadores).length > 0 && (
                 <div>
-                  <Eyebrow>FACTORES QUE AMPLÍAN LA BRECHA</Eyebrow>
+                  <Eyebrow>{isEN ? "FACTORS THAT WIDEN THE GAP" : "FACTORES QUE AMPLÍAN LA BRECHA"}</Eyebrow>
                   <ul className="space-y-1">
                     {arr<string>(s4.factores_amplificadores).map((f, i) => (
                       <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
@@ -672,7 +673,7 @@ function ResultadoPage() {
 
               {!!s4.argumento_negociacion && (
                 <Card>
-                  <Eyebrow>ARGUMENTO DE NEGOCIACIÓN</Eyebrow>
+                  <Eyebrow>{isEN ? "NEGOTIATION ARGUMENT" : "ARGUMENTO DE NEGOCIACIÓN"}</Eyebrow>
                   <P>{str(s4.argumento_negociacion)}</P>
                 </Card>
               )}
@@ -685,8 +686,8 @@ function ResultadoPage() {
           <>
             <Divider />
             <Section>
-              <Eyebrow>04 · BRECHA DE GÉNERO</Eyebrow>
-              <H2>Lo que el mercado te muestra como hombre</H2>
+              <Eyebrow>04 · {isEN ? "GENDER GAP" : "BRECHA DE GÉNERO"}</Eyebrow>
+              <H2>{isEN ? "What the market shows you as a man" : "Lo que el mercado te muestra como hombre"}</H2>
               <Card dark>
                 <P>{str(s4.mensaje_si_hombre)}</P>
               </Card>
@@ -699,8 +700,8 @@ function ResultadoPage() {
         {/* SECCIÓN 5 */}
 
         <Section>
-          <Eyebrow>05 · CUÁNTO PEDIR</Eyebrow>
-          <H2>Tu pretensión salarial</H2>
+          <Eyebrow>05 · {isEN ? "WHAT TO ASK FOR" : "CUÁNTO PEDIR"}</Eyebrow>
+          <H2>{isEN ? "Your salary ask" : "Tu pretensión salarial"}</H2>
 
           <div className="text-center py-6">
             <p className="font-display text-5xl md:text-6xl text-hueso">{str(s5.pretension_recomendada_local)}</p>
@@ -708,30 +709,30 @@ function ResultadoPage() {
           </div>
 
           <Card>
-            <KV k="Floor (mínimo aceptable)" v={str(s5.floor_local)} />
-            <KV k="Ceiling (techo)" v={str(s5.ceiling_local)} />
+            <KV k={isEN ? "Floor (minimum acceptable)" : "Floor (mínimo aceptable)"} v={str(s5.floor_local)} />
+            <KV k="Ceiling" v={str(s5.ceiling_local)} />
           </Card>
 
           <P muted>{str(s5.explicacion_floor_ceiling)}</P>
 
           {!!s5.respuesta_antes_de_conocer_rol && (
             <Card dark>
-              <Eyebrow>SI TE PREGUNTAN ANTES DE CONOCER EL ROL</Eyebrow>
+              <Eyebrow>{isEN ? "IF THEY ASK BEFORE KNOWING THE ROLE" : "SI TE PREGUNTAN ANTES DE CONOCER EL ROL"}</Eyebrow>
               <P>{str(s5.respuesta_antes_de_conocer_rol)}</P>
             </Card>
           )}
 
           <div className="space-y-4">
             <div>
-              <Eyebrow>ARGUMENTO 1 · MERCADO</Eyebrow>
+              <Eyebrow>{isEN ? "ARGUMENT 1 · MARKET" : "ARGUMENTO 1 · MERCADO"}</Eyebrow>
               <P>{str(s5.argumento_1_mercado)}</P>
             </div>
             <div>
-              <Eyebrow>ARGUMENTO 2 · ALCANCE REAL</Eyebrow>
+              <Eyebrow>{isEN ? "ARGUMENT 2 · REAL SCOPE" : "ARGUMENTO 2 · ALCANCE REAL"}</Eyebrow>
               <P>{str(s5.argumento_2_alcance_real)}</P>
             </div>
             <div>
-              <Eyebrow>ARGUMENTO 3 · CONTEXTO</Eyebrow>
+              <Eyebrow>{isEN ? "ARGUMENT 3 · CONTEXT" : "ARGUMENTO 3 · CONTEXTO"}</Eyebrow>
               <P>{str(s5.argumento_3_contexto)}</P>
             </div>
           </div>
@@ -742,27 +743,27 @@ function ResultadoPage() {
         {/* SECCIÓN 6 */}
 
         <Section>
-          <Eyebrow>06 · SCRIPTS DE NEGOCIACIÓN</Eyebrow>
-          <H2>Las palabras exactas</H2>
+          <Eyebrow>06 · {isEN ? "NEGOTIATION SCRIPTS" : "SCRIPTS DE NEGOCIACIÓN"}</Eyebrow>
+          <H2>{isEN ? "The exact words" : "Las palabras exactas"}</H2>
 
           <Card dark>
-            <Eyebrow>HABLAR CON TU JEFE</Eyebrow>
+            <Eyebrow>{isEN ? "TALKING TO YOUR BOSS" : "HABLAR CON TU JEFE"}</Eyebrow>
             <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{limpiarScript(str(s6.script_jefe))}</p>
           </Card>
 
           {str(s6.script_recruiter) !== "—" && (
             <Card dark>
-              <Eyebrow>HABLAR CON UN RECRUITER</Eyebrow>
+              <Eyebrow>{isEN ? "TALKING TO A RECRUITER" : "HABLAR CON UN RECRUITER"}</Eyebrow>
               <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{limpiarScript(str(s6.script_recruiter))}</p>
             </Card>
           )}
 
-          <Eyebrow>OBJECIONES Y RESPUESTAS</Eyebrow>
+          <Eyebrow>{isEN ? "OBJECTIONS AND RESPONSES" : "OBJECIONES Y RESPUESTAS"}</Eyebrow>
           {[s6.objecion_1, s6.objecion_2, s6.objecion_3].filter(Boolean).map((o, i) => {
             const obj = o as R;
             return (
               <Card key={i}>
-                <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-2">Objeción {i + 1}</p>
+                <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-2">{isEN ? "Objection" : "Objeción"} {i + 1}</p>
                 <p className="font-body text-hueso italic mb-3 text-justify">"{str(obj.objecion)}"</p>
                 <p className="font-body text-hueso/80 text-justify">{str(obj.respuesta)}</p>
               </Card>
@@ -774,16 +775,16 @@ function ResultadoPage() {
 
         {/* SECCIÓN 7 */}
         <Section>
-          <Eyebrow>07 · SKILLS E IA</Eyebrow>
-          <H2>Lo que mueve la aguja</H2>
+          <Eyebrow>07 · {isEN ? "SKILLS & AI" : "SKILLS E IA"}</Eyebrow>
+          <H2>{isEN ? "What moves the needle" : "Lo que mueve la aguja"}</H2>
 
           <div className="overflow-x-auto border border-hueso/15">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-hueso/[0.04] text-left">
                   <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Skill</th>
-                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Estado</th>
-                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Impacto</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">{isEN ? "Status" : "Estado"}</th>
+                  <th className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/55">Impact</th>
                 </tr>
               </thead>
               <tbody>
@@ -795,9 +796,9 @@ function ResultadoPage() {
                     </td>
                     <td className="px-4 py-3">
                       {str(s.estado) === "tiene" ? (
-                        <Badge kind="sobre">Tenés</Badge>
+                        <Badge kind="sobre">{isEN ? "You have it" : "Tenés"}</Badge>
                       ) : (
-                        <Badge kind="bajo">Falta</Badge>
+                        <Badge kind="bajo">{isEN ? "Missing" : "Falta"}</Badge>
                       )}
                     </td>
                     <td className="px-4 py-3 font-display text-hueso">{str(s.impacto_porcentaje)}</td>
@@ -808,13 +809,13 @@ function ResultadoPage() {
           </div>
 
           <div>
-            <Eyebrow>IMPACTO DE IA EN TU PERFIL</Eyebrow>
+            <Eyebrow>{isEN ? "AI IMPACT ON YOUR PROFILE" : "IMPACTO DE IA EN TU PERFIL"}</Eyebrow>
             <P>{str(s7.impacto_ia_especifico)}</P>
           </div>
 
           {arr<string>(s7.herramientas_ia_recomendadas).length > 0 && (
             <div>
-              <Eyebrow>HERRAMIENTAS RECOMENDADAS</Eyebrow>
+              <Eyebrow>{isEN ? "RECOMMENDED TOOLS" : "HERRAMIENTAS RECOMENDADAS"}</Eyebrow>
               <ul className="space-y-1">
                 {arr<string>(s7.herramientas_ia_recomendadas).map((h, i) => (
                   <li key={i} className="flex items-start gap-2 font-body text-sm text-hueso/80">
@@ -831,26 +832,26 @@ function ResultadoPage() {
 
         {/* SECCIÓN 8 */}
         <Section>
-          <Eyebrow>08 · HOJA DE RUTA</Eyebrow>
-          <H2>Tu próximo nivel</H2>
+          <Eyebrow>08 · {isEN ? "ROADMAP" : "HOJA DE RUTA"}</Eyebrow>
+          <H2>{isEN ? "Your next level" : "Tu próximo nivel"}</H2>
 
           <P>{str(s8.lectura_progresion)}</P>
 
           <div className="grid md:grid-cols-2 gap-4">
             <Card>
-              <Eyebrow>HOY</Eyebrow>
+              <Eyebrow>{isEN ? "TODAY" : "HOY"}</Eyebrow>
               <p className="font-display text-2xl text-hueso">{str(s8.nivel_actual)}</p>
             </Card>
             <Card dark>
-              <Eyebrow>SIGUIENTE</Eyebrow>
+              <Eyebrow>{isEN ? "NEXT" : "SIGUIENTE"}</Eyebrow>
               <p className="font-display text-2xl text-hueso">{str(s8.nivel_siguiente)}</p>
               <p className="font-body text-sm text-hueso/70 mt-2">{str(s8.rango_nivel_siguiente_local)}</p>
-              <p className="font-body text-xs text-hueso/55 mt-1">Salto: {str(s8.diferencia_porcentual_salto)}</p>
+              <p className="font-body text-xs text-hueso/55 mt-1">{isEN ? "Jump:" : "Salto:"} {str(s8.diferencia_porcentual_salto)}</p>
             </Card>
           </div>
 
           <div>
-            <Eyebrow>CRITERIOS PARA EL SALTO</Eyebrow>
+            <Eyebrow>{isEN ? "CRITERIA FOR THE JUMP" : "CRITERIOS PARA EL SALTO"}</Eyebrow>
             <div className="space-y-3">
               {arr<R>(s8.criterios_para_el_salto).map((c, i) => (
                 <Card key={i}>
@@ -862,12 +863,12 @@ function ResultadoPage() {
           </div>
 
           <Card>
-            <KV k="Tiempo realista" v={<span className="font-display">{str(s8.tiempo_realista)}</span>} />
+            <KV k={isEN ? "Realistic timeline" : "Tiempo realista"} v={<span className="font-display">{str(s8.tiempo_realista)}</span>} />
           </Card>
 
           {!!s8.analisis_cv && (
             <Card dark>
-              <Eyebrow>ANÁLISIS DE TU CV</Eyebrow>
+              <Eyebrow>{isEN ? "YOUR CV ANALYSIS" : "ANÁLISIS DE TU CV"}</Eyebrow>
               <P>{str(s8.analisis_cv)}</P>
             </Card>
           )}
@@ -878,16 +879,16 @@ function ResultadoPage() {
             );
             return ajustes.length > 0 ? (
               <div>
-                <Eyebrow>AJUSTES SUGERIDOS</Eyebrow>
+                <Eyebrow>{isEN ? "SUGGESTED ADJUSTMENTS" : "AJUSTES SUGERIDOS"}</Eyebrow>
                 <div className="space-y-3">
                   {ajustes.map((a, i) => (
                     <Card key={i}>
-                      <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Antes</p>
+                      <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">{isEN ? "Before" : "Antes"}</p>
                       <p className="font-body text-hueso/65 italic mb-3 text-justify">{str(a.antes)}</p>
-                      <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">Después</p>
+                      <p className="font-ui text-[10px] uppercase tracking-widest text-hueso/45 mb-1">{isEN ? "After" : "Después"}</p>
                       <p className="font-body text-hueso mb-3 text-justify">{str(a.despues)}</p>
                       {!!a.impacto_estimado && (
-                        <p className="font-body text-xs text-hueso/55">Impacto: {str(a.impacto_estimado)}</p>
+                        <p className="font-body text-xs text-hueso/55">{isEN ? "Impact:" : "Impacto:"} {str(a.impacto_estimado)}</p>
                       )}
                     </Card>
                   ))}
