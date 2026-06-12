@@ -864,13 +864,34 @@ function P7Funciones({ r, setR, datosExtraidos }: Props & { datosExtraidos?: imp
     if ((r.funciones?.length ?? 0) > 0) { prefilledRef.current = true; return; }
     const inferred = datosExtraidos?.funciones_inferidas;
     if (!Array.isArray(inferred) || inferred.length === 0) return;
+    const enSynonyms: Record<string, string[]> = {
+      "budget/p&l": ["budget","spend","p&l","revenue","financial","cost","roi","roas","cpa","cpc"],
+      "people management": ["team","manage","oversee","supervise","direct","staff","headcount","reports"],
+      "strategy": ["strategy","strategic","roadmap","planning","develop","execute","initiative"],
+      "data/analytics": ["analytics","data","dashboard","reporting","insights","metrics","kpi","power bi","tableau","sql"],
+      "marketing": ["marketing","campaign","brand","digital","paid","social","seo","content","media"],
+      "communications & pr": ["communications","pr","social media","community","press","followers"],
+      "sales/commercial": ["sales","commercial","revenue","pipeline","quota","business development"],
+      "technology/product": ["product","technology","tech","engineering","platform","software"],
+      "hr/talent": ["talent","hr","human resources","recruiting","people","culture","onboarding"],
+      "finance/accounting": ["finance","accounting","financial","forecasting","audit","treasury"],
+      "project management / pmo": ["project","pmo","program","delivery","agile","scrum","waterfall","timeline"],
+      "software/web development": ["software","web","development","code","programming","frontend","backend"],
+      "design/ux": ["design","ux","ui","creative","visual","figma","adobe"],
+      "innovation/r&d": ["innovation","r&d","research","new product","npi","ideation"],
+      "legal/compliance": ["legal","compliance","regulatory","contract","risk","governance"],
+      "customer service": ["customer","service","support","client","satisfaction","nps"],
+      "operations": ["operations","ops","process","logistics","supply chain","efficiency","procurement"],
+    };
     const matches = funcsDisplay.filter((opt) => {
-      const oWords = opt.toLowerCase().replace(/[/&]/g, " ").split(/\s+/).filter((w) => w.length > 3);
+      const optKey = opt.toLowerCase();
+      const oWords = optKey.replace(/[/&]/g, " ").split(/\s+/).filter((w) => w.length > 3);
+      const synonyms = enSynonyms[optKey] ?? [];
       return inferred.some((inf) => {
         if (typeof inf !== "string") return false;
         const i = inf.toLowerCase().replace(/[/&]/g, " ");
         const iWords = i.split(/\s+/).filter((w) => w.length > 3);
-        return oWords.some((w) => i.includes(w)) || iWords.some((w) => opt.toLowerCase().includes(w));
+        return oWords.some((w) => i.includes(w)) || iWords.some((w) => optKey.includes(w)) || synonyms.some((s) => i.includes(s));
       });
     });
     if (matches.length > 0) {
