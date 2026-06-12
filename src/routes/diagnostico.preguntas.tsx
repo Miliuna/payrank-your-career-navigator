@@ -486,7 +486,7 @@ function PreguntasPage() {
     ? (isEN ? "PREVIOUS STEP" : "PASO PREVIO")
     : (hasDoc && pendientes
       ? (() => {
-          const idx = pendientes.indexOf(step);
+          const idx = pendientes.indexOf(stepLogico);
           const totalPend = pendientes.length;
           if (idx >= 0) return isEN ? `FIELD ${idx + 1} OF ${totalPend} TO CONFIRM` : `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
           return isEN ? "FIELD CONFIRMED" : "CAMPO CONFIRMADO";
@@ -496,7 +496,7 @@ function PreguntasPage() {
   const pct = step === -1
     ? 8
     : (hasDoc && pendientes && pendientes.length > 0
-      ? Math.round(((Math.max(pendientes.indexOf(step), 0) + 1) / pendientes.length) * 50) + 10
+      ? Math.round(((Math.max(pendientes.indexOf(stepLogico), 0) + 1) / pendientes.length) * 50) + 10
       : Math.round(((step + 1) / TOTAL) * 50) + 10);
 
   return (
@@ -520,7 +520,7 @@ function PreguntasPage() {
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
           <>
-            {renderStep(step, r, setR, modo, isEN, datos, certRawInput, setCertRawInput)}
+            {renderStep(stepLogico, r, setR, modo, isEN, datos, certRawInput, setCertRawInput)}
             {inferidoDesdeCV && (
               <p className="font-body text-sm text-hueso/60 mt-4 leading-relaxed border-l-2 border-hueso/30 pl-4">
                 {isEN ? "Double-check this — we inferred it from your CV." : "Verificá este dato — lo inferimos de tu CV."}
