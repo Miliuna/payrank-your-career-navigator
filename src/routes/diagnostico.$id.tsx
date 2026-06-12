@@ -24,14 +24,17 @@ const str = (v: unknown, fb = "—"): string => {
 const arr = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
 const bool = (v: unknown): boolean => v === true;
 
-// Quita comillas envolventes por párrafo en scripts (el modelo a veces encierra cada párrafo)
+// Renderiza un script como bloque continuo: elimina TODAS las comillas
+// (el modelo suele encerrar cada párrafo) y une párrafos con doble salto.
 const limpiarScript = (s: string): string => {
   if (!s || s === "—") return s;
   return s
+    .replace(/[«»"“”'‘’`]/g, "")
     .split(/\n+/)
-    .map((p) => p.trim().replace(/^[«"“”'']+/, "").replace(/[«»"“”'']+$/, "").trim())
+    .map((p) => p.trim())
     .filter(Boolean)
-    .join("\n\n");
+    .join("\n\n")
+    .trim();
 };
 
 // ---------- UI primitives ----------
