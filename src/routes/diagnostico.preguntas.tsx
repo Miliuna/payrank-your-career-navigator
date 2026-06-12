@@ -398,7 +398,7 @@ function PreguntasPage() {
   const esIndep = r.situacion === "contractor";
   const orden = React.useMemo(() => {
     const base = Array.from({ length: TOTAL }, (_, i) => i);
-    if (!esIndep) return base;
+    if (esIndep) return [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
     return [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
   }, [esIndep]);
   // step = índice visual de navegación; stepLogico = pregunta que se muestra.
