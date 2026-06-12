@@ -1858,7 +1858,7 @@ function P16Beneficios({ r, setR }: Props) {
           <div className="flex flex-col gap-2">
             <p className="font-body text-sm text-hueso/70">{isEN ? "Life insurance" : "Seguro de vida"}</p>
             <div className="grid grid-cols-3 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"], ["no_se", isEN ? "Don't know" : "No sé"]].map(([val, label]) => (
+              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"], ["no_se", isEN ? "Not sure" : "No sé"]].map(([val, label]) => (
                 <CardOption key={val} {...pick("beneficio_seguro_vida", val)}>{label}</CardOption>
               ))}
             </div>
