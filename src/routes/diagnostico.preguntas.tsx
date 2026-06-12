@@ -2003,14 +2003,16 @@ function P16Beneficios({ r, setR }: Props) {
           </div>
 
           {/* Capacitación */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">{isEN ? "Company-paid training / learning budget" : "Capacitación paga por la empresa"}</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
-                <CardOption key={val} {...pick("beneficio_capacitacion", val)}>{label}</CardOption>
-              ))}
+          {!esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">{isEN ? "Company-paid training / learning budget" : "Capacitación paga por la empresa"}</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
+                  <CardOption key={val} {...pick("beneficio_capacitacion", val)}>{label}</CardOption>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Beneficios adicionales — texto libre */}
           <div className="flex flex-col gap-3 pt-4 border-t border-hueso/10">
