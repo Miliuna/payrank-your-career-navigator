@@ -383,6 +383,7 @@ function ResultadoPage() {
   const s7 = (res.seccion_7 as R) ?? {};
   const s8 = (res.seccion_8 as R) ?? {};
   const fl = (res.freelance as R) ?? {};
+  const isEN = leerVariant(String(row.pais_rol ?? "")) === "en";
 
   return (
     <div className="min-h-screen bg-white">
@@ -393,8 +394,6 @@ function ResultadoPage() {
           <span className="font-ui text-[10px] text-hueso/50">PayRank · resultado</span>
         </div>
       </header>
-
-      const isEN = leerVariant(String(row.pais_rol ?? "")) === "en";
 
       <main id="payrank-report">
         <Band theme="light">
