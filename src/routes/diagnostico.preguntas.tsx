@@ -1636,6 +1636,7 @@ function P16Beneficios({ r, setR }: Props) {
   const isEN = lang === "EN";
   const pais = (r.pais === "Otro" ? r.paisOtro : r.pais) ?? "";
   const isUSA = pais === "Estados Unidos";
+  const esIndep = r.situacion === "freelance" || r.situacion === "contractor";
 
   const ticketLabel = isEN
     ? "Meal allowance / food benefit"
