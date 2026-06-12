@@ -15,7 +15,7 @@ import { useLang } from "@/lib/lang";
 import {
   ALCANCES, EXP_INDUSTRIA, EXP_TOTAL, FORMACIONES, FRECUENCIAS_IA,
   FUNCIONES, GENEROS, HERRAMIENTAS_IA, INDUSTRIAS, INDUSTRIAS_EN, INTERACCIONES,
-  MONEDAS, MOTIVACIONES, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
+  MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
   PERSONAS_A_CARGO, SITUACIONES, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA, labelOf,
 } from "@/lib/diagnostico/data";
 import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
@@ -644,7 +644,7 @@ function renderStep(
     case 13: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
     case 14: return <P14HerramientasIA r={r} setR={setR} />;
     case 15: return <P16Beneficios r={r} setR={setR} />;
-    case 16: return <P17Motivacion r={r} setR={setR} isEN={isEN} />;
+    case 16: return <P17Motivacion r={r} setR={setR} isEN={isEN} modo={modo} />;
     case 17: return <P18Genero r={r} setR={setR} />;
     case 18: return <P19Contacto r={r} setR={setR} />;
     default: return null;
@@ -2037,11 +2037,16 @@ function P16Beneficios({ r, setR }: Props) {
   );
 }
 
-function P17Motivacion({ r, setR, isEN }: Props & { isEN: boolean }) {
-  const options = isEN ? MOTIVACIONES_EN : MOTIVACIONES;
+function P17Motivacion({ r, setR, isEN, modo }: Props & { isEN: boolean; modo: string }) {
+  const options = modo === "B"
+    ? (isEN ? MOTIVACIONES_B_EN : MOTIVACIONES_B)
+    : (isEN ? MOTIVACIONES_EN : MOTIVACIONES);
+  const title = modo === "B"
+    ? (isEN ? "What brought you to ask for a raise?" : "¿Qué te llevó a querer pedir un aumento?")
+    : (isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?");
   return (
     <SimpleCards
-      title={isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?"}
+      title={title}
       options={options}
       value={r.motivacion}
       onChange={(v) => setR({ motivacion: v })}

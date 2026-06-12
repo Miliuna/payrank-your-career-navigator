@@ -253,6 +253,24 @@ export const MOTIVACIONES = [
   "Solo quiero saber dónde estoy parado en el mercado",
 ];
 
+export const MOTIVACIONES_B = [
+  "Quiero pedir un aumento en mi trabajo actual",
+  "No tuve revisión salarial en más de 12 meses",
+  "Mis responsabilidades crecieron pero mi sueldo no se movió",
+  "Me van a dar una devolución de desempeño y quiero ir preparado/a",
+  "Quiero saber cuánto pedir antes de la conversación",
+  "Quiero entender si mi empresa me paga por debajo del mercado",
+];
+
+export const MOTIVACIONES_B_EN = [
+  "I want to ask for a raise at my current job",
+  "I haven't had a salary review in over 12 months",
+  "My responsibilities grew but my salary didn't",
+  "I have a performance review coming and want to be prepared",
+  "I want to know how much to ask for before the conversation",
+  "I want to understand if my company is paying me below market",
+];
+
 export const MOTIVACIONES_EN = [
   "I received an external offer and want to evaluate if it's worth it",
   "I was denied a raise or have been more than 12 months without a salary review",
