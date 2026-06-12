@@ -1880,7 +1880,7 @@ function P16Beneficios({ r, setR }: Props) {
               <p className="font-body text-sm text-hueso/70">{isEN ? "Employer 401(k) match" : "Employer match 401k"}</p>
               <div className="grid grid-cols-1 gap-2">
                 {(isEN
-                  ? [["con_porcentaje","Yes, I know the %"],["no","No"],["no_se","Don't know"]]
+                  ? [["con_porcentaje","Yes, I know the %"],["no","No"],["no_se","Not sure"]]
                   : [["con_porcentaje","Sí, sé el %"],["no","No"],["no_se","No sé"]]
                 ).map(([val, label]) => (
                   <CardOption
