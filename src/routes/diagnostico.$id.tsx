@@ -24,6 +24,16 @@ const str = (v: unknown, fb = "—"): string => {
 const arr = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
 const bool = (v: unknown): boolean => v === true;
 
+// Quita comillas envolventes por párrafo en scripts (el modelo a veces encierra cada párrafo)
+const limpiarScript = (s: string): string => {
+  if (!s || s === "—") return s;
+  return s
+    .split(/\n+/)
+    .map((p) => p.trim().replace(/^[«"“”'']+/, "").replace(/[«»"“”'']+$/, "").trim())
+    .filter(Boolean)
+    .join("\n\n");
+};
+
 // ---------- UI primitives ----------
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -725,13 +735,13 @@ function ResultadoPage() {
 
           <Card dark>
             <Eyebrow>HABLAR CON TU JEFE</Eyebrow>
-            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_jefe)}</p>
+            <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{limpiarScript(str(s6.script_jefe))}</p>
           </Card>
 
           {str(s6.script_recruiter) !== "—" && (
             <Card dark>
               <Eyebrow>HABLAR CON UN RECRUITER</Eyebrow>
-              <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{str(s6.script_recruiter)}</p>
+              <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{limpiarScript(str(s6.script_recruiter))}</p>
             </Card>
           )}
 
