@@ -1419,7 +1419,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {(r.situacion === "empleado" || r.situacion === "freelance" || r.situacion === "contractor" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
+      {(r.situacion === "empleado" || (r.situacion === "busqueda" && r.trabajaActualmente === "si")) && (() => {
         const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
         const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
         const monedaPaisBono = paisToMoneda(r.pais, r.paisOtro);
@@ -1636,6 +1636,36 @@ function P16Beneficios({ r, setR }: Props) {
   const isEN = lang === "EN";
   const pais = (r.pais === "Otro" ? r.paisOtro : r.pais) ?? "";
   const isUSA = pais === "Estados Unidos";
+  const esIndep = r.situacion === "freelance" || r.situacion === "contractor";
+
+  // Si el usuario es freelance/contractor, limpiamos campos que no aplican
+  // para evitar que queden valores antiguos en el estado.
+  React.useEffect(() => {
+    if (!esIndep) return;
+    const clear: Partial<typeof r> = {};
+    if (r.equity !== undefined) clear.equity = undefined;
+    if (r.beneficio_seguro_vida !== undefined) clear.beneficio_seguro_vida = undefined;
+    if (r.beneficio_retiro !== undefined) clear.beneficio_retiro = undefined;
+    if (r.beneficio_401k_match !== undefined) clear.beneficio_401k_match = undefined;
+    if (r.beneficio_401k_porcentaje !== undefined) clear.beneficio_401k_porcentaje = undefined;
+    if (r.auto_corporativo !== undefined) clear.auto_corporativo = undefined;
+    if (r.beneficio_movilidad_tipo !== undefined) clear.beneficio_movilidad_tipo = undefined;
+    if (r.beneficio_movilidad_monto !== undefined) clear.beneficio_movilidad_monto = undefined;
+    if (r.beneficio_alimentacion_tipo !== undefined) clear.beneficio_alimentacion_tipo = undefined;
+    if (r.beneficio_alimentacion_monto !== undefined) clear.beneficio_alimentacion_monto = undefined;
+    if (r.bono_target_sueldos !== undefined) clear.bono_target_sueldos = undefined;
+    if (r.bono_monto !== undefined) clear.bono_monto = undefined;
+    if (r.bono_moneda !== undefined) clear.bono_moneda = undefined;
+    if (r.bono_realizacion !== undefined) clear.bono_realizacion = undefined;
+    if (r.beneficio_capacitacion !== undefined) clear.beneficio_capacitacion = undefined;
+    // Cobertura médica: si el valor pertenece al esquema empleado, reseteamos
+    if (r.beneficio_salud_tipo && !["empresa_paga","yo_pago","no_tengo","no_se"].includes(r.beneficio_salud_tipo)) {
+      clear.beneficio_salud_tipo = undefined;
+      clear.beneficio_salud_prestadora = undefined;
+    }
+    if (Object.keys(clear).length > 0) setR(clear);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [esIndep]);
 
   const ticketLabel = isEN
     ? "Meal allowance / food benefit"
@@ -1671,10 +1701,19 @@ function P16Beneficios({ r, setR }: Props) {
           <p className="font-body text-sm uppercase tracking-widest text-hueso/50">
             {isEN ? "A — Health coverage" : "A — Cobertura médica"}
           </p>
+          {esIndep && (
+            <p className="font-body text-sm text-hueso/70">
+              {isEN ? "Do you have health coverage? Who pays for it?" : "¿Tenés cobertura médica? ¿Quién la paga?"}
+            </p>
+          )}
           <div className="grid grid-cols-1 gap-2">
-          {(isEN
-            ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
-            : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]]
+          {(esIndep
+            ? (isEN
+              ? [["empresa_paga","The company/client pays for it"],["yo_pago","I pay for it"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              : [["empresa_paga","La paga la empresa/cliente"],["yo_pago","La pago yo"],["no_tengo","No tengo"],["no_se","No sé"]])
+            : (isEN
+              ? [["individual","Individual only"],["familiar","Me + family group"],["publica","Public coverage only (by law)"],["no_tengo","I don't have it"],["no_se","Don't know"]]
+              : [["individual","Solo para mí"],["familiar","Para mí y grupo familiar"],["publica","Solo cobertura pública de ley"],["no_tengo","No tengo"],["no_se","No sé"]])
           ).map(([val, label]) => (
             <CardOption
               key={val}
@@ -1707,14 +1746,16 @@ function P16Beneficios({ r, setR }: Props) {
 
 
           {/* Equity */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">Equity / RSUs / Stock options</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
-                <CardOption key={val} {...pick("equity", val)}>{label}</CardOption>
-              ))}
+          {!esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">Equity / RSUs / Stock options</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
+                  <CardOption key={val} {...pick("equity", val)}>{label}</CardOption>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Comisiones */}
           <div className="flex flex-col gap-2">
@@ -1749,48 +1790,54 @@ function P16Beneficios({ r, setR }: Props) {
         {/* GRUPO C — Alimentación y movilidad */}
         <div className="flex flex-col gap-5">
           <p className="font-body text-sm uppercase tracking-widest text-hueso/50">
-            {isEN ? "C — Food & mobility" : "C — Alimentación y movilidad"}
+            {esIndep
+              ? (isEN ? "C — Equipment & phone" : "C — Equipamiento y celular")
+              : (isEN ? "C — Food & mobility" : "C — Alimentación y movilidad")}
           </p>
 
           {/* Ticket / alimentación */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">{ticketLabel}</p>
-            <div className="grid grid-cols-1 gap-2">
-              {(isEN
-                ? [["con_monto","Yes, I know the amount"],["no","No"]]
-                : [["con_monto","Sí, sé el monto"],["no","No"]]
-              ).map(([val, label]) => (
-                <CardOption
-                  key={val}
-                  selected={r.beneficio_alimentacion_tipo === val}
-                  onClick={() => setR({
-                    beneficio_alimentacion_tipo: r.beneficio_alimentacion_tipo === val ? undefined : val,
-                    ...(val !== "con_monto" ? { beneficio_alimentacion_monto: undefined } : {}),
-                  })}
-                >
-                  {label}
-                </CardOption>
-              ))}
+          {!esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">{ticketLabel}</p>
+              <div className="grid grid-cols-1 gap-2">
+                {(isEN
+                  ? [["con_monto","Yes, I know the amount"],["no","No"]]
+                  : [["con_monto","Sí, sé el monto"],["no","No"]]
+                ).map(([val, label]) => (
+                  <CardOption
+                    key={val}
+                    selected={r.beneficio_alimentacion_tipo === val}
+                    onClick={() => setR({
+                      beneficio_alimentacion_tipo: r.beneficio_alimentacion_tipo === val ? undefined : val,
+                      ...(val !== "con_monto" ? { beneficio_alimentacion_monto: undefined } : {}),
+                    })}
+                  >
+                    {label}
+                  </CardOption>
+                ))}
+              </div>
+              {r.beneficio_alimentacion_tipo === "con_monto" && (
+                <MontoInput
+                  placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
+                  valor={r.beneficio_alimentacion_monto}
+                  onValor={(v) => setR({ beneficio_alimentacion_monto: v })}
+                  etiquetaMoneda={paisToMoneda(r.pais, r.paisOtro)}
+                />
+              )}
             </div>
-            {r.beneficio_alimentacion_tipo === "con_monto" && (
-              <MontoInput
-                placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-                valor={r.beneficio_alimentacion_monto}
-                onValor={(v) => setR({ beneficio_alimentacion_monto: v })}
-                etiquetaMoneda={paisToMoneda(r.pais, r.paisOtro)}
-              />
-            )}
-          </div>
+          )}
 
           {/* Auto corporativo */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">{isEN ? "Company car" : "Auto corporativo"}</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
-                <CardOption key={val} {...pick("auto_corporativo", val)}>{label}</CardOption>
-              ))}
+          {!esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">{isEN ? "Company car" : "Auto corporativo"}</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
+                  <CardOption key={val} {...pick("auto_corporativo", val)}>{label}</CardOption>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Celular corporativo */}
           <div className="flex flex-col gap-2">
@@ -1802,38 +1849,55 @@ function P16Beneficios({ r, setR }: Props) {
             </div>
           </div>
 
-          {/* Allowance de movilidad */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">{isEN ? "Mobility allowance" : "Allowance de movilidad"}</p>
-            <div className="grid grid-cols-1 gap-2">
-              {(isEN
-                ? [["con_monto","Yes, I know the amount"],["no","No"]]
-                : [["con_monto","Sí, sé el monto"],["no","No"]]
-              ).map(([val, label]) => (
-                <CardOption
-                  key={val}
-                  selected={r.beneficio_movilidad_tipo === val}
-                  onClick={() => setR({
-                    beneficio_movilidad_tipo: r.beneficio_movilidad_tipo === val ? undefined : val,
-                    ...(val !== "con_monto" ? { beneficio_movilidad_monto: undefined } : {}),
-                  })}
-                >
-                  {label}
-                </CardOption>
-              ))}
+          {/* Computadora / equipamiento — solo independientes */}
+          {esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">
+                {isEN ? "Computer / equipment provided by the company" : "Computadora / equipamiento provisto por la empresa"}
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
+                  <CardOption key={val} {...pick("beneficio_equipamiento", val)}>{label}</CardOption>
+                ))}
+              </div>
             </div>
-            {r.beneficio_movilidad_tipo === "con_monto" && (
-              <MontoInput
-                placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
-                valor={r.beneficio_movilidad_monto}
-                onValor={(v) => setR({ beneficio_movilidad_monto: v })}
-                etiquetaMoneda={paisToMoneda(r.pais, r.paisOtro)}
-              />
-            )}
-          </div>
+          )}
+
+          {/* Allowance de movilidad */}
+          {!esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">{isEN ? "Mobility allowance" : "Allowance de movilidad"}</p>
+              <div className="grid grid-cols-1 gap-2">
+                {(isEN
+                  ? [["con_monto","Yes, I know the amount"],["no","No"]]
+                  : [["con_monto","Sí, sé el monto"],["no","No"]]
+                ).map(([val, label]) => (
+                  <CardOption
+                    key={val}
+                    selected={r.beneficio_movilidad_tipo === val}
+                    onClick={() => setR({
+                      beneficio_movilidad_tipo: r.beneficio_movilidad_tipo === val ? undefined : val,
+                      ...(val !== "con_monto" ? { beneficio_movilidad_monto: undefined } : {}),
+                    })}
+                  >
+                    {label}
+                  </CardOption>
+                ))}
+              </div>
+              {r.beneficio_movilidad_tipo === "con_monto" && (
+                <MontoInput
+                  placeholder={isEN ? "Monthly amount (optional)" : "Monto mensual (opcional)"}
+                  valor={r.beneficio_movilidad_monto}
+                  onValor={(v) => setR({ beneficio_movilidad_monto: v })}
+                  etiquetaMoneda={paisToMoneda(r.pais, r.paisOtro)}
+                />
+              )}
+            </div>
+          )}
         </div>
 
-        {/* GRUPO D — Retiro y financieros */}
+        {/* GRUPO D — Retiro y financieros (oculto para freelance/contractor) */}
+        {!esIndep && (
         <div className="flex flex-col gap-5">
           <p className="font-body text-sm uppercase tracking-widest text-hueso/50">
             {isEN ? "D — Retirement & insurance" : "D — Retiro y financieros"}
@@ -1891,6 +1955,7 @@ function P16Beneficios({ r, setR }: Props) {
             </div>
           )}
         </div>
+        )}
 
         {/* GRUPO E — Flexibilidad */}
         <div className="flex flex-col gap-5">
@@ -1967,14 +2032,16 @@ function P16Beneficios({ r, setR }: Props) {
           </div>
 
           {/* Capacitación */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">{isEN ? "Company-paid training / learning budget" : "Capacitación paga por la empresa"}</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
-                <CardOption key={val} {...pick("beneficio_capacitacion", val)}>{label}</CardOption>
-              ))}
+          {!esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">{isEN ? "Company-paid training / learning budget" : "Capacitación paga por la empresa"}</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
+                  <CardOption key={val} {...pick("beneficio_capacitacion", val)}>{label}</CardOption>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Beneficios adicionales — texto libre */}
           <div className="flex flex-col gap-3 pt-4 border-t border-hueso/10">

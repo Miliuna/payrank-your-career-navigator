@@ -94,6 +94,7 @@ export type Respuestas = {
   modalidad_dias_presenciales?: string;
   beneficio_vacaciones_adicionales?: string;
   beneficio_capacitacion?: string;
+  beneficio_equipamiento?: string;
   beneficios?: string[];
   beneficiosOtro?: string;
   beneficiosAdicionalesTexto?: string;
