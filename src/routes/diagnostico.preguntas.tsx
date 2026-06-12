@@ -1717,14 +1717,16 @@ function P16Beneficios({ r, setR }: Props) {
 
 
           {/* Equity */}
-          <div className="flex flex-col gap-2">
-            <p className="font-body text-sm text-hueso/70">Equity / RSUs / Stock options</p>
-            <div className="grid grid-cols-2 gap-2">
-              {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
-                <CardOption key={val} {...pick("equity", val)}>{label}</CardOption>
-              ))}
+          {!esIndep && (
+            <div className="flex flex-col gap-2">
+              <p className="font-body text-sm text-hueso/70">Equity / RSUs / Stock options</p>
+              <div className="grid grid-cols-2 gap-2">
+                {[[`si`, isEN ? "Yes" : "Sí"], ["no", "No"]].map(([val, label]) => (
+                  <CardOption key={val} {...pick("equity", val)}>{label}</CardOption>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Comisiones */}
           <div className="flex flex-col gap-2">
