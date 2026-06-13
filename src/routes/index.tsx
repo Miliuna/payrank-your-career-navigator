@@ -71,7 +71,7 @@ const planesES = [
     nombre: "PRO",
     precio: "USD 149",
     sufijo: "/año",
-    italic: "Para quien quiere que PayRank lo acompañe.",
+    italic: "Para cuando el mercado no para — y vos tampoco.",
     descripcion:
       "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
     cta: "EMPEZAR CON PRO",
@@ -116,7 +116,7 @@ const planesEN = [
     nombre: "PRO",
     precio: "USD 199",
     sufijo: "/yr",
-    italic: "For when you want PayRank in your corner all year.",
+    italic: "For when your career doesn't take a year off.",
     descripcion:
       "Unlimited PayRanks + automatic market updates when your sector moves — so you never negotiate with stale data.",
     cta: "START WITH PRO",
