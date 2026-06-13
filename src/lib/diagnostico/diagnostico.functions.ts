@@ -45,10 +45,6 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
   const contractorMeta = r.situacion === "contractor"
     ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nModalidad de pago: ${r.contractorPago ?? "n/d"}`
     : "";
-  const subCasoC = r.subCasoC as string | undefined;
-  const subCasoMeta = subCasoC
-    ? `[SUBCASO-C: ${subCasoC.includes("oferta") || subCasoC.includes("concreta") ? "TIENE_OFERTA_CONCRETA" : "EN_PROCESO_SELECCION"}]\n${subCasoC.slice(0, 800)}`
-    : "";
   const targetDireccionD = r.targetDireccionD as string | undefined;
   const targetDirMeta = targetDireccionD
     ? `\n\n[Dirección objetivo — Modo D]\n${targetDireccionD}`
@@ -122,7 +118,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
       if (r.beneficio_401k_match === "no_se") noSe.push("Employer match 401k");
       return noSe.length ? noSe : null;
     })(),
-    puesto_descripcion: (baseDesc + contractorMeta + subCasoMeta + targetDirMeta) || null,
+    puesto_descripcion: (baseDesc + contractorMeta + targetDirMeta) || null,
     linkedin_url: (r.linkedinUrl as string) ?? null,
     genero: (r.genero as string) ?? null,
     mail: (r.email as string) ?? null,

@@ -402,7 +402,7 @@ function PreguntasPage() {
     return [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
   }, [esIndep]);
   // step = índice visual de navegación; stepLogico = pregunta que se muestra.
-  const stepLogico = step === -1 ? -1 : (orden[step] ?? step);
+  const stepLogico = orden[step] ?? step;
 
   // Pre-cargar respuestas desde extracción una sola vez al entrar
   React.useEffect(() => {
@@ -429,7 +429,6 @@ function PreguntasPage() {
   }, [hasDoc, datos, overrides, orden]);
 
   const next = () => {
-    if (step === -1) { setStep(0); return; }
     if (stepLogico === 13) {
       const pending = (certRawInput.trim() || (r.certificacionesPending ?? "").trim());
       if (pending) {
@@ -458,8 +457,6 @@ function PreguntasPage() {
     else navigate({ to: "/diagnostico/inferencia" });
   };
   const back = () => {
-    if (step === -1) { navigate({ to: "/diagnostico/upload" }); return; }
-    if (step === 0 && modo === "C") { setStep(-1); return; }
     if (step > 0) setStep(step - 1);
     else navigate({ to: "/diagnostico/upload" });
   };
@@ -482,22 +479,18 @@ function PreguntasPage() {
   );
 
   // Cabecera de progreso
-  const progressHeader = step === -1
-    ? (isEN ? "PREVIOUS STEP" : "PASO PREVIO")
-    : (hasDoc && pendientes
-      ? (() => {
-          const idx = pendientes.indexOf(stepLogico);
-          const totalPend = pendientes.length;
-          if (idx >= 0) return isEN ? `FIELD ${idx + 1} OF ${totalPend} TO CONFIRM` : `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
-          return isEN ? "FIELD CONFIRMED" : "CAMPO CONFIRMADO";
-        })()
-      : isEN ? `QUESTION ${step + 1} OF ${TOTAL}` : `PREGUNTA ${step + 1} DE ${TOTAL}`);
+  const progressHeader = hasDoc && pendientes
+    ? (() => {
+        const idx = pendientes.indexOf(stepLogico);
+        const totalPend = pendientes.length;
+        if (idx >= 0) return isEN ? `FIELD ${idx + 1} OF ${totalPend} TO CONFIRM` : `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
+        return isEN ? "FIELD CONFIRMED" : "CAMPO CONFIRMADO";
+      })()
+    : isEN ? `QUESTION ${step + 1} OF ${TOTAL}` : `PREGUNTA ${step + 1} DE ${TOTAL}`;
 
-  const pct = step === -1
-    ? 8
-    : (hasDoc && pendientes && pendientes.length > 0
-      ? Math.round(((Math.max(pendientes.indexOf(stepLogico), 0) + 1) / pendientes.length) * 50) + 10
-      : Math.round(((step + 1) / TOTAL) * 50) + 10);
+  const pct = hasDoc && pendientes && pendientes.length > 0
+    ? Math.round(((Math.max(pendientes.indexOf(stepLogico), 0) + 1) / pendientes.length) * 50) + 10
+    : Math.round(((step + 1) / TOTAL) * 50) + 10;
 
   return (
     <DiagnosticoShell step={2} progress={pct}>
@@ -514,9 +507,7 @@ function PreguntasPage() {
         </p>
       )}
       <StepFade k={step}>
-        {step === -1 ? (
-          <SubCasoC r={r} setR={setR} />
-        ) : extraccionTexto ? (
+        {extraccionTexto ? (
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
           <>
@@ -587,7 +578,6 @@ function isValid(
   certRawInput?: string,
 ): boolean {
   switch (step) {
-    case -1: return !!r.subCasoC;
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
     case 1: {
       if (!r.situacion) return false;
@@ -657,35 +647,6 @@ type Props = {
   r: ReturnType<typeof useDiagnostico>["state"]["respuestas"];
   setR: (p: Partial<Props["r"]>) => void;
 };
-
-function SubCasoC({ r, setR }: Props) {
-  const { lang } = useLang();
-  const isEN = lang === "EN";
-  return (
-    <>
-      <QuestionTitle>{isEN ? "What stage are you at?" : "¿En qué momento estás?"}</QuestionTitle>
-      <QuestionHint>
-        {isEN
-          ? "This defines the diagnostic strategy: if you already have an offer, the focus is negotiating terms. If you're in the process, the focus is positioning yourself to get it."
-          : "Esto define la estrategia del diagnóstico: si ya tenés una oferta, el foco es negociar los términos. Si estás en proceso, el foco es posicionarte para obtenerla."}
-      </QuestionHint>
-      <div className="grid grid-cols-1 gap-3">
-        <CardOption
-          selected={r.subCasoC === "oferta"}
-          onClick={() => setR({ subCasoC: "oferta" })}
-        >
-          {isEN ? "I already have a concrete offer" : "Ya tengo una oferta concreta"}
-        </CardOption>
-        <CardOption
-          selected={r.subCasoC === "entrevista"}
-          onClick={() => setR({ subCasoC: "entrevista" })}
-        >
-          {isEN ? "I have an interview / I'm in a selection process" : "Tengo una entrevista / estoy en proceso de selección"}
-        </CardOption>
-      </div>
-    </>
-  );
-}
 
 function SimpleCards({ title, hint, options, value, onChange }: {
   title: string; hint?: string; options: readonly string[]; value?: string; onChange: (v: string) => void;
