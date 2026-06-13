@@ -1640,6 +1640,9 @@ SECCIÓN GÉNERO PARA USUARIOS MASCULINOS SIN EQUIPO A CARGO: Si el usuario es h
       }
       if (modo === "B") {
         return `\n\nINSTRUCCIÓN DE MODO B — NEGOCIACIÓN INTERNA:
+APERTURA DE MODO B — INSTRUCCIÓN PARA SECCION_1:
+El usuario ya tomó la decisión de pedir un aumento o revisión salarial. No está evaluando si vale la pena — esa decisión está tomada. La sección 1 debe validar esa decisión y darle convicción para sostenerla. Abrir reconociendo el momento específico que lo trajo: si declaró motivación (campo motivacion), conectar el análisis con esa tensión concreta. El tono de la sección 1 en Modo B es: "Tomaste la decisión correcta. Acá están los datos que la respaldan." No abrir con incertidumbre ni con análisis neutral — abrir con validación y datos.
+
 El usuario está en una negociación salarial activa con su empleador actual. El alcance real que describió en "Descripción del puesto" es el argumento central.
 En seccion_5, argumento_2_alcance_real debe citar directamente las responsabilidades que el usuario ejerce más allá de su título formal.
 En seccion_6, los scripts y las objeciones deben estar 100% orientados a negociación interna (con el jefe o RRHH de la empresa actual). Incluir respuestas específicas a estas objeciones:
