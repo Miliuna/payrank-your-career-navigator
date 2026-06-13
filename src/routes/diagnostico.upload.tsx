@@ -20,7 +20,7 @@ export const Route = createFileRoute("/diagnostico/upload")({
   component: UploadPage,
 });
 
-type DocTipo = "cv" | "recibo" | "descriptivo";
+type DocTipo = "cv" | "recibo" | "descriptivo" | "aviso";
 
 type ZoneCopy = {
   label: string;
@@ -47,6 +47,11 @@ function zoneCopy(tipo: DocTipo, isEN: boolean): ZoneCopy {
           label: "Job description",
           sublabel: "If you have one, it improves the accuracy of your role analysis",
         };
+      case "aviso":
+        return {
+          label: "Job posting or offer received",
+          sublabel: "The job ad or offer you received. Lets us calibrate the analysis exactly to that role.",
+        };
     }
   }
   switch (tipo) {
@@ -66,6 +71,11 @@ function zoneCopy(tipo: DocTipo, isEN: boolean): ZoneCopy {
         label: "Descriptivo de puesto",
         sublabel: "Si tenés uno, mejora la precisión del análisis de tu rol",
       };
+    case "aviso":
+      return {
+        label: "Aviso de empleo u oferta recibida",
+        sublabel: "El aviso del puesto o la oferta que recibiste. Nos permite calibrar el análisis exactamente a ese rol.",
+      };
   }
 }
 
@@ -80,6 +90,9 @@ function UploadPage() {
   const [cvFile, setCvFile] = React.useState<File | null>(null);
   const [reciboFile, setReciboFile] = React.useState<File | null>(null);
   const [descriptivoFile, setDescriptivoFile] = React.useState<File | null>(null);
+  const [avisoFile, setAvisoFile] = React.useState<File | null>(null);
+  const [descriptivoText, setDescriptivoText] = React.useState("");
+  const [avisoText, setAvisoText] = React.useState("");
   const [busy, setBusy] = React.useState(false);
   const [extractError, setExtractError] = React.useState(false);
 
@@ -153,6 +166,16 @@ function UploadPage() {
       if (descriptivoFile) {
         jobs.push(extractOne(descriptivoFile, "descriptivo"));
         names.push(descriptivoFile.name);
+      } else if (descriptivoText.trim()) {
+        const prefixed = `[TIPO: descriptivo]\n\n${descriptivoText.slice(0, 100_000)}`;
+        jobs.push(extract({ data: { kind: "text", text: prefixed } }) as Promise<DatosExtraidos>);
+      }
+      if (avisoFile) {
+        jobs.push(extractOne(avisoFile, "aviso"));
+        names.push(avisoFile.name);
+      } else if (avisoText.trim()) {
+        const prefixed = `[TIPO: aviso]\n\n${avisoText.slice(0, 100_000)}`;
+        jobs.push(extract({ data: { kind: "text", text: prefixed } }) as Promise<DatosExtraidos>);
       }
       const results = await Promise.all(jobs);
       const extracted = mergeExtractions(results);
@@ -220,27 +243,64 @@ function UploadPage() {
       ) : (
         <>
           <div className="space-y-6 max-w-3xl">
-            <UploadZone
-              tipo="cv"
-              copy={zoneCopy("cv", isEN)}
-              file={cvFile}
-              onFile={setCvFile}
-              isEN={isEN}
-            />
-            <UploadZone
-              tipo="recibo"
-              copy={zoneCopy("recibo", isEN)}
-              file={reciboFile}
-              onFile={setReciboFile}
-              isEN={isEN}
-            />
-            <UploadZone
-              tipo="descriptivo"
-              copy={zoneCopy("descriptivo", isEN)}
-              file={descriptivoFile}
-              onFile={setDescriptivoFile}
-              isEN={isEN}
-            />
+            {modo === "C" ? (
+              <>
+                <UploadZone
+                  tipo="cv"
+                  copy={zoneCopy("cv", isEN)}
+                  file={cvFile}
+                  onFile={setCvFile}
+                  isEN={isEN}
+                />
+                <UploadZone
+                  tipo="recibo"
+                  copy={{
+                    ...zoneCopy("recibo", isEN),
+                    sublabel: isEN
+                      ? "If you have it, it helps us set your current salary as a negotiation floor. Not needed if you're currently unemployed."
+                      : "Si lo tenés, nos ayuda a establecer tu salario actual como piso de negociación. No es necesario si estás sin empleo.",
+                  }}
+                  file={reciboFile}
+                  onFile={setReciboFile}
+                  isEN={isEN}
+                />
+                <UploadZone
+                  tipo="aviso"
+                  copy={zoneCopy("aviso", isEN)}
+                  file={avisoFile}
+                  onFile={setAvisoFile}
+                  isEN={isEN}
+                  allowPaste={true}
+                  onPasteText={setAvisoText}
+                />
+              </>
+            ) : (
+              <>
+                <UploadZone
+                  tipo="cv"
+                  copy={zoneCopy("cv", isEN)}
+                  file={cvFile}
+                  onFile={setCvFile}
+                  isEN={isEN}
+                />
+                <UploadZone
+                  tipo="recibo"
+                  copy={zoneCopy("recibo", isEN)}
+                  file={reciboFile}
+                  onFile={setReciboFile}
+                  isEN={isEN}
+                />
+                <UploadZone
+                  tipo="descriptivo"
+                  copy={zoneCopy("descriptivo", isEN)}
+                  file={descriptivoFile}
+                  onFile={setDescriptivoFile}
+                  isEN={isEN}
+                  allowPaste={true}
+                  onPasteText={setDescriptivoText}
+                />
+              </>
+            )}
           </div>
 
           <p className="font-body text-xs text-hueso/45 mt-6 leading-relaxed max-w-2xl">
@@ -286,15 +346,20 @@ function UploadZone({
   file,
   onFile,
   isEN,
+  allowPaste,
+  onPasteText,
 }: {
   tipo: DocTipo;
   copy: ZoneCopy;
   file: File | null;
   onFile: (f: File | null) => void;
   isEN: boolean;
+  allowPaste?: boolean;
+  onPasteText?: (text: string) => void;
 }) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [draggingOver, setDraggingOver] = React.useState(false);
+  const [pasteText, setPasteText] = React.useState("");
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -359,6 +424,22 @@ function UploadZone({
           e.target.value = "";
         }}
       />
+
+      {allowPaste && (
+        <>
+          <div className="flex items-center gap-3 my-3">
+            <div className="flex-1 border-t border-hueso/15" />
+            <span className="font-ui text-[10px] text-hueso/50">— o —</span>
+            <div className="flex-1 border-t border-hueso/15" />
+          </div>
+          <textarea
+            value={pasteText}
+            onChange={(e) => { setPasteText(e.target.value); onPasteText?.(e.target.value); }}
+            placeholder={isEN ? "Paste the text here" : "Pegá el texto acá"}
+            className="w-full min-h-32 border border-hueso/30 bg-transparent px-4 py-3 font-body text-sm text-hueso/85 placeholder:text-hueso/40 focus:outline-none focus:border-hueso/70"
+          />
+        </>
+      )}
     </div>
   );
 }
