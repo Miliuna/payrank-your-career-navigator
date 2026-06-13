@@ -15,7 +15,7 @@ import { useLang } from "@/lib/lang";
 import {
   ALCANCES, EXP_INDUSTRIA, EXP_TOTAL, FORMACIONES, FRECUENCIAS_IA,
   FUNCIONES, GENEROS, HERRAMIENTAS_IA, INDUSTRIAS, INDUSTRIAS_EN, INTERACCIONES,
-  MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
+  MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_C, MOTIVACIONES_C_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
   PERSONAS_A_CARGO, SITUACIONES, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA, labelOf,
 } from "@/lib/diagnostico/data";
 import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
@@ -2040,9 +2040,13 @@ function P16Beneficios({ r, setR }: Props) {
 function P17Motivacion({ r, setR, isEN, modo }: Props & { isEN: boolean; modo: string }) {
   const options = modo === "B"
     ? (isEN ? MOTIVACIONES_B_EN : MOTIVACIONES_B)
+    : modo === "C"
+    ? (isEN ? MOTIVACIONES_C_EN : MOTIVACIONES_C)
     : (isEN ? MOTIVACIONES_EN : MOTIVACIONES);
   const title = modo === "B"
     ? (isEN ? "What brought you to seek a salary review?" : "¿Qué te llevó a buscar una revisión salarial?")
+    : modo === "C"
+    ? (isEN ? "What's driving your search right now?" : "¿Cuál es tu situación en este momento?")
     : (isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?");
   return (
     <SimpleCards

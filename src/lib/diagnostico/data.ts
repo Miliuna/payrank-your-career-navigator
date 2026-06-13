@@ -271,6 +271,18 @@ export const MOTIVACIONES_B_EN = [
   "I want to understand if my company is paying me below market",
 ];
 
+export const MOTIVACIONES_C = [
+  "Tengo una entrevista y me van a preguntar mis pretensiones",
+  "Recibí una oferta y necesito saber si la acepto, negocio o la dejo pasar",
+  "Estoy en búsqueda activa y quiero prepararme antes de que empiece el proceso",
+];
+
+export const MOTIVACIONES_C_EN = [
+  "I have an interview and they're going to ask about my salary expectations",
+  "I received an offer and need to know whether to accept, negotiate, or walk away",
+  "I'm actively job hunting and want to be ready before the process starts",
+];
+
 export const MOTIVACIONES_EN = [
   "I received an external offer and want to evaluate if it's worth it",
   "I was denied a raise or have been more than 12 months without a salary review",
