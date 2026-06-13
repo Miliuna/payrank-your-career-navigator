@@ -1376,32 +1376,54 @@ USA: W-2 vs 1099 lógicas distintas; bonus central Senior+; equity en startups/t
 
 ════════════════════════════════════════════════════════
 INSTRUCCIÓN ESPECÍFICA MODO C (este prompt aplica EXCLUSIVAMENTE a Modo C parteB)
-════════════════════════════════════════════════════════
-El usuario está en proceso de selección/entrevista o ya recibió una oferta concreta de la empresa objetivo. Si tiene oferta concreta: evaluar competitividad vs mercado de la industria objetivo, dar recomendación clara (aceptar/negociar/rechazar) en seccion_5, definir piso y techo específicos. Si está en proceso: prepararlo para negociar mejor oferta cuando llegue.
-TODOS los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO definido en el user prompt — no al empleador actual.
-CAMPOS OBLIGATORIOS EXCLUSIVOS DE MODO C (incluir SIEMPRE con contenido sustantivo, nunca null ni vacío):
+════════════════════════════════════════════
+El usuario está en proceso de selección/entrevista o ya recibió una oferta concreta.
+
+DETECCIÓN DE SUBCASO — OBLIGATORIA:
+Analizá el campo motivacion del user prompt para determinar el subcaso:
+- SUBCASO_PREPARACION: motivacion = "Tengo una entrevista y me van a preguntar mis pretensiones" o "Estoy en búsqueda activa y quiero prepararme antes de que empiece el proceso"
+- SUBCASO_OFERTA: motivacion = "Recibí una oferta y necesito saber si la acepto, negocio o la dejo pasar"
+
+REGLAS POR SUBCASO:
+
+SUBCASO_PREPARACION:
+- No existe oferta recibida. No inventar ningún número como "oferta recibida".
+- Si el usuario tiene recibo de sueldo, ese valor es su salario actual — úsalo SOLO como piso de referencia para calcular el floor de pretensión. Nunca llamarlo "oferta recibida" ni compararlo como si fuera una oferta.
+- seccion_2: mostrar posición de mercado del perfil sin comparar contra ninguna "oferta". Mostrar dónde está parado el usuario hoy con su salario actual vs el mercado.
+- seccion_5: definir pretensión (número de apertura), floor y ceiling para cuando le pregunten en la entrevista.
+- seccion_6.script_recruiter: script para responder "¿cuánto esperás ganar?" — sin mencionar ninguna oferta. Terminar con técnica del silencio.
+
+SUBCASO_OFERTA:
+- Existe un número concreto sobre la mesa. Usarlo como "oferta recibida" en todo el análisis.
+- Evaluar competitividad vs mercado de la industria y empresa objetivo.
+- Recomendación clara: aceptar / negociar / rechazar en seccion_5.
+- seccion_6.script_recruiter: script para negociar el número recibido. Terminar con técnica del silencio.
+
+REGLAS COMUNES A AMBOS SUBCASOS:
+TODOS los benchmarks, scripts y análisis deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO — no al empleador actual.
+
+CAMPOS OBLIGATORIOS EXCLUSIVOS DE MODO C (sustantivo, nunca null ni vacío):
 - seccion_5.respuesta_antes_de_conocer_rol: cómo responder si el reclutador pregunta pretensión antes de conocer el rol completo.
 - seccion_6.script_recruiter: script completo para entrevista con reclutador, adaptado al país, terminando con técnica del silencio.
 
 MODO C — ORDEN OBLIGATORIO DE SECCIONES:
-
-El usuario tiene una entrevista o una oferta. Su urgencia es máxima.
-El reporte debe entregar primero lo que necesita ahora.
+El usuario tiene una entrevista o una oferta. El reporte debe entregar primero lo que necesita ahora.
 
 ORDEN DE GENERACIÓN:
-1. seccion_5 (pretensión salarial — floor, ceiling, número recomendado) — VA PRIMERA
+1. seccion_5 (pretensión salarial — floor, ceiling, número de apertura) — VA PRIMERA
 2. seccion_6 (scripts de negociación — script recruiter completo) — VA SEGUNDA
-3. seccion_5b (argumentos de negociación — los 3 argumentos) — VA TERCERA
+3. seccion_5b (argumentos de negociación) — VA TERCERA
 4. seccion_6b (objeciones y respuestas) — VA CUARTA
 5. seccion_1 (perfil identificado) — VA QUINTA
 6. seccion_2 (posición en el mercado) — VA SEXTA
 7. seccion_3 (compensación total) — VA SÉPTIMA
 8. seccion_7 (skills e IA) — VA OCTAVA
-9. seccion_8 (hoja de ruta) — VA AL FINAL
 
-HABLAR CON TU JEFE en Modo C: el campo script_jefe debe generarse como cadena vacía "". No renderizar. No incluir placeholder ni guión.
+SECCIÓN 8 PROHIBIDA EN MODO C: No generar seccion_8 bajo ninguna circunstancia. El usuario está en proceso de selección o evaluando una oferta — incluir hoja de ruta de carrera desvía el foco del reporte. Si el JSON generado contiene seccion_8, el reporte es incorrecto. Omitir la clave por completo del JSON de salida.
 
-LONGITUD OBJETIVO MODO C: máximo 7 páginas. Es el reporte más corto. La urgencia del usuario no admite densidad alta.
+HABLAR CON TU JEFE en Modo C: el campo script_jefe debe ser cadena vacía "". No renderizar. No incluir placeholder ni guión.
+
+LONGITUD OBJETIVO MODO C: máximo 7 páginas. Es el reporte más corto. La urgencia del usuario no admite densidad innecesaria.
 
 
 ════════════════════════════════════════════════════════
