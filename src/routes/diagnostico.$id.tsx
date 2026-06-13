@@ -381,6 +381,7 @@ function ResultadoPage() {
   const s6 = (res.seccion_6 as R) ?? {};
   const s7 = (res.seccion_7 as R) ?? {};
   const s8 = (res.seccion_8 as R) ?? {};
+  const hasSeccion8 = Object.keys(s8).length > 0 && !!(s8.nivel_actual || s8.nivel_siguiente_titulo);
   const fl = (res.freelance as R) ?? {};
   const isEN = leerVariant(String(row.pais_rol ?? "")) === "en";
 
@@ -830,6 +831,7 @@ function ResultadoPage() {
         <Divider />
 
         {/* SECCIÓN 8 */}
+        {hasSeccion8 && (
         <Section>
           <Eyebrow>08 · {isEN ? "ROADMAP" : "HOJA DE RUTA"}</Eyebrow>
           <H2>{isEN ? "Your next level" : "Tu próximo nivel"}</H2>
@@ -896,6 +898,7 @@ function ResultadoPage() {
             ) : null;
           })()}
         </Section>
+        )}
 
         {/* FREELANCE */}
         {bool(fl.aplica) && (
