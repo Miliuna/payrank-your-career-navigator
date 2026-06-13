@@ -1700,15 +1700,18 @@ Contenido obligatorio:
 
       }
       if (modo === "C") {
-        const tieneOferta = descStr.includes("[SUBCASO-C: TIENE_OFERTA_CONCRETA]") || descStr.includes("Ya tengo una oferta concreta");
-        return `\n\nINSTRUCCIÓN DE MODO C — ${tieneOferta ? "NEGOCIACIÓN DE OFERTA" : "PREPARACIÓN PARA ENTREVISTA"}:
+        const tieneOferta =
+          d.motivacion === "Recibí una oferta y necesito saber si la acepto, negocio o la dejo pasar" ||
+          d.motivacion === "I received an offer and need to know whether to accept, negotiate, or walk away";
+        return `\n\nINSTRUCCIÓN DE MODO C — ${tieneOferta ? "SUBCASO_OFERTA" : "SUBCASO_PREPARACION"}:
 ${tieneOferta
-  ? "El usuario ya recibió una oferta concreta de la empresa objetivo. El diagnóstico debe: (1) evaluar si la oferta es competitiva vs. mercado de esa industria; (2) dar recomendación clara (aceptar / negociar / rechazar) en seccion_5; (3) definir piso y techo de negociación específicos."
-  : "El usuario está en proceso de selección o entrevista con la empresa objetivo. El diagnóstico debe prepararlo para negociar la mejor oferta posible cuando llegue el momento."}
-Todos los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO definido arriba.
+  ? `El usuario tiene una oferta concreta de la empresa objetivo. El salario del recibo es su salario ACTUAL en su empleador anterior — NO confundir con la oferta recibida. El diagnóstico debe: (1) evaluar si la oferta es competitiva vs. mercado de esa industria; (2) dar recomendación clara (aceptar / negociar / rechazar) en seccion_5; (3) definir piso y techo de negociación específicos.`
+  : `El usuario NO tiene oferta. Va a una entrevista o está en búsqueda activa. El salario del recibo es su salario ACTUAL — NO es una oferta recibida. PROHIBIDO llamarlo 'oferta recibida', 'salario ofertado' o cualquier variante en cualquier sección del reporte. El diagnóstico debe prepararlo para responder pretensión cuando le pregunten.`}
+Todos los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO — no al empleador actual.
 CAMPOS OBLIGATORIOS EXCLUSIVOS DE MODO C (incluir SIEMPRE con contenido sustantivo, no null ni vacío):
 - seccion_5.respuesta_antes_de_conocer_rol: cómo responder si el reclutador pregunta la pretensión antes de conocer el rol completo.
-- seccion_6.script_recruiter: script completo para la entrevista con el reclutador, adaptado al país, terminando con la técnica del silencio.`;
+- seccion_6.script_recruiter: script completo para la entrevista con el reclutador, adaptado al país, terminando con la técnica del silencio.
+SECCIÓN 8 PROHIBIDA EN MODO C: No generar seccion_8 bajo ninguna circunstancia en Modo C. Si el JSON generado contiene seccion_8, el reporte es incorrecto. Omitir la clave por completo del JSON de salida.`;
       }
       if (modo === "D") {
         return `\n\nINSTRUCCIÓN DE MODO D — SALTO DE CARRERA:
@@ -1759,6 +1762,12 @@ EXCLUSIONES OBLIGATORIAS DE MODO D (no incluir estos campos en el JSON de salida
 
   return `${fxBlock(tipoCambio)}Situación de consulta: ${modoDesc}${targetJobBlock}
 Motivación declarada del usuario: ${v(d.motivacion, "no declarado")}
+${modo === "C" ? `SUBCASO MODO C (resuelto en código, no inferir): ${
+  (d.motivacion === "Recibí una oferta y necesito saber si la acepto, negocio o la dejo pasar" ||
+   d.motivacion === "I received an offer and need to know whether to accept, negotiate, or walk away")
+    ? "SUBCASO_OFERTA — El usuario tiene una oferta concreta. El salario del recibo es su salario ACTUAL en su empleador anterior. La oferta es el número nuevo recibido de la empresa objetivo."
+    : "SUBCASO_PREPARACION — El usuario NO tiene oferta. Va a una entrevista o está en búsqueda. El salario del recibo es su salario ACTUAL — NO es una oferta recibida. NO llamarlo 'oferta recibida' ni 'salario ofertado' en ninguna sección del reporte. Calibrar todo el análisis al rol objetivo, no al empleador actual."
+}` : ""}
 
 PERFIL DEL USUARIO:
 País donde opera el rol: ${v(d.pais_rol)}
