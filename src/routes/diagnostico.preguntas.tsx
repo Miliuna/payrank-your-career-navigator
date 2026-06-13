@@ -379,7 +379,7 @@ function PreguntasPage() {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const modo = state.modo;
-  const [step, setStep] = React.useState(() => modo === "C" ? -1 : 0); // -1 = sub-case (Mode C only), 0..18
+  const [step, setStep] = React.useState(0);
   const [certRawInput, setCertRawInput] = React.useState("");
   const appliedRef = React.useRef(false);
 
