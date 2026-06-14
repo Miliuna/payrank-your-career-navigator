@@ -253,6 +253,18 @@ function UploadPage() {
                   isEN={isEN}
                 />
                 <UploadZone
+                  tipo="aviso"
+                  copy={{
+                    ...zoneCopy("aviso", isEN),
+                    required: true,
+                  }}
+                  file={avisoFile}
+                  onFile={setAvisoFile}
+                  isEN={isEN}
+                  allowPaste={true}
+                  onPasteText={setAvisoText}
+                />
+                <UploadZone
                   tipo="recibo"
                   copy={{
                     ...zoneCopy("recibo", isEN),
@@ -263,15 +275,6 @@ function UploadPage() {
                   file={reciboFile}
                   onFile={setReciboFile}
                   isEN={isEN}
-                />
-                <UploadZone
-                  tipo="aviso"
-                  copy={zoneCopy("aviso", isEN)}
-                  file={avisoFile}
-                  onFile={setAvisoFile}
-                  isEN={isEN}
-                  allowPaste={true}
-                  onPasteText={setAvisoText}
                 />
               </>
             ) : (
@@ -313,10 +316,10 @@ function UploadPage() {
             <button
               type="button"
               onClick={procesar}
-              disabled={!cvFile}
+              disabled={!cvFile || (modo === "C" && !avisoFile && !avisoText.trim())}
               className={cn(
                 "font-ui text-[11px] tracking-[0.2em] pb-1 border-b transition-colors",
-                cvFile
+                cvFile && (modo !== "C" || avisoFile || avisoText.trim())
                   ? "text-hueso border-hueso/60 hover:border-hueso"
                   : "text-hueso/30 border-hueso/20 cursor-not-allowed",
               )}
