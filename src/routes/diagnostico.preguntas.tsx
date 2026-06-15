@@ -16,6 +16,7 @@ import {
   ALCANCES, EXP_INDUSTRIA, EXP_TOTAL, FORMACIONES, FRECUENCIAS_IA,
   FUNCIONES, GENEROS, HERRAMIENTAS_IA, INDUSTRIAS, INDUSTRIAS_EN, INTERACCIONES,
   MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_C, MOTIVACIONES_C_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
+  ANTIGUEDAD_ROL, ANTIGUEDAD_ROL_EN, TIPO_NEGOCIACION, TIPO_NEGOCIACION_EN, ORIENTACION_CARRERA, ORIENTACION_CARRERA_EN, PUNTO_PARTIDA_SALTO, PUNTO_PARTIDA_SALTO_EN,
   PERSONAS_A_CARGO, SITUACIONES, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA, labelOf,
 } from "@/lib/diagnostico/data";
 import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
@@ -601,8 +602,13 @@ function isValid(
     case 14: return !!r.sinIA || ((r.herramientasIA?.length ?? 0) > 0 && !!r.frecuenciaIA && (r.usoIA?.length ?? 0) > 0);
     case 15: return true;
     case 16: return true;
-    case 17: return !!r.genero;
-    case 18: return !!r.email && /\S+@\S+\.\S+/.test(r.email);
+    case 17: return !!r.antiguedadRol;
+    case 18: return modo === "B" ? !!r.tipoNegociacion : true;
+    case 19: return modo === "D" ? !!r.orientacionCarrera : true;
+    case 20: return modo === "D" ? !!r.puntoPartidaSalto : true;
+    case 21: return modo === "C" ? (!!r.ofertaVerbal?.trim()) : true;
+    case 22: return !!r.genero;
+    case 23: return !!r.email && /\S+@\S+\.\S+/.test(r.email);
     default: return true;
   }
 }
@@ -635,8 +641,26 @@ function renderStep(
     case 14: return <P14HerramientasIA r={r} setR={setR} />;
     case 15: return <P16Beneficios r={r} setR={setR} />;
     case 16: return <P17Motivacion r={r} setR={setR} isEN={isEN} modo={modo} />;
-    case 17: return <P18Genero r={r} setR={setR} />;
-    case 18: return <P19Contacto r={r} setR={setR} />;
+    case 17: return <SimpleCards title={isEN ? "How long have you been in your current role?" : "¿Cuánto tiempo llevás en tu rol actual?"} options={isEN ? ANTIGUEDAD_ROL_EN : ANTIGUEDAD_ROL} value={r.antiguedadRol} onChange={(v) => setR({ antiguedadRol: v as typeof r.antiguedadRol })} />;
+    case 18: return modo === "B" ? <SimpleCards title={isEN ? "What type of negotiation are you seeking?" : "¿Qué tipo de negociación estás buscando?"} options={isEN ? TIPO_NEGOCIACION_EN : TIPO_NEGOCIACION} value={r.tipoNegociacion} onChange={(v) => setR({ tipoNegociacion: v })} /> : null;
+    case 19: return modo === "D" ? <SimpleCards title={isEN ? "In your next role, what path do you prefer?" : "En tu próximo rol, ¿qué camino preferís?"} options={isEN ? ORIENTACION_CARRERA_EN : ORIENTACION_CARRERA} value={r.orientacionCarrera} onChange={(v) => setR({ orientacionCarrera: v })} /> : null;
+    case 20: return modo === "D" ? <SimpleCards title={isEN ? "What is your starting point for this move?" : "¿Cuál es tu punto de partida para este salto?"} options={isEN ? PUNTO_PARTIDA_SALTO_EN : PUNTO_PARTIDA_SALTO} value={r.puntoPartidaSalto} onChange={(v) => setR({ puntoPartidaSalto: v })} /> : null;
+    case 21: return modo === "C" ? (
+      <>
+        <QuestionTitle>{isEN ? "Describe the offer you received" : "Describí la oferta que recibiste"}</QuestionTitle>
+        <QuestionHint>
+          {isEN
+            ? "Company, role, salary and benefits mentioned."
+            : "Empresa, rol, salario ofrecido y beneficios mencionados."}
+        </QuestionHint>
+        <TextArea
+          value={r.ofertaVerbal ?? ""}
+          onChange={(e) => setR({ ofertaVerbal: e.target.value })}
+        />
+      </>
+    ) : null;
+    case 22: return <P18Genero r={r} setR={setR} />;
+    case 23: return <P19Contacto r={r} setR={setR} />;
     default: return null;
   }
 }

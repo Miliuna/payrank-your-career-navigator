@@ -120,6 +120,12 @@ export type Respuestas = {
   antiguedadDesde?: string; // YYYY-MM
   experienciaTotalAnios?: number;
   experienciaIndustriaAnios?: number;
+  // Nuevos campos Paso 2 — Chat 11
+  antiguedadRol?: "<3 meses" | "3-6 meses" | "6-12 meses" | "1-3 años" | "+3 años";
+  tipoNegociacion?: string;
+  orientacionCarrera?: string;
+  puntoPartidaSalto?: string;
+  ofertaVerbal?: string;
 };
 
 export type DatosExtraidos = {

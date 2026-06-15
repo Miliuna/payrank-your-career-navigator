@@ -292,7 +292,59 @@ export const MOTIVACIONES_EN = [
   "I just want to know where I stand in the market",
 ];
 
-export const TOTAL_PREGUNTAS = 19;
+export const ANTIGUEDAD_ROL = [
+  "Menos de 3 meses",
+  "3 a 6 meses",
+  "6 a 12 meses",
+  "1 a 3 años",
+  "Más de 3 años",
+];
+
+export const ANTIGUEDAD_ROL_EN = [
+  "Less than 3 months",
+  "3 to 6 months",
+  "6 to 12 months",
+  "1 to 3 years",
+  "More than 3 years",
+];
+
+export const TIPO_NEGOCIACION = [
+  "Aumento por inflación o ajuste de mercado",
+  "Reconocimiento de funciones que crecieron",
+  "Cambio de nivel formal con incremento",
+];
+
+export const TIPO_NEGOCIACION_EN = [
+  "Raise for inflation or market adjustment",
+  "Recognition of expanded responsibilities",
+  "Formal level change with pay increase",
+];
+
+export const ORIENTACION_CARRERA = [
+  "Quiero liderar personas y equipos",
+  "Quiero ser referente técnico / especialista",
+  "No lo tengo definido aún",
+];
+
+export const ORIENTACION_CARRERA_EN = [
+  "I want to lead people and teams",
+  "I want to be a technical expert / specialist",
+  "I haven't decided yet",
+];
+
+export const PUNTO_PARTIDA_SALTO = [
+  "Desde mi rol actual — quiero saber qué sigue naturalmente",
+  "Desde un rol previo que quiero retomar o fortalecer",
+  "Hacia un rol completamente nuevo para mí",
+];
+
+export const PUNTO_PARTIDA_SALTO_EN = [
+  "From my current role — what comes next naturally",
+  "From a previous role I want to return to or strengthen",
+  "Toward a completely new role for me",
+];
+
+export const TOTAL_PREGUNTAS = 24;
 
 // ============= EN label maps (display only — canonical value stays Spanish) =============
 
