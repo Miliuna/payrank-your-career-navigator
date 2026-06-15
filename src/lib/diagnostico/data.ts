@@ -245,12 +245,10 @@ export const GENEROS = [
 ];
 
 export const MOTIVACIONES = [
-  "Recibí una oferta externa y quiero evaluar si vale la pena",
-  "Me negaron un aumento o llevo más de 12 meses sin revisión salarial",
-  "Mis responsabilidades crecieron pero mi sueldo no se actualizó",
-  "Creo que colegas en roles similares ganan más que yo",
-  "Quiero prepararme para una negociación salarial",
-  "Solo quiero saber dónde estoy parado en el mercado",
+  "Me negaron un aumento, me ignoraron en la última revisión, o llevo más de 12 meses sin ajuste",
+  "Mis responsabilidades crecieron pero mi compensación no se actualizó",
+  "Creo que el mercado paga más por mi perfil pero no tengo datos para confirmarlo",
+  "Quiero una foto objetiva de mi valor de mercado antes de tomar cualquier decisión",
 ];
 
 export const MOTIVACIONES_B = [
@@ -284,12 +282,10 @@ export const MOTIVACIONES_C_EN = [
 ];
 
 export const MOTIVACIONES_EN = [
-  "I received an external offer and want to evaluate if it's worth it",
-  "I was denied a raise or have been more than 12 months without a salary review",
-  "My responsibilities grew but my salary wasn't updated",
-  "I think colleagues in similar roles earn more than me",
-  "I want to prepare for a salary negotiation",
-  "I just want to know where I stand in the market",
+  "I was denied a raise, ignored in the last review, or haven't had an adjustment in 12+ months",
+  "My responsibilities grew but my compensation wasn't updated",
+  "I think the market pays more for my profile but I don't have data to confirm it",
+  "I want an objective picture of my market value before making any decision",
 ];
 
 export const ANTIGUEDAD_ROL = [
@@ -342,6 +338,20 @@ export const PUNTO_PARTIDA_SALTO_EN = [
   "From my current role — what comes next naturally",
   "From a previous role I want to return to or strengthen",
   "Toward a completely new role for me",
+];
+
+export const MOTIVACIONES_D = [
+  "Sé a qué rol quiero llegar — necesito saber qué me falta y cómo posicionarme",
+  "Siento que es momento de dar un paso pero no tengo claro cuál es el siguiente",
+  "Quiero saber cuánto vale el siguiente nivel antes de decidir si el esfuerzo vale la pena",
+  "Estoy actualizando mi CV y quiero saber cómo me posiciona el mercado hoy",
+];
+
+export const MOTIVACIONES_D_EN = [
+  "I know what role I want — I need to know what's missing and how to position myself",
+  "I feel it's time to move but I'm not sure what the next step is",
+  "I want to know what the next level pays before deciding if the effort is worth it",
+  "I'm updating my CV and want to know how the market sees me today",
 ];
 
 export const TOTAL_PREGUNTAS = 24;
