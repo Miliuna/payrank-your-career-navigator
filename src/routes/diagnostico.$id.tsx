@@ -177,6 +177,10 @@ function fmtUSD(n: number, currency: string = "USD"): string {
   return `${currency} ${body}`;
 }
 
+function fmtUSDFull(n: number, currency: string = "USD"): string {
+  return `${currency} ${Math.round(n).toLocaleString("es-AR")}`;
+}
+
 function PercentilesChart({
   p25, p50, p75, p90, salario,
 }: { p25: number; p50: number; p75: number; p90: number; salario: number | null }) {
@@ -231,7 +235,7 @@ function PercentilesChart({
                 className="absolute right-0 -translate-y-full px-2 py-1 font-ui text-[10px] uppercase tracking-widest"
                 style={{ backgroundColor: "#E5484D", color: "#F5F2ED" }}
               >
-                Tu salario actual: {fmtUSD(salario)}
+                Tu salario actual: {fmtUSDFull(salario)}
               </div>
             </div>
           );
@@ -240,7 +244,7 @@ function PercentilesChart({
         <div className="absolute inset-x-0 flex justify-between gap-3 px-2" style={{ top: chartH + 8 }}>
           {bars.map((b) => (
             <div key={b.label} className="flex-1 text-center">
-              <div className="font-display text-base md:text-lg text-hueso">{fmtUSD(b.value)}</div>
+              <div className="font-display text-sm text-hueso">{fmtUSDFull(b.value)}</div>
               <div className="font-ui text-[10px] tracking-widest text-hueso/55 mt-1">{b.label}</div>
             </div>
           ))}
