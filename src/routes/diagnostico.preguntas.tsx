@@ -17,7 +17,7 @@ import {
   FUNCIONES, GENEROS, HERRAMIENTAS_IA, INDUSTRIAS, INDUSTRIAS_EN, INTERACCIONES,
   MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_C, MOTIVACIONES_C_EN, MOTIVACIONES_D, MOTIVACIONES_D_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
   ANTIGUEDAD_ROL, ANTIGUEDAD_ROL_EN, TIPO_NEGOCIACION, TIPO_NEGOCIACION_EN, ORIENTACION_CARRERA, ORIENTACION_CARRERA_EN, PUNTO_PARTIDA_SALTO, PUNTO_PARTIDA_SALTO_EN,
-  PERSONAS_A_CARGO, SITUACIONES, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, USOS_IA, labelOf,
+  PERSONAS_A_CARGO, SITUACIONES, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, TOTAL_PREGUNTAS, USOS_IA, labelOf,
 } from "@/lib/diagnostico/data";
 import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
 
@@ -367,8 +367,6 @@ export const Route = createFileRoute("/diagnostico/preguntas")({
   component: PreguntasPage,
 });
 
-const TOTAL = 19;
-
 // Categoría A: campos inferibles del documento. El resto (alcance, equipo,
 // funciones, interacción, situación, salario, beneficios, descripción, género,
 // contacto) son Categoría B — siempre se preguntan al usuario.
@@ -398,10 +396,18 @@ function PreguntasPage() {
   // y monto mensual. El resto del flujo (empleado/búsqueda) no cambia.
   const esIndep = r.situacion === "contractor";
   const orden = React.useMemo(() => {
-    const base = Array.from({ length: TOTAL }, (_, i) => i);
-    if (esIndep) return [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
-    return [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
-  }, [esIndep]);
+    const base = Array.from({ length: TOTAL_PREGUNTAS }, (_, i) => i);
+    const full = esIndep
+      ? [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)]
+      : [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
+    return full.filter((i) => {
+      if (i === 18) return modo === "B"; // Tipo de negociación
+      if (i === 19) return modo === "D"; // Orientación de carrera
+      if (i === 20) return modo === "D"; // Punto de partida del salto
+      if (i === 21) return modo === "C"; // Oferta verbal
+      return true;
+    });
+  }, [esIndep, modo]);
   // step = índice visual de navegación; stepLogico = pregunta que se muestra.
   const stepLogico = orden[step] ?? step;
 
@@ -454,7 +460,7 @@ function PreguntasPage() {
         });
       }
     }
-    if (step < TOTAL - 1) setStep(step + 1);
+    if (step < orden.length - 1) setStep(step + 1);
     else navigate({ to: "/diagnostico/inferencia" });
   };
   const back = () => {
@@ -487,11 +493,11 @@ function PreguntasPage() {
         if (idx >= 0) return isEN ? `FIELD ${idx + 1} OF ${totalPend} TO CONFIRM` : `CAMPO ${idx + 1} DE ${totalPend} POR CONFIRMAR`;
         return isEN ? "FIELD CONFIRMED" : "CAMPO CONFIRMADO";
       })()
-    : isEN ? `QUESTION ${step + 1} OF ${TOTAL}` : `PREGUNTA ${step + 1} DE ${TOTAL}`;
+    : isEN ? `QUESTION ${step + 1} OF ${orden.length}` : `PREGUNTA ${step + 1} DE ${orden.length}`;
 
   const pct = hasDoc && pendientes && pendientes.length > 0
     ? Math.round(((Math.max(pendientes.indexOf(stepLogico), 0) + 1) / pendientes.length) * 50) + 10
-    : Math.round(((step + 1) / TOTAL) * 50) + 10;
+    : Math.round(((step + 1) / orden.length) * 50) + 10;
 
   return (
     <DiagnosticoShell step={2} progress={pct}>

@@ -121,7 +121,7 @@ export type Respuestas = {
   experienciaTotalAnios?: number;
   experienciaIndustriaAnios?: number;
   // Nuevos campos Paso 2 — Chat 11
-  antiguedadRol?: "<3 meses" | "3-6 meses" | "6-12 meses" | "1-3 años" | "+3 años";
+  antiguedadRol?: "Menos de 6 meses" | "6 meses a 1 año" | "1 a 3 años" | "3 a 5 años" | "Más de 5 años";
   tipoNegociacion?: string;
   orientacionCarrera?: string;
   puntoPartidaSalto?: string;

@@ -289,19 +289,19 @@ export const MOTIVACIONES_EN = [
 ];
 
 export const ANTIGUEDAD_ROL = [
-  "Menos de 3 meses",
-  "3 a 6 meses",
-  "6 a 12 meses",
+  "Menos de 6 meses",
+  "6 meses a 1 año",
   "1 a 3 años",
-  "Más de 3 años",
+  "3 a 5 años",
+  "Más de 5 años",
 ];
 
 export const ANTIGUEDAD_ROL_EN = [
-  "Less than 3 months",
-  "3 to 6 months",
-  "6 to 12 months",
+  "Less than 6 months",
+  "6 months to 1 year",
   "1 to 3 years",
-  "More than 3 years",
+  "3 to 5 years",
+  "More than 5 years",
 ];
 
 export const TIPO_NEGOCIACION = [
