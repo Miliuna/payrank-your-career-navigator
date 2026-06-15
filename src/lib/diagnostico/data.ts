@@ -354,6 +354,7 @@ export const MOTIVACIONES_D_EN = [
   "I'm updating my CV and want to know how the market sees me today",
 ];
 
+// v2.1
 export const TOTAL_PREGUNTAS = 24;
 
 // ============= EN label maps (display only — canonical value stays Spanish) =============
