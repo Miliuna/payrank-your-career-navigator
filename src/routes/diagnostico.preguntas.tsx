@@ -407,7 +407,7 @@ function PreguntasPage() {
       if (i === 21) return modo === "C" && !state.documentos.avisoTexto && !state.documentos.avisoNombre; // Oferta verbal
       return true;
     });
-  }, [esIndep, modo]);
+  }, [esIndep, modo, state.documentos.avisoTexto, state.documentos.avisoNombre]);
   // step = índice visual de navegación; stepLogico = pregunta que se muestra.
   const stepLogico = orden[step] ?? step;
 
