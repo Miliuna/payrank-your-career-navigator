@@ -518,7 +518,7 @@ function PreguntasPage() {
           <ConfirmCard texto={extraccionTexto} onCorrecto={onCorrecto} onCambiar={onCambiar} isEN={isEN} />
         ) : (
           <>
-            {renderStep(stepLogico, r, setR, modo, isEN, datos, certRawInput, setCertRawInput)}
+            {renderStep(stepLogico, r, setR, modo, isEN, datos, certRawInput, setCertRawInput, state.documentos.avisoTexto, state.documentos.avisoNombre)}
             {inferidoDesdeCV && (
               <p className="font-body text-sm text-hueso/60 mt-4 leading-relaxed border-l-2 border-hueso/30 pl-4">
                 {isEN ? "Double-check this — we inferred it from your CV." : "Verificá este dato — lo inferimos de tu CV."}
@@ -657,7 +657,7 @@ function renderStep(
 
       if (modo !== "C") return null;
 
-      if (state.documentos.avisoTexto || state.documentos.avisoNombre) return null;
+      if (avisoTexto || avisoNombre) return null;
 
       return (
 
