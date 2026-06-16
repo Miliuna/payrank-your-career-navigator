@@ -186,7 +186,12 @@ function UploadPage() {
         ...s,
         datosExtraidos: extracted,
         pasosOverride: [],
-        documentos: { ...s.documentos, cvNombre: names.join(", ") },
+        documentos: {
+          ...s.documentos,
+          cvNombre: names.join(", "),
+          avisoNombre: avisoFile?.name ?? s.documentos.avisoNombre,
+          avisoTexto: avisoText.trim() || s.documentos.avisoTexto,
+        },
       }));
       navigate({ to: "/diagnostico/preguntas" });
     } catch (e) {
