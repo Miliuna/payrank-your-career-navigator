@@ -404,7 +404,7 @@ function PreguntasPage() {
       if (i === 18) return modo === "B"; // Tipo de negociación
       if (i === 19) return modo === "D"; // Orientación de carrera
       if (i === 20) return modo === "D"; // Punto de partida del salto
-      if (i === 21) return modo === "C"; // Oferta verbal
+      if (i === 21) return modo === "C" && !state.documentos.avisoTexto && !state.documentos.avisoNombre; // Oferta verbal
       return true;
     });
   }, [esIndep, modo]);
@@ -2039,7 +2039,9 @@ function P17Motivacion({ r, setR, isEN, modo }: Props & { isEN: boolean; modo: s
   const title = modo === "B"
     ? (isEN ? "What brought you to seek a salary review?" : "¿Qué te llevó a buscar una revisión salarial?")
     : modo === "C"
-    ? (isEN ? "What's driving your search right now?" : "¿Cuál es tu situación en este momento?")
+    ? (isEN ? "What's your situation?" : "¿Cuál es tu situación?")
+    : modo === "D"
+    ? (isEN ? "Which of these best describes your situation today?" : "¿Cuál de estas situaciones te representa mejor hoy?")
     : (isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?");
   return (
     <SimpleCards
