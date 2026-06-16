@@ -655,8 +655,7 @@ function renderStep(
     case 20: return modo === "D" ? <SimpleCards title={isEN ? "What is your starting point for this move?" : "¿Cuál es tu punto de partida para este salto?"} options={isEN ? PUNTO_PARTIDA_SALTO_EN : PUNTO_PARTIDA_SALTO} value={r.puntoPartidaSalto} onChange={(v) => setR({ puntoPartidaSalto: v })} /> : null;
     case 21: {
       if (modo !== "C") return null;
-      const docs = state.documentos;
-      const tieneAviso = !!(docs.avisoTexto && docs.avisoTexto.trim().length > 0) || !!(docs.avisoNombre && docs.avisoNombre.trim().length > 0);
+      const tieneAviso = !!(avisoTexto && avisoTexto.trim().length > 0) || !!(avisoNombre && avisoNombre.trim().length > 0);
       if (tieneAviso) return null;
       return (
         <>
