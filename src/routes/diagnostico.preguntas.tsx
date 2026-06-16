@@ -651,20 +651,35 @@ function renderStep(
     case 18: return modo === "B" ? <SimpleCards title={isEN ? "What type of negotiation are you seeking?" : "¿Qué tipo de negociación estás buscando?"} options={isEN ? TIPO_NEGOCIACION_EN : TIPO_NEGOCIACION} value={r.tipoNegociacion} onChange={(v) => setR({ tipoNegociacion: v })} /> : null;
     case 19: return modo === "D" ? <SimpleCards title={isEN ? "In your next role, what path do you prefer?" : "En tu próximo rol, ¿qué camino preferís?"} options={isEN ? ORIENTACION_CARRERA_EN : ORIENTACION_CARRERA} value={r.orientacionCarrera} onChange={(v) => setR({ orientacionCarrera: v })} /> : null;
     case 20: return modo === "D" ? <SimpleCards title={isEN ? "What is your starting point for this move?" : "¿Cuál es tu punto de partida para este salto?"} options={isEN ? PUNTO_PARTIDA_SALTO_EN : PUNTO_PARTIDA_SALTO} value={r.puntoPartidaSalto} onChange={(v) => setR({ puntoPartidaSalto: v })} /> : null;
-    case 21: return modo === "C" ? (
-      <>
-        <QuestionTitle>{isEN ? "Describe the offer you received" : "Describí la oferta que recibiste"}</QuestionTitle>
-        <QuestionHint>
-          {isEN
-            ? "Company, role, salary and benefits mentioned."
-            : "Empresa, rol, salario ofrecido y beneficios mencionados."}
-        </QuestionHint>
-        <TextArea
-          value={r.ofertaVerbal ?? ""}
-          onChange={(e) => setR({ ofertaVerbal: e.target.value })}
-        />
-      </>
-    ) : null;
+    case 21: {
+
+      if (modo !== "C") return null;
+
+      if (state.documentos.avisoTexto || state.documentos.avisoNombre) return null;
+
+      return (
+
+        <>
+
+          <QuestionTitle>{isEN ? "Describe the offer you received" : "Describí la oferta que recibiste"}</QuestionTitle>
+
+          <QuestionHint>{isEN ? "Company, role, salary offered and benefits mentioned." : "Empresa, rol, salario ofrecido y beneficios mencionados."}</QuestionHint>
+
+          <textarea
+
+            className="w-full min-h-[120px] bg-transparent border border-hueso/30 rounded p-3 text-hueso font-body text-sm resize-y focus:outline-none focus:border-hueso/60"
+
+            value={r.ofertaVerbal ?? ""}
+
+            onChange={(e) => setR({ ofertaVerbal: e.target.value })}
+
+          />
+
+        </>
+
+      );
+
+    }
     case 22: return <P18Genero r={r} setR={setR} />;
     case 23: return <P19Contacto r={r} setR={setR} />;
     default: return null;
