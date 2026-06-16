@@ -628,6 +628,8 @@ function renderStep(
   datos: import("@/lib/diagnostico/types").DatosExtraidos | null,
   certRawInput?: string,
   onCertRawChange?: (v: string) => void,
+  avisoTexto?: boolean,
+  avisoNombre?: boolean,
 ) {
   switch (step) {
     case 0: return <P1Pais r={r} setR={setR} />;
