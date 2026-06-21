@@ -568,6 +568,43 @@ function formatUsd(n: number): string {
   return `USD ${Math.round(n).toLocaleString("en-US")}`;
 }
 
+function formatLocal(n: number): string {
+  return `$${Math.round(n).toLocaleString("es-AR")}`;
+}
+
+// PC-09/PC-08 — el modelo nunca debe adivinar el monto declarado por el usuario.
+// Si la moneda que declaró (record.moneda_actual) difiere de la moneda estándar
+// del país (currency), recalculamos salario_actual_local/usd desde el dato crudo
+// (record.salario_actual) en vez de confiar en lo que generó el modelo para ese
+// campo puntual. El resto del reporte (rango de mercado, P25-P90) no se toca acá.
+function corregirSalarioDeclarado(
+  parsed: Record<string, unknown>,
+  record: { salario_actual?: unknown; moneda_actual?: unknown },
+  currency: string | null,
+  usdOnly: boolean,
+  tc: TipoCambio | null,
+): void {
+  const monedaDeclarada = typeof record.moneda_actual === "string" ? record.moneda_actual.toUpperCase() : null;
+  const monto = typeof record.salario_actual === "number" && record.salario_actual > 0 ? record.salario_actual : null;
+  if (!monedaDeclarada || monto === null) return;
+
+  const monedaPais = usdOnly ? "USD" : currency;
+  if (!monedaPais || monedaDeclarada === monedaPais) return; // sin mismatch: no tocar nada, ya está bien
+
+  const s2 = parsed.seccion_2 as Record<string, unknown> | undefined;
+  if (!s2) return;
+
+  if (monedaDeclarada === "USD") {
+    s2.salario_actual_usd = formatUsd(monto);
+    if (tc && tc.valor > 0) s2.salario_actual_local = formatLocal(monto * tc.valor);
+    // Si no hay tipoCambio disponible, dejamos salario_actual_local como vino del modelo
+    // (mejor un valor de origen incierto que inventar uno sin tasa real).
+  }
+  // Otras monedas declaradas (EUR, GBP, etc. distintas a la del país) quedan fuera de este
+  // fix por ahora — no tenemos fuente oficial de conversión para esos pares todavía.
+}
+
+
 function applyUsdConversion(
   parsed: Record<string, unknown>,
   tc: TipoCambio | null,
@@ -681,6 +718,7 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     // Conversión local→USD en backend (única fuente de verdad sobre tipo de cambio).
     // El modelo solo trabaja en moneda local; acá rellenamos los campos *_usd.
     applyUsdConversion(parsed, tipoCambio, usdOnly);
+    corregirSalarioDeclarado(parsed, record, currency, usdOnly, tipoCambio);
 
     const nivelConfianza = (parsed.seccion_1 as Record<string, unknown> | undefined)?.nivel_confianza;
 
