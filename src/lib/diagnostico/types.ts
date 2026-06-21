@@ -162,6 +162,13 @@ export type DatosExtraidos = {
   empresa_actual?: string | null;
   fecha_ingreso_empresa_actual?: string | null;
   nombre_prestadora_salud?: string | null;
+  // EXT-05 + LANG-02 — extracción de contrato de servicios para contractor
+  situacion_laboral_inferida?: "empleado" | "contractor" | "freelance" | null;
+  horas_semanales_pactadas_inferidas?: number | null;
+  tarifa_mensual_contrato_inferida?: number | string | null;
+  empresa_contratante_inferida?: string | null;
+  bono_explicito_no?: boolean | null;
+  beneficios_explicito_ninguno?: boolean | null;
   [k: string]: unknown;
 };
 

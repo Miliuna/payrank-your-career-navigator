@@ -647,7 +647,7 @@ function renderStep(
     case 12: return <P12Formacion r={r} setR={setR} />;
     case 13: return <P13Certificaciones r={r} setR={setR} certRawInput={certRawInput ?? ""} onCertRawChange={onCertRawChange ?? (() => {})} />;
     case 14: return <P14HerramientasIA r={r} setR={setR} />;
-    case 15: return <P16Beneficios r={r} setR={setR} />;
+    case 15: return <P16Beneficios r={r} setR={setR} datosExtraidos={datos} />;
     case 16: return <P17Motivacion r={r} setR={setR} isEN={isEN} modo={modo} />;
     case 17: return <SimpleCards title={isEN ? "How long have you been in your current role?" : "¿Cuánto tiempo llevás en tu rol actual?"} options={isEN ? ANTIGUEDAD_ROL_EN : ANTIGUEDAD_ROL} value={r.antiguedadRol} onChange={(v) => setR({ antiguedadRol: v as typeof r.antiguedadRol })} />;
     case 18: return modo === "B" ? <SimpleCards title={isEN ? "What type of negotiation are you seeking?" : "¿Qué tipo de negociación estás buscando?"} options={isEN ? TIPO_NEGOCIACION_EN : TIPO_NEGOCIACION} value={r.tipoNegociacion} onChange={(v) => setR({ tipoNegociacion: v })} /> : null;
@@ -1213,6 +1213,51 @@ const SITUACIONES_DESC_EN: Record<string, string> = {
 function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string; datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
+
+  // EXT-05 + LANG-02 — prefill desde contrato de contractor extraído.
+  // Solo completa campos que el usuario todavía no respondió — nunca pisa una respuesta manual.
+  const prefilledRef = React.useRef(false);
+  React.useEffect(() => {
+    if (prefilledRef.current || !datosExtraidos) return;
+    const clear: Partial<typeof r> = {};
+    let touched = false;
+
+    if (r.situacion === undefined && datosExtraidos.situacion_laboral_inferida) {
+      const inferido = datosExtraidos.situacion_laboral_inferida;
+      // El formulario solo distingue "empleado" / "contractor" — freelance se mapea a contractor.
+      clear.situacion = inferido === "empleado" ? "empleado" : "contractor";
+      touched = true;
+    }
+
+    const situacionEfectiva = clear.situacion ?? r.situacion;
+    if (situacionEfectiva === "contractor") {
+      if (r.contractorHoras === undefined && typeof datosExtraidos.horas_semanales_pactadas_inferidas === "number") {
+        clear.contractorHoras = datosExtraidos.horas_semanales_pactadas_inferidas >= 40 ? "40h" : "menos40";
+        touched = true;
+      }
+      if (r.contractorPago === undefined && datosExtraidos.moneda_inferida) {
+        const pais = (r.pais === "Otro" ? r.paisOtro : r.pais) ?? "";
+        const monedaLocal = paisToMoneda(pais, r.paisOtro);
+        clear.contractorPago = datosExtraidos.moneda_inferida === monedaLocal ? "local" : "usd";
+        touched = true;
+      }
+      if (r.moneda === undefined && datosExtraidos.moneda_inferida) {
+        clear.moneda = datosExtraidos.moneda_inferida;
+        touched = true;
+      }
+      if (r.bono_target_sueldos === undefined && datosExtraidos.bono_explicito_no === true) {
+        clear.bono_target_sueldos = "no_tengo";
+        touched = true;
+      }
+    }
+
+    if (touched) {
+      prefilledRef.current = true;
+      setR(clear);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datosExtraidos, r.situacion, r.contractorHoras, r.contractorPago, r.moneda, r.bono_target_sueldos, r.pais, r.paisOtro, setR]);
+
   return (
     <>
       <QuestionTitle>{isEN ? "What is your current employment situation?" : "¿Cuál es tu situación laboral actual?"}</QuestionTitle>
@@ -1602,12 +1647,24 @@ function MontoInput({
 }
 
 
-function P16Beneficios({ r, setR }: Props) {
+function P16Beneficios({ r, setR, datosExtraidos }: Props & { datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const pais = (r.pais === "Otro" ? r.paisOtro : r.pais) ?? "";
   const isUSA = pais === "Estados Unidos";
   const esIndep = r.situacion === "contractor";
+
+  // EXT-05 + LANG-02 — si el contrato declaró explícitamente "sin beneficios", prefill
+  // de cobertura médica a "no_tengo". Solo si el usuario todavía no respondió esta pregunta.
+  const prefilledBeneficiosRef = React.useRef(false);
+  React.useEffect(() => {
+    if (prefilledBeneficiosRef.current || !datosExtraidos) return;
+    if (!esIndep || datosExtraidos.beneficios_explicito_ninguno !== true) return;
+    if (r.beneficio_salud_tipo !== undefined) { prefilledBeneficiosRef.current = true; return; }
+    prefilledBeneficiosRef.current = true;
+    setR({ beneficio_salud_tipo: "no_tengo" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datosExtraidos, esIndep, r.beneficio_salud_tipo, setR]);
 
   // Si el usuario es freelance/contractor, limpiamos campos que no aplican
   // para evitar que queden valores antiguos en el estado.
