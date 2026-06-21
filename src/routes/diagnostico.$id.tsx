@@ -751,7 +751,11 @@ function ResultadoPage() {
           <H2>{isEN ? "The exact words" : "Las palabras exactas"}</H2>
 
           <Card dark>
-            <Eyebrow>{isEN ? "TALKING TO YOUR BOSS" : "HABLAR CON TU JEFE"}</Eyebrow>
+            <Eyebrow>
+              {row.situacion_laboral === "contractor"
+                ? (isEN ? "TALKING TO YOUR EMPLOYER / CLIENT" : "HABLAR CON TU EMPLEADOR / CLIENTE")
+                : (isEN ? "TALKING TO YOUR BOSS" : "HABLAR CON TU JEFE")}
+            </Eyebrow>
             <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{limpiarScript(str(s6.script_jefe))}</p>
           </Card>
 
