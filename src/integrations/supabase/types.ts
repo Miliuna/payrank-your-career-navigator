@@ -87,6 +87,7 @@ export type Database = {
           anos_experiencia_industria: string | null
           anos_experiencia_total: string | null
           anos_puesto_actual: string | null
+          antiguedad_rol: string | null
           auto_corporativo: string | null
           beneficio_401k_match: string | null
           beneficio_401k_porcentaje: string | null
@@ -143,11 +144,14 @@ export type Database = {
           monto_pagado_usd: number | null
           nivel: string | null
           nivel_confianza: string | null
+          oferta_verbal: string | null
+          orientacion_carrera: string | null
           pago_confirmado: boolean
           pais_rol: string | null
           pdf_enviado: boolean
           plan_elegido: string | null
           puesto_descripcion: string | null
+          punto_partida_salto: string | null
           referido_por: string | null
           resultado_json: Json | null
           salario_actual: number | null
@@ -157,6 +161,7 @@ export type Database = {
           stripe_session_id: string | null
           tipo_cambio_utilizado: Json | null
           tipo_empresa: string | null
+          tipo_negociacion: string | null
           tipo_usuario: string
           updated_at: string
           uso_ia: string[] | null
@@ -168,6 +173,7 @@ export type Database = {
           anos_experiencia_industria?: string | null
           anos_experiencia_total?: string | null
           anos_puesto_actual?: string | null
+          antiguedad_rol?: string | null
           auto_corporativo?: string | null
           beneficio_401k_match?: string | null
           beneficio_401k_porcentaje?: string | null
@@ -224,11 +230,14 @@ export type Database = {
           monto_pagado_usd?: number | null
           nivel?: string | null
           nivel_confianza?: string | null
+          oferta_verbal?: string | null
+          orientacion_carrera?: string | null
           pago_confirmado?: boolean
           pais_rol?: string | null
           pdf_enviado?: boolean
           plan_elegido?: string | null
           puesto_descripcion?: string | null
+          punto_partida_salto?: string | null
           referido_por?: string | null
           resultado_json?: Json | null
           salario_actual?: number | null
@@ -238,6 +247,7 @@ export type Database = {
           stripe_session_id?: string | null
           tipo_cambio_utilizado?: Json | null
           tipo_empresa?: string | null
+          tipo_negociacion?: string | null
           tipo_usuario?: string
           updated_at?: string
           uso_ia?: string[] | null
@@ -249,6 +259,7 @@ export type Database = {
           anos_experiencia_industria?: string | null
           anos_experiencia_total?: string | null
           anos_puesto_actual?: string | null
+          antiguedad_rol?: string | null
           auto_corporativo?: string | null
           beneficio_401k_match?: string | null
           beneficio_401k_porcentaje?: string | null
@@ -305,11 +316,14 @@ export type Database = {
           monto_pagado_usd?: number | null
           nivel?: string | null
           nivel_confianza?: string | null
+          oferta_verbal?: string | null
+          orientacion_carrera?: string | null
           pago_confirmado?: boolean
           pais_rol?: string | null
           pdf_enviado?: boolean
           plan_elegido?: string | null
           puesto_descripcion?: string | null
+          punto_partida_salto?: string | null
           referido_por?: string | null
           resultado_json?: Json | null
           salario_actual?: number | null
@@ -319,6 +333,7 @@ export type Database = {
           stripe_session_id?: string | null
           tipo_cambio_utilizado?: Json | null
           tipo_empresa?: string | null
+          tipo_negociacion?: string | null
           tipo_usuario?: string
           updated_at?: string
           uso_ia?: string[] | null
