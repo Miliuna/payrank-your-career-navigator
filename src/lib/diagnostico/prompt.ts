@@ -409,10 +409,15 @@ Si el usuario factura por hora o por proyecto:
 Valor hora mínimo recomendado =
 (P50 de mercado del perfil equivalente × 1.35) ÷ horas facturables mensuales estimadas
 
-Horas facturables mensuales estimadas según perfil:
-- Consultor con cartera de clientes estable: 110 horas/mes
-- Consultor con proyectos esporádicos o en desarrollo de cartera: 70 horas/mes
-- Consultor senior con marca establecida y demanda activa: 90 horas/mes
+Horas facturables mensuales — SIEMPRE preferir el dato declarado por el usuario sobre una estimación:
+- Si la descripción del puesto indica "Horas semanales: 40h" (declarado explícitamente): horas facturables mensuales = 40 × 4 = 160 horas/mes. Usá este número EXACTO, declarado por el usuario — nunca lo reemplaces por una categoría estimada.
+- Si indica "Horas semanales: menos40" (el usuario declaró menos de 40h pero sin precisar cuántas): usá 70 horas/mes como estimación conservadora intermedia, y aclará explícitamente en el reporte que es una estimación, no un dato exacto declarado (ej: "70 horas/mes — estimación, ya que declaraste menos de 40 horas semanales sin precisar la cifra exacta").
+- Si el usuario cobra por proyecto (sin horas fijas) o no declaró carga horaria en absoluto, usá las categorías estimadas según el perfil:
+  - Consultor con cartera de clientes estable: 110 horas/mes
+  - Consultor con proyectos esporádicos o en desarrollo de cartera: 70 horas/mes
+  - Consultor senior con marca establecida y demanda activa: 90 horas/mes
+
+El campo "horas_facturables_estimadas" del JSON debe declarar SIEMPRE si el número usado es exacto (declarado por el usuario) o estimado, exactamente con ese formato: "[N] horas mensuales ([N/4] horas semanales × 4 semanas) — declarado por el usuario" o "[N] horas mensuales — estimación, dato no declarado con precisión".
 
 El factor 1.35 compensa las cargas que el freelance asume por su cuenta.
 
