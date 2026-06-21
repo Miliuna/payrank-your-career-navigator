@@ -476,7 +476,7 @@ function PreguntasPage() {
     }));
   };
 
-  const valid = isValid(stepLogico, r, modo, certRawInput);
+  const valid = isValid(stepLogico, r, modo, certRawInput, datos);
   const extraccionTexto = stepLogico >= 0 && hasDoc && EXTRACTABLE_STEPS.has(stepLogico) && !overrides.has(stepLogico) && stepLogico !== 10 && stepLogico !== 11
     ? resumenExtraccion(stepLogico, datos!, isEN)
     : null;
@@ -583,6 +583,7 @@ function isValid(
   r: ReturnType<typeof useDiagnostico>["state"]["respuestas"],
   modo: string,
   certRawInput?: string,
+  datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null,
 ): boolean {
   switch (step) {
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
@@ -593,7 +594,16 @@ function isValid(
       if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
       return false;
     }
-    case 2: return !!r.industria && (r.industria !== "Otra" || !!r.industriaOtra?.trim());
+    case 2: {
+      if (!r.industria || (r.industria === "Otra" && !r.industriaOtra?.trim())) return false;
+      // Si el usuario declara una industria distinta a la que infirió la extracción del CV,
+      // los años de experiencia en industria confirmados bajo la premisa vieja ya no son confiables.
+      // Exigimos un número fresco antes de avanzar (ver P2Industria, que limpia el campo al detectar esto).
+      const tuvoExtraccion = !!datosExtraidos?.industria_inferida;
+      const divergioDeExtraccion = tuvoExtraccion && r.industria !== datosExtraidos!.industria_inferida;
+      if (divergioDeExtraccion) return r.experienciaIndustriaAnios !== undefined;
+      return true;
+    }
     case 3: return !!r.tipoEmpresa;
     case 4: return !!r.nivel && (r.nivel !== "Otro" || !!r.nivelOtro?.trim());
     case 5: return !!r.alcance;
@@ -634,7 +644,7 @@ function renderStep(
   switch (step) {
     case 0: return <P1Pais r={r} setR={setR} />;
     case 1: return <P15Situacion r={r} setR={setR} modo={modo} datosExtraidos={datos} />;
-    case 2: return <P2Industria r={r} setR={setR} />;
+    case 2: return <P2Industria r={r} setR={setR} datosExtraidos={datos} />;
     case 3: return <P3TipoEmpresa r={r} setR={setR} />;
     case 4: return <P4Nivel r={r} setR={setR} />;
     case 5: return <SimpleCards title={isEN ? "What is the scope of your role?" : "¿Cuál es el alcance de tu rol?"} options={isEN ? ALCANCES_EN : ALCANCES} value={r.alcance} onChange={(v) => setR({ alcance: v })} />;
@@ -765,15 +775,31 @@ function P1Pais({ r, setR }: Props) {
   );
 }
 
-function P2Industria({ r, setR }: Props) {
+function P2Industria({ r, setR, datosExtraidos }: Props & { datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
+  const industriaInferida = datosExtraidos?.industria_inferida;
+  const divergioDeExtraccion =
+    !!industriaInferida && !!r.industria && r.industria !== industriaInferida;
+  const necesitaReconfirmar = divergioDeExtraccion && r.experienciaIndustriaAnios === undefined;
+
+  const handlePick = (opt: string) => {
+    const cambiaDeValor = r.industria !== opt;
+    const seAlejaDeLoInferido = !!industriaInferida && opt !== industriaInferida;
+    if (cambiaDeValor && seAlejaDeLoInferido && r.experienciaIndustriaAnios !== undefined) {
+      // El número de años en industria se confirmó bajo otra industria — ya no aplica, se pide de nuevo.
+      setR({ industria: opt, experienciaIndustriaAnios: undefined });
+    } else {
+      setR({ industria: opt });
+    }
+  };
+
   return (
     <>
       <QuestionTitle>{isEN ? "What industry do you work in?" : "¿En qué industria trabajás?"}</QuestionTitle>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {INDUSTRIAS.map((opt) => (
-          <CardOption key={opt} selected={r.industria === opt} onClick={() => setR({ industria: opt })}>
+          <CardOption key={opt} selected={r.industria === opt} onClick={() => handlePick(opt)}>
             {labelOf(opt, INDUSTRIAS_EN, isEN)}
           </CardOption>
         ))}
@@ -784,6 +810,25 @@ function P2Industria({ r, setR }: Props) {
             placeholder={isEN ? "Specify your industry" : "Especificá tu industria"}
             value={r.industriaOtra ?? ""}
             onChange={(e) => setR({ industriaOtra: e.target.value })}
+            autoFocus
+          />
+        </div>
+      )}
+      {necesitaReconfirmar && (
+        <div className="mt-6">
+          <QuestionHint>
+            {isEN
+              ? "You changed your industry from what we detected in your CV — how many years of experience do you have in this industry specifically?"
+              : "Cambiaste tu industria respecto a lo que detectamos en tu CV — ¿cuántos años de experiencia tenés específicamente en esta industria?"}
+          </QuestionHint>
+          <TextInput
+            type="number"
+            placeholder={isEN ? "Years in this industry" : "Años en esta industria"}
+            value={r.experienciaIndustriaAnios?.toString() ?? ""}
+            onChange={(e) => {
+              const n = Number(e.target.value);
+              setR({ experienciaIndustriaAnios: e.target.value.trim() === "" || !isFinite(n) ? undefined : n });
+            }}
             autoFocus
           />
         </div>
