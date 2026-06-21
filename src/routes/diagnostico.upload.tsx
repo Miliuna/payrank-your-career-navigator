@@ -40,7 +40,7 @@ function zoneCopy(tipo: DocTipo, isEN: boolean): ZoneCopy {
       case "recibo":
         return {
           label: "Pay stub or salary slip",
-          sublabel: "The most recent one you have. Lets us pre-fill your current salary",
+          sublabel: "The most recent one you have. If you're a contractor, you can also upload your contract — we use it to read your rate, add-ons and declared benefits.",
         };
       case "descriptivo":
         return {
@@ -64,7 +64,7 @@ function zoneCopy(tipo: DocTipo, isEN: boolean): ZoneCopy {
     case "recibo":
       return {
         label: "Recibo de sueldo o liquidación",
-        sublabel: "El más reciente que tengas. Nos permite pre-completar tu salario actual",
+        sublabel: "El más reciente que tengas. Si sos contractor, también podés subir tu contrato — lo usamos para leer tu tarifa, adicionales y beneficios declarados.",
       };
     case "descriptivo":
       return {
@@ -274,8 +274,8 @@ function UploadPage() {
                   copy={{
                     ...zoneCopy("recibo", isEN),
                     sublabel: isEN
-                      ? "If you have it, it helps us set your current salary as a negotiation floor. Not needed if you're currently unemployed."
-                      : "Si lo tenés, nos ayuda a establecer tu salario actual como piso de negociación. No es necesario si estás sin empleo.",
+                      ? "If you have it, we use it to read your base salary, bonuses, add-ons and declared benefits — everything that makes up your real compensation, not just the take-home number. Not needed if you're currently unemployed."
+                      : "Si lo tenés, lo usamos para leer tu salario base, bonos, adicionales y beneficios declarados — todo lo que hace a tu compensación real, no solo el número de bolsillo. No es necesario si estás sin empleo.",
                   }}
                   file={reciboFile}
                   onFile={setReciboFile}

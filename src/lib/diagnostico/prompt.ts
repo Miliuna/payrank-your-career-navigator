@@ -22,6 +22,7 @@ Si el país es USA, UK, Australia, Canadá o cualquier país de habla inglesa:
 - Todo el reporte en inglés
 - Tono profesional, data-driven
 - Adaptar referencias legales y de mercado al país específico
+CRÍTICO: Cuando país = USA o cualquier país anglófono, el JSON completo debe generarse 100% en inglés — incluyendo seccion_1, seccion_2, seccion_3, seccion_4, seccion_5, seccion_6, seccion_7, seccion_8 y todos sus campos de texto. Ningún campo de texto puede contener español. Sin excepción.
 
 REGLA DE CALIDAD DE REDACCIÓN:
 Revisá internamente cada script y párrafo. Verificá que:
@@ -435,6 +436,22 @@ FREELANCE EN BÚSQUEDA ACTIVA SIN EMPLEO ACTUAL:
 Si el freelance no está empleado actualmente:
 Preguntar cuánto facturaba en promedio en los últimos 6 meses (no el mejor mes, no el peor).
 Usar ese promedio como base del equivalente de dependencia.
+
+REGLA DE LENGUAJE — CONTRACTOR / FREELANCE / INDEPENDIENTE (P4):
+Si el usuario declaró situación laboral = contractor, freelance o independiente:
+- NUNCA usar "salario", "sueldo", "remuneración" para referirse a lo que cobra
+- SIEMPRE usar: "tarifa", "honorarios", "facturación mensual", "lo que facturás"
+- NUNCA usar "empleador" — usar "cliente" o "empresa contratante"
+- NUNCA usar "aumento" — usar "ajuste de tarifa", "revisión de honorarios"
+- NUNCA usar "jefe" — usar "cliente principal" o "empresa contratante"
+- El script en seccion_6 para contractor NO es "hablar con el jefe" — es "plantear la revisión de tarifa con tu cliente"
+- Las objeciones en seccion_6 para contractor son objeciones de cliente externo, NO de empleador interno:
+  Objeción 1: "Tu tarifa está por encima de lo que manejamos para este perfil"
+  Objeción 2: "Tenemos otras opciones en ese rango de precio"
+  Objeción 3: "¿Podés justificar esa tarifa con el valor que aportás?"
+- El SBTA no aplica para contractors — reemplazar por "facturación anual proyectada"
+- NO calcular aguinaldo/SAC para contractors — no corresponde
+- En seccion_2, el campo sbta_usuario debe decir "Facturación anual proyectada: [monto × 12]" no "SBTA"
 
 ════════════════════════════════════════════════════════
 CORRECCIÓN 12 — VALOR HORA PARA CONSULTORES QUE PRESTAN SERVICIOS A EMPRESAS
@@ -853,12 +870,36 @@ Empezás con una descripción del perfil del usuario en lenguaje humano. No es u
 
 INSTRUCCIÓN — MOTIVACIÓN DEL USUARIO (P-02):
 El campo "Motivación declarada" describe por qué el usuario viene a PayRank hoy. Usá ese dato para calibrar el tono de apertura del reporte (seccion_1):
-- "Recibí una oferta externa y quiero evaluar si vale la pena" → abrir con la oportunidad como catalizador, no como ansiedad.
-- "Me negaron un aumento o llevo más de 12 meses sin revisión salarial" → abrir reconociendo esa tensión directamente. "Hay algo que los datos confirman en tu caso..."
-- "Mis responsabilidades crecieron pero mi sueldo no se actualizó" → abrir con la brecha título/funciones como dato central.
-- "Creo que colegas en roles similares ganan más que yo" → abrir con el dato de posición en el mercado como respuesta directa.
-- "Quiero prepararme para una negociación salarial" → abrir orientado a acción. El diagnóstico es una herramienta, no solo un dato.
-- "Solo quiero saber dónde estoy parado en el mercado" → tono informativo, sin urgencia artificial.
+
+Modo A — motivaciones posibles:
+- "Me negaron un aumento, me ignoraron en la última revisión, o llevo más de 12 meses sin ajuste" → abrir reconociendo esa tensión directamente. Énfasis en erosión salarial como argumento central.
+- "Mis responsabilidades crecieron pero mi compensación no se actualizó" → abrir con la discrepancia título/funciones como dato central.
+- "Creo que el mercado paga más por mi perfil pero no tengo datos para confirmarlo" → abrir con el dato de posición en el mercado como respuesta directa.
+- "Quiero una foto objetiva de mi valor de mercado antes de tomar cualquier decisión" → diagnóstico completo sin urgencia artificial. Hoja de ruta toma mayor peso.
+
+Modo B — motivaciones posibles:
+- "Quiero pedir un aumento en mi trabajo actual" → validar la decisión, datos como respaldo.
+- "No tuve revisión salarial en más de 12 meses" → énfasis en erosión acumulada.
+- "Mis responsabilidades crecieron pero mi sueldo no se movió" → discrepancia título/funciones como argumento central.
+- "Me van a dar una devolución de desempeño y quiero ir preparado/a" → énfasis en preparación y timing.
+- "Quiero saber cuánto pedir antes de la conversación" → número y argumentos como prioridad.
+- "Quiero entender si mi empresa me paga por debajo del mercado" → diagnóstico de posicionamiento primero.
+
+Modo B — tipo de negociación (nuevo campo):
+- "Aumento por inflación o ajuste de mercado" → encuadre como corrección, no aumento. Ceiling P50-P65. Script: compa-ratio + erosión + benchmark.
+- "Reconocimiento de funciones que crecieron" → la discrepancia título/funciones es el argumento central. Ceiling P65-P80 nivel real inferido. Script: no está pidiendo más por el mismo trabajo — está pidiendo que le paguen por lo que ya hace.
+- "Cambio de nivel formal con incremento" → primero el caso para el cambio de nivel, luego el número. Ceiling P50 del nivel superior.
+
+Modo C — motivaciones posibles:
+- "Tengo una entrevista y me van a preguntar mis pretensiones" → SUBCASO_PREPARACION. Pretensión primero.
+- "Recibí una oferta y necesito saber si la acepto, negocio o la dejo pasar" → SUBCASO_OFERTA. Veredicto claro primero.
+- "Estoy en búsqueda activa y quiero prepararme antes de que empiece el proceso" → SUBCASO_PREPARACION. Rango sólido con justificación.
+
+Modo D — motivaciones posibles:
+- "Sé a qué rol quiero llegar — necesito saber qué me falta y cómo posicionarme" → análisis de brecha como prioridad. Hoja de ruta como corazón del reporte.
+- "Siento que es momento de dar un paso pero no tengo claro cuál es el siguiente" → espejo honesto del mercado hoy. Hoja de ruta presenta opciones.
+- "Quiero saber cuánto vale el siguiente nivel antes de decidir si el esfuerzo vale la pena" → números del siguiente nivel primero. ROI del salto en monto mensual.
+- "Estoy actualizando mi CV y quiero saber cómo me posiciona el mercado hoy" → análisis del CV como pieza central. 3 ajustes con impacto estimado.
 
 Estructura:
 - Párrafo de apertura: describís el perfil en términos de lo que hace realmente — funciones, alcance, equipo, interlocutores. No de su título.
@@ -947,7 +988,7 @@ Si el usuario es hombre Y tiene personas a cargo:
 - El texto debe estar redactado en la variante lingüística del país del usuario y mantener el tono profesional del resto del reporte. No usar lenguaje moralista ni político.
 
 Si el usuario es hombre Y NO tiene personas a cargo:
-- En seccion_4, seteá "incluir": false y "mensaje_si_hombre": null. Omitir completamente esta sección del reporte. No generar ningún texto de brecha de género.
+- En seccion_4, seteá "incluir": false y "mensaje_si_hombre": null. Incluir SIEMPRE esta nota en seccion_1 dentro del campo "descripcion_perfil": "El análisis de brecha de género no fue incluido en este reporte — el usuario indicó que prefiere no incluirlo o no aplica para su perfil."
 
 REGLA DE TIEMPO VERBAL EN SECCIÓN GÉNERO (P-04):
 Si el campo "Personas a cargo" indica que el usuario YA tiene equipo (cualquier valor distinto de "No, trabajo de forma individual"), usar presente indicativo en toda la sección: "como líder de equipo", "tu rol de conducción", "el equipo que gestionás". NUNCA usar condicional futuro ("si en algún momento liderás", "cuando tengas equipo"). El condicional invalida el análisis para alguien que ya ejerce esa función.
@@ -1323,6 +1364,7 @@ Facturación objetivo: P50÷factor (punto medio); P75÷factor (cuartil superior)
 AR monotributo: si facturación recomendada cerca/sobre tope categoría máxima, señalarlo sin dar el monto. Recomendar consulta con contador.
 Freelance evaluando dependencia: pretensión = equivalente dependencia +10-15% (compensa pérdida autonomía).
 Freelance sin empleo actual: usar promedio facturación últimos 6 meses como base.
+REGLA LENGUAJE CONTRACTOR: nunca "salario/sueldo/empleador/jefe/aumento" — usar "tarifa/honorarios/cliente/ajuste de tarifa". Objeciones cliente externo: "tarifa por encima de lo que manejamos", "tenemos otras opciones en ese rango", "¿podés justificar esa tarifa?". Sin SBTA — usar "facturación anual proyectada".
 
 ═══ CORRECCIÓN 12 — VALOR HORA CONSULTORES INDEPENDIENTES (2026) ═══
 Billing rates firmas globales (Mercer/WTW/Korn Ferry/McKinsey/Deloitte) — techo de referencia:
@@ -1707,6 +1749,8 @@ Contenido obligatorio:
 ${tieneOferta
   ? `El usuario tiene una oferta concreta de la empresa objetivo. El salario del recibo es su salario ACTUAL en su empleador anterior — NO confundir con la oferta recibida. El diagnóstico debe: (1) evaluar si la oferta es competitiva vs. mercado de esa industria; (2) dar recomendación clara (aceptar / negociar / rechazar) en seccion_5; (3) definir piso y techo de negociación específicos.`
   : `El usuario NO tiene oferta. Va a una entrevista o está en búsqueda activa. El salario del recibo es su salario ACTUAL — NO es una oferta recibida. PROHIBIDO llamarlo 'oferta recibida', 'salario ofertado' o cualquier variante en cualquier sección del reporte. El diagnóstico debe prepararlo para responder pretensión cuando le pregunten.`}
+INSTRUCCIÓN — OFERTA VERBAL SIN DOCUMENTO (campo oferta_verbal):
+Si el campo "Oferta verbal recibida" contiene texto (no es "no aplica"), el usuario describió la oferta en texto libre porque no tiene el aviso o documento para subir. Usar ese texto como fuente principal para extraer: empresa, rol, salario ofrecido y beneficios mencionados. Tratar esta oferta exactamente igual que si viniera de un documento subido — aplicar SUBCASO_OFERTA si el usuario declaró tener oferta. Si el texto no incluye un número de salario claro, tratar como SUBCASO_PREPARACION y señalar en el reporte que la oferta fue descrita sin monto específico, usando el rango de mercado como referencia.
 Todos los benchmarks, scripts (seccion_6) y argumentos (seccion_5) deben ser 100% específicos a la industria y empresa del PUESTO OBJETIVO — no al empleador actual.
 CAMPOS OBLIGATORIOS EXCLUSIVOS DE MODO C (incluir SIEMPRE con contenido sustantivo, no null ni vacío):
 - seccion_5.respuesta_antes_de_conocer_rol: cómo responder si el reclutador pregunta la pretensión antes de conocer el rol completo.
@@ -1718,6 +1762,18 @@ SECCIÓN 8 PROHIBIDA EN MODO C: No generar seccion_8 bajo ninguna circunstancia 
 El usuario quiere dar su próximo salto profesional. La seccion_8 (hoja de ruta) es la sección más crítica de este diagnóstico.
 El ceiling en seccion_5 debe corresponder al rango del nivel que el usuario quiere alcanzar (ver "Dirección objetivo" en la descripción del puesto si fue declarada).
 El diagnóstico debe incluir: análisis de la brecha entre el nivel actual y el nivel objetivo, tres criterios concretos y accionables para el salto, y un tiempo realista.
+
+MODO D — NUEVOS CAMPOS OBLIGATORIOS EN EL ANÁLISIS:
+
+Orientación de carrera declarada (campo orientacion_carrera):
+- "Quiero liderar personas y equipos" → hoja de ruta en seccion_8 enfocada en trayectoria Management: criterios = gestión de equipo, P&L, visibilidad ejecutiva. Próximo nivel en eje Manager → Sr.Manager → Director → VP.
+- "Quiero ser referente técnico / especialista" → hoja de ruta en seccion_8 enfocada en trayectoria IC/Expert: criterios = profundidad técnica, reconocimiento externo, autonomía. Próximo nivel en eje Senior → Staff → Principal.
+- "No lo tengo definido aún" → presentar AMBOS caminos en seccion_8 como decisión informada. Cerrar con: "¿Cuál de estos dos caminos te genera más energía cuando lo imaginás en 3 años?"
+
+Punto de partida del salto declarado (campo punto_partida_salto):
+- "Desde mi rol actual — quiero saber qué sigue naturalmente" → análisis incremental desde el rol actual. Hoja de ruta parte del perfil actual.
+- "Desde un rol previo que quiero retomar o fortalecer" → análisis de transferibilidad y brechas hacia ese track. Considerar el campo oferta_verbal si fue completado con descripción del rol previo.
+- "Hacia un rol completamente nuevo para mí" → análisis de transferibilidad + riesgo salarial del cambio. Declarar explícitamente el riesgo de reposicionamiento salarial.
 
 ═════════════════════════════════════════════
 MODO D — INSTRUCCIONES DE LIMPIEZA Y REENCUADRE:
@@ -1808,6 +1864,11 @@ Tipo de cliente: ${v(d.tipo_cliente_freelance, "no aplica")}
 Moneda de facturación: ${v(d.moneda_facturacion_freelance, "no aplica")}
 Costos propios freelance: ${v(d.costos_propios_freelance, "no aplica")}
 Descripción del puesto: ${descStr || "no declarado"}
+Antigüedad en el rol actual: ${v(d.antiguedad_rol, "no declarado")}
+Tipo de negociación (Modo B): ${v(d.tipo_negociacion, "no aplica")}
+Orientación de carrera (Modo D): ${v(d.orientacion_carrera, "no aplica")}
+Punto de partida del salto (Modo D): ${v(d.punto_partida_salto, "no aplica")}
+Oferta verbal recibida (Modo C): ${v(d.oferta_verbal, "no aplica")}
 Género: ${v(d.genero, "no solicitado")}
 
 Inferencia de valuación validada: ${v(d.inferencia_valuacion)}${modeInstructionBlock}

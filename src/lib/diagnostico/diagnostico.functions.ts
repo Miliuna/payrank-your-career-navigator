@@ -119,6 +119,11 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
       return noSe.length ? noSe : null;
     })(),
     puesto_descripcion: (baseDesc + contractorMeta + targetDirMeta) || null,
+    antiguedad_rol: (r.antiguedadRol as string) ?? null,
+    tipo_negociacion: (r.tipoNegociacion as string) ?? null,
+    orientacion_carrera: (r.orientacionCarrera as string) ?? null,
+    punto_partida_salto: (r.puntoPartidaSalto as string) ?? null,
+    oferta_verbal: (r.ofertaVerbal as string) ?? null,
     linkedin_url: (r.linkedinUrl as string) ?? null,
     genero: (r.genero as string) ?? null,
     mail: (r.email as string) ?? null,
