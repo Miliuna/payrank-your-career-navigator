@@ -609,6 +609,7 @@ function applyUsdConversion(
   parsed: Record<string, unknown>,
   tc: TipoCambio | null,
   usdOnly: boolean,
+  primaryIsUsd: boolean = false,
 ): void {
   // País USD-only: el modelo ya está en USD; copiar local→usd para consistencia visual.
   if (usdOnly) {
@@ -628,17 +629,31 @@ function applyUsdConversion(
   if (!tc || !tc.valor || tc.valor <= 0) return;
   const fx = tc.valor;
 
+  // PC-09 — si el usuario declaró cobrar en USD (mismatch con la moneda del país),
+  // el modelo trabajó en USD (ver fxBlock) y acá calculamos el equivalente en moneda
+  // local, en vez de al revés. El resto de la lógica (qué campos, qué fórmula) es la
+  // misma, solo se invierte el campo de origen y destino.
   const s2 = parsed.seccion_2 as Record<string, unknown> | undefined;
   if (s2) {
     for (const k of ["p25", "p50", "p75", "p90", "salario_actual"]) {
-      const local = parseLocalAmount(s2[`${k}_local`]);
-      if (local != null) s2[`${k}_usd`] = formatUsd(local / fx);
+      if (primaryIsUsd) {
+        const usd = parseLocalAmount(s2[`${k}_usd`]);
+        if (usd != null) s2[`${k}_local`] = formatLocal(usd * fx);
+      } else {
+        const local = parseLocalAmount(s2[`${k}_local`]);
+        if (local != null) s2[`${k}_usd`] = formatUsd(local / fx);
+      }
     }
   }
   const s5 = parsed.seccion_5 as Record<string, unknown> | undefined;
   if (s5) {
-    const local = parseLocalAmount(s5.pretension_recomendada_local);
-    if (local != null) s5.pretension_recomendada_usd = formatUsd(local / fx);
+    if (primaryIsUsd) {
+      const usd = parseLocalAmount(s5.pretension_recomendada_usd);
+      if (usd != null) s5.pretension_recomendada_local = formatLocal(usd * fx);
+    } else {
+      const local = parseLocalAmount(s5.pretension_recomendada_local);
+      if (local != null) s5.pretension_recomendada_usd = formatUsd(local / fx);
+    }
   }
 }
 
@@ -671,6 +686,12 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     const tipoCambio: TipoCambio | null =
       currency && !usdOnly ? await fetchFxRate(currency) : null;
     console.log("[generateDiagnostico] tipoCambio:", tipoCambio);
+
+    // PC-09 — si el usuario declaró cobrar en USD pero la moneda estándar de su país
+    // es otra, el modelo trabaja en USD (ver fxBlock) y el backend invierte la dirección
+    // de la conversión: de USD hacia la moneda local, no al revés.
+    const monedaDeclarada = typeof record.moneda_actual === "string" ? record.moneda_actual.toUpperCase() : null;
+    const primaryIsUsd = !usdOnly && !!currency && monedaDeclarada === "USD" && currency !== "USD";
 
     // Generación en 2 llamadas paralelas para evitar timeout upstream (≥60s).
     let promptA: string;
@@ -717,7 +738,7 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
 
     // Conversión local→USD en backend (única fuente de verdad sobre tipo de cambio).
     // El modelo solo trabaja en moneda local; acá rellenamos los campos *_usd.
-    applyUsdConversion(parsed, tipoCambio, usdOnly);
+    applyUsdConversion(parsed, tipoCambio, usdOnly, primaryIsUsd);
     corregirSalarioDeclarado(parsed, record, currency, usdOnly, tipoCambio);
 
     const nivelConfianza = (parsed.seccion_1 as Record<string, unknown> | undefined)?.nivel_confianza;

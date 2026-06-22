@@ -1632,8 +1632,24 @@ export type TipoCambioInput = {
   fecha: string;
 } | null | undefined;
 
-function fxBlock(tc: TipoCambioInput): string {
+function fxBlock(tc: TipoCambioInput, monedaDeclarada?: string | null): string {
   if (!tc || !tc.valor || !tc.moneda) return "";
+  const declarada = (monedaDeclarada ?? "").toUpperCase();
+  const mismatch = declarada === "USD" && tc.moneda !== "USD";
+
+  if (mismatch) {
+    return `
+
+============================================================
+INSTRUCCIÓN OBLIGATORIA — MONEDA DE TRABAJO:
+El usuario declaró que cobra en USD, no en ${tc.moneda} (la moneda estándar de su país). Trabajá EXCLUSIVAMENTE en USD para TODOS los valores monetarios de este reporte — rango de mercado, percentiles, salario actual, pretensión salarial, paquete de compensación. NO calcules ni estimes valores en ${tc.moneda}.
+Para TODOS los campos que terminan en "_local" (p25_local, p50_local, p75_local, p90_local, salario_actual_local, pretension_recomendada_local, etc.), devolvé el string vacío "".
+El backend se encarga de calcular el equivalente en ${tc.moneda} usando el tipo de cambio oficial del día — es una referencia secundaria, no el protagonista del reporte.
+Mencioná explícitamente en el texto narrativo de seccion_2 que el análisis está en USD porque así declaró el usuario que cobra, y que el equivalente en ${tc.moneda} es solo de referencia al tipo de cambio oficial del día de emisión.
+============================================================
+`;
+  }
+
   return `
 
 ============================================================
@@ -1821,7 +1837,7 @@ EXCLUSIONES OBLIGATORIAS DE MODO D (no incluir estos campos en el JSON de salida
     }
   })();
 
-  return `${fxBlock(tipoCambio)}Situación de consulta: ${modoDesc}${targetJobBlock}
+  return `${fxBlock(tipoCambio, typeof d.moneda_actual === "string" ? d.moneda_actual : null)}Situación de consulta: ${modoDesc}${targetJobBlock}
 Motivación declarada del usuario: ${v(d.motivacion, "no declarado")}
 ${modo === "C" ? `SUBCASO MODO C (resuelto en código, no inferir): ${
   (d.motivacion === "Recibí una oferta y necesito saber si la acepto, negocio o la dejo pasar" ||
