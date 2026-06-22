@@ -182,8 +182,8 @@ function fmtUSDFull(n: number, currency: string = "USD"): string {
 }
 
 function PercentilesChart({
-  p25, p50, p75, p90, salario,
-}: { p25: number; p50: number; p75: number; p90: number; salario: number | null }) {
+  p25, p50, p75, p90, salario, currency = "USD",
+}: { p25: number; p50: number; p75: number; p90: number; salario: number | null; currency?: string }) {
   const bars = [
     { label: "P25", value: p25 },
     { label: "P50", value: p50 },
@@ -195,7 +195,7 @@ function PercentilesChart({
   return (
     <div className="border border-hueso/15 p-5 md:p-6 bg-hueso/[0.04]">
       <p className="font-ui text-[10px] tracking-[0.18em] text-hueso/45 mb-5">
-        TU UBICACIÓN EN LA DISTRIBUCIÓN · USD
+        TU UBICACIÓN EN LA DISTRIBUCIÓN · {currency}
       </p>
       <div className="relative" style={{ height: chartH + 60 }}>
         {/* bars */}
@@ -235,7 +235,7 @@ function PercentilesChart({
                 className="absolute right-0 -translate-y-full px-2 py-1 font-ui text-[10px] uppercase tracking-widest"
                 style={{ backgroundColor: "#E5484D", color: "#F5F2ED" }}
               >
-                Tu salario actual: {fmtUSDFull(salario)}
+                Tu salario actual: {fmtUSDFull(salario, currency)}
               </div>
             </div>
           );
@@ -244,7 +244,7 @@ function PercentilesChart({
         <div className="absolute inset-x-0 flex justify-between gap-3 px-2" style={{ top: chartH + 8 }}>
           {bars.map((b) => (
             <div key={b.label} className="flex-1 text-center">
-              <div className="font-display text-sm text-hueso">{fmtUSDFull(b.value)}</div>
+              <div className="font-display text-sm text-hueso">{fmtUSDFull(b.value, currency)}</div>
               <div className="font-ui text-[10px] tracking-widest text-hueso/55 mt-1">{b.label}</div>
             </div>
           ))}
@@ -435,13 +435,26 @@ function ResultadoPage() {
           <HowToReadBox pais={String(row.pais_rol ?? "")} />
 
           {(() => {
-            const p25 = parseNum(s2.p25_usd);
-            const p50 = parseNum(s2.p50_usd);
-            const p75 = parseNum(s2.p75_usd);
-            const p90 = parseNum(s2.p90_usd);
-            const sal = parseNum(s2.salario_actual_usd);
+            const paisChart = String(row.pais_rol ?? "").toLowerCase();
+            const usdOnlyChart =
+              paisChart === "usa" || paisChart === "eeuu" ||
+              paisChart.includes("estados unidos") || paisChart.includes("united states") || paisChart.includes("ee.uu") ||
+              paisChart === "uk" || paisChart.includes("united kingdom") || paisChart.includes("reino unido") ||
+              paisChart.includes("australia") || paisChart.includes("canad");
+            const monedaDeclaradaChart = typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
+            const tcChart = (row.tipo_cambio_utilizado ?? null) as { moneda?: string } | null;
+            const monedaLocalChart = tcChart?.moneda ?? (typeof s2.moneda_local === "string" ? s2.moneda_local : "");
+            const hayMismatchUsdChart = !usdOnlyChart && monedaDeclaradaChart === "USD" && !!monedaLocalChart && monedaLocalChart !== "USD";
+            const useLocalChart = !usdOnlyChart && !hayMismatchUsdChart;
+            const currencyChart = usdOnlyChart || hayMismatchUsdChart ? "USD" : (monedaLocalChart || "USD");
+
+            const p25 = parseNum(useLocalChart ? s2.p25_local : s2.p25_usd);
+            const p50 = parseNum(useLocalChart ? s2.p50_local : s2.p50_usd);
+            const p75 = parseNum(useLocalChart ? s2.p75_local : s2.p75_usd);
+            const p90 = parseNum(useLocalChart ? s2.p90_local : s2.p90_usd);
+            const sal = parseNum(useLocalChart ? s2.salario_actual_local : s2.salario_actual_usd);
             if (p25 && p50 && p75 && p90) {
-              return <PercentilesChart p25={p25} p50={p50} p75={p75} p90={p90} salario={sal} />;
+              return <PercentilesChart p25={p25} p50={p50} p75={p75} p90={p90} salario={sal} currency={currencyChart} />;
             }
             return null;
           })()}
@@ -519,17 +532,12 @@ function ResultadoPage() {
               );
             }
 
-            return (
-              <>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <Card>
-                    <Eyebrow>{isEN ? "LOCAL CURRENCY RANGE" : "RANGO EN MONEDA LOCAL"} · {str(s2.moneda_local)}</Eyebrow>
-                    <KV k="P25" v={str(s2.p25_local)} />
-                    <KV k="P50" v={str(s2.p50_local)} />
-                    <KV k="P75" v={str(s2.p75_local)} />
-                    <KV k="P90" v={str(s2.p90_local)} />
-                    <KV k={isEN ? "Your salary" : "Tu salario"} v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
-                  </Card>
+            const monedaDeclarada = typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
+            const hayMismatchUsd = monedaDeclarada === "USD" && !!monedaLocal && monedaLocal !== "USD";
+
+            if (hayMismatchUsd) {
+              return (
+                <>
                   <Card>
                     <Eyebrow>USD RANGE</Eyebrow>
                     <KV k="P25" v={str(s2.p25_usd)} />
@@ -538,18 +546,33 @@ function ResultadoPage() {
                     <KV k="P90" v={str(s2.p90_usd)} />
                     <KV k={isEN ? "Your salary" : "Tu salario"} v={<span className="font-display">{str(s2.salario_actual_usd)}</span>} />
                   </Card>
-                </div>
-                <p className="font-body text-xs text-hueso/55 leading-relaxed text-justify">
-                  {isEN ? "Exchange rate used:" : "Tipo de cambio utilizado:"} {fxLabel}
-                  {tc?.valor ? ` · 1 USD = ${tc.valor.toLocaleString("es-AR")} ${monedaLocal}` : ""}
-                  {" · "}{isEN ? "As of:" : "Al:"}{fxFecha}
-                </p>
+                  <p className="font-body text-xs text-hueso/55 leading-relaxed text-justify">
+                    {isEN
+                      ? `This report is in USD because that's the currency you declared you're paid in. The ${monedaLocal} reference equivalent used: `
+                      : `Este reporte está en USD porque es la moneda en la que declaraste que cobrás. La referencia equivalente en ${monedaLocal} usada: `}
+                    {fxLabel}
+                    {tc?.valor ? ` · 1 USD = ${tc.valor.toLocaleString("es-AR")} ${monedaLocal}` : ""}
+                    {" · "}{isEN ? "As of:" : "Al:"}{fxFecha}
+                  </p>
+                </>
+              );
+            }
+
+            return (
+              <>
+                <Card>
+                  <Eyebrow>{isEN ? "LOCAL CURRENCY RANGE" : "RANGO EN MONEDA LOCAL"} · {str(s2.moneda_local)}</Eyebrow>
+                  <KV k="P25" v={str(s2.p25_local)} />
+                  <KV k="P50" v={str(s2.p50_local)} />
+                  <KV k="P75" v={str(s2.p75_local)} />
+                  <KV k="P90" v={str(s2.p90_local)} />
+                  <KV k={isEN ? "Your salary" : "Tu salario"} v={<span className="font-display">{str(s2.salario_actual_local)}</span>} />
+                </Card>
                 {monedaLocal === "ARS" && (
                   <p className="font-body text-xs text-hueso/55 leading-relaxed mt-2 text-justify">
-                    En Argentina existen múltiples tipos de cambio (oficial, MEP, CCL, informal).
-                    Este reporte usa el tipo de cambio oficial BNA porque los salarios formales en
-                    relación de dependencia se liquidan en pesos a ese tipo. Si tu empresa liquida
-                    a otro tipo, ajustá el valor de referencia proporcionalmente.
+                    {isEN
+                      ? `This report reflects data as of ${createdAt}. In high-inflation contexts, local currency values can lose accuracy within a few weeks.`
+                      : `Este reporte refleja datos al ${createdAt}. En contextos de alta inflación, los valores en moneda local pueden perder vigencia en pocas semanas.`}
                   </p>
                 )}
               </>
