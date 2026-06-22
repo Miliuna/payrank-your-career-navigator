@@ -215,7 +215,7 @@ function LandingES() {
 
               <ul className="space-y-4 font-body text-sm text-tinta/85">
                 {([
-                  ["En pesos — inutilizable en semanas", "todas las fuentes"],
+                  ["Valores con los que se toman decisiones importantes, sin fecha de referencia — no sabés si ese número ya quedó desactualizado", "todas las fuentes"],
                   ["Datos autodeclarados sin verificación", "LinkedIn Salary · Glassdoor"],
                   ["Muestran lo que las empresas ofrecen publicar, no lo que realmente pagan", "Bumeran · InfoJobs"],
                   ["Sin ajuste por tu perfil real — el mismo rango para un junior que para vos", "ChatGPT · buscadores"],
