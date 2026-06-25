@@ -81,6 +81,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     situacion_laboral: (r.situacion as string) ?? null,
     salario_actual: salario,
     moneda_actual: moneda,
+    moneda_reporte: (r.monedaReporte as string) ?? null,
     salario_tipo: (r.brutoNeto as string) ?? null,
     incremento_ultimo_anio_pct: r.incrementoUltimoAnio === "si" && typeof r.incrementoUltimoAnioPct === "number"
       ? Math.round(r.incrementoUltimoAnioPct)
