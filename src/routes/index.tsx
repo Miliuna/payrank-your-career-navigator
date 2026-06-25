@@ -206,7 +206,7 @@ function LandingES() {
 
               <div className="bg-fondo2 p-5 mb-6 font-mono text-xs text-tinta/80 leading-relaxed">
                 <p className="mb-3 text-tinta">
-                  ¿Cuánto debería ganar un Gerente de Marketing en Argentina con 8 años de experiencia?
+                  ¿Cuánto debería ganar un Gerente de Marketing en consumo masivo con 8 años de experiencia?
                 </p>
                 <p className="text-piedra">
                   → "Los salarios para ese rol varían entre $1.200.000 y $2.800.000 ARS por mes según el tamaño de la empresa y la industria. En multinacionales puede ser más alto."
@@ -623,7 +623,7 @@ function LandingEN() {
 
               <div className="bg-fondo2 p-5 mb-6 font-mono text-xs text-tinta/80 leading-relaxed">
                 <p className="mb-3 text-tinta">
-                  What should a Marketing Director in consumer goods in New York with 8 years of experience earn?
+                  What should a Marketing Director in consumer goods with 8 years of experience earn?
                 </p>
                 <p className="text-piedra">
                   → "Salaries for that role typically range from $90,000 to $175,000 per year depending on company size and scope. At Fortune 500 companies it may be higher."
