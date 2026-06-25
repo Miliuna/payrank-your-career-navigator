@@ -441,7 +441,9 @@ function ResultadoPage() {
               paisChart.includes("estados unidos") || paisChart.includes("united states") || paisChart.includes("ee.uu") ||
               paisChart === "uk" || paisChart.includes("united kingdom") || paisChart.includes("reino unido") ||
               paisChart.includes("australia") || paisChart.includes("canad");
-            const monedaDeclaradaChart = typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
+            const monedaDeclaradaChart = typeof row.moneda_reporte === "string" && row.moneda_reporte
+              ? row.moneda_reporte.toUpperCase()
+              : typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
             const tcChart = (row.tipo_cambio_utilizado ?? null) as { moneda?: string } | null;
             const monedaLocalChart = tcChart?.moneda ?? (typeof s2.moneda_local === "string" ? s2.moneda_local : "");
             const hayMismatchUsdChart = !usdOnlyChart && monedaDeclaradaChart === "USD" && !!monedaLocalChart && monedaLocalChart !== "USD";
@@ -532,7 +534,9 @@ function ResultadoPage() {
               );
             }
 
-            const monedaDeclarada = typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
+            const monedaDeclarada = typeof row.moneda_reporte === "string" && row.moneda_reporte
+              ? row.moneda_reporte.toUpperCase()
+              : typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
             const hayMismatchUsd = monedaDeclarada === "USD" && !!monedaLocal && monedaLocal !== "USD";
 
             if (hayMismatchUsd) {
