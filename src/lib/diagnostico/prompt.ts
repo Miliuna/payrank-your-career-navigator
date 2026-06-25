@@ -1155,13 +1155,17 @@ La estructura exacta del JSON es:
         "descripcion": "string",
         "fuente_dato": "Declarado por el usuario / Estimación de mercado / No declarado",
         "valor_mensual_local": "string",
+        "valor_mensual_usd": "string",
         "mercado_tipico_local": "string",
+        "mercado_tipico_usd": "string",
         "tratamiento_fiscal": "string o null — regla fiscal aplicable según Corrección 13. No calcular impacto individual."
       }
     ],
     "nota_items_no_declarados": "string o null — listado de ítems Clase A no declarados con la nota estándar",
     "total_compensacion_local": "string",
+    "total_compensacion_usd": "string",
     "total_mercado_tipico_local": "string",
+    "total_mercado_tipico_usd": "string",
     "posicionamiento_compensacion_total": "Bajo mercado/En mercado/Sobre mercado",
     "analisis_compensacion": "string — párrafo narrativo",
     "alerta_compensacion_variable": "string o null — para Director+ sin bono declarado",
@@ -1643,7 +1647,7 @@ function fxBlock(tc: TipoCambioInput, monedaDeclarada?: string | null): string {
 ============================================================
 INSTRUCCIÓN OBLIGATORIA — MONEDA DE TRABAJO:
 El usuario declaró que cobra en USD, no en ${tc.moneda} (la moneda estándar de su país). Trabajá EXCLUSIVAMENTE en USD para TODOS los valores monetarios de este reporte — rango de mercado, percentiles, salario actual, pretensión salarial, paquete de compensación. NO calcules ni estimes valores en ${tc.moneda}.
-Para TODOS los campos que terminan en "_local" (p25_local, p50_local, p75_local, p90_local, salario_actual_local, pretension_recomendada_local, etc.), devolvé el string vacío "".
+Para TODOS los campos que terminan en "_local" (p25_local, p50_local, p75_local, p90_local, salario_actual_local, pretension_recomendada_local, valor_mensual_local, mercado_tipico_local, total_compensacion_local, total_mercado_tipico_local, etc.), devolvé el string vacío "".
 El backend se encarga de calcular el equivalente en ${tc.moneda} usando el tipo de cambio oficial del día — es una referencia secundaria, no el protagonista del reporte.
 Mencioná explícitamente en el texto narrativo de seccion_2 que el análisis está en USD porque así declaró el usuario que cobra, y que el equivalente en ${tc.moneda} es solo de referencia al tipo de cambio oficial del día de emisión.
 ============================================================
@@ -1655,7 +1659,7 @@ Mencioná explícitamente en el texto narrativo de seccion_2 que el análisis es
 ============================================================
 INSTRUCCIÓN OBLIGATORIA — MONEDA DE TRABAJO:
 Trabajá EXCLUSIVAMENTE en moneda local (${tc.moneda}). NO calcules ni estimes valores en USD.
-Para TODOS los campos que terminan en "_usd" (p25_usd, p50_usd, p75_usd, p90_usd, salario_actual_usd, pretension_recomendada_usd, etc.), devolvé el string vacío "".
+Para TODOS los campos que terminan en "_usd" (p25_usd, p50_usd, p75_usd, p90_usd, salario_actual_usd, pretension_recomendada_usd, valor_mensual_usd, mercado_tipico_usd, total_compensacion_usd, total_mercado_tipico_usd, etc.), devolvé el string vacío "".
 El backend se encarga de las conversiones a USD usando el tipo de cambio oficial. NO inventes ni calcules USD.
 Todos los rangos, percentiles, salarios, pretensiones y números monetarios van únicamente en ${tc.moneda}.
 ============================================================

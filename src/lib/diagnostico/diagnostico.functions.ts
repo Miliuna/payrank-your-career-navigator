@@ -656,6 +656,37 @@ function applyUsdConversion(
       if (local != null) s5.pretension_recomendada_usd = formatUsd(local / fx);
     }
   }
+
+  // Sección 3 — tabla de compensación total. Mismo patrón: convertir en la dirección
+  // que corresponda según primaryIsUsd, fila por fila más los 2 totales.
+  const s3 = parsed.seccion_3 as Record<string, unknown> | undefined;
+  if (s3) {
+    const filas = Array.isArray(s3.tabla_compensacion) ? s3.tabla_compensacion as Record<string, unknown>[] : [];
+    for (const fila of filas) {
+      if (primaryIsUsd) {
+        const valorUsd = parseLocalAmount(fila.valor_mensual_usd);
+        if (valorUsd != null) fila.valor_mensual_local = formatLocal(valorUsd * fx);
+        const mercadoUsd = parseLocalAmount(fila.mercado_tipico_usd);
+        if (mercadoUsd != null) fila.mercado_tipico_local = formatLocal(mercadoUsd * fx);
+      } else {
+        const valorLocal = parseLocalAmount(fila.valor_mensual_local);
+        if (valorLocal != null) fila.valor_mensual_usd = formatUsd(valorLocal / fx);
+        const mercadoLocal = parseLocalAmount(fila.mercado_tipico_local);
+        if (mercadoLocal != null) fila.mercado_tipico_usd = formatUsd(mercadoLocal / fx);
+      }
+    }
+    if (primaryIsUsd) {
+      const totalUsd = parseLocalAmount(s3.total_compensacion_usd);
+      if (totalUsd != null) s3.total_compensacion_local = formatLocal(totalUsd * fx);
+      const totalMercadoUsd = parseLocalAmount(s3.total_mercado_tipico_usd);
+      if (totalMercadoUsd != null) s3.total_mercado_tipico_local = formatLocal(totalMercadoUsd * fx);
+    } else {
+      const totalLocal = parseLocalAmount(s3.total_compensacion_local);
+      if (totalLocal != null) s3.total_compensacion_usd = formatUsd(totalLocal / fx);
+      const totalMercadoLocal = parseLocalAmount(s3.total_mercado_tipico_local);
+      if (totalMercadoLocal != null) s3.total_mercado_tipico_usd = formatUsd(totalMercadoLocal / fx);
+    }
+  }
 }
 
 

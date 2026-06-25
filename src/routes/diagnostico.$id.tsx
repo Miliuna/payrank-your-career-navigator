@@ -614,6 +614,15 @@ function ResultadoPage() {
           <Eyebrow>03 · {isEN ? "TOTAL COMPENSATION" : "COMPENSACIÓN TOTAL"}</Eyebrow>
           <H2>{isEN ? "Your complete package, valued" : "Tu paquete completo, valorizado"}</H2>
 
+          {(() => {
+            const monedaDeclaradaS3 = typeof row.moneda_reporte === "string" && row.moneda_reporte
+              ? row.moneda_reporte.toUpperCase()
+              : typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
+            const monedaLocalS3 = (row.tipo_cambio_utilizado as { moneda?: string } | null)?.moneda
+              ?? (typeof s2.moneda_local === "string" ? s2.moneda_local : "");
+            const usarUsdS3 = monedaDeclaradaS3 === "USD" && !!monedaLocalS3 && monedaLocalS3 !== "USD";
+            const val = (local: unknown, usd: unknown) => (usarUsdS3 ? str(usd) : str(local));
+            return (
           <div className="overflow-x-auto border border-hueso/15">
             <table className="w-full text-sm">
               <thead>
@@ -630,18 +639,20 @@ function ResultadoPage() {
                       <div className="font-body text-hueso">{str(c.componente)}</div>
                       <div className="font-body text-xs text-hueso/55 mt-1">{str(c.descripcion, "")}</div>
                     </td>
-                    <td className="px-4 py-3 font-body text-hueso/85">{str(c.valor_mensual_local)}</td>
-                    <td className="px-4 py-3 font-body text-hueso/65">{str(c.mercado_tipico_local)}</td>
+                    <td className="px-4 py-3 font-body text-hueso/85">{val(c.valor_mensual_local, c.valor_mensual_usd)}</td>
+                    <td className="px-4 py-3 font-body text-hueso/65">{val(c.mercado_tipico_local, c.mercado_tipico_usd)}</td>
                   </tr>
                 ))}
                 <tr className="border-t border-hueso/30 bg-hueso/[0.03]">
                   <td className="px-4 py-3 font-ui text-[10px] uppercase tracking-wider text-hueso/70">Total</td>
-                  <td className="px-4 py-3 font-display text-hueso">{str(s3.total_compensacion_local)}</td>
-                  <td className="px-4 py-3 font-display text-hueso/80">{str(s3.total_mercado_tipico_local)}</td>
+                  <td className="px-4 py-3 font-display text-hueso">{val(s3.total_compensacion_local, s3.total_compensacion_usd)}</td>
+                  <td className="px-4 py-3 font-display text-hueso/80">{val(s3.total_mercado_tipico_local, s3.total_mercado_tipico_usd)}</td>
                 </tr>
               </tbody>
             </table>
           </div>
+            );
+          })()}
 
           <Badge kind={posKind(s3.posicionamiento_compensacion_total as string)}>
             {str(s3.posicionamiento_compensacion_total)}
