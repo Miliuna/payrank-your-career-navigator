@@ -3,6 +3,24 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import { useLang } from "@/lib/lang";
+import { useDiagnostico } from "@/lib/diagnostico/store";
+
+function paisToMoneda(pais?: string, paisOtro?: string): string {
+  const p = (pais === "Otro" ? paisOtro : pais) ?? "";
+  switch (p) {
+    case "Argentina": return "ARS";
+    case "México": return "MXN";
+    case "Chile": return "CLP";
+    case "Colombia": return "COP";
+    case "Perú": return "PEN";
+    case "Uruguay": return "UYU";
+    case "Brasil": return "BRL";
+    case "Ecuador": return "USD";
+    case "Estados Unidos": return "USD";
+    case "España": return "EUR";
+    default: return "USD";
+  }
+}
 
 const searchSchema = z.object({ id: z.string().uuid() });
 
@@ -17,11 +35,28 @@ function ConsentimientosPage() {
   const { id } = Route.useSearch();
   const { lang } = useLang();
   const isEN = lang === "EN";
+  const { state, setState } = useDiagnostico();
+  const r = state.respuestas;
   const [c1, setC1] = React.useState(false);
   const [c2, setC2] = React.useState(false);
   const [c3, setC3] = React.useState(false);
 
   const ready = c1 && c2 && c3;
+
+  // PC-09 (5d) — si el usuario declaró más de una moneda (salario y/o bono) y alguna
+  // difiere de la moneda estándar de su país, le dejamos elegir en cuál ver el reporte.
+  // Si no hay mismatch, no se muestra nada — el reporte sigue yendo directo en su moneda.
+  const monedaPais = paisToMoneda(r.pais, r.paisOtro);
+  const monedasDeclaradas = Array.from(
+    new Set([r.moneda, r.bono_moneda].filter((m): m is string => !!m))
+  );
+  const hayMismatchMoneda = monedasDeclaradas.some((m) => m !== monedaPais);
+  const opcionesMoneda = hayMismatchMoneda
+    ? Array.from(new Set([monedaPais, ...monedasDeclaradas]))
+    : [];
+  const monedaReporteActual = r.monedaReporte ?? r.moneda ?? monedaPais;
+  const setMonedaReporte = (m: string) =>
+    setState((s) => ({ ...s, respuestas: { ...s.respuestas, monedaReporte: m } }));
 
   const onSubmit = () => {
     if (!ready) return;
@@ -75,6 +110,35 @@ function ConsentimientosPage() {
               ? "We need your consent to process your diagnostic."
               : "Necesitamos tu consentimiento para procesar tu diagnóstico."}
           </p>
+
+          {hayMismatchMoneda && (
+            <div className="mb-10 max-w-xl">
+              <p className="font-body text-base md:text-lg text-tinta mb-2">
+                {isEN ? "Which currency do you want your report in?" : "¿En qué moneda querés ver tu reporte?"}
+              </p>
+              <p className="font-body text-sm text-piedra mb-4">
+                {isEN
+                  ? "We detected more than one currency in what you declared. Pick the one your PayRank should be shown in."
+                  : "Detectamos más de una moneda en lo que declaraste. Elegí en cuál querés ver tu PayRank."}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {opcionesMoneda.map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    onClick={() => setMonedaReporte(m)}
+                    className={`px-4 py-2 font-ui text-[11px] border transition-colors ${
+                      monedaReporteActual === m
+                        ? "bg-tinta text-hueso border-tinta"
+                        : "border-tinta/30 text-tinta/80 hover:border-tinta"
+                    }`}
+                  >
+                    {m}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="space-y-6 max-w-2xl">
             <Item checked={c1} onChange={setC1}>

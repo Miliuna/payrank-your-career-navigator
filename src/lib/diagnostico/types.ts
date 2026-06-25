@@ -60,6 +60,7 @@ export type Respuestas = {
   situacion?: "empleado" | "contractor";
   salario?: number;
   moneda?: string;
+  monedaReporte?: string;
   brutoNeto?: "bruto" | "neto";
   trabajaActualmente?: "si" | "no";
   salarioAnterior?: number;
