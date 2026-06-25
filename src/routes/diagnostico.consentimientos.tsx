@@ -22,6 +22,23 @@ function paisToMoneda(pais?: string, paisOtro?: string): string {
   }
 }
 
+// 5e — detección best-effort de moneda en texto libre (oferta verbal, Modo C).
+// Solo reconoce códigos/palabras explícitos de moneda — nunca el símbolo "$" suelto,
+// porque ese símbolo es ambiguo entre países y generaría falsos positivos.
+function detectarMonedaEnTexto(texto: string | null | undefined): string | null {
+  if (!texto) return null;
+  const t = texto.toUpperCase();
+  if (/\bUSD\b|\bU\$S\b|D[OÓ]LARES?\b/.test(t)) return "USD";
+  if (/\bEUR\b|EUROS?\b/.test(t)) return "EUR";
+  if (/\bARS\b|PESOS?\s+ARGENTINOS?\b/.test(t)) return "ARS";
+  if (/\bMXN\b|PESOS?\s+MEXICANOS?\b/.test(t)) return "MXN";
+  if (/\bCLP\b|PESOS?\s+CHILENOS?\b/.test(t)) return "CLP";
+  if (/\bCOP\b|PESOS?\s+COLOMBIANOS?\b/.test(t)) return "COP";
+  if (/\bPEN\b|SOLES?\b/.test(t)) return "PEN";
+  if (/\bBRL\b|REALES?\b/.test(t)) return "BRL";
+  return null;
+}
+
 const searchSchema = z.object({ id: z.string().uuid() });
 
 export const Route = createFileRoute("/diagnostico/consentimientos")({
@@ -47,8 +64,9 @@ function ConsentimientosPage() {
   // difiere de la moneda estándar de su país, le dejamos elegir en cuál ver el reporte.
   // Si no hay mismatch, no se muestra nada — el reporte sigue yendo directo en su moneda.
   const monedaPais = paisToMoneda(r.pais, r.paisOtro);
+  const monedaOfertaVerbal = state.modo === "C" ? detectarMonedaEnTexto(r.ofertaVerbal) : null;
   const monedasDeclaradas = Array.from(
-    new Set([r.moneda, r.bono_moneda].filter((m): m is string => !!m))
+    new Set([r.moneda, r.bono_moneda, monedaOfertaVerbal].filter((m): m is string => !!m))
   );
   const hayMismatchMoneda = monedasDeclaradas.some((m) => m !== monedaPais);
   const opcionesMoneda = hayMismatchMoneda
