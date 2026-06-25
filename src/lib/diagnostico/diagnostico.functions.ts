@@ -556,10 +556,12 @@ async function fetchFxRate(currency: string): Promise<TipoCambio | null> {
 
 function parseLocalAmount(s: unknown): number | null {
   if (typeof s !== "string") return null;
-  // Quitar cualquier cosa que no sea dígito, punto, coma, guion
-  const cleaned = s.replace(/[^\d.,\-]/g, "").trim();
+  // Si es un rango ("USD 2.800 – 3.200 mensuales"), tomar SOLO el primer número.
+  // Nunca concatenar ambos extremos — un guion largo/medio que el regex de abajo
+  // no reconoce como separador puede pegar "2.800" y "3.200" en "28003200".
+  const primeraParte = s.split(/[-–—]/)[0];
+  const cleaned = primeraParte.replace(/[^\d.,]/g, "").trim();
   if (!cleaned) return null;
-  // Tratar puntos y comas como separadores de miles (los rangos salariales son enteros)
   const digits = cleaned.replace(/[.,]/g, "");
   const n = Number(digits);
   return isFinite(n) ? n : null;

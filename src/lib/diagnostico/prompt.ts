@@ -1183,8 +1183,8 @@ La estructura exacta del JSON es:
     "mensaje_si_hombre": "string — OBLIGATORIO cuando incluir=false porque el usuario es hombre. NUNCA null, NUNCA vacío. 3 a 5 oraciones siguiendo la guía de Sección 4."
   },
   "seccion_5": {
-    "pretension_recomendada_local": "string",
-    "pretension_recomendada_usd": "string",
+    "pretension_recomendada_local": "string — UN SOLO NÚMERO, nunca un rango (ej: \"$2.800.000\", NUNCA \"$2.800.000 - $3.200.000\"). El rango ya existe en floor_local/ceiling_local — este campo es el número puntual recomendado.",
+    "pretension_recomendada_usd": "string — mismo criterio: UN SOLO NÚMERO, nunca un rango.",
     "floor_local": "string",
     "ceiling_local": "string",
     "explicacion_floor_ceiling": "string",
@@ -1545,8 +1545,8 @@ ${JSON_ONLY_RULE}
 Generá ÚNICAMENTE las claves "seccion_5", "seccion_6", "seccion_7", "seccion_8", "freelance" del JSON. La estructura exacta:
 {
   "seccion_5": {
-    "pretension_recomendada_local": "string",
-    "pretension_recomendada_usd": "string",
+    "pretension_recomendada_local": "string — UN SOLO NÚMERO, nunca un rango (ej: \"$2.800.000\", NUNCA \"$2.800.000 - $3.200.000\"). El rango ya existe en floor_local/ceiling_local — este campo es el número puntual recomendado.",
+    "pretension_recomendada_usd": "string — mismo criterio: UN SOLO NÚMERO, nunca un rango.",
     "floor_local": "string",
     "ceiling_local": "string",
     "explicacion_floor_ceiling": "string",
