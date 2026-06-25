@@ -141,6 +141,7 @@ export type Database = {
           modalidad_trabajo: string | null
           modo: string | null
           moneda_actual: string | null
+          moneda_reporte: string | null
           monto_pagado_usd: number | null
           nivel: string | null
           nivel_confianza: string | null
@@ -227,6 +228,7 @@ export type Database = {
           modalidad_trabajo?: string | null
           modo?: string | null
           moneda_actual?: string | null
+          moneda_reporte?: string | null
           monto_pagado_usd?: number | null
           nivel?: string | null
           nivel_confianza?: string | null
@@ -313,6 +315,7 @@ export type Database = {
           modalidad_trabajo?: string | null
           modo?: string | null
           moneda_actual?: string | null
+          moneda_reporte?: string | null
           monto_pagado_usd?: number | null
           nivel?: string | null
           nivel_confianza?: string | null
