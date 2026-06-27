@@ -17,7 +17,7 @@ import {
   FUNCIONES, GENEROS, HERRAMIENTAS_IA, INDUSTRIAS, INDUSTRIAS_EN, INTERACCIONES,
   MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_C, MOTIVACIONES_C_EN, MOTIVACIONES_D, MOTIVACIONES_D_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
   ANTIGUEDAD_ROL, ANTIGUEDAD_ROL_EN, TIPO_NEGOCIACION, TIPO_NEGOCIACION_EN, ORIENTACION_CARRERA, ORIENTACION_CARRERA_EN, PUNTO_PARTIDA_SALTO, PUNTO_PARTIDA_SALTO_EN,
-  PERSONAS_A_CARGO, SITUACIONES, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, TOTAL_PREGUNTAS, USOS_IA, labelOf,
+  PERSONAS_A_CARGO, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, TOTAL_PREGUNTAS, USOS_IA, labelOf,
 } from "@/lib/diagnostico/data";
 import type { Idioma, DatosExtraidos } from "@/lib/diagnostico/types";
 
@@ -1248,14 +1248,6 @@ function P14HerramientasIA({ r, setR }: Props) {
   );
 }
 
-const SITUACIONES_LABELS_EN: Record<string, string> = {
-  empleado: "I am currently employed",
-  contractor: "I work as a contractor or under a service contract",
-};
-const SITUACIONES_DESC_EN: Record<string, string> = {
-  contractor: "You work under a services contract, without a formal local employment relationship. This case isn't covered by this diagnostic yet — you'll be taken to the Mode E waitlist, the mode we're building specifically for this situation.",
-};
-
 function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string; datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -1306,52 +1298,15 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
 
   return (
     <>
-      {modo !== "E" && (
-        <>
-          <QuestionTitle>{isEN ? "What is your current employment situation?" : "¿Cuál es tu situación laboral actual?"}</QuestionTitle>
-          {modo === "C" && (
-            <QuestionHint>
-              {isEN
-                ? "Salary is optional in this mode — we still use it if you declare it to calculate your positioning."
-                : "El salario es opcional en este modo — igual lo usamos si lo declarás para calcular tu posicionamiento."}
-            </QuestionHint>
-          )}
-          <div className="grid grid-cols-1 gap-3 mb-8">
-            {SITUACIONES.map((s) => (
-              <div key={s.id}>
-                <CardOption
-                  selected={r.situacion === s.id}
-                  onClick={() => {
-                    const esEmpleado = s.id === "empleado";
-                    setR({
-                      situacion: s.id,
-                      salario: esEmpleado ? r.salario : undefined,
-                      moneda: esEmpleado ? r.moneda : undefined,
-                      brutoNeto: esEmpleado ? r.brutoNeto : undefined,
-                      trabajaActualmente: undefined,
-                      salarioAnterior: undefined,
-                      monedaAnterior: undefined,
-                      tiempoSinTrabajo: undefined,
-                      contractorHoras: undefined,
-                      contractorPago: undefined,
-                    });
-                  }}
-                >
-                  {isEN ? (SITUACIONES_LABELS_EN[s.id] ?? s.label) : s.label}
-                </CardOption>
-                {s.descripcion && r.situacion === s.id && (
-                  <p className="mt-2 ml-1 font-body text-xs text-hueso/55 leading-relaxed animate-in fade-in duration-300">
-                    {isEN ? (SITUACIONES_DESC_EN[s.id] ?? s.descripcion) : s.descripcion}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
       {modo === "E" && (
         <QuestionTitle>{isEN ? "Tell us about your contract" : "Contanos cómo es tu contrato"}</QuestionTitle>
+      )}
+      {modo !== "E" && modo === "C" && (
+        <QuestionHint>
+          {isEN
+            ? "Salary is optional in this mode — we still use it if you declare it to calculate your positioning."
+            : "El salario es opcional en este modo — igual lo usamos si lo declarás para calcular tu posicionamiento."}
+        </QuestionHint>
       )}
 
       {r.situacion === "empleado" && (
