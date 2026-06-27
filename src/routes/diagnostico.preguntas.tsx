@@ -1,5 +1,6 @@
 import * as React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { DiagnosticoShell, StepFade } from "@/components/diagnostico/Shell";
 import {
   CardOption,
@@ -11,6 +12,7 @@ import {
   TextInput,
 } from "@/components/diagnostico/Controls";
 import { useDiagnostico } from "@/lib/diagnostico/store";
+import { registrarWaitlistModoE } from "@/lib/diagnostico/diagnostico.functions";
 import { useLang } from "@/lib/lang";
 import {
   ALCANCES, EXP_INDUSTRIA, EXP_TOTAL, FORMACIONES, FRECUENCIAS_IA,
@@ -391,15 +393,17 @@ function PreguntasPage() {
   const hasDoc = !!datos;
   const overrides = React.useMemo(() => new Set(state.pasosOverride ?? []), [state.pasosOverride]);
 
-  // Orden de pasos. Para freelance/contractor, Beneficios (paso lógico 15) va
-  // inmediatamente después de Situación (paso 1), que incluye horas trabajadas
-  // y monto mensual. El resto del flujo (empleado/búsqueda) no cambia.
-  const esIndep = r.situacion === "contractor";
+  // Contractor ya no se pregunta dentro de Modo A — sale por la tarjeta de Modo E en
+  // la pantalla de selección de modo (/modo). Quien llega hasta acá es siempre empleado.
+  React.useEffect(() => {
+    if (!r.situacion) setR({ situacion: "empleado" });
+  }, []);
+
+  // Orden de pasos. El paso de situación laboral (índice 1) ya no se muestra — ver nota arriba.
+  // Beneficios (paso lógico 15) se mantiene temprano en la secuencia, igual que antes.
   const orden = React.useMemo(() => {
     const base = Array.from({ length: TOTAL_PREGUNTAS }, (_, i) => i);
-    const full = esIndep
-      ? [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)]
-      : [0, 1, 15, ...base.filter((i) => i >= 2 && i !== 15)];
+    const full = [0, 15, ...base.filter((i) => i >= 2 && i !== 15)];
     return full.filter((i) => {
       if (i === 18) return modo === "B"; // Tipo de negociación
       if (i === 19) return modo === "D"; // Orientación de carrera
@@ -407,7 +411,7 @@ function PreguntasPage() {
       if (i === 21) return modo === "C" && !state.documentos.avisoTexto && !state.documentos.avisoNombre; // Oferta verbal
       return true;
     });
-  }, [esIndep, modo, state.documentos.avisoTexto, state.documentos.avisoNombre]);
+  }, [modo, state.documentos.avisoTexto, state.documentos.avisoNombre]);
   // step = índice visual de navegación; stepLogico = pregunta que se muestra.
   const stepLogico = orden[step] ?? step;
 
@@ -589,9 +593,10 @@ function isValid(
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
     case 1: {
       if (!r.situacion) return false;
+      // Contractor no sigue por ningún modo — redirige a lista de espera de Modo E.
+      if (r.situacion === "contractor") return false;
       if (modo === "C") return true; // salario opcional en Modo C
       if (r.situacion === "empleado") return !!r.salario && !!r.moneda && !!r.brutoNeto;
-      if (r.situacion === "contractor") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
       return false;
     }
     case 2: {
@@ -1247,12 +1252,84 @@ function P14HerramientasIA({ r, setR }: Props) {
   );
 }
 
+function WaitlistModoE({ isEN }: { isEN: boolean }) {
+  const registrar = useServerFn(registrarWaitlistModoE);
+  const [email, setEmail] = React.useState("");
+  const [estado, setEstado] = React.useState<"idle" | "enviando" | "ok" | "error">("idle");
+
+  const submit = async () => {
+    if (!email.trim() || estado === "enviando") return;
+    setEstado("enviando");
+    try {
+      await registrar({ data: { email: email.trim() } });
+      setEstado("ok");
+    } catch {
+      setEstado("error");
+    }
+  };
+
+  if (estado === "ok") {
+    return (
+      <div className="border-t border-hueso/10 pt-8 animate-in fade-in duration-300">
+        <p className="font-body text-base text-hueso leading-relaxed">
+          {isEN
+            ? "Done — you're on the list, and your data is already part of the first real rate landscape for this segment. We'll write to you as soon as Mode E is ready to use."
+            : "Listo, ya estás en la lista — y tu dato ya pasó a formar parte del primer panorama real de tarifas para este segmento. Te escribimos en cuanto Modo E esté listo para usar."}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border-t border-hueso/10 pt-8 space-y-4 animate-in fade-in duration-300">
+      <p className="font-body text-lg text-hueso leading-relaxed">
+        {isEN
+          ? "That silence after you say your rate — was it because you asked for too much, or because you accepted too little without knowing it?"
+          : "Ese silencio después de decir tu tarifa — ¿fue porque pediste de más, o porque aceptaste de menos sin saberlo?"}
+      </p>
+      <p className="font-body text-sm text-hueso/70 leading-relaxed">
+        {isEN
+          ? "Whether or not you have a method to set your rate, what's missing is something to compare it against: a real market reference — not a colleague's opinion or a WhatsApp group."
+          : "Tengas o no un método para definir tu tarifa, lo que falta es algo con qué compararla: una referencia real de mercado, no la opinión de un colega o un grupo de WhatsApp."}
+      </p>
+      <p className="font-body text-sm text-hueso/65">
+        {isEN
+          ? "Join the Mode E waitlist — you'll be among the first to use it when it's ready, with a preferential launch rate."
+          : "Sumate a la lista de espera de Modo E — vas a ser de los primeros en usarlo cuando esté disponible, con un valor de lanzamiento preferencial."}
+      </p>
+      <div className="flex flex-col md:flex-row gap-3">
+        <div className="flex-1">
+          <TextInput
+            type="email"
+            placeholder="tu@mail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <button
+          type="button"
+          onClick={submit}
+          disabled={!email.trim() || estado === "enviando"}
+          className="inline-flex items-center justify-center gap-2 bg-hueso text-tinta px-6 py-3 font-ui text-[11px] hover:bg-hueso/90 transition-colors disabled:opacity-40"
+        >
+          {estado === "enviando" ? (isEN ? "Sending..." : "Enviando...") : (isEN ? "Notify me" : "Avisame")}
+        </button>
+      </div>
+      {estado === "error" && (
+        <p className="font-body text-sm text-red-300">
+          {isEN ? "Something went wrong — try again." : "Algo falló — probá de nuevo."}
+        </p>
+      )}
+    </div>
+  );
+}
+
 const SITUACIONES_LABELS_EN: Record<string, string> = {
   empleado: "I am currently employed",
   contractor: "I work as a contractor or under a service contract",
 };
 const SITUACIONES_DESC_EN: Record<string, string> = {
-  contractor: "You have a contract with a company (usually international) with fixed weekly hours, but without formal local employment relationship.",
+  contractor: "You work under a services contract, without a formal local employment relationship. This case isn't covered by this diagnostic yet — you'll be taken to the Mode E waitlist, the mode we're building specifically for this situation.",
 };
 
 function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string; datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
@@ -1383,37 +1460,13 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
       )}
 
       {r.situacion === "contractor" && (
-        <div className="border-t border-hueso/10 pt-8 space-y-6 animate-in fade-in duration-300">
-          <div>
-            <p className="font-body text-base text-hueso mb-3">
-              {isEN ? "Does your contract establish a fixed weekly hours?" : "¿Tu contrato establece una cantidad fija de horas semanales?"}
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <CardOption selected={r.contractorHoras === "40h"} onClick={() => setR({ contractorHoras: "40h" })}>{isEN ? "Yes, 40 hours" : "Sí, 40 horas"}</CardOption>
-              <CardOption selected={r.contractorHoras === "menos40"} onClick={() => setR({ contractorHoras: "menos40" })}>{isEN ? "Yes, less than 40 hours" : "Sí, menos de 40 horas"}</CardOption>
-              <CardOption selected={r.contractorHoras === "proyecto"} onClick={() => setR({ contractorHoras: "proyecto" })}>{isEN ? "No, project-based" : "No, es por proyecto"}</CardOption>
-            </div>
-          </div>
-          <div>
-            <p className="font-body text-base text-hueso mb-3">{isEN ? "How do you receive your payment?" : "¿Cómo recibís tu pago?"}</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <CardOption selected={r.contractorPago === "usd"} onClick={() => setR({ contractorPago: "usd" })}>{isEN ? "In USD or foreign currency" : "En USD o moneda extranjera"}</CardOption>
-              <CardOption selected={r.contractorPago === "local"} onClick={() => setR({ contractorPago: "local" })}>{isEN ? "In local currency" : "En moneda local"}</CardOption>
-              <CardOption selected={r.contractorPago === "mixto"} onClick={() => setR({ contractorPago: "mixto" })}>{isEN ? "Mixed" : "Mixto"}</CardOption>
-            </div>
-          </div>
-          <SalarioInput
-            label={isEN ? "How much do you earn per month?" : "¿Cuánto cobrás mensualmente?"}
-            valor={r.salario}
-            moneda={r.moneda}
-            onValor={(v) => setR({ salario: v })}
-            onMoneda={(m) => setR({ moneda: m })}
-          />
+        <div className="border-t border-hueso/10 pt-8 animate-in fade-in duration-300">
+          <WaitlistModoE isEN={isEN} />
         </div>
       )}
 
 
-      {(r.situacion === "empleado" || r.situacion === "contractor") && (
+      {r.situacion === "empleado" && (
         <div className="border-t border-hueso/10 pt-8 space-y-6">
           <div>
             <p className="font-body text-base text-hueso mb-3">
@@ -1480,7 +1533,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         </div>
       )}
 
-      {(r.situacion === "empleado" || r.situacion === "contractor") && (() => {
+      {r.situacion === "empleado" && (() => {
         const tieneBono = r.bono_target_sueldos && r.bono_target_sueldos !== "no_tengo";
         const fmt = (n: number) => n.toLocaleString(isEN ? "en-US" : "es-AR");
         const monedaPaisBono = paisToMoneda(r.pais, r.paisOtro);

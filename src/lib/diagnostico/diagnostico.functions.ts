@@ -256,6 +256,19 @@ export const getPaymentStatus = createServerFn({ method: "GET" })
 
 // ---------- Confirmar acceso beta (consume token) ----------
 
+// Modo E todavía no existe — cuando alguien declara que cobra "por proyecto" (sin
+// cadencia mensual estable), Modo A no le aplica con honestidad. En vez de generar
+// un reporte de calidad dudosa, capturamos el mail para avisar cuando Modo E esté listo.
+export const registrarWaitlistModoE = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ email: z.string().email() }).parse(input))
+  .handler(async ({ data }) => {
+    const { error } = await supabaseAdmin
+      .from("modo_e_waitlist" as never)
+      .insert({ email: data.email } as never);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const confirmBetaAccess = createServerFn({ method: "POST" })
   .inputValidator((input) =>
     z.object({ id: z.string().uuid(), token: z.string().min(1).max(128) }).parse(input),

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TerminosCondicionesRouteImport } from './routes/terminos-condiciones'
 import { Route as PoliticaPrivacidadRouteImport } from './routes/politica-privacidad'
 import { Route as PlanesRouteImport } from './routes/planes'
+import { Route as ModoERouteImport } from './routes/modo-e'
 import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
@@ -41,6 +42,11 @@ const PoliticaPrivacidadRoute = PoliticaPrivacidadRouteImport.update({
 const PlanesRoute = PlanesRouteImport.update({
   id: '/planes',
   path: '/planes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModoERoute = ModoERouteImport.update({
+  id: '/modo-e',
+  path: '/modo-e',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ModoRoute = ModoRouteImport.update({
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/modo-e': typeof ModoERoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/modo-e': typeof ModoERoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
+  '/modo-e': typeof ModoERoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/modo-e'
     | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/modo-e'
     | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
+    | '/modo-e'
     | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MetodologiaRoute: typeof MetodologiaRoute
   ModoRoute: typeof ModoRoute
+  ModoERoute: typeof ModoERoute
   PlanesRoute: typeof PlanesRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/planes'
       fullPath: '/planes'
       preLoaderRoute: typeof PlanesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modo-e': {
+      id: '/modo-e'
+      path: '/modo-e'
+      fullPath: '/modo-e'
+      preLoaderRoute: typeof ModoERouteImport
       parentRoute: typeof rootRouteImport
     }
     '/modo': {
@@ -400,6 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MetodologiaRoute: MetodologiaRoute,
   ModoRoute: ModoRoute,
+  ModoERoute: ModoERoute,
   PlanesRoute: PlanesRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
@@ -419,3 +440,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

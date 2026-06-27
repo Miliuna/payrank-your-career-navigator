@@ -109,7 +109,7 @@ function ModoSelector() {
                     plan: plan ?? st.plan,
                   }));
                 }}
-                className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col"
+                className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col min-h-[300px]"
               >
                 <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">{s.titulo}</h2>
                 <p className="font-body text-piedra leading-relaxed mb-10">{s.descripcion}</p>
@@ -118,6 +118,25 @@ function ModoSelector() {
                 </span>
               </Link>
             ))}
+            <Link
+              to="/modo-e"
+              className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col min-h-[300px] justify-center"
+            >
+              <p className="font-ui text-[9px] tracking-wider text-piedra mb-3">
+                {isEN ? "COMING SOON" : "PRÓXIMAMENTE"}
+              </p>
+              <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">
+                {isEN ? "I work independently and want to set my rate" : "Trabajo de forma independiente y quiero definir mi tarifa"}
+              </h2>
+              <p className="font-body text-piedra leading-relaxed mb-10">
+                {isEN
+                  ? "If you bill by project or work as a contractor, we'll help you set your rate and put together the proposal for your next client. We're building the real market data for this segment."
+                  : "Si facturás por proyecto o trabajás como contractor, te vamos a ayudar a definir tu tarifa y armar la propuesta para tu próximo cliente. Estamos construyendo el dato real de mercado para este segmento."}
+              </p>
+              <span className="mt-auto font-ui text-[11px] inline-flex items-center gap-2 text-tinta border-t border-niebla pt-4 group-hover:border-tinta transition-colors">
+                {isEN ? "Notify me" : "Quiero que me avisen"} <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
+              </span>
+            </Link>
           </div>
         </div>
       </section>

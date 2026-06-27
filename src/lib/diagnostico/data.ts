@@ -102,7 +102,7 @@ export const SITUACIONES = [
   {
     id: "contractor",
     label: "Trabajo como contractor o bajo contrato de servicios",
-    descripcion: "Tenés un contrato con una empresa (generalmente internacional) con horas fijas semanales, pero sin relación de dependencia formal local.",
+    descripcion: "Trabajás bajo contrato de servicios, sin relación de dependencia formal local. Este caso todavía no está cubierto por este diagnóstico — te va a llevar a la lista de espera de Modo E, el modo que estamos construyendo específicamente para esta situación.",
   },
 ] as const;
 
@@ -247,8 +247,7 @@ export const GENEROS = [
 export const MOTIVACIONES = [
   "Me negaron un aumento, me ignoraron en la última revisión, o llevo más de 12 meses sin ajuste",
   "Mis responsabilidades crecieron pero mi compensación no se actualizó",
-  "Creo que el mercado paga más por mi perfil pero no tengo datos para confirmarlo",
-  "Quiero una foto objetiva de mi valor de mercado antes de tomar cualquier decisión",
+  "No tengo un evento puntual, pero quiero un panorama objetivo de mi valor de mercado",
 ];
 
 export const MOTIVACIONES_B = [
@@ -284,8 +283,7 @@ export const MOTIVACIONES_C_EN = [
 export const MOTIVACIONES_EN = [
   "I was denied a raise, ignored in the last review, or haven't had an adjustment in 12+ months",
   "My responsibilities grew but my compensation wasn't updated",
-  "I think the market pays more for my profile but I don't have data to confirm it",
-  "I want an objective picture of my market value before making any decision",
+  "There's no specific trigger, but I want an objective picture of my market value",
 ];
 
 export const ANTIGUEDAD_ROL = [
