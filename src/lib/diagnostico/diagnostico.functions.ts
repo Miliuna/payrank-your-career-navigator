@@ -1069,12 +1069,6 @@ export const extractFromDocument = createServerFn({ method: "POST" })
     const json = (await res.json()) as { content?: Array<{ type: string; text?: string }>; stop_reason?: string };
     const text = json.content?.find((c) => c.type === "text")?.text ?? "";
 
-    // LOG TEMPORAL DE DIAGNÓSTICO — sacar después de confirmar la causa del problema
-    // de moneda_inferida/tarifa_mensual_contrato_inferida en contratos.
-    console.log("[extractFromDocument][DEBUG] stop_reason:", json.stop_reason);
-    console.log("[extractFromDocument][DEBUG] longitud de respuesta:", text.length, "caracteres");
-    console.log("[extractFromDocument][DEBUG] respuesta cruda completa:", text);
-
     let parsed: Record<string, unknown> | null = null;
     try {
       parsed = JSON.parse(text);
@@ -1088,8 +1082,17 @@ export const extractFromDocument = createServerFn({ method: "POST" })
       console.error("[extractFromDocument] JSON parse failed. Raw:", text.slice(0, 500));
       throw new Error("No pudimos procesar el documento. Intentá nuevamente o pegá el texto manualmente.");
     }
-    console.log("[extractFromDocument][DEBUG] tiene clave moneda_inferida:", "moneda_inferida" in parsed, "valor:", parsed.moneda_inferida);
-    console.log("[extractFromDocument][DEBUG] tiene clave tarifa_mensual_contrato_inferida:", "tarifa_mensual_contrato_inferida" in parsed, "valor:", parsed.tarifa_mensual_contrato_inferida);
+    // DEBUG TEMPORAL — los console.log de esta función no se capturan en el observability
+    // del worker en este entorno. Devolvemos el diagnóstico en el JSON mismo para verlo en
+    // la consola del navegador, donde ya se logueaba "[upload] datosExtraidos:". Sacar
+    // este bloque __debug después de confirmar la causa del problema de extracción.
+    (parsed as Record<string, unknown>).__debug = {
+      stop_reason: json.stop_reason,
+      longitud_respuesta: text.length,
+      tiene_moneda_inferida: "moneda_inferida" in parsed,
+      tiene_tarifa_mensual_contrato_inferida: "tarifa_mensual_contrato_inferida" in parsed,
+      respuesta_cruda: text,
+    };
     return JSON.parse(JSON.stringify(parsed)) as Json;
   });
 
