@@ -1331,6 +1331,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
             moneda={r.moneda}
             onValor={(v) => setR({ salario: v })}
             onMoneda={(m) => setR({ moneda: m })}
+            comoTitulo
           />
           <div>
             <p className="font-body text-sm text-hueso/70 mb-3">
@@ -1553,9 +1554,10 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
 }
 
 
-function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
+function SalarioInput({ label, valor, moneda, onValor, onMoneda, comoTitulo }: {
   label: string; valor?: number; moneda?: string;
   onValor: (v: number | undefined) => void; onMoneda: (m: string) => void;
+  comoTitulo?: boolean;
 }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -1568,7 +1570,7 @@ function SalarioInput({ label, valor, moneda, onValor, onMoneda }: {
   };
   return (
     <div>
-      <p className="font-body text-base text-hueso mb-3">{label}</p>
+      <p className={comoTitulo ? "font-display text-3xl md:text-4xl leading-tight mb-3 text-hueso" : "font-body text-base text-hueso mb-3"}>{label}</p>
       <div className="flex gap-3 items-end">
         <div className="flex-1">
           <TextInput
