@@ -776,6 +776,13 @@ function P1Pais({ r, setR }: Props) {
   );
 }
 
+function bucketDeAnios(n: number): string {
+  if (n < 2) return "Menos de 2 años";
+  if (n < 5) return "2–5 años";
+  if (n < 10) return "5–10 años";
+  return "Más de 10 años";
+}
+
 function P2Industria({ r, setR, datosExtraidos }: Props & { datosExtraidos?: import("@/lib/diagnostico/types").DatosExtraidos | null }) {
   const { lang } = useLang();
   const isEN = lang === "EN";
@@ -828,7 +835,14 @@ function P2Industria({ r, setR, datosExtraidos }: Props & { datosExtraidos?: imp
             value={r.experienciaIndustriaAnios?.toString() ?? ""}
             onChange={(e) => {
               const n = Number(e.target.value);
-              setR({ experienciaIndustriaAnios: e.target.value.trim() === "" || !isFinite(n) ? undefined : n });
+              const valido = e.target.value.trim() !== "" && isFinite(n);
+              setR({
+                experienciaIndustriaAnios: valido ? n : undefined,
+                // Sincronizamos la pregunta de opciones (paso 11) con este número — si no,
+                // queda mostrando el bucket inferido del CV bajo la industria vieja, que ya
+                // no tiene nada que ver con la industria que la persona acaba de elegir.
+                ...(valido ? { expIndustria: bucketDeAnios(n) } : {}),
+              });
             }}
             autoFocus
           />
