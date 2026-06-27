@@ -782,7 +782,7 @@ function P2Industria({ r, setR, datosExtraidos }: Props & { datosExtraidos?: imp
   const industriaInferida = datosExtraidos?.industria_inferida;
   const divergioDeExtraccion =
     !!industriaInferida && !!r.industria && r.industria !== industriaInferida;
-  const necesitaReconfirmar = divergioDeExtraccion && r.experienciaIndustriaAnios === undefined;
+  const necesitaReconfirmar = divergioDeExtraccion;
 
   const handlePick = (opt: string) => {
     const cambiaDeValor = r.industria !== opt;
