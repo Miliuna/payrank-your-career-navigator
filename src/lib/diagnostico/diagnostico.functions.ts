@@ -1066,8 +1066,14 @@ export const extractFromDocument = createServerFn({ method: "POST" })
       console.error("[extractFromDocument] Anthropic error:", res.status, txt.slice(0, 500));
       throw new Error("No pudimos procesar el documento. Intentá nuevamente o pegá el texto manualmente.");
     }
-    const json = (await res.json()) as { content?: Array<{ type: string; text?: string }> };
+    const json = (await res.json()) as { content?: Array<{ type: string; text?: string }>; stop_reason?: string };
     const text = json.content?.find((c) => c.type === "text")?.text ?? "";
+
+    // LOG TEMPORAL DE DIAGNÓSTICO — sacar después de confirmar la causa del problema
+    // de moneda_inferida/tarifa_mensual_contrato_inferida en contratos.
+    console.log("[extractFromDocument][DEBUG] stop_reason:", json.stop_reason);
+    console.log("[extractFromDocument][DEBUG] longitud de respuesta:", text.length, "caracteres");
+    console.log("[extractFromDocument][DEBUG] respuesta cruda completa:", text);
 
     let parsed: Record<string, unknown> | null = null;
     try {
@@ -1082,6 +1088,8 @@ export const extractFromDocument = createServerFn({ method: "POST" })
       console.error("[extractFromDocument] JSON parse failed. Raw:", text.slice(0, 500));
       throw new Error("No pudimos procesar el documento. Intentá nuevamente o pegá el texto manualmente.");
     }
+    console.log("[extractFromDocument][DEBUG] tiene clave moneda_inferida:", "moneda_inferida" in parsed, "valor:", parsed.moneda_inferida);
+    console.log("[extractFromDocument][DEBUG] tiene clave tarifa_mensual_contrato_inferida:", "tarifa_mensual_contrato_inferida" in parsed, "valor:", parsed.tarifa_mensual_contrato_inferida);
     return JSON.parse(JSON.stringify(parsed)) as Json;
   });
 
