@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TerminosCondicionesRouteImport } from './routes/terminos-condiciones'
 import { Route as PoliticaPrivacidadRouteImport } from './routes/politica-privacidad'
 import { Route as PlanesRouteImport } from './routes/planes'
-import { Route as ModoERouteImport } from './routes/modo-e'
+import { Route as ModoFRouteImport } from './routes/modo-f'
 import { Route as ModoRouteImport } from './routes/modo'
 import { Route as MetodologiaRouteImport } from './routes/metodologia'
 import { Route as IndexRouteImport } from './routes/index'
@@ -44,9 +44,9 @@ const PlanesRoute = PlanesRouteImport.update({
   path: '/planes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ModoERoute = ModoERouteImport.update({
-  id: '/modo-e',
-  path: '/modo-e',
+const ModoFRoute = ModoFRouteImport.update({
+  id: '/modo-f',
+  path: '/modo-f',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ModoRoute = ModoRouteImport.update({
@@ -130,7 +130,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
-  '/modo-e': typeof ModoERoute
+  '/modo-f': typeof ModoFRoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
@@ -151,7 +151,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
-  '/modo-e': typeof ModoERoute
+  '/modo-f': typeof ModoFRoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
@@ -173,7 +173,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/metodologia': typeof MetodologiaRoute
   '/modo': typeof ModoRoute
-  '/modo-e': typeof ModoERoute
+  '/modo-f': typeof ModoFRoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
@@ -196,7 +196,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
-    | '/modo-e'
+    | '/modo-f'
     | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
@@ -217,7 +217,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
-    | '/modo-e'
+    | '/modo-f'
     | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
@@ -238,7 +238,7 @@ export interface FileRouteTypes {
     | '/'
     | '/metodologia'
     | '/modo'
-    | '/modo-e'
+    | '/modo-f'
     | '/planes'
     | '/politica-privacidad'
     | '/terminos-condiciones'
@@ -260,7 +260,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MetodologiaRoute: typeof MetodologiaRoute
   ModoRoute: typeof ModoRoute
-  ModoERoute: typeof ModoERoute
+  ModoFRoute: typeof ModoFRoute
   PlanesRoute: typeof PlanesRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
@@ -301,11 +301,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlanesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/modo-e': {
-      id: '/modo-e'
-      path: '/modo-e'
-      fullPath: '/modo-e'
-      preLoaderRoute: typeof ModoERouteImport
+    '/modo-f': {
+      id: '/modo-f'
+      path: '/modo-f'
+      fullPath: '/modo-f'
+      preLoaderRoute: typeof ModoFRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/modo': {
@@ -420,7 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MetodologiaRoute: MetodologiaRoute,
   ModoRoute: ModoRoute,
-  ModoERoute: ModoERoute,
+  ModoFRoute: ModoFRoute,
   PlanesRoute: PlanesRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
@@ -440,3 +440,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

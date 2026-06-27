@@ -42,6 +42,11 @@ const situacionesES: { id: Modo; titulo: string; descripcion: string }[] = [
     titulo: "Quiero dar mi próximo salto de carrera",
     descripcion: "Tu PayRank te muestra dónde estás hoy, qué habilidades aumentan tu valor y qué necesitás demostrar para llegar al siguiente nivel.",
   },
+  {
+    id: "E",
+    titulo: "Trabajo como contractor para una empresa, sin relación de dependencia formal",
+    descripcion: "Facturás de forma sostenida a un solo cliente, casi como si fueras parte del equipo. Te decimos si tu tarifa es competitiva, considerando lo que asumís en lugar de un empleador.",
+  },
 ];
 
 const situacionesEN: { id: Modo; titulo: string; descripcion: string }[] = [
@@ -64,6 +69,11 @@ const situacionesEN: { id: Modo; titulo: string; descripcion: string }[] = [
     id: "D",
     titulo: "I want to take my next career leap",
     descripcion: "Your PayRank shows you where you are today, what skills increase your value, and what you need to demonstrate to reach the next level.",
+  },
+  {
+    id: "E",
+    titulo: "I work as a contractor for a company, with no formal employment relationship",
+    descripcion: "You bill one client on a sustained basis, almost as if you were part of the team. We tell you if your rate is competitive, accounting for what you take on instead of an employer.",
   },
 ];
 
@@ -120,20 +130,20 @@ function ModoSelector() {
               </Link>
             ))}
             <Link
-              to="/modo-e"
+              to="/modo-f"
               style={{ minHeight: "320px" }}
-              className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col justify-center"
+              className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col"
             >
               <p className="font-ui text-[9px] tracking-wider text-piedra mb-3">
                 {isEN ? "COMING SOON" : "PRÓXIMAMENTE"}
               </p>
               <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">
-                {isEN ? "I work independently and want to set my rate" : "Trabajo de forma independiente y quiero definir mi tarifa"}
+                {isEN ? "I have several clients and quote per project" : "Tengo varios clientes y cotizo por proyecto"}
               </h2>
               <p className="font-body text-piedra leading-relaxed mb-10">
                 {isEN
-                  ? "If you bill by project or work as a contractor, we'll help you set your rate and put together the proposal for your next client. We're building the real market data for this segment."
-                  : "Si facturás por proyecto o trabajás como contractor, te vamos a ayudar a definir tu tarifa y armar la propuesta para tu próximo cliente. Estamos construyendo el dato real de mercado para este segmento."}
+                  ? "If you put together consulting or service proposals by project for different clients, we'll help you figure out what rate to charge. We're building the real market data for this segment."
+                  : "Si armás propuestas de consultoría o servicios por proyecto para distintos clientes, te vamos a ayudar a definir qué tarifa cobrar. Estamos construyendo el dato real de mercado para este segmento."}
               </p>
               <span className="mt-auto font-ui text-[11px] inline-flex items-center gap-2 text-tinta border-t border-niebla pt-4 group-hover:border-tinta transition-colors">
                 {isEN ? "Notify me" : "Quiero que me avisen"} <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>

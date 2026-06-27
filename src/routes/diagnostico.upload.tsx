@@ -14,7 +14,7 @@ type Search = { modo?: Modo };
 
 export const Route = createFileRoute("/diagnostico/upload")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    modo: (s.modo === "A" || s.modo === "B" || s.modo === "C" || s.modo === "D") ? s.modo : undefined,
+    modo: (s.modo === "A" || s.modo === "B" || s.modo === "C" || s.modo === "D" || s.modo === "E") ? s.modo : undefined,
   }),
   head: () => ({ meta: [{ title: "Subí tus documentos — PayRank" }] }),
   component: UploadPage,

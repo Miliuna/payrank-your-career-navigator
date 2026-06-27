@@ -1,4 +1,4 @@
-export type Modo = "A" | "B" | "C" | "D";
+export type Modo = "A" | "B" | "C" | "D" | "E";
 export type Plan = "unico" | "pack3" | "anual";
 
 export type Idioma = {

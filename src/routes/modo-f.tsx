@@ -7,7 +7,7 @@ import { useLang } from "@/lib/lang";
 import { useRegion } from "@/lib/pricing";
 import { registrarWaitlistModoE } from "@/lib/diagnostico/diagnostico.functions";
 
-export const Route = createFileRoute("/modo-e")({
+export const Route = createFileRoute("/modo-f")({
   head: () => ({
     meta: [
       { title: "Próximamente — PayRank" },

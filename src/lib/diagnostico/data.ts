@@ -5,6 +5,7 @@ export const TITULOS_MODO: Record<Modo, string> = {
   B: "Quiero pedir un aumento o una revisión salarial",
   C: "Tengo una oferta o entrevista",
   D: "Quiero dar mi próximo salto de carrera",
+  E: "Trabajo como contractor para una empresa",
 };
 
 export const TITULOS_MODO_EN: Record<Modo, string> = {
@@ -12,6 +13,7 @@ export const TITULOS_MODO_EN: Record<Modo, string> = {
   B: "I WANT TO ASK FOR A RAISE OR REVIEW",
   C: "I HAVE AN OFFER OR INTERVIEW",
   D: "I'M PLANNING MY NEXT CAREER MOVE",
+  E: "I WORK AS A CONTRACTOR FOR A COMPANY",
 };
 
 export const PAISES = [
