@@ -1297,6 +1297,14 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         clear.moneda = datosExtraidos.moneda_inferida;
         touched = true;
       }
+      if (r.salario === undefined && datosExtraidos.tarifa_mensual_contrato_inferida != null) {
+        const raw = datosExtraidos.tarifa_mensual_contrato_inferida;
+        const n = typeof raw === "number" ? raw : Number(String(raw).replace(/[^\d.]/g, ""));
+        if (isFinite(n) && n > 0) {
+          clear.salario = Math.round(n);
+          touched = true;
+        }
+      }
       if (r.bono_target_sueldos === undefined && datosExtraidos.bono_explicito_no === true) {
         clear.bono_target_sueldos = "no_tengo";
         touched = true;
@@ -1308,7 +1316,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
       setR(clear);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datosExtraidos, r.situacion, r.contractorHoras, r.contractorPago, r.moneda, r.bono_target_sueldos, r.pais, r.paisOtro, setR]);
+  }, [datosExtraidos, r.situacion, r.contractorHoras, r.contractorPago, r.moneda, r.salario, r.bono_target_sueldos, r.pais, r.paisOtro, setR]);
 
   return (
     <>
