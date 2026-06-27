@@ -385,6 +385,8 @@ export type Database = {
       modo_e_waitlist: {
         Row: {
           categoria_servicio: string | null
+          codigo_descuento: string | null
+          codigo_usado: boolean
           created_at: string
           email: string
           id: string
@@ -396,6 +398,8 @@ export type Database = {
         }
         Insert: {
           categoria_servicio?: string | null
+          codigo_descuento?: string | null
+          codigo_usado?: boolean
           created_at?: string
           email: string
           id?: string
@@ -407,6 +411,8 @@ export type Database = {
         }
         Update: {
           categoria_servicio?: string | null
+          codigo_descuento?: string | null
+          codigo_usado?: boolean
           created_at?: string
           email?: string
           id?: string
