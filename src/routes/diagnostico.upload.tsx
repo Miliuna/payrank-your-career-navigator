@@ -28,7 +28,7 @@ type ZoneCopy = {
   required?: boolean;
 };
 
-function zoneCopy(tipo: DocTipo, isEN: boolean): ZoneCopy {
+function zoneCopy(tipo: DocTipo, isEN: boolean, modo?: Modo): ZoneCopy {
   if (isEN) {
     switch (tipo) {
       case "cv":
@@ -38,6 +38,12 @@ function zoneCopy(tipo: DocTipo, isEN: boolean): ZoneCopy {
           required: true,
         };
       case "recibo":
+        if (modo === "E") {
+          return {
+            label: "Contract",
+            sublabel: "The most recent one you have — we use it to read your rate, add-ons and declared benefits.",
+          };
+        }
         return {
           label: "Pay stub or salary slip",
           sublabel: "The most recent one you have. If you're a contractor, you can also upload your contract — we use it to read your rate, add-ons and declared benefits.",
@@ -62,6 +68,12 @@ function zoneCopy(tipo: DocTipo, isEN: boolean): ZoneCopy {
         required: true,
       };
     case "recibo":
+      if (modo === "E") {
+        return {
+          label: "Contrato",
+          sublabel: "El más reciente que tengas — lo usamos para leer tu tarifa, adicionales y beneficios declarados.",
+        };
+      }
       return {
         label: "Recibo de sueldo o liquidación",
         sublabel: "El más reciente que tengas. Si sos contractor, también podés subir tu contrato — lo usamos para leer tu tarifa, adicionales y beneficios declarados.",
@@ -293,7 +305,7 @@ function UploadPage() {
                 />
                 <UploadZone
                   tipo="recibo"
-                  copy={zoneCopy("recibo", isEN)}
+                  copy={zoneCopy("recibo", isEN, modo)}
                   file={reciboFile}
                   onFile={setReciboFile}
                   isEN={isEN}
