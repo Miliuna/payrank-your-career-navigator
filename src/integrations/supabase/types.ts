@@ -384,19 +384,37 @@ export type Database = {
       }
       modo_e_waitlist: {
         Row: {
+          categoria_servicio: string | null
           created_at: string
           email: string
           id: string
+          pais: string | null
+          region_pricing: string | null
+          tarifa_moneda: string | null
+          tarifa_monto: number | null
+          tarifa_periodo: string | null
         }
         Insert: {
+          categoria_servicio?: string | null
           created_at?: string
           email: string
           id?: string
+          pais?: string | null
+          region_pricing?: string | null
+          tarifa_moneda?: string | null
+          tarifa_monto?: number | null
+          tarifa_periodo?: string | null
         }
         Update: {
+          categoria_servicio?: string | null
           created_at?: string
           email?: string
           id?: string
+          pais?: string | null
+          region_pricing?: string | null
+          tarifa_moneda?: string | null
+          tarifa_monto?: number | null
+          tarifa_periodo?: string | null
         }
         Relationships: []
       }
