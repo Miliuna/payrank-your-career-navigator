@@ -109,7 +109,8 @@ function ModoSelector() {
                     plan: plan ?? st.plan,
                   }));
                 }}
-                className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col min-h-[300px]"
+                style={{ minHeight: "320px" }}
+                className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col"
               >
                 <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">{s.titulo}</h2>
                 <p className="font-body text-piedra leading-relaxed mb-10">{s.descripcion}</p>
@@ -120,7 +121,8 @@ function ModoSelector() {
             ))}
             <Link
               to="/modo-e"
-              className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col min-h-[300px] justify-center"
+              style={{ minHeight: "320px" }}
+              className="group relative bg-card border border-niebla p-7 md:p-9 hover:border-tinta transition-all hover:shadow-[0_0_0_1px_var(--tinta)] flex flex-col justify-center"
             >
               <p className="font-ui text-[9px] tracking-wider text-piedra mb-3">
                 {isEN ? "COMING SOON" : "PRÓXIMAMENTE"}

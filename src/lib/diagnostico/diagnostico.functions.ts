@@ -259,6 +259,72 @@ export const getPaymentStatus = createServerFn({ method: "GET" })
 // Modo E todavía no existe — cuando alguien declara que cobra "por proyecto" (sin
 // cadencia mensual estable), Modo A no le aplica con honestidad. En vez de generar
 // un reporte de calidad dudosa, capturamos el mail para avisar cuando Modo E esté listo.
+function generarCodigoDescuento(): string {
+  // Sin caracteres ambiguos (0/O, 1/I/L) para que sea fácil de leer y tipear.
+  const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return `MODOE-${code}`;
+}
+
+async function sendWaitlistConfirmationEmail(args: { email: string; codigo: string; isEN: boolean }): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[sendWaitlistConfirmationEmail] RESEND_API_KEY no configurada, skip");
+    return;
+  }
+  const { email, codigo, isEN } = args;
+  const subject = isEN ? "You're on the list" : "Ya estás en la lista";
+  const heading = isEN ? "You're on the list" : "Ya estás en la lista";
+  const body = isEN
+    ? "Your data is already part of the first real rate landscape for independent professionals. We'll write to you as soon as it's ready to use — here's your single-use 20% launch discount code, reserved for you:"
+    : "Tu dato ya forma parte del primer panorama real de tarifas para profesionales independientes. Te vamos a escribir en cuanto esté listo para usar — este es tu código de un solo uso con 20% de descuento de lanzamiento, reservado para vos:";
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:0;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;padding:40px 32px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <tr><td style="text-align:center;padding-bottom:24px;">
+          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;color:#111;">PayRank</div>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:16px;">
+          <h1 style="font-size:22px;font-weight:600;margin:0;color:#111;">${heading}</h1>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:28px;">
+          <p style="font-size:16px;line-height:1.5;color:#444;margin:0;">${body}</p>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:8px;">
+          <div style="display:inline-block;background:#f5f5f7;color:#111;font-weight:700;font-size:20px;letter-spacing:1px;padding:14px 28px;border-radius:10px;">${codigo}</div>
+        </td></tr>
+      </table>
+      <p style="font-size:12px;color:#888;margin:24px 0 0;text-align:center;">
+        PayRank LLC · <a href="https://payrank.co" style="color:#888;text-decoration:none;">payrank.co</a> · <a href="mailto:hello@payrank.co" style="color:#888;text-decoration:none;">hello@payrank.co</a>
+      </p>
+    </td></tr>
+  </table>
+</body></html>`;
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "PayRank <hello@payrank.co>",
+      to: [email],
+      subject,
+      html,
+    }),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Resend ${res.status}: ${txt.slice(0, 300)}`);
+  }
+}
+
 export const registrarWaitlistModoE = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ email: z.string().email() }).parse(input))
   .handler(async ({ data }) => {
