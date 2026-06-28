@@ -157,7 +157,14 @@ function posKind(p: string | undefined): "bajo" | "en" | "sobre" | "neutral" {
 function parseNum(v: unknown): number | null {
   if (v === null || v === undefined) return null;
   if (typeof v === "number" && isFinite(v)) return v;
-  const s = String(v).replace(/[^\d.,-]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", ".");
+  let s = String(v).replace(/[^\d.,-]/g, "");
+  // Separador de miles: punto o coma seguido de EXACTAMENTE 3 dígitos y luego
+  // no-dígito o fin de string. Cubre "USD 7,000" (en-US) y "$7.000" (es-AR) por
+  // igual, sin confundirlo con un separador decimal real (que nunca tiene 3 dígitos
+  // fijos detrás en estos formatos de reporte).
+  s = s.replace(/[.,](?=\d{3}(\D|$))/g, "");
+  // Lo que quede de coma a esta altura es decimal (es-AR) — convertir a punto.
+  s = s.replace(",", ".");
   const n = parseFloat(s);
   return isFinite(n) ? n : null;
 }
@@ -745,10 +752,20 @@ function ResultadoPage() {
           <Eyebrow>05 · {isEN ? "WHAT TO ASK FOR" : "CUÁNTO PEDIR"}</Eyebrow>
           <H2>{isEN ? "Your salary ask" : "Tu pretensión salarial"}</H2>
 
-          <div className="text-center py-6">
-            <p className="font-display text-5xl md:text-6xl text-hueso">{str(s5.pretension_recomendada_local)}</p>
-            <p className="font-body text-hueso/55 mt-2">{str(s5.pretension_recomendada_usd)}</p>
-          </div>
+          {(() => {
+            const monedaDeclaradaS5 = typeof row.moneda_reporte === "string" && row.moneda_reporte
+              ? row.moneda_reporte.toUpperCase()
+              : typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
+            const usdEsPrimaria = monedaDeclaradaS5 === "USD";
+            const grande = usdEsPrimaria ? s5.pretension_recomendada_usd : s5.pretension_recomendada_local;
+            const chica = usdEsPrimaria ? s5.pretension_recomendada_local : s5.pretension_recomendada_usd;
+            return (
+              <div className="text-center py-6">
+                <p className="font-display text-5xl md:text-6xl text-hueso">{str(grande)}</p>
+                <p className="font-body text-hueso/55 mt-2">{str(chica)}</p>
+              </div>
+            );
+          })()}
 
           <Card>
             <KV k={isEN ? "Floor (minimum acceptable)" : "Floor (mínimo aceptable)"} v={str(s5.floor_local)} />
@@ -951,8 +968,8 @@ function ResultadoPage() {
           <>
             <Divider />
             <Section>
-              <Eyebrow>FREELANCE / INDEPENDIENTE</Eyebrow>
-              <H2>Tu valor por hora</H2>
+              <Eyebrow>CONTRACTOR</Eyebrow>
+              <H2>{isEN ? "Your hourly value" : "Tu valor por hora"}</H2>
 
               <Card>
                 <KV k="Factor de equivalencia" v={str(fl.factor_equivalencia_usado)} />

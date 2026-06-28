@@ -22,10 +22,11 @@ export const PAISES = [
 ];
 
 export const INDUSTRIAS = [
-  "Tecnología/Software", "Finanzas/Banca", "Consumo masivo/Retail",
-  "Industrial/Manufactura", "Consultoría/Servicios profesionales",
-  "Salud/Pharma", "Seguros", "Educación", "Medios/Entretenimiento",
-  "Energía", "Real Estate", "Gobierno/Sector público", "Otra",
+  "Agro/Agroindustria", "Construcción", "Consultoría/Servicios profesionales",
+  "Consumo masivo/Retail", "Educación", "Energía", "Finanzas/Banca",
+  "Gobierno/Sector público", "Industrial/Manufactura", "Logística/Transporte",
+  "Medios/Entretenimiento", "Real Estate", "Salud/Pharma", "Seguros",
+  "Tecnología/Software", "Telecomunicaciones", "Otra",
 ];
 
 export const TIPOS_EMPRESA = [
@@ -374,18 +375,22 @@ export const PAISES_EN: Record<string, string> = {
 };
 
 export const INDUSTRIAS_EN: Record<string, string> = {
-  "Tecnología/Software": "Technology/Software",
-  "Finanzas/Banca": "Finance/Banking",
-  "Consumo masivo/Retail": "Consumer goods/Retail",
-  "Industrial/Manufactura": "Industrial/Manufacturing",
+  "Agro/Agroindustria": "Agriculture/Agribusiness",
+  "Construcción": "Construction",
   "Consultoría/Servicios profesionales": "Consulting/Professional services",
+  "Consumo masivo/Retail": "Consumer goods/Retail",
+  Educación: "Education",
+  Energía: "Energy",
+  "Finanzas/Banca": "Finance/Banking",
+  "Gobierno/Sector público": "Government/Public sector",
+  "Industrial/Manufactura": "Industrial/Manufacturing",
+  "Logística/Transporte": "Logistics/Transportation",
+  "Medios/Entretenimiento": "Media/Entertainment",
+  "Real Estate": "Real Estate",
   "Salud/Pharma": "Healthcare/Pharma",
   Seguros: "Insurance",
-  Educación: "Education",
-  "Medios/Entretenimiento": "Media/Entertainment",
-  Energía: "Energy",
-  "Real Estate": "Real Estate",
-  "Gobierno/Sector público": "Government/Public sector",
+  "Tecnología/Software": "Technology/Software",
+  Telecomunicaciones: "Telecommunications",
   Otra: "Other",
 };
 
