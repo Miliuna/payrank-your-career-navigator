@@ -1030,13 +1030,11 @@ export const extractFromDocument = createServerFn({ method: "POST" })
 
     let userContent;
     let maxTokens: number;
-    let textoEnviado: string | null = null;
     if (data.kind === "text") {
       const truncated =
         data.text.length > TEXT_MAX_CHARS
           ? data.text.slice(0, TEXT_MAX_CHARS) + "\n\n[documento truncado por longitud]"
           : data.text;
-      textoEnviado = truncated;
       userContent = [
         { type: "text", text: `Documento:\n\n${truncated}\n\n${EXTRACT_USER_INSTRUCTIONS}` },
       ];
@@ -1084,18 +1082,6 @@ export const extractFromDocument = createServerFn({ method: "POST" })
       console.error("[extractFromDocument] JSON parse failed. Raw:", text.slice(0, 500));
       throw new Error("No pudimos procesar el documento. Intentá nuevamente o pegá el texto manualmente.");
     }
-    // DEBUG TEMPORAL — los console.log de esta función no se capturan en el observability
-    // del worker en este entorno. Devolvemos el diagnóstico en el JSON mismo para verlo en
-    // la consola del navegador, donde ya se logueaba "[upload] datosExtraidos:". Sacar
-    // este bloque __debug después de confirmar la causa del problema de extracción.
-    (parsed as Record<string, unknown>).__debug = {
-      stop_reason: json.stop_reason,
-      longitud_respuesta: text.length,
-      tiene_moneda_inferida: "moneda_inferida" in parsed,
-      tiene_tarifa_mensual_contrato_inferida: "tarifa_mensual_contrato_inferida" in parsed,
-      texto_enviado_al_modelo: textoEnviado,
-      respuesta_cruda: text,
-    };
     return JSON.parse(JSON.stringify(parsed)) as Json;
   });
 

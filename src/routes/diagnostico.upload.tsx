@@ -41,12 +41,12 @@ function zoneCopy(tipo: DocTipo, isEN: boolean, modo?: Modo): ZoneCopy {
         if (modo === "E") {
           return {
             label: "Contract",
-            sublabel: "The most recent one you have — we use it to read your rate, add-ons and declared benefits.",
+            sublabel: "The most recent one you have — it helps us confirm your contracting situation and the company you bill. You'll confirm the amount and hours yourself in the next step.",
           };
         }
         return {
           label: "Pay stub or salary slip",
-          sublabel: "The most recent one you have. If you're a contractor, you can also upload your contract — we use it to read your rate, add-ons and declared benefits.",
+          sublabel: "The most recent one you have.",
         };
       case "descriptivo":
         return {
@@ -71,12 +71,12 @@ function zoneCopy(tipo: DocTipo, isEN: boolean, modo?: Modo): ZoneCopy {
       if (modo === "E") {
         return {
           label: "Contrato",
-          sublabel: "El más reciente que tengas — lo usamos para leer tu tarifa, adicionales y beneficios declarados.",
+          sublabel: "El más reciente que tengas — nos ayuda a confirmar tu situación contractual y la empresa para la que facturás. El monto y las horas los confirmás vos en el siguiente paso.",
         };
       }
       return {
         label: "Recibo de sueldo o liquidación",
-        sublabel: "El más reciente que tengas. Si sos contractor, también podés subir tu contrato — lo usamos para leer tu tarifa, adicionales y beneficios declarados.",
+        sublabel: "El más reciente que tengas.",
       };
     case "descriptivo":
       return {
@@ -141,33 +141,25 @@ function UploadPage() {
     });
 
   const extractOne = async (file: File, tipo: DocTipo): Promise<DatosExtraidos> => {
-    const etiquetarDebug = (r: DatosExtraidos): DatosExtraidos => {
-      const rec = r as unknown as Record<string, unknown>;
-      if (rec.__debug) {
-        rec[`__debug_${tipo}`] = rec.__debug;
-        delete rec.__debug;
-      }
-      return r;
-    };
     const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
     if (isPdf) {
       try {
         const txt = await extractPdfText(file);
         if (txt && txt.length > 50) {
           const prefixed = `[TIPO: ${tipo}]\n\n${txt.slice(0, 100_000)}`;
-          return etiquetarDebug((await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos);
+          return (await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos;
         }
         throw new Error("PDF sin texto extraíble");
       } catch (err) {
         console.warn(`[upload] PDF.js falló para ${file.name}, usando base64 truncado:`, err);
         const b64 = await fileToBase64Local(file);
         const b64Truncated = b64.slice(0, 15_000);
-        return etiquetarDebug((await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos);
+        return (await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos;
       }
     }
     const txt = await file.text();
     const prefixed = `[TIPO: ${tipo}]\n\n${txt.slice(0, 100_000)}`;
-    return etiquetarDebug((await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos);
+    return (await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos;
   };
 
   const procesar = async () => {
