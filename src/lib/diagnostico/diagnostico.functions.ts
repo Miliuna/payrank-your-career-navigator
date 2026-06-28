@@ -1030,11 +1030,13 @@ export const extractFromDocument = createServerFn({ method: "POST" })
 
     let userContent;
     let maxTokens: number;
+    let textoEnviado: string | null = null;
     if (data.kind === "text") {
       const truncated =
         data.text.length > TEXT_MAX_CHARS
           ? data.text.slice(0, TEXT_MAX_CHARS) + "\n\n[documento truncado por longitud]"
           : data.text;
+      textoEnviado = truncated;
       userContent = [
         { type: "text", text: `Documento:\n\n${truncated}\n\n${EXTRACT_USER_INSTRUCTIONS}` },
       ];
@@ -1091,6 +1093,7 @@ export const extractFromDocument = createServerFn({ method: "POST" })
       longitud_respuesta: text.length,
       tiene_moneda_inferida: "moneda_inferida" in parsed,
       tiene_tarifa_mensual_contrato_inferida: "tarifa_mensual_contrato_inferida" in parsed,
+      texto_enviado_al_modelo: textoEnviado,
       respuesta_cruda: text,
     };
     return JSON.parse(JSON.stringify(parsed)) as Json;
