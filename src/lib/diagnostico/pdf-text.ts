@@ -21,10 +21,25 @@ export async function extractPdfText(file: File): Promise<string> {
   for (let i = 1; i <= maxPages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const pageText = content.items
-      .map((it) => ("str" in it ? (it as { str: string }).str : ""))
-      .join(" ");
+    // Reconstruimos saltos de línea según la coordenada Y real de cada fragmento —
+    // un join() plano sin esto puede mezclar filas de tablas (ej. "Payment Currency"
+    // y su valor en columnas separadas) en el orden interno del PDF, no el visual.
+    let pageText = "";
+    let lastY: number | null = null;
+    for (const it of content.items) {
+      if (!("str" in it)) continue;
+      const str = (it as { str: string }).str;
+      const transform = (it as { transform?: number[] }).transform;
+      const y = Array.isArray(transform) ? transform[5] : null;
+      if (lastY !== null && y !== null && Math.abs(y - lastY) > 3) {
+        pageText += "\n";
+      } else if (pageText && !pageText.endsWith("\n") && !pageText.endsWith(" ")) {
+        pageText += " ";
+      }
+      pageText += str;
+      if (y !== null) lastY = y;
+    }
     out.push(pageText);
   }
-  return out.join("\n\n").replace(/\s+/g, " ").trim();
+  return out.join("\n\n").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
 }

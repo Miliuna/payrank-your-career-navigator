@@ -141,25 +141,33 @@ function UploadPage() {
     });
 
   const extractOne = async (file: File, tipo: DocTipo): Promise<DatosExtraidos> => {
+    const etiquetarDebug = (r: DatosExtraidos): DatosExtraidos => {
+      const rec = r as unknown as Record<string, unknown>;
+      if (rec.__debug) {
+        rec[`__debug_${tipo}`] = rec.__debug;
+        delete rec.__debug;
+      }
+      return r;
+    };
     const isPdf = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
     if (isPdf) {
       try {
         const txt = await extractPdfText(file);
         if (txt && txt.length > 50) {
           const prefixed = `[TIPO: ${tipo}]\n\n${txt.slice(0, 100_000)}`;
-          return (await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos;
+          return etiquetarDebug((await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos);
         }
         throw new Error("PDF sin texto extraíble");
       } catch (err) {
         console.warn(`[upload] PDF.js falló para ${file.name}, usando base64 truncado:`, err);
         const b64 = await fileToBase64Local(file);
         const b64Truncated = b64.slice(0, 15_000);
-        return (await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos;
+        return etiquetarDebug((await extract({ data: { kind: "pdf", base64: b64Truncated } })) as DatosExtraidos);
       }
     }
     const txt = await file.text();
     const prefixed = `[TIPO: ${tipo}]\n\n${txt.slice(0, 100_000)}`;
-    return (await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos;
+    return etiquetarDebug((await extract({ data: { kind: "text", text: prefixed } })) as DatosExtraidos);
   };
 
   const procesar = async () => {
