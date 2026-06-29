@@ -758,11 +758,9 @@ function ResultadoPage() {
               : typeof row.moneda_actual === "string" ? row.moneda_actual.toUpperCase() : null;
             const usdEsPrimaria = monedaDeclaradaS5 === "USD";
             const grande = usdEsPrimaria ? s5.pretension_recomendada_usd : s5.pretension_recomendada_local;
-            const chica = usdEsPrimaria ? s5.pretension_recomendada_local : s5.pretension_recomendada_usd;
             return (
               <div className="text-center py-6">
                 <p className="font-display text-5xl md:text-6xl text-hueso">{str(grande)}</p>
-                <p className="font-body text-hueso/55 mt-2">{str(chica)}</p>
               </div>
             );
           })()}

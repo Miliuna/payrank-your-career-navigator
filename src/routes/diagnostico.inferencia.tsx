@@ -6,8 +6,13 @@ import { useDiagnostico } from "@/lib/diagnostico/store";
 import { useLang } from "@/lib/lang";
 import type { Inferencia } from "@/lib/diagnostico/types";
 
+type Search = { editar?: boolean };
+
 export const Route = createFileRoute("/diagnostico/inferencia")({
   head: () => ({ meta: [{ title: "Validá la inferencia — PayRank" }] }),
+  validateSearch: (s: Record<string, unknown>): Search => ({
+    editar: s.editar === "1" || s.editar === true ? true : undefined,
+  }),
   component: InferenciaPage,
 });
 
@@ -170,10 +175,11 @@ const INFERENCIA_TEXTO_EN: Record<string, { titulo: React.ReactNode; parrafo: st
 
 function InferenciaPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const { state, setState } = useDiagnostico();
   const { lang } = useLang();
   const isEN = lang === "EN";
-  const [editando, setEditando] = React.useState(false);
+  const [editando, setEditando] = React.useState(!!search.editar);
   const modo = state.modo;
   const INFERENCIA_TEXTO = isEN ? INFERENCIA_TEXTO_EN : INFERENCIA_TEXTO_ES;
 

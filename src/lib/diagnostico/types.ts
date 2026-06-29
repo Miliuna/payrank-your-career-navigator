@@ -109,8 +109,10 @@ export type Respuestas = {
   herramientasIAOtra?: string;
   sinIA?: boolean;
   // Contractor sub-flow
-  contractorHoras?: "40h" | "menos40" | "proyecto";
-  contractorPago?: "usd" | "local" | "mixto";
+  contractorHoras?: number;
+  contractorPago?: "usd" | "local";
+  contractorPagoAdicional?: "si" | "no";
+  contractorPagoAdicionalMonto?: number;
   // Mode D target direction
   targetDireccionD?: string;
   // Auditoría de documentos (paso de validación)

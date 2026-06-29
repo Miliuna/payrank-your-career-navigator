@@ -127,7 +127,7 @@ function PerfilPage() {
     }
   }, []);
 
-  const back = () => navigate({ to: "/diagnostico/inferencia" });
+  const back = () => navigate({ to: "/diagnostico/inferencia", search: { editar: true } });
 
   // Crea el diagnóstico (sin marcarlo pagado) y lleva a consentimientos
   const next = async () => {

@@ -1284,7 +1284,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
     const situacionEfectiva = clear.situacion ?? r.situacion;
     if (situacionEfectiva === "contractor") {
       if (r.contractorHoras === undefined && typeof datosExtraidos.horas_semanales_pactadas_inferidas === "number") {
-        clear.contractorHoras = datosExtraidos.horas_semanales_pactadas_inferidas >= 40 ? "40h" : "menos40";
+        clear.contractorHoras = datosExtraidos.horas_semanales_pactadas_inferidas;
         touched = true;
       }
       if (r.contractorPago === undefined && datosExtraidos.moneda_inferida) {
@@ -1373,20 +1373,27 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         <div className="border-t border-hueso/10 pt-8 space-y-6 animate-in fade-in duration-300">
           <div>
             <p className="font-body text-base text-hueso mb-3">
-              {isEN ? "Does your contract establish a fixed weekly hours?" : "¿Tu contrato establece una cantidad fija de horas semanales?"}
+              {isEN ? "How many weekly hours do you usually work for this client?" : "¿Cuántas horas semanales trabajás habitualmente para este cliente?"}
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <CardOption selected={r.contractorHoras === "40h"} onClick={() => setR({ contractorHoras: "40h" })}>{isEN ? "Yes, 40 hours" : "Sí, 40 horas"}</CardOption>
-              <CardOption selected={r.contractorHoras === "menos40"} onClick={() => setR({ contractorHoras: "menos40" })}>{isEN ? "Yes, less than 40 hours" : "Sí, menos de 40 horas"}</CardOption>
-              <CardOption selected={r.contractorHoras === "proyecto"} onClick={() => setR({ contractorHoras: "proyecto" })}>{isEN ? "No, project-based" : "No, es por proyecto"}</CardOption>
+            <div className="flex items-center gap-2 max-w-[160px]">
+              <TextInput
+                type="text"
+                inputMode="numeric"
+                placeholder="40"
+                value={r.contractorHoras != null ? String(r.contractorHoras) : ""}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, "");
+                  setR({ contractorHoras: digits ? Number(digits) : undefined });
+                }}
+              />
+              <span className="font-body text-sm text-hueso/60">{isEN ? "hs/week" : "hs/semana"}</span>
             </div>
           </div>
           <div>
             <p className="font-body text-base text-hueso mb-3">{isEN ? "How do you receive your payment?" : "¿Cómo recibís tu pago?"}</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <CardOption selected={r.contractorPago === "usd"} onClick={() => setR({ contractorPago: "usd" })}>{isEN ? "In USD or foreign currency" : "En USD o moneda extranjera"}</CardOption>
               <CardOption selected={r.contractorPago === "local"} onClick={() => setR({ contractorPago: "local" })}>{isEN ? "In local currency" : "En moneda local"}</CardOption>
-              <CardOption selected={r.contractorPago === "mixto"} onClick={() => setR({ contractorPago: "mixto" })}>{isEN ? "Mixed" : "Mixto"}</CardOption>
             </div>
           </div>
           <SalarioInput
@@ -1396,6 +1403,77 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
             onValor={(v) => setR({ salario: v })}
             onMoneda={(m) => setR({ moneda: m })}
           />
+          <div>
+            <p className="font-body text-base text-hueso mb-3">
+              {isEN ? "Did your rate increase in the last 12 months?" : "¿Tu tarifa aumentó en los últimos 12 meses?"}
+            </p>
+            <div className="flex gap-2">
+              <ChipOption
+                selected={r.incrementoUltimoAnio === "si"}
+                onClick={() => setR({ incrementoUltimoAnio: "si" })}
+              >
+                {isEN ? "Yes" : "Sí"}
+              </ChipOption>
+              <ChipOption
+                selected={r.incrementoUltimoAnio === "no"}
+                onClick={() => setR({ incrementoUltimoAnio: "no", incrementoUltimoAnioPct: undefined, incrementoUltimoAnioMonto: undefined })}
+              >
+                No
+              </ChipOption>
+            </div>
+          </div>
+          {r.incrementoUltimoAnio === "si" && (
+            <div className="animate-in fade-in duration-300">
+              <p className="font-body text-base text-hueso mb-3">
+                {isEN ? "What percentage increase did you get?" : "¿Qué porcentaje de aumento recibiste?"}
+              </p>
+              <div className="flex items-center gap-2 max-w-[200px]">
+                <TextInput
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="0"
+                  value={r.incrementoUltimoAnioPct != null ? String(r.incrementoUltimoAnioPct) : ""}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "");
+                    const pct = digits ? Number(digits) : undefined;
+                    const monto = pct != null && typeof r.salario === "number" && r.salario > 0
+                      ? Math.round((r.salario * pct) / 100)
+                      : undefined;
+                    setR({ incrementoUltimoAnioPct: pct, incrementoUltimoAnioMonto: monto });
+                  }}
+                />
+                <span className="font-body text-lg text-hueso">%</span>
+              </div>
+            </div>
+          )}
+          <div>
+            <p className="font-body text-base text-hueso mb-3">
+              {isEN
+                ? "Do you get any occasional extra payment outside your fixed rate (e.g. if your client's business goes well), even if it's not in the contract?"
+                : "¿Recibís algún pago adicional ocasional fuera de tu tarifa fija (por ejemplo, si el negocio de tu cliente va bien), aunque no esté en el contrato?"}
+            </p>
+            <div className="flex gap-2">
+              <ChipOption
+                selected={r.contractorPagoAdicional === "si"}
+                onClick={() => setR({ contractorPagoAdicional: "si" })}
+              >
+                {isEN ? "Yes" : "Sí"}
+              </ChipOption>
+              <ChipOption
+                selected={r.contractorPagoAdicional === "no"}
+                onClick={() => setR({ contractorPagoAdicional: "no", contractorPagoAdicionalMonto: undefined })}
+              >
+                No
+              </ChipOption>
+            </div>
+          </div>
+          {r.contractorPagoAdicional === "si" && (
+            <MontoInput
+              placeholder={isEN ? "Average amount when it happens (optional)" : "Monto promedio cuando pasa (opcional)"}
+              valor={r.contractorPagoAdicionalMonto}
+              onValor={(v) => setR({ contractorPagoAdicionalMonto: v })}
+            />
+          )}
         </div>
       )}
 

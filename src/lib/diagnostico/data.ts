@@ -53,7 +53,7 @@ export const PERSONAS_A_CARGO = [
 
 export const FUNCIONES = [
   "Gestión de personas", "Presupuesto/P&L", "Estrategia", "Operaciones",
-  "Ventas/Comercial", "Marketing", "Comunicación y PR", "Tecnología/Producto", "RRHH/Talento",
+  "Ventas/Comercial", "Marketing", "Comunicación y Relaciones Públicas", "Tecnología/Producto", "RRHH/Talento",
   "Finanzas/Contabilidad", "Legal/Compliance", "Gestión de proyectos / PMO",
   "Desarrollo de software/Web", "Diseño/UX",
   "Data/Analytics", "Innovación/I+D", "Atención al cliente", "Otra",

@@ -42,8 +42,18 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
 
   // Empaquetar metadatos en puesto_descripcion para que el prompt los lea
   const baseDesc = (r.descripcionPuesto as string) ?? (r.funcionesTexto as string) ?? "";
+  const contractorIncrementoTxt = r.situacion === "contractor" && r.incrementoUltimoAnio === "si"
+    ? `\nAumento de tarifa últimos 12 meses: sí, ${r.incrementoUltimoAnioPct ?? "?"}%`
+    : r.situacion === "contractor" && r.incrementoUltimoAnio === "no"
+      ? `\nAumento de tarifa últimos 12 meses: no`
+      : "";
+  const contractorPagoAdicionalTxt = r.situacion === "contractor" && r.contractorPagoAdicional === "si"
+    ? `\nPago adicional ocasional fuera de tarifa fija (no formalizado en contrato): sí${r.contractorPagoAdicionalMonto ? `, promedio ${r.contractorPagoAdicionalMonto}` : ""}`
+    : r.situacion === "contractor" && r.contractorPagoAdicional === "no"
+      ? `\nPago adicional ocasional fuera de tarifa fija: no`
+      : "";
   const contractorMeta = r.situacion === "contractor"
-    ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nModalidad de pago: ${r.contractorPago ?? "n/d"}`
+    ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nModalidad de pago: ${r.contractorPago ?? "n/d"}${contractorIncrementoTxt}${contractorPagoAdicionalTxt}`
     : "";
   const targetDireccionD = r.targetDireccionD as string | undefined;
   const targetDirMeta = targetDireccionD
