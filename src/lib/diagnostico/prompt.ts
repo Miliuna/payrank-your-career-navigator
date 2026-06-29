@@ -984,6 +984,8 @@ SECCIÓN 4 — "LA BRECHA DE GÉNERO" (solo si se solicitó)
 
 Card con fondo oscuro. El dato más incómodo del reporte entregado con la mayor claridad posible.
 
+EXCEPCIÓN MODO E (situación laboral = contractor): la tabla de Corrección 4 está calibrada con investigación de brecha de género en relación de dependencia — no existe investigación específica sobre brecha de género en contratos de servicios independientes. Aplicar la tabla igual, sobre el nivel jerárquico equivalente, pero declararlo explícitamente en el párrafo de contexto (punto 2 de la estructura): algo como "Este rango está calibrado con investigación de brecha de género en relación de dependencia — no existe investigación específica para contratos de servicios independientes, así que lo aplicamos a tu equivalente como la mejor referencia disponible." (en inglés: "This range is calibrated using gender gap research for formal employment — there's no specific research for independent services contracts, so we apply it to your equivalent as the best available reference.") Nunca presentarlo con el mismo nivel de certeza que el resto de la sección, que sí tiene investigación directa.
+
 Estructura:
 1. El número primero — en dinero por mes y por año. NUNCA solo porcentaje.
 2. El contexto específico para esa industria y nivel (Corrección 4 — tabla por nivel jerárquico)
@@ -1181,8 +1183,8 @@ La estructura exacta del JSON es:
   "seccion_4": {
     "incluir": true,
     "brecha_porcentaje": "string o null",
-    "brecha_mensual_local": "string o null",
-    "brecha_anual_local": "string o null",
+    "brecha_mensual_local": "string o null — NUNCA null si brecha_porcentaje tiene valor: calcular como (P50 de mercado del perfil, o el equivalente en relación de dependencia en Modo E) × brecha_porcentaje ÷ 100. Mostrar el monto resultante en moneda local, nunca dejar vacío si hay porcentaje.",
+    "brecha_anual_local": "string o null — mismo cálculo que brecha_mensual_local, multiplicado por 12 (o 13 si aplica aguinaldo/SAC para el perfil). NUNCA null si brecha_porcentaje tiene valor.",
     "nivel_jerarquico_brecha": "string o null — referencia a la tabla por nivel",
     "factores_amplificadores": ["string o null"],
     "contexto_especifico": "string o null",
