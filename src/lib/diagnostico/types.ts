@@ -184,4 +184,7 @@ export type DiagnosticoState = {
   datosExtraidos?: DatosExtraidos | null;
   // Set of step indices the user explicitly chose to "Cambiar" (override extracted)
   pasosOverride?: number[];
+  // Último paso visitado en /diagnostico/preguntas — para que volver a esa pantalla
+  // resuma donde la persona quedó, en vez de reiniciar siempre desde el paso 0.
+  pasoFormulario?: number;
 };

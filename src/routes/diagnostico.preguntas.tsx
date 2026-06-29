@@ -378,7 +378,7 @@ function PreguntasPage() {
   const { lang } = useLang();
   const isEN = lang === "EN";
   const modo = state.modo;
-  const [step, setStep] = React.useState(0);
+  const [step, setStep] = React.useState(() => state.pasoFormulario ?? 0);
   const [certRawInput, setCertRawInput] = React.useState("");
   const appliedRef = React.useRef(false);
 
@@ -412,7 +412,14 @@ function PreguntasPage() {
     });
   }, [modo, state.documentos.avisoTexto, state.documentos.avisoNombre]);
   // step = índice visual de navegación; stepLogico = pregunta que se muestra.
-  const stepLogico = orden[step] ?? step;
+  const stepClamped = Math.min(step, Math.max(orden.length - 1, 0));
+  const stepLogico = orden[stepClamped] ?? stepClamped;
+
+  // Persistir el paso actual para que volver a esta pantalla resuma donde quedó,
+  // en vez de reiniciar siempre desde el paso 0 (ej. al usar "Quiero corregir algo").
+  React.useEffect(() => {
+    setState((s) => (s.pasoFormulario === stepClamped ? s : { ...s, pasoFormulario: stepClamped }));
+  }, [stepClamped, setState]);
 
   // Pre-cargar respuestas desde extracción una sola vez al entrar
   React.useEffect(() => {
