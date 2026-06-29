@@ -924,7 +924,9 @@ SECCIÓN 2 — "ACÁ ESTÁ TU NÚMERO"
 
 El momento de verdad. Claro, directo, sin rodeos.
 
-Estructura:
+EXCEPCIÓN MODO E (situación laboral = contractor): todas las comparaciones de esta sección (badge, compa-ratio, percentil "el Y% gana más", fila "Tu salario actual") se hacen sobre el EQUIVALENTE EN RELACIÓN DE DEPENDENCIA (contrato × factor de equivalencia de Corrección 11, Paso 2) — NUNCA sobre el valor crudo del contrato. Esto ya estaba definido en Corrección 11 ("el posicionamiento se determina sobre la base equivalente, no sobre la facturación bruta") pero nunca estaba conectado a esta sección. Ver bloque "REENCUADRE DE SECCIÓN 2" en las instrucciones de Modo E para el detalle completo.
+
+Estructura (modos A-D, empleado):
 1. Párrafo en lenguaje humano: el rango y el punto medio en moneda local y en USD
 2. Cuántas personas ganan más (NUNCA "percentil X" — SIEMPRE "el Y% de los profesionales con tu perfil gana más que tú hoy (en Argentina/Uruguay: 'que vos hoy')")
 3. Badge de posicionamiento: BAJO MERCADO / EN MERCADO / SOBRE MERCADO
@@ -1854,6 +1856,14 @@ REENCUADRE DE SECCIÓN 5 (antes "pretensión salarial"):
 — No usar "Tu pretensión salarial" ni "Cuánto pedir"
 — El campo analisis_floor_ceiling (o el campo narrativo equivalente) debe abrir con una idea como: "Cuando tengas que plantear esto con tu empleador, no vas a decir 'según el mercado' — vas a decir un número. Este es el que podés defender."
 — Floor y ceiling se mantienen conceptualmente (mínimo aceptable / techo), pero el texto que los explica nunca debe usar "tarifa" — usar "valor de tu contrato" o "lo que cobrás".
+
+REENCUADRE DE SECCIÓN 2 (el gráfico principal, percentiles y posicionamiento):
+Aplica la Corrección 11, Paso 2, que ya existe y dice que el posicionamiento se determina sobre el equivalente en relación de dependencia, no sobre la facturación bruta — esta sección NUNCA debe comparar el valor crudo del contrato directamente contra el mercado.
+— "Tu salario actual" en la tabla de percentiles, y el badge BAJO/EN/SOBRE MERCADO, deben calcularse sobre el equivalente en relación de dependencia (contrato × factor de equivalencia) — nunca sobre el valor crudo del contrato.
+— El compa-ratio se calcula sobre ese mismo equivalente.
+— El párrafo narrativo debe aclarar la conversión explícitamente — por ejemplo: "El valor de tu contrato (USD X) equivale a USD Y brutos en relación de dependencia, considerando lo que asumís en lugar de un empleador. Comparado con el mercado de empleados para tu perfil..." (en inglés: "The value of your contract (USD X) is equivalent to USD Y gross in a formal employment relationship, accounting for what you take on instead of an employer. Compared to the employee market for your profile...")
+— NUNCA decir "el Y% de los consultores/contractors con tu perfil gana más" — eso implica un mercado de contractors que no existe como fuente citable. Decir en cambio: "el Y% de los profesionales empleados con tu perfil gana más que tu equivalente hoy" (en inglés: "Y% of employed professionals with your profile earn more than your equivalent today").
+— No omitir el valor crudo del contrato — debe quedar visible en el párrafo o la tabla, para que la persona entienda de dónde sale el equivalente, igual que ya se hace en seccion_3.
 
 REENCUADRE DE SECCIÓN 3 (antes "Compensación total"):
 En Modo E no corresponde comparar línea por línea contra un paquete de beneficios de empleado — el contractor se autofinancia lo que un empleador absorbería, y esa conversión YA existe en seccion_freelance (factor de equivalencia). No duplicar esa lógica con una comparación distinta e inconsistente.
