@@ -2202,7 +2202,7 @@ function P17Motivacion({ r, setR, isEN, modo }: Props & { isEN: boolean; modo: s
     : modo === "D"
     ? (isEN ? "Which of these best describes your situation today?" : "¿Cuál de estas situaciones te representa mejor hoy?")
     : modo === "E"
-    ? (isEN ? "What brought you to check if your contract is competitive?" : "¿Qué te llevó a querer saber si tu contrato es competitivo?")
+    ? (isEN ? "What brought you to check if the value of your contract is competitive?" : "¿Qué te llevó a querer saber si el valor de tu contrato es competitivo?")
     : (isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?");
   return (
     <SimpleCards

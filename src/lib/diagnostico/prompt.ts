@@ -445,18 +445,18 @@ Si el freelance no está empleado actualmente:
 Preguntar cuánto facturaba en promedio en los últimos 6 meses (no el mejor mes, no el peor).
 Usar ese promedio como base del equivalente de dependencia.
 
-REGLA DE LENGUAJE — CONTRACTOR / FREELANCE / INDEPENDIENTE (P4):
-Si el usuario declaró situación laboral = contractor, freelance o independiente:
-- NUNCA usar "salario", "sueldo", "remuneración" para referirse a lo que cobra
-- SIEMPRE usar: "tarifa", "honorarios", "facturación mensual", "lo que facturás"
-- NUNCA usar "empleador" — usar "cliente" o "empresa contratante"
-- NUNCA usar "aumento" — usar "ajuste de tarifa", "revisión de honorarios"
-- NUNCA usar "jefe" — usar "cliente principal" o "empresa contratante"
-- El script en seccion_6 para contractor NO es "hablar con el jefe" — es "plantear la revisión de tarifa con tu cliente"
-- Las objeciones en seccion_6 para contractor son objeciones de cliente externo, NO de empleador interno:
-  Objeción 1: "Tu tarifa está por encima de lo que manejamos para este perfil"
-  Objeción 2: "Tenemos otras opciones en ese rango de precio"
-  Objeción 3: "¿Podés justificar esa tarifa con el valor que aportás?"
+REGLA DE LENGUAJE — CONTRACTOR (Modo E):
+Si el usuario declaró situación laboral = contractor:
+- NUNCA usar "salario", "sueldo", "remuneración", "tarifa", "honorarios" para referirse a lo que cobra
+- SIEMPRE usar: "el valor de tu contrato", "tu contrato", "lo que cobrás"
+- NUNCA usar "cliente", "empresa contratante" ni "la empresa" para referirse a la otra parte de la relación — SIEMPRE usar "tu empleador"
+- NUNCA usar "aumento" — usar "ajuste del valor de tu contrato"
+- NUNCA usar "jefe" — usar "tu empleador"
+- El script en seccion_6 para contractor NO es "hablar con el jefe" ni "plantear con tu cliente" — es "plantear el ajuste del valor de tu contrato con tu empleador"
+- Las objeciones en seccion_6 para contractor:
+  Objeción 1: "El valor de tu contrato está por encima de lo que manejamos para este tipo de perfil"
+  Objeción 2: "No tenemos presupuesto para ese ajuste este año"
+  Objeción 3: "¿Podés justificar ese valor con el impacto que generás?"
 - El SBTA no aplica para contractors — reemplazar por "facturación anual proyectada"
 - NO calcular aguinaldo/SAC para contractors — no corresponde
 - En seccion_2, el campo sbta_usuario debe decir "Facturación anual proyectada: [monto × 12]" no "SBTA"
@@ -951,7 +951,9 @@ SECCIÓN 3 — "LO QUE REALMENTE TE PAGAN"
 
 La foto completa de compensación. Puede sorprender en cualquier dirección.
 
-Estructura:
+EXCEPCIÓN MODO E (situación laboral = contractor): la estructura de abajo NO aplica. Ver el bloque "REENCUADRE DE SECCIÓN 3" en las instrucciones de Modo E — título distinto, tabla de máximo 2 filas, sin lista de beneficios faltantes. Esta excepción tiene prioridad sobre la estructura genérica que sigue.
+
+Estructura (modos A-D, empleado):
 1. Tabla de compensación total (salario base + valorización de cada beneficio declarado + total)
 2. Comparación total vs. mercado típico para el perfil
 3. Párrafo de análisis narrativo: si mejora o empeora el posicionamiento
@@ -1188,9 +1190,9 @@ La estructura exacta del JSON es:
   "seccion_5": {
     "pretension_recomendada_local": "string — UN SOLO NÚMERO, nunca un rango (ej: \"$2.800.000\", NUNCA \"$2.800.000 - $3.200.000\"). El rango ya existe en floor_local/ceiling_local — este campo es el número puntual recomendado.",
     "pretension_recomendada_usd": "string — mismo criterio: UN SOLO NÚMERO, nunca un rango.",
-    "floor_local": "string",
-    "ceiling_local": "string",
-    "explicacion_floor_ceiling": "string",
+    "floor_local": "string — SIEMPRE el P25 del rango de mercado (ajustado por nivel de confianza si aplica). Nunca otro percentil.",
+    "ceiling_local": "string — SIEMPRE el P75 del rango de mercado (ajustado por nivel de confianza si aplica). Nunca otro percentil.",
+    "explicacion_floor_ceiling": "string — debe nombrar explícitamente P25 para floor_local y P75 para ceiling_local, coherente con esos campos — nunca otro percentil distinto al que de verdad corresponde.",
     // CAMPO EXCLUSIVO DE MODO C: incluir SOLO si modo === "C". En Modos A, B y D OMITIR completamente la clave del JSON (no enviar null, no enviar string vacío, no enviar la clave).
     "respuesta_antes_de_conocer_rol": "string — SOLO EN MODO C, OMITIR EN A/B/D",
     "argumento_1_mercado": "string — con datos específicos del perfil",
@@ -1378,7 +1380,7 @@ Facturación objetivo: P50÷factor (punto medio); P75÷factor (cuartil superior)
 AR monotributo: si facturación recomendada cerca/sobre tope categoría máxima, señalarlo sin dar el monto. Recomendar consulta con contador.
 Freelance evaluando dependencia: pretensión = equivalente dependencia +10-15% (compensa pérdida autonomía).
 Freelance sin empleo actual: usar promedio facturación últimos 6 meses como base.
-REGLA LENGUAJE CONTRACTOR: nunca "salario/sueldo/empleador/jefe/aumento" — usar "tarifa/honorarios/cliente/ajuste de tarifa". Objeciones cliente externo: "tarifa por encima de lo que manejamos", "tenemos otras opciones en ese rango", "¿podés justificar esa tarifa?". Sin SBTA — usar "facturación anual proyectada".
+REGLA LENGUAJE CONTRACTOR (Modo E): nunca "salario/sueldo/tarifa/honorarios/cliente/jefe/aumento" — usar "el valor de tu contrato/tu empleador/ajuste del valor de tu contrato". Objeciones: "el valor de tu contrato está por encima de lo que manejamos", "no tenemos presupuesto para ese ajuste este año", "¿podés justificar ese valor con el impacto que generás?". Sin SBTA — usar "facturación anual proyectada".
 
 ═══ CORRECCIÓN 12 — VALOR HORA CONSULTORES INDEPENDIENTES (2026) ═══
 Billing rates firmas globales (Mercer/WTW/Korn Ferry/McKinsey/Deloitte) — techo de referencia:
@@ -1552,9 +1554,9 @@ Generá ÚNICAMENTE las claves "seccion_5", "seccion_6", "seccion_7", "seccion_8
   "seccion_5": {
     "pretension_recomendada_local": "string — UN SOLO NÚMERO, nunca un rango (ej: \"$2.800.000\", NUNCA \"$2.800.000 - $3.200.000\"). El rango ya existe en floor_local/ceiling_local — este campo es el número puntual recomendado.",
     "pretension_recomendada_usd": "string — mismo criterio: UN SOLO NÚMERO, nunca un rango.",
-    "floor_local": "string",
-    "ceiling_local": "string",
-    "explicacion_floor_ceiling": "string",
+    "floor_local": "string — SIEMPRE el P25 del rango de mercado (ajustado por nivel de confianza si aplica). Nunca otro percentil.",
+    "ceiling_local": "string — SIEMPRE el P75 del rango de mercado (ajustado por nivel de confianza si aplica). Nunca otro percentil.",
+    "explicacion_floor_ceiling": "string — debe nombrar explícitamente P25 para floor_local y P75 para ceiling_local, coherente con esos campos — nunca otro percentil distinto al que de verdad corresponde.",
     "respuesta_antes_de_conocer_rol": "string — OBLIGATORIO en Modo C, contenido sustantivo",
     "argumento_1_mercado": "string — con datos específicos del perfil",
     "argumento_2_alcance_real": "string",

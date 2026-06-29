@@ -44,8 +44,8 @@ const situacionesES: { id: Modo; titulo: string; descripcion: string }[] = [
   },
   {
     id: "E",
-    titulo: "Trabajo como contractor para una empresa, sin relación de dependencia formal",
-    descripcion: "Facturás de forma sostenida a un solo cliente, casi como si fueras parte del equipo. Te decimos si tu tarifa es competitiva, considerando lo que asumís en lugar de un empleador.",
+    titulo: "Quiero saber si el valor de mi contrato es competitivo",
+    descripcion: "Analizamos el valor de tu contrato y te decimos si está alineado con lo que cobra alguien con tu mismo perfil — considerando lo que asumís en lugar de un empleador.",
   },
 ];
 
@@ -72,8 +72,8 @@ const situacionesEN: { id: Modo; titulo: string; descripcion: string }[] = [
   },
   {
     id: "E",
-    titulo: "I work as a contractor for a company, with no formal employment relationship",
-    descripcion: "You bill one client on a sustained basis, almost as if you were part of the team. We tell you if your rate is competitive, accounting for what you take on instead of an employer.",
+    titulo: "I want to know if the value of my contract is competitive",
+    descripcion: "We analyze the value of your contract and tell you if it's aligned with what someone with your profile earns — accounting for what you take on instead of an employer.",
   },
 ];
 
@@ -138,12 +138,12 @@ function ModoSelector() {
                 {isEN ? "COMING SOON" : "PRÓXIMAMENTE"}
               </p>
               <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">
-                {isEN ? "I have several clients and quote per project" : "Tengo varios clientes y cotizo por proyecto"}
+                {isEN ? "I want to know what to charge for my next project" : "Quiero saber qué cobrar por mi próximo proyecto"}
               </h2>
               <p className="font-body text-piedra leading-relaxed mb-10">
                 {isEN
-                  ? "If you put together consulting or service proposals by project for different clients, we'll help you figure out what rate to charge. We're building the real market data for this segment."
-                  : "Si armás propuestas de consultoría o servicios por proyecto para distintos clientes, te vamos a ayudar a definir qué tarifa cobrar. Estamos construyendo el dato real de mercado para este segmento."}
+                  ? "We'll help you set your rate with a real market reference for independent professionals who quote by project — not a guess. We're building the real market data for this segment."
+                  : "Te ayudamos a definir tu tarifa con una referencia real de mercado para profesionales independientes que cotizan por proyecto — no una corazonada. Estamos construyendo el dato real de mercado para este segmento."}
               </p>
               <span className="mt-auto font-ui text-[11px] inline-flex items-center gap-2 text-tinta border-t border-niebla pt-4 group-hover:border-tinta transition-colors">
                 {isEN ? "Notify me" : "Quiero que me avisen"} <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>

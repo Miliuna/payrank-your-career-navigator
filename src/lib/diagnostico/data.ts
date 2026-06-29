@@ -356,15 +356,15 @@ export const MOTIVACIONES_D_EN = [
 ];
 
 export const MOTIVACIONES_E = [
-  "Mi cliente rechazó un ajuste que propuse, no tuve respuesta, o ya pasaron más de 12 meses sin revisión de mi contrato",
+  "Hace más de 12 meses que no se revisa el valor de mi contrato, o lo planteé y no avanzó",
   "Mis responsabilidades crecieron pero mi contrato no se actualizó",
-  "No tengo un evento puntual, pero quiero un panorama objetivo de mi valor de mercado",
+  "No tengo un evento puntual, pero quiero saber cuánto valdría mi puesto en relación de dependencia",
 ];
 
 export const MOTIVACIONES_E_EN = [
-  "My client rejected an adjustment I proposed, I got no response, or it's been over 12 months without a review of my contract",
+  "It's been over 12 months since my contract's value was reviewed, or I raised it and it didn't move forward",
   "My responsibilities grew but my contract wasn't updated",
-  "There's no specific trigger, but I want an objective picture of my market value",
+  "There's no specific trigger, but I want to know what my role would be worth in a formal employment relationship",
 ];
 
 // v3.1
