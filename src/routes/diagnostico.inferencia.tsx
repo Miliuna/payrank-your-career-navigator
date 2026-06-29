@@ -236,10 +236,10 @@ function InferenciaPage() {
         </p>
         <button
           type="button"
-          onClick={() => navigate({ to: "/diagnostico/preguntas" })}
+          onClick={() => navigate({ to: "/diagnostico/upload" })}
           className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline mb-10"
         >
-          {isEN ? "← Back to edit previous answers" : "← Volver y editar respuestas anteriores"}
+          {isEN ? "← I want to go back to the start" : "← Quiero volver al inicio"}
         </button>
 
         <div className="space-y-5">

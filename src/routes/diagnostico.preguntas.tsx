@@ -1461,7 +1461,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
           </div>
           {r.contractorPagoAdicional === "si" && (
             <MontoInput
-              placeholder={isEN ? "Average amount when it happens (optional)" : "Monto promedio cuando pasa (opcional)"}
+              placeholder={isEN ? "Average amount when it happens, same currency as your contract (optional)" : "Monto promedio cuando pasa, en la misma moneda que tu contrato (opcional)"}
               valor={r.contractorPagoAdicionalMonto}
               onValor={(v) => setR({ contractorPagoAdicionalMonto: v })}
             />
@@ -1910,7 +1910,7 @@ function P16Beneficios({ r, setR, datosExtraidos }: Props & { datosExtraidos?: i
             </div>
             {r.comisiones_tipo === "con_monto" && (
               <MontoInput
-                placeholder={isEN ? "Average monthly commissions (optional)" : "Promedio mensual de comisiones (opcional)"}
+                placeholder={isEN ? "Average monthly commissions, same currency as your salary (optional)" : "Promedio mensual de comisiones, en la misma moneda que tu salario (opcional)"}
                 valor={r.comisiones_monto}
                 onValor={(v) => setR({ comisiones_monto: v })}
               />

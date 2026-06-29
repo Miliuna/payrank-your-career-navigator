@@ -138,7 +138,7 @@ function ModoSelector() {
                 {isEN ? "COMING SOON" : "PRÓXIMAMENTE"}
               </p>
               <h2 className="font-display text-2xl md:text-3xl mb-4 leading-tight">
-                {isEN ? "I want to know what to charge for my next project" : "Quiero saber qué cobrar por mi próximo proyecto"}
+                {isEN ? "I want to know how much to charge for my next project" : "Quiero saber cuánto cobrar por mi próximo proyecto"}
               </h2>
               <p className="font-body text-piedra leading-relaxed mb-10">
                 {isEN

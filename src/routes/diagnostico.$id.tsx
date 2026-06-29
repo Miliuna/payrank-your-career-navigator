@@ -699,8 +699,12 @@ function ResultadoPage() {
 
               <Card dark>
                 <KV k={isEN ? "Gap %" : "Brecha %"} v={str(s4.brecha_porcentaje)} />
-                <KV k={isEN ? "Monthly gap" : "Brecha mensual"} v={<span className="font-display">{str(s4.brecha_mensual_local)}</span>} />
-                <KV k={isEN ? "Annual gap" : "Brecha anual"} v={<span className="font-display">{str(s4.brecha_anual_local)}</span>} />
+                {!!s4.brecha_mensual_local && (
+                  <KV k={isEN ? "Monthly gap" : "Brecha mensual"} v={<span className="font-display">{str(s4.brecha_mensual_local)}</span>} />
+                )}
+                {!!s4.brecha_anual_local && (
+                  <KV k={isEN ? "Annual gap" : "Brecha anual"} v={<span className="font-display">{str(s4.brecha_anual_local)}</span>} />
+                )}
                 <KV k={isEN ? "Level" : "Nivel"} v={str(s4.nivel_jerarquico_brecha)} />
               </Card>
 
@@ -771,6 +775,13 @@ function ResultadoPage() {
           </Card>
 
           <P muted>{str(s5.explicacion_floor_ceiling)}</P>
+
+          {row.situacion_laboral === "contractor" && !!fl.alerta_monotributo && (
+            <Card dark>
+              <Eyebrow>ALERTA · MONOTRIBUTO</Eyebrow>
+              <P>{str(fl.alerta_monotributo)}</P>
+            </Card>
+          )}
 
           {!!s5.respuesta_antes_de_conocer_rol && (
             <Card dark>
@@ -961,8 +972,8 @@ function ResultadoPage() {
         </Section>
         )}
 
-        {/* FREELANCE */}
-        {bool(fl.aplica) && (
+        {/* FREELANCE — suprimido para Modo E (mensual, no por hora); queda disponible para Modo F */}
+        {bool(fl.aplica) && row.situacion_laboral !== "contractor" && (
           <>
             <Divider />
             <Section>

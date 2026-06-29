@@ -399,8 +399,10 @@ Descuento por: self-employment tax, ausencia de benefits del empleador
 
 Otros países: × 0.65 como estimación conservadora
 
+BASE DE CÁLCULO (X): el contrato mensual declarado + comisiones mensuales promedio si las declaró + pago adicional ocasional promedio si lo declaró. Sumar TODOS los componentes que el usuario haya declarado antes de aplicar el factor — no usar solo el contrato base si hay otros montos declarados.
+
 Declarar explícitamente en el reporte:
-"Tu facturación de [X] mensual equivale a un salario bruto de aproximadamente [X × factor] en relación de dependencia — considerando las cargas, beneficios y costos operativos que asumes tú en lugar de un empleador (AR/UY: 'asumís vos')."
+"Tu facturación de [X, la suma de todos los componentes declarados] mensual equivale a un salario bruto de aproximadamente [X × factor] en relación de dependencia — considerando las cargas, beneficios y costos operativos que asumes tú en lugar de un empleador (AR/UY: 'asumís vos')."
 
 PASO 2 — POSICIONAMIENTO VS. MERCADO:
 Comparar el equivalente calculado con el rango de mercado del perfil en relación de dependencia.
@@ -1866,6 +1868,7 @@ Aplica la Corrección 11, Paso 2, que ya existe y dice que el posicionamiento se
 — El párrafo narrativo debe aclarar la conversión explícitamente — por ejemplo: "El valor de tu contrato (USD X) equivale a USD Y brutos en relación de dependencia, considerando lo que asumís en lugar de un empleador. Comparado con el mercado de empleados para tu perfil..." (en inglés: "The value of your contract (USD X) is equivalent to USD Y gross in a formal employment relationship, accounting for what you take on instead of an employer. Compared to the employee market for your profile...")
 — NUNCA decir "el Y% de los consultores/contractors con tu perfil gana más" — eso implica un mercado de contractors que no existe como fuente citable. Decir en cambio: "el Y% de los profesionales empleados con tu perfil gana más que tu equivalente hoy" (en inglés: "Y% of employed professionals with your profile earn more than your equivalent today").
 — No omitir el valor crudo del contrato — debe quedar visible en el párrafo o la tabla, para que la persona entienda de dónde sale el equivalente, igual que ya se hace en seccion_3.
+— Si aplica erosión por falta de ajuste (Corrección 8), llamarlo "erosión del valor de tu contrato" — NUNCA "erosión salarial". El concepto aplica igual (el valor se atrasa frente al mercado sin un ajuste), solo cambia la palabra.
 
 REENCUADRE DE SECCIÓN 3 (antes "Compensación total"):
 En Modo E no corresponde comparar línea por línea contra un paquete de beneficios de empleado — el contractor se autofinancia lo que un empleador absorbería, y esa conversión YA existe en seccion_freelance (factor de equivalencia). No duplicar esa lógica con una comparación distinta e inconsistente.
