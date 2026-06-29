@@ -53,7 +53,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
       ? `\nPago adicional ocasional fuera de tarifa fija: no`
       : "";
   const contractorMeta = r.situacion === "contractor"
-    ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nModalidad de pago: ${r.contractorPago ?? "n/d"}${contractorIncrementoTxt}${contractorPagoAdicionalTxt}`
+    ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nMoneda de la tarifa: ${moneda ?? "n/d"}${contractorIncrementoTxt}${contractorPagoAdicionalTxt}`
     : "";
   const targetDireccionD = r.targetDireccionD as string | undefined;
   const targetDirMeta = targetDireccionD

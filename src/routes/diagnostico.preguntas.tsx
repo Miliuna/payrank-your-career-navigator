@@ -15,7 +15,7 @@ import { useLang } from "@/lib/lang";
 import {
   ALCANCES, EXP_INDUSTRIA, EXP_TOTAL, FORMACIONES, FRECUENCIAS_IA,
   FUNCIONES, GENEROS, HERRAMIENTAS_IA, INDUSTRIAS, INDUSTRIAS_EN, INTERACCIONES,
-  MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_C, MOTIVACIONES_C_EN, MOTIVACIONES_D, MOTIVACIONES_D_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
+  MONEDAS, MOTIVACIONES, MOTIVACIONES_B, MOTIVACIONES_B_EN, MOTIVACIONES_C, MOTIVACIONES_C_EN, MOTIVACIONES_D, MOTIVACIONES_D_EN, MOTIVACIONES_E, MOTIVACIONES_E_EN, MOTIVACIONES_EN, NIVELES, NIVELES_EN, NIVELES_IDIOMA, NIVELES_IDIOMA_EN, PAISES, PAISES_EN,
   ANTIGUEDAD_ROL, ANTIGUEDAD_ROL_EN, TIPO_NEGOCIACION, TIPO_NEGOCIACION_EN, ORIENTACION_CARRERA, ORIENTACION_CARRERA_EN, PUNTO_PARTIDA_SALTO, PUNTO_PARTIDA_SALTO_EN,
   PERSONAS_A_CARGO, TIEMPOS_SIN_TRABAJO, TIPOS_EMPRESA, TOTAL_PREGUNTAS, USOS_IA, labelOf,
 } from "@/lib/diagnostico/data";
@@ -591,7 +591,7 @@ function isValid(
   switch (step) {
     case 0: return !!r.pais && (r.pais !== "Otro" || !!r.paisOtro?.trim());
     case 1: {
-      if (modo === "E") return !!r.contractorHoras && !!r.contractorPago && !!r.salario && !!r.moneda;
+      if (modo === "E") return !!r.contractorHoras && !!r.salario && !!r.moneda;
       if (modo === "C") return true; // salario opcional en Modo C
       return !!r.salario && !!r.moneda && !!r.brutoNeto;
     }
@@ -1287,12 +1287,6 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         clear.contractorHoras = datosExtraidos.horas_semanales_pactadas_inferidas;
         touched = true;
       }
-      if (r.contractorPago === undefined && datosExtraidos.moneda_inferida) {
-        const pais = (r.pais === "Otro" ? r.paisOtro : r.pais) ?? "";
-        const monedaLocal = paisToMoneda(pais, r.paisOtro);
-        clear.contractorPago = datosExtraidos.moneda_inferida === monedaLocal ? "local" : "usd";
-        touched = true;
-      }
       if (r.moneda === undefined && datosExtraidos.moneda_inferida) {
         clear.moneda = datosExtraidos.moneda_inferida;
         touched = true;
@@ -1316,7 +1310,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
       setR(clear);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [datosExtraidos, r.situacion, r.contractorHoras, r.contractorPago, r.moneda, r.salario, r.bono_target_sueldos, r.pais, r.paisOtro, setR]);
+  }, [datosExtraidos, r.situacion, r.contractorHoras, r.moneda, r.salario, r.bono_target_sueldos, r.pais, r.paisOtro, setR]);
 
   return (
     <>
@@ -1373,7 +1367,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
         <div className="border-t border-hueso/10 pt-8 space-y-6 animate-in fade-in duration-300">
           <div>
             <p className="font-body text-base text-hueso mb-3">
-              {isEN ? "How many weekly hours do you usually work for this client?" : "¿Cuántas horas semanales trabajás habitualmente para este cliente?"}
+              {isEN ? "How many hours do you work weekly?" : "¿Cuántas horas trabajás semanalmente?"}
             </p>
             <div className="flex items-center gap-2 max-w-[160px]">
               <TextInput
@@ -1386,14 +1380,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
                   setR({ contractorHoras: digits ? Number(digits) : undefined });
                 }}
               />
-              <span className="font-body text-sm text-hueso/60">{isEN ? "hs/week" : "hs/semana"}</span>
-            </div>
-          </div>
-          <div>
-            <p className="font-body text-base text-hueso mb-3">{isEN ? "How do you receive your payment?" : "¿Cómo recibís tu pago?"}</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <CardOption selected={r.contractorPago === "usd"} onClick={() => setR({ contractorPago: "usd" })}>{isEN ? "In USD or foreign currency" : "En USD o moneda extranjera"}</CardOption>
-              <CardOption selected={r.contractorPago === "local"} onClick={() => setR({ contractorPago: "local" })}>{isEN ? "In local currency" : "En moneda local"}</CardOption>
+              <span className="font-body text-sm text-hueso/60">{isEN ? "hours" : "horas"}</span>
             </div>
           </div>
           <SalarioInput
@@ -1405,7 +1392,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
           />
           <div>
             <p className="font-body text-base text-hueso mb-3">
-              {isEN ? "Did your rate increase in the last 12 months?" : "¿Tu tarifa aumentó en los últimos 12 meses?"}
+              {isEN ? "Did your contract get adjusted in the last 12 months?" : "¿Tu contrato se ajustó en los últimos 12 meses?"}
             </p>
             <div className="flex gap-2">
               <ChipOption
@@ -1448,9 +1435,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
           )}
           <div>
             <p className="font-body text-base text-hueso mb-3">
-              {isEN
-                ? "Do you get any occasional extra payment outside your fixed rate (e.g. if your client's business goes well), even if it's not in the contract?"
-                : "¿Recibís algún pago adicional ocasional fuera de tu tarifa fija (por ejemplo, si el negocio de tu cliente va bien), aunque no esté en el contrato?"}
+              {isEN ? "Do you have a variable bonus?" : "¿Tenés bono variable?"}
             </p>
             <div className="flex gap-2">
               <ChipOption
@@ -2207,6 +2192,8 @@ function P17Motivacion({ r, setR, isEN, modo }: Props & { isEN: boolean; modo: s
     ? (isEN ? MOTIVACIONES_C_EN : MOTIVACIONES_C)
     : modo === "D"
     ? (isEN ? MOTIVACIONES_D_EN : MOTIVACIONES_D)
+    : modo === "E"
+    ? (isEN ? MOTIVACIONES_E_EN : MOTIVACIONES_E)
     : (isEN ? MOTIVACIONES_EN : MOTIVACIONES);
   const title = modo === "B"
     ? (isEN ? "What brought you to seek a salary review?" : "¿Qué te llevó a buscar una revisión salarial?")
@@ -2214,6 +2201,8 @@ function P17Motivacion({ r, setR, isEN, modo }: Props & { isEN: boolean; modo: s
     ? (isEN ? "What's your situation?" : "¿Cuál es tu situación?")
     : modo === "D"
     ? (isEN ? "Which of these best describes your situation today?" : "¿Cuál de estas situaciones te representa mejor hoy?")
+    : modo === "E"
+    ? (isEN ? "What brought you to check if your contract is competitive?" : "¿Qué te llevó a querer saber si tu contrato es competitivo?")
     : (isEN ? "What brought you to check if you're being paid competitively?" : "¿Qué te llevó a querer saber si te pagan competitivamente?");
   return (
     <SimpleCards

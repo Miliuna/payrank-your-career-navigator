@@ -11,7 +11,7 @@ type Search = { editar?: boolean };
 export const Route = createFileRoute("/diagnostico/inferencia")({
   head: () => ({ meta: [{ title: "Validá la inferencia — PayRank" }] }),
   validateSearch: (s: Record<string, unknown>): Search => ({
-    editar: s.editar === "1" || s.editar === true ? true : undefined,
+    editar: s.editar === "1" || s.editar === true || s.editar === "true" ? true : undefined,
   }),
   component: InferenciaPage,
 });

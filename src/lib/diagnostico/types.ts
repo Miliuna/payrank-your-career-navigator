@@ -110,7 +110,6 @@ export type Respuestas = {
   sinIA?: boolean;
   // Contractor sub-flow
   contractorHoras?: number;
-  contractorPago?: "usd" | "local";
   contractorPagoAdicional?: "si" | "no";
   contractorPagoAdicionalMonto?: number;
   // Mode D target direction

@@ -355,6 +355,18 @@ export const MOTIVACIONES_D_EN = [
   "I'm updating my CV and want to know how the market sees me today",
 ];
 
+export const MOTIVACIONES_E = [
+  "Mi cliente rechazó un ajuste que propuse, no tuve respuesta, o ya pasaron más de 12 meses sin revisión de mi contrato",
+  "Mis responsabilidades crecieron pero mi contrato no se actualizó",
+  "No tengo un evento puntual, pero quiero un panorama objetivo de mi valor de mercado",
+];
+
+export const MOTIVACIONES_E_EN = [
+  "My client rejected an adjustment I proposed, I got no response, or it's been over 12 months without a review of my contract",
+  "My responsibilities grew but my contract wasn't updated",
+  "There's no specific trigger, but I want an objective picture of my market value",
+];
+
 // v3.1
 export const TOTAL_PREGUNTAS = 24;
 
