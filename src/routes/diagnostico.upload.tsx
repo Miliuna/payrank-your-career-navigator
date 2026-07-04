@@ -35,7 +35,7 @@ function zoneCopy(tipo: DocTipo, isEN: boolean, modo?: Modo): ZoneCopy {
         return {
           label: "CV or professional profile · Recommended",
           sublabel: "Your CV, exported LinkedIn profile or any document with your career history. Don't have it handy or not up to date? No problem — you'll be able to confirm or correct every detail before generating your report.",
-          required: false,
+          required: true,
         };
       case "recibo":
         if (modo === "E") {
@@ -65,7 +65,7 @@ function zoneCopy(tipo: DocTipo, isEN: boolean, modo?: Modo): ZoneCopy {
       return {
         label: "CV o perfil profesional · Recomendado",
         sublabel: "Tu CV, perfil de LinkedIn exportado o cualquier documento con tu trayectoria. ¿No lo tenés disponible ahora o no refleja tu situación actual? No hay problema — vas a poder confirmar o corregir cada dato antes de generar tu reporte.",
-        required: false,
+        required: true,
       };
     case "recibo":
       if (modo === "E") {
@@ -426,11 +426,13 @@ function UploadZone({
     <div>
       <div className="flex items-baseline gap-2 mb-1">
         <p className="font-ui text-[11px] tracking-[0.15em] text-hueso uppercase">{copy.label}</p>
-        <span className="font-ui text-[10px] text-hueso/50">
-          {copy.required
-            ? (isEN ? "· REQUIRED" : "· OBLIGATORIO")
-            : (isEN ? "· OPTIONAL" : "· OPCIONAL")}
-        </span>
+        {tipo !== "cv" && (
+          <span className="font-ui text-[10px] text-hueso/50">
+            {copy.required
+              ? (isEN ? "· REQUIRED" : "· OBLIGATORIO")
+              : (isEN ? "· OPTIONAL" : "· OPCIONAL")}
+          </span>
+        )}
       </div>
       <p className="font-body text-sm text-hueso/65 mb-3 leading-relaxed">{copy.sublabel}</p>
 
