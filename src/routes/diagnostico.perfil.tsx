@@ -128,7 +128,7 @@ function PerfilPage() {
   }, []);
 
   const back = () => {
-    setState({ pasoFormulario: 0 });
+    setState((s) => ({ ...s, pasoFormulario: 0 }));
     navigate({ to: "/diagnostico/preguntas" });
   };
 
