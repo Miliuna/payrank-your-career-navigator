@@ -367,10 +367,10 @@ function UploadPage() {
             <button
               type="button"
               onClick={procesar}
-              disabled={!cvFile || (modo === "C" && !avisoFile && !avisoText.trim())}
+              disabled={(!cvFile && !sinCv) || (modo === "C" && !avisoFile && !avisoText.trim())}
               className={cn(
                 "font-ui text-[11px] tracking-[0.2em] pb-1 border-b transition-colors",
-                cvFile && (modo !== "C" || avisoFile || avisoText.trim())
+                (cvFile || sinCv) && (modo !== "C" || avisoFile || avisoText.trim())
                   ? "text-hueso border-hueso/60 hover:border-hueso"
                   : "text-hueso/30 border-hueso/20 cursor-not-allowed",
               )}
