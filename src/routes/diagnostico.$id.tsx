@@ -829,7 +829,7 @@ function ResultadoPage() {
           <Card dark>
             <Eyebrow>
               {row.situacion_laboral === "contractor"
-                ? (isEN ? "TALKING TO YOUR EMPLOYER / CLIENT" : "HABLAR CON TU EMPLEADOR / CLIENTE")
+                ? (isEN ? "TALKING TO YOUR EMPLOYER" : "HABLAR CON TU EMPLEADOR")
                 : (isEN ? "TALKING TO YOUR BOSS" : "HABLAR CON TU JEFE")}
             </Eyebrow>
             <p className="font-body text-hueso/90 whitespace-pre-wrap leading-relaxed text-justify">{limpiarScript(str(s6.script_jefe))}</p>
