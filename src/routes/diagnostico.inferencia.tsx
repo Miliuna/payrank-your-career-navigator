@@ -231,15 +231,15 @@ function InferenciaPage() {
         <h1 className="font-display text-3xl md:text-4xl mb-3 text-hueso leading-tight">
           {(INFERENCIA_TEXTO[modo] ?? INFERENCIA_TEXTO.A).titulo}
         </h1>
-        <p className="font-body text-hueso/60 mb-6">
+        <p className="font-body text-hueso/60 mb-4">
           {(INFERENCIA_TEXTO[modo] ?? INFERENCIA_TEXTO.A).parrafo}
         </p>
         <button
           type="button"
           onClick={() => navigate({ to: "/diagnostico/upload" })}
-          className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline mb-10"
+          className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline mb-8 block"
         >
-          {isEN ? "← I want to go back to the start" : "← Quiero volver al inicio"}
+          {isEN ? "← Volver al inicio" : "← Volver al inicio"}
         </button>
 
         <div className="space-y-5">
@@ -283,13 +283,13 @@ function InferenciaPage() {
             >
               {isEN ? "All correct — continue" : "Todo correcto — continuá"} <span aria-hidden>→</span>
             </button>
-            <button
-              type="button"
-              onClick={() => setEditando(true)}
-              className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
-            >
-              {isEN ? "I want to adjust something" : "Quiero ajustar algo"}
-            </button>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/diagnostico/upload" })}
+            className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
+          >
+            {isEN ? "← Back to the start" : "← Volver al inicio"}
+          </button>
           </div>
         ) : (
           <NavButtons

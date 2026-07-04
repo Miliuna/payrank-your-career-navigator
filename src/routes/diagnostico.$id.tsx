@@ -618,8 +618,14 @@ function ResultadoPage() {
         {/* SECCIÓN 3 */}
 
         <Section>
-          <Eyebrow>03 · {isEN ? "TOTAL COMPENSATION" : "COMPENSACIÓN TOTAL"}</Eyebrow>
-          <H2>{isEN ? "Your complete package, valued" : "Tu paquete completo, valorizado"}</H2>
+          <Eyebrow>03 · {row.situacion_laboral === "contractor"
+            ? (isEN ? "YOUR CONTRACT'S VALUE" : "EL VALOR DE TU CONTRATO")
+            : (isEN ? "TOTAL COMPENSATION" : "COMPENSACIÓN TOTAL")}
+          </Eyebrow>
+          <H2>{row.situacion_laboral === "contractor"
+            ? (isEN ? "What your contract's value covers" : "Qué cubre el valor de tu contrato")
+            : (isEN ? "Your complete package, valued" : "Tu paquete completo, valorizado")}
+          </H2>
 
           {(() => {
             const monedaDeclaradaS3 = typeof row.moneda_reporte === "string" && row.moneda_reporte
@@ -674,7 +680,7 @@ function ResultadoPage() {
             </Card>
           )}
 
-          {arr<string>(s3.beneficios_faltantes).length > 0 && (
+          {arr<string>(s3.beneficios_faltantes).length > 0 && row.situacion_laboral !== "contractor" && (
             <div>
               <Eyebrow>{isEN ? "BENEFITS YOU'RE MISSING" : "BENEFICIOS QUE TE FALTAN"}</Eyebrow>
               <ul className="space-y-1">
@@ -753,8 +759,14 @@ function ResultadoPage() {
         {/* SECCIÓN 5 */}
 
         <Section>
-          <Eyebrow>05 · {isEN ? "WHAT TO ASK FOR" : "CUÁNTO PEDIR"}</Eyebrow>
-          <H2>{isEN ? "Your salary ask" : "Tu pretensión salarial"}</H2>
+          <Eyebrow>05 · {row.situacion_laboral === "contractor"
+            ? (isEN ? "WHAT YOUR CONTRACT SHOULD BE WORTH" : "EL VALOR DE TU CONTRATO")
+            : (isEN ? "WHAT TO ASK FOR" : "CUÁNTO PEDIR")}
+          </Eyebrow>
+          <H2>{row.situacion_laboral === "contractor"
+            ? (isEN ? "What your contract should be worth" : "A cuánto debería ascender el valor de tu contrato")
+            : (isEN ? "Your salary ask" : "Tu pretensión salarial")}
+          </H2>
 
           {(() => {
             const monedaDeclaradaS5 = typeof row.moneda_reporte === "string" && row.moneda_reporte

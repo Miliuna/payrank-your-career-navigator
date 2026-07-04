@@ -460,6 +460,7 @@ Si el usuario declaró situación laboral = contractor:
   Objeción 2: "No tenemos presupuesto para ese ajuste este año"
   Objeción 3: "¿Podés justificar ese valor con el impacto que generás?"
 - El SBTA no aplica para contractors — reemplazar por "facturación anual proyectada"
+- El bono variable SÍ puede existir para contractors — algunos empleadores pagan un bono informal si el negocio va bien, aunque no esté formalizado en el contrato. Si el usuario declaró "pago adicional ocasional" en el formulario, tomarlo como bono variable informal y mencionarlo en el análisis de bono. NO decir "No aplica para contractor" — si no hay dato declarado, simplemente omitir la línea de bono en vez de decir que no aplica.
 - NO calcular aguinaldo/SAC para contractors — no corresponde
 - En seccion_2, el campo sbta_usuario debe decir "Facturación anual proyectada: [monto × 12]" no "SBTA"
 
@@ -1869,6 +1870,7 @@ Aplica la Corrección 11, Paso 2, que ya existe y dice que el posicionamiento se
 — NUNCA decir "el Y% de los consultores/contractors con tu perfil gana más" — eso implica un mercado de contractors que no existe como fuente citable. Decir en cambio: "el Y% de los profesionales empleados con tu perfil gana más que tu equivalente hoy" (en inglés: "Y% of employed professionals with your profile earn more than your equivalent today").
 — No omitir el valor crudo del contrato — debe quedar visible en el párrafo o la tabla, para que la persona entienda de dónde sale el equivalente, igual que ya se hace en seccion_3.
 — Si aplica erosión por falta de ajuste (Corrección 8), llamarlo "erosión del valor de tu contrato" — NUNCA "erosión salarial". El concepto aplica igual (el valor se atrasa frente al mercado sin un ajuste), solo cambia la palabra.
+— El campo benchmark_referencia_usado debe decir exactamente de qué fuente y qué segmento sale el rango de mercado. IMPORTANTE: para Modo E, la comparación es contra el mercado de EMPLEADOS en relación de dependencia (no contra un mercado de contractors o consultores independientes que no existe como fuente citable). El texto de benchmark debe dejar esto claro — por ejemplo: "Los rangos de mercado corresponden al mercado de empleados en relación de dependencia para el perfil equivalente (fuente: Michael Page / Hays / Robert Half, Argentina/LATAM 2025-2026). La comparación se realiza sobre el equivalente de tu contrato, ajustado por el factor de equivalencia, no sobre el valor bruto del contrato." NUNCA decir "mercado de consultoría independiente" ni "mercado de contractors" ni citar fuentes de tarifas freelance — no existen como dato citable para esta región.
 
 REENCUADRE DE SECCIÓN 3 (antes "Compensación total"):
 En Modo E no corresponde comparar línea por línea contra un paquete de beneficios de empleado — el contractor se autofinancia lo que un empleador absorbería, y esa conversión YA existe en seccion_freelance (factor de equivalencia). No duplicar esa lógica con una comparación distinta e inconsistente.
