@@ -1924,7 +1924,7 @@ Celular corporativo: ${v(d.beneficio_celular, "no declarado")}
 Seguro de vida: ${v(d.beneficio_seguro_vida, "no declarado")}
 Plan de retiro complementario: ${v(d.beneficio_retiro, "no declarado")}
 Employer match 401k: ${v(d.beneficio_401k_match, "no declarado")}
-Días adicionales de vacaciones: ${v(d.beneficio_vacaciones_adicionales, "no declarado")}
+Días hábiles de vacaciones pagas por año: ${v(d.beneficio_vacaciones_adicionales, "no declarado")}
 Modalidad de trabajo: ${v(d.modalidad_trabajo, "no declarado")}
 Capacitación: ${v(d.beneficio_capacitacion, "no declarado")}
 Beneficios adicionales (texto libre): ${v(d.beneficios_adicionales_texto, "no declarado")}
