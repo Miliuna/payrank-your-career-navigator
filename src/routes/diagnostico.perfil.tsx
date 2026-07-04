@@ -251,8 +251,8 @@ function PerfilPage() {
         </h1>
         <p className="font-body text-hueso/60 mb-10">
           {isEN
-            ? "If you change any of these fields, the updated values are used to generate your report."
-            : "Si cambiás alguno de estos campos, los valores actualizados se usan para generar tu reporte."}
+            ? "Review your profile before generating your PayRank. You can adjust your role, level, industry and company type directly here. To correct any other detail, use the Back to start button."
+            : "Revisá tu perfil antes de generar tu PayRank. Podés ajustar tu rol, nivel, industria y tipo de empresa directamente acá. Si necesitás corregir otro dato, usá el botón Volver al inicio."}
         </p>
 
         {/* Sección editable de validación de perfil */}
