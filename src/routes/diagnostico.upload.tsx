@@ -33,9 +33,9 @@ function zoneCopy(tipo: DocTipo, isEN: boolean, modo?: Modo): ZoneCopy {
     switch (tipo) {
       case "cv":
         return {
-          label: "Resume / Professional profile",
-          sublabel: "Your CV, exported LinkedIn profile or any document with your career history. Doesn't reflect your current situation? No problem — you'll be able to confirm or correct every field before generating your report.",
-          required: true,
+          label: "CV or professional profile · Recommended",
+          sublabel: "Your CV, exported LinkedIn profile or any document with your career history. Don't have it handy or not up to date? No problem — you'll be able to confirm or correct every detail before generating your report.",
+          required: false,
         };
       case "recibo":
         if (modo === "E") {
@@ -63,9 +63,9 @@ function zoneCopy(tipo: DocTipo, isEN: boolean, modo?: Modo): ZoneCopy {
   switch (tipo) {
     case "cv":
       return {
-        label: "CV / Perfil profesional",
-        sublabel: "Tu CV, perfil de LinkedIn exportado o cualquier documento con tu trayectoria. ¿No refleja tu situación actual? No hay problema — vas a poder confirmar o corregir cada dato antes de generar tu reporte.",
-        required: true,
+        label: "CV o perfil profesional · Recomendado",
+        sublabel: "Tu CV, perfil de LinkedIn exportado o cualquier documento con tu trayectoria. ¿No lo tenés disponible ahora o no refleja tu situación actual? No hay problema — vas a poder confirmar o corregir cada dato antes de generar tu reporte.",
+        required: false,
       };
     case "recibo":
       if (modo === "E") {
