@@ -2154,7 +2154,7 @@ function P16Beneficios({ r, setR, datosExtraidos }: Props & { datosExtraidos?: i
             {vacHasInput && (
               <TextInput
                 type="number"
-                placeholder={isEN ? "How many additional days? (optional)" : "¿Cuántos días adicionales? (opcional)"}
+                placeholder={isEN ? "Enter 0 if none" : "Ingresá 0 si no tenés"}
                 value={r.beneficio_vacaciones_adicionales ?? ""}
                 onChange={(e) => setR({ beneficio_vacaciones_adicionales: e.target.value })}
                 autoFocus
