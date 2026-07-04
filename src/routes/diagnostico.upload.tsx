@@ -310,31 +310,6 @@ function UploadPage() {
                     onFile={(f) => { setCvFile(f); if (f) setSinCv(false); }}
                     isEN={isEN}
                   />
-                  {(modo === "A" || modo === "B") && !cvFile && (
-                    <div className="mt-3">
-                      <button
-                        type="button"
-                        onClick={() => setSinCv((v) => !v)}
-                        className={cn(
-                          "font-ui text-[11px] tracking-[0.15em] pb-1 border-b transition-colors",
-                          sinCv
-                            ? "text-hueso border-hueso"
-                            : "text-hueso/60 border-hueso/30 hover:text-hueso hover:border-hueso/70"
-                        )}
-                      >
-                        {isEN
-                          ? "I don't have my CV available right now — continue without it"
-                          : "No tengo mi CV disponible ahora — avanzar sin él"}
-                      </button>
-                      {sinCv && (
-                        <p className="font-body text-xs text-hueso/55 mt-2 leading-relaxed">
-                          {isEN
-                            ? "Your report will be generated with Medium confidence level."
-                            : "Tu reporte se generará con nivel de confianza Medio."}
-                        </p>
-                      )}
-                    </div>
-                  )}
                 </div>
                 <UploadZone
                   tipo="recibo"
