@@ -236,7 +236,10 @@ function InferenciaPage() {
         </p>
         <button
           type="button"
-          onClick={() => navigate({ to: "/diagnostico/upload" })}
+          onClick={() => {
+            setState((s) => ({ ...s, pasoFormulario: 0 }));
+            navigate({ to: "/diagnostico/preguntas" });
+          }}
           className="font-ui text-[10px] text-hueso/60 hover:text-hueso underline mb-8 block"
         >
           {isEN ? "← Volver al inicio" : "← Volver al inicio"}
@@ -285,7 +288,10 @@ function InferenciaPage() {
             </button>
           <button
             type="button"
-            onClick={() => navigate({ to: "/diagnostico/preguntas" })}
+            onClick={() => {
+              setState((s) => ({ ...s, pasoFormulario: 0 }));
+              navigate({ to: "/diagnostico/preguntas" });
+            }}
             className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
           >
             {isEN ? "I want to change something →" : "Quiero cambiar algo →"}
