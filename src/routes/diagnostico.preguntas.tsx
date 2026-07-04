@@ -2135,7 +2135,7 @@ function P16Beneficios({ r, setR, datosExtraidos }: Props & { datosExtraidos?: i
           {/* Días adicionales de vacaciones */}
           <div className="flex flex-col gap-2">
             <p className="font-body text-sm text-hueso/70">
-              {isEN ? "Additional vacation days (beyond legal minimum)" : "Días adicionales de vacaciones (más allá del mínimo legal)"}
+              {isEN ? "How many paid vacation days do you have per year? (business days)" : "¿Cuántos días hábiles de vacaciones pagas tenés por año?"}
             </p>
             <div className="grid grid-cols-2 gap-2">
               <CardOption
@@ -2154,7 +2154,7 @@ function P16Beneficios({ r, setR, datosExtraidos }: Props & { datosExtraidos?: i
             {vacHasInput && (
               <TextInput
                 type="number"
-                placeholder={isEN ? "How many additional days? (optional)" : "¿Cuántos días adicionales? (opcional)"}
+                placeholder={isEN ? "Enter 0 if none" : "Ingresá 0 si no tenés"}
                 value={r.beneficio_vacaciones_adicionales ?? ""}
                 onChange={(e) => setR({ beneficio_vacaciones_adicionales: e.target.value })}
                 autoFocus
