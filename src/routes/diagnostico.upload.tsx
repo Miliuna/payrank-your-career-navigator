@@ -100,6 +100,7 @@ function UploadPage() {
   const extract = useServerFn(extractFromDocument);
 
   const [cvFile, setCvFile] = React.useState<File | null>(null);
+  const [sinCv, setSinCv] = React.useState<boolean>(false);
   const [reciboFile, setReciboFile] = React.useState<File | null>(null);
   const [descriptivoFile, setDescriptivoFile] = React.useState<File | null>(null);
   const [avisoFile, setAvisoFile] = React.useState<File | null>(null);
@@ -107,6 +108,7 @@ function UploadPage() {
   const [avisoText, setAvisoText] = React.useState("");
   const [busy, setBusy] = React.useState(false);
   const [extractError, setExtractError] = React.useState(false);
+
 
   React.useEffect(() => {
     if (search.modo && search.modo !== state.modo) {
