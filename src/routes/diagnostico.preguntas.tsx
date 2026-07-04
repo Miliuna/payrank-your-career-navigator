@@ -2142,7 +2142,7 @@ function P16Beneficios({ r, setR, datosExtraidos }: Props & { datosExtraidos?: i
                 selected={r.beneficio_vacaciones_adicionales === "no"}
                 onClick={() => setR({ beneficio_vacaciones_adicionales: r.beneficio_vacaciones_adicionales === "no" ? undefined : "no" })}
               >
-                {isEN ? "None" : "Ninguno"}
+                {isEN ? "No" : "No"}
               </CardOption>
               <CardOption
                 selected={vacHasInput}
