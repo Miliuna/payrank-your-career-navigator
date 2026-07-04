@@ -100,6 +100,7 @@ function UploadPage() {
   const extract = useServerFn(extractFromDocument);
 
   const [cvFile, setCvFile] = React.useState<File | null>(null);
+  const [sinCv, setSinCv] = React.useState<boolean>(false);
   const [reciboFile, setReciboFile] = React.useState<File | null>(null);
   const [descriptivoFile, setDescriptivoFile] = React.useState<File | null>(null);
   const [avisoFile, setAvisoFile] = React.useState<File | null>(null);
@@ -107,6 +108,7 @@ function UploadPage() {
   const [avisoText, setAvisoText] = React.useState("");
   const [busy, setBusy] = React.useState(false);
   const [extractError, setExtractError] = React.useState(false);
+
 
   React.useEffect(() => {
     if (search.modo && search.modo !== state.modo) {
@@ -163,14 +165,16 @@ function UploadPage() {
   };
 
   const procesar = async () => {
-    if (busy || !cvFile) return;
+    if (busy || (!cvFile && !sinCv)) return;
     setBusy(true);
     setExtractError(false);
     try {
       const jobs: Array<Promise<DatosExtraidos>> = [];
       const names: string[] = [];
-      jobs.push(extractOne(cvFile, "cv"));
-      names.push(cvFile.name);
+      if (cvFile) {
+        jobs.push(extractOne(cvFile, "cv"));
+        names.push(cvFile.name);
+      }
       if (reciboFile) {
         jobs.push(extractOne(reciboFile, "recibo"));
         names.push(reciboFile.name);
@@ -189,15 +193,16 @@ function UploadPage() {
         const prefixed = `[TIPO: aviso]\n\n${avisoText.slice(0, 100_000)}`;
         jobs.push(extract({ data: { kind: "text", text: prefixed } }) as Promise<DatosExtraidos>);
       }
-      const results = await Promise.all(jobs);
+      const results = jobs.length > 0 ? await Promise.all(jobs) : [];
       const extracted = mergeExtractions(results);
 
-      console.log("[upload] datosExtraidos:", extracted);
+      console.log("[upload] datosExtraidos:", extracted, "sinCv:", sinCv);
 
       setState((s) => ({
         ...s,
         datosExtraidos: extracted,
         pasosOverride: [],
+        sinCv: sinCv && !cvFile,
         documentos: {
           ...s.documentos,
           cvNombre: names.join(", "),
@@ -212,6 +217,7 @@ function UploadPage() {
       setBusy(false);
     }
   };
+
 
   return (
     <DiagnosticoShell step={1}>
@@ -296,13 +302,40 @@ function UploadPage() {
               </>
             ) : (
               <>
-                <UploadZone
-                  tipo="cv"
-                  copy={zoneCopy("cv", isEN)}
-                  file={cvFile}
-                  onFile={setCvFile}
-                  isEN={isEN}
-                />
+                <div>
+                  <UploadZone
+                    tipo="cv"
+                    copy={zoneCopy("cv", isEN)}
+                    file={cvFile}
+                    onFile={(f) => { setCvFile(f); if (f) setSinCv(false); }}
+                    isEN={isEN}
+                  />
+                  {(modo === "A" || modo === "B") && !cvFile && (
+                    <div className="mt-3">
+                      <button
+                        type="button"
+                        onClick={() => setSinCv((v) => !v)}
+                        className={cn(
+                          "font-ui text-[11px] tracking-[0.15em] pb-1 border-b transition-colors",
+                          sinCv
+                            ? "text-hueso border-hueso"
+                            : "text-hueso/60 border-hueso/30 hover:text-hueso hover:border-hueso/70"
+                        )}
+                      >
+                        {isEN
+                          ? "I don't have my CV available right now — continue without it"
+                          : "No tengo mi CV disponible ahora — avanzar sin él"}
+                      </button>
+                      {sinCv && (
+                        <p className="font-body text-xs text-hueso/55 mt-2 leading-relaxed">
+                          {isEN
+                            ? "Your report will be generated with Medium confidence level."
+                            : "Tu reporte se generará con nivel de confianza Medio."}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
                 <UploadZone
                   tipo="recibo"
                   copy={zoneCopy("recibo", isEN, modo)}
@@ -321,6 +354,7 @@ function UploadPage() {
                 />
               </>
             )}
+
           </div>
 
           <p className="font-body text-xs text-hueso/45 mt-6 leading-relaxed max-w-2xl">
@@ -333,10 +367,10 @@ function UploadPage() {
             <button
               type="button"
               onClick={procesar}
-              disabled={!cvFile || (modo === "C" && !avisoFile && !avisoText.trim())}
+              disabled={(!cvFile && !sinCv) || (modo === "C" && !avisoFile && !avisoText.trim())}
               className={cn(
                 "font-ui text-[11px] tracking-[0.2em] pb-1 border-b transition-colors",
-                cvFile && (modo !== "C" || avisoFile || avisoText.trim())
+                (cvFile || sinCv) && (modo !== "C" || avisoFile || avisoText.trim())
                   ? "text-hueso border-hueso/60 hover:border-hueso"
                   : "text-hueso/30 border-hueso/20 cursor-not-allowed",
               )}
