@@ -380,7 +380,7 @@ function PerfilPage() {
             onClick={back}
             className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
           >
-            {isEN ? "I want to correct something" : "Quiero corregir algo"}
+            {isEN ? "← Back to start" : "← Volver al inicio"}
           </button>
         </div>
 
