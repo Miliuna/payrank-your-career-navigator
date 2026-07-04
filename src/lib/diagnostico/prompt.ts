@@ -1931,6 +1931,8 @@ Beneficios adicionales (texto libre): ${v(d.beneficios_adicionales_texto, "no de
 Ítems no declarados (no sé): ${v(d.beneficios_no_declarados, "ninguno")}
 Régimen freelance: ${v(d.regimen_impositivo, "no aplica")}
 Tipo de cliente: ${v(d.tipo_cliente_freelance, "no aplica")}
+Comisiones (Modo E): ${v(d.comisiones_tipo, "no aplica")}
+Monto de comisiones mensual (Modo E): ${v(d.comisiones_monto, "no aplica")}
 Moneda de facturación: ${v(d.moneda_facturacion_freelance, "no aplica")}
 Costos propios freelance: ${v(d.costos_propios_freelance, "no aplica")}
 Descripción del puesto: ${descStr || "no declarado"}
