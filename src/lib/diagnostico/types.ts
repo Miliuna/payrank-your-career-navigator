@@ -187,4 +187,6 @@ export type DiagnosticoState = {
   // Último paso visitado en /diagnostico/preguntas — para que volver a esa pantalla
   // resuma donde la persona quedó, en vez de reiniciar siempre desde el paso 0.
   pasoFormulario?: number;
+  sinCv?: boolean;
 };
+
