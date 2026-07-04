@@ -165,14 +165,16 @@ function UploadPage() {
   };
 
   const procesar = async () => {
-    if (busy || !cvFile) return;
+    if (busy || (!cvFile && !sinCv)) return;
     setBusy(true);
     setExtractError(false);
     try {
       const jobs: Array<Promise<DatosExtraidos>> = [];
       const names: string[] = [];
-      jobs.push(extractOne(cvFile, "cv"));
-      names.push(cvFile.name);
+      if (cvFile) {
+        jobs.push(extractOne(cvFile, "cv"));
+        names.push(cvFile.name);
+      }
       if (reciboFile) {
         jobs.push(extractOne(reciboFile, "recibo"));
         names.push(reciboFile.name);
@@ -191,15 +193,16 @@ function UploadPage() {
         const prefixed = `[TIPO: aviso]\n\n${avisoText.slice(0, 100_000)}`;
         jobs.push(extract({ data: { kind: "text", text: prefixed } }) as Promise<DatosExtraidos>);
       }
-      const results = await Promise.all(jobs);
+      const results = jobs.length > 0 ? await Promise.all(jobs) : [];
       const extracted = mergeExtractions(results);
 
-      console.log("[upload] datosExtraidos:", extracted);
+      console.log("[upload] datosExtraidos:", extracted, "sinCv:", sinCv);
 
       setState((s) => ({
         ...s,
         datosExtraidos: extracted,
         pasosOverride: [],
+        sinCv: sinCv && !cvFile,
         documentos: {
           ...s.documentos,
           cvNombre: names.join(", "),
@@ -214,6 +217,7 @@ function UploadPage() {
       setBusy(false);
     }
   };
+
 
   return (
     <DiagnosticoShell step={1}>
