@@ -288,10 +288,7 @@ function InferenciaPage() {
             </button>
           <button
             type="button"
-            onClick={() => {
-              setState((s) => ({ ...s, pasoFormulario: 0 }));
-              navigate({ to: "/diagnostico/preguntas" });
-            }}
+            onClick={() => navigate({ to: "/diagnostico/perfil" })}
             className="inline-flex items-center justify-center font-ui text-[11px] text-hueso/70 px-6 py-3 border border-hueso/30 hover:border-hueso transition-colors"
           >
             {isEN ? "I want to change something →" : "Quiero cambiar algo →"}
