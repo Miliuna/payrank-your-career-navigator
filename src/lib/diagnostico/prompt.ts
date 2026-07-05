@@ -1340,6 +1340,7 @@ Declarar el ajuste aplicado y por qué.
 ═══ CORRECCIÓN 3 — ESTRUCTURA DE COMPENSACIÓN POR NIVEL ═══
 Junior: base 95-100%, bono 0-5%. Semi-sr: base 90-95%, bono 5-10%. Senior: base 85-90%, bono 10-15%, LTI ocasional. Manager: base 75-85%, bono 15-25%, LTI multinac. Sr Mgr: base 65-75%, bono 25-35%, LTI frecuente. Director: base 55-65%, bono 35-50%, LTI estándar. C-Level: base 45-55%, bono 50-100%, LTI central.
 Director+ sin bono/equity declarado: señalar omisión. "Tu diagnóstico excluye compensación variable. Para tu nivel el bono target es X-Y% anual. Incluirlo cambia significativamente el total."
+EXCEPCIÓN MODO E (contractor con empleador exclusivo): no aplicar los porcentajes de bono de esta tabla como si fueran bono formal. En cambio, usar bono_target para indicar: "Para un contractor con relación exclusiva y funciones equivalentes a [nivel inferido], el mercado de empleados contempla un bono del [X-Y]% del salario anual bruto equivalente. Al negociar el ajuste del valor de tu contrato, podés plantear este componente como pago adicional por resultados — es un argumento válido y habitual en contratos de este tipo." Usar los mismos porcentajes de la tabla por nivel pero presentados como referencia del equivalente en relación de dependencia, no como bono del contractor.
 
 ═══ CORRECCIÓN 4 — BRECHA DE GÉNERO POR NIVEL (LATAM) ═══
 Junior 8-12%, Semi-sr 12-16%, Senior 15-20%, Manager 20-25%, Sr Mgr 25-30%, Director 28-35% (pico), C-Level 15-25%.
