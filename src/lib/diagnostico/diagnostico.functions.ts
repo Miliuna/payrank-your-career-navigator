@@ -48,9 +48,9 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
       ? `\nAumento de tarifa últimos 12 meses: no`
       : "";
   const contractorPagoAdicionalTxt = r.situacion === "contractor" && r.contractorPagoAdicional === "si"
-    ? `\nPago adicional ocasional fuera de tarifa fija (no formalizado en contrato): sí${r.contractorPagoAdicionalMonto ? `, promedio ${r.contractorPagoAdicionalMonto}` : ""}`
+    ? `\nBono declarado por el usuario: sí${r.contractorPagoAdicionalMonto ? `, monto anual ${r.contractorPagoAdicionalMonto}` : ", sin monto declarado"}`
     : r.situacion === "contractor" && r.contractorPagoAdicional === "no"
-      ? `\nPago adicional ocasional fuera de tarifa fija: no`
+      ? `\nBono declarado por el usuario: no`
       : "";
   const contractorMeta = r.situacion === "contractor"
     ? `\n\n[Contractor]\nHoras semanales: ${r.contractorHoras ?? "n/d"}\nMoneda de la tarifa: ${moneda ?? "n/d"}${contractorIncrementoTxt}${contractorPagoAdicionalTxt}`
