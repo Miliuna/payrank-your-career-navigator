@@ -1196,8 +1196,10 @@ La estructura exacta del JSON es:
   "seccion_5": {
     "pretension_recomendada_local": "string â€” UN SOLO NÃšMERO, nunca un rango (ej: \"$2.800.000\", NUNCA \"$2.800.000 - $3.200.000\"). El rango ya existe en floor_local/ceiling_local â€” este campo es el nÃºmero puntual recomendado.",
     "pretension_recomendada_usd": "string â€” mismo criterio: UN SOLO NÃšMERO, nunca un rango.",
-    "floor_local": "string — SIEMPRE el P25 del rango de mercado. MODO E OBLIGATORIO: nunca null, nunca vacio, siempre un monto concreto en la moneda del reporte.",
-    "ceiling_local": "string — SIEMPRE el P75 del rango de mercado. MODO E OBLIGATORIO: nunca null, nunca vacio, siempre un monto concreto en la moneda del reporte.",
+    "floor_local": "string — NUNCA null, NUNCA string vacio. Ejemplo: USD 2.600 o ARS 3.800.000. Es el P25 del rango calculado para el perfil. Si no tenes el dato exacto, estimalo — pero siempre pone un numero.",
+
+    "ceiling_local": "string — NUNCA null, NUNCA string vacio. Ejemplo: USD 4.000 o ARS 5.700.000. Es el P75 del rango calculado para el perfil. Si no tenes el dato exacto, estimalo — pero siempre pone un numero.",
+
     // CAMPO EXCLUSIVO DE MODO C: incluir SOLO si modo === "C". En Modos A, B y D OMITIR completamente la clave del JSON (no enviar null, no enviar string vacÃ­o, no enviar la clave).
     "respuesta_antes_de_conocer_rol": "string â€” SOLO EN MODO C, OMITIR EN A/B/D",
     "argumento_1_mercado": "string â€” con datos especÃ­ficos del perfil",
