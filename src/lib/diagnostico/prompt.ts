@@ -399,7 +399,7 @@ Descuento por: self-employment tax, ausencia de benefits del empleador
 
 Otros países: × 0.65 como estimación conservadora
 
-BASE DE CÁLCULO (X): el contrato mensual declarado + comisiones mensuales promedio si las declaró + pago adicional ocasional promedio si lo declaró. Sumar TODOS los componentes que el usuario haya declarado antes de aplicar el factor — no usar solo el contrato base si hay otros montos declarados.
+BASE DE CÁLCULO (X): el contrato mensual declarado + comisiones mensuales promedio si las declaró. El bono NO se suma a la base de cálculo mensual — es un componente anual separado. Sumar TODOS los componentes mensuales que el usuario haya declarado antes de aplicar el factor — no usar solo el contrato base si hay comisiones declaradas.
 
 Declarar explícitamente en el reporte:
 "Tu facturación de [X, la suma de todos los componentes declarados] mensual equivale a un salario bruto de aproximadamente [X × factor] en relación de dependencia — considerando las cargas, beneficios y costos operativos que asumes tú en lugar de un empleador (AR/UY: 'asumís vos')."
