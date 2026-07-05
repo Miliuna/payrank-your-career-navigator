@@ -1442,7 +1442,7 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
           )}
           <div>
             <p className="font-body text-base text-hueso mb-3">
-              {isEN ? "Do you have a variable bonus?" : "¿Tenés bono variable?"}
+              {isEN ? "Do you have a bonus?" : "¿Tenés bono?"}
             </p>
             <div className="flex gap-2">
               <ChipOption
@@ -1555,10 +1555,10 @@ function P15Situacion({ r, setR, modo, datosExtraidos }: Props & { modo?: string
             ];
         return (
           <div className="border-t border-hueso/10 pt-8 flex flex-col gap-5">
-            {/* Q1 — ¿Tenés bono variable? */}
+            {/* Q1 — ¿Tenés bono? */}
             <div className="flex flex-col gap-2">
               <p className="font-body text-base text-hueso">
-                {isEN ? "Do you have a variable bonus?" : "¿Tenés bono variable?"}
+                {isEN ? "Do you have a bonus?" : "¿Tenés bono?"}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 <CardOption
