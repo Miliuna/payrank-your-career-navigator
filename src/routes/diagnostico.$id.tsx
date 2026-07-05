@@ -782,8 +782,10 @@ function ResultadoPage() {
           })()}
 
           <Card>
-            <KV k={isEN ? "Floor (minimum acceptable)" : "Floor (mínimo aceptable)"} v={str(s5.floor_local)} />
-            <KV k="Ceiling" v={str(s5.ceiling_local)} />
+            <KV k={isEN ? "Floor (minimum acceptable)" : "Floor (mínimo aceptable)"}
+              v={str(s5.floor_local) !== "—" ? str(s5.floor_local) : (s2.p25_usd ? `USD ${parseNum(s2.p25_usd)?.toLocaleString()}` : "—")} />
+            <KV k="Ceiling"
+              v={str(s5.ceiling_local) !== "—" ? str(s5.ceiling_local) : (s2.p75_usd ? `USD ${parseNum(s2.p75_usd)?.toLocaleString()}` : "—")} />
           </Card>
 
           <P muted>{str(s5.explicacion_floor_ceiling)}</P>
