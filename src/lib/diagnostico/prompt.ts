@@ -1137,7 +1137,7 @@ La estructura exacta del JSON es:
     "rango_texto": "string — el rango en lenguaje humano sin percentiles",
     "porcentaje_gana_mas": "string — el X% de los profesionales con tu perfil gana más que tú hoy (en Argentina/Uruguay: 'que vos hoy')",
     "posicionamiento": "Bajo mercado/En mercado/Sobre mercado",
-    "compa_ratio": "string — número con dos decimales, ej: 0.87",
+    "compa_ratio": "string � n�mero con dos decimales, ej: 0.87. MODO E OBLIGATORIO: calcular como (contrato_base + comisiones) � factor_equivalencia � P50_mercado_empleados � NUNCA valor bruto � P50",
     "interpretacion_compa_ratio": "string — en lenguaje humano",
     "erosion_salarial_detectada": true,
     "descripcion_erosion": "string o null",
@@ -1162,8 +1162,7 @@ La estructura exacta del JSON es:
   },
   "seccion_3": {
     "tabla_compensacion": [
-      {
-        "componente": "string",
+        "componente": "string � MODO E: primer componente SIEMPRE llamese Contrato base mensual, NUNCA Tarifa base del contrato ni ninguna variante con tarifa",
         "descripcion": "string",
         "fuente_dato": "Declarado por el usuario / Estimación de mercado / No declarado",
         "valor_mensual_local": "string",
@@ -1197,9 +1196,8 @@ La estructura exacta del JSON es:
   "seccion_5": {
     "pretension_recomendada_local": "string — UN SOLO NÚMERO, nunca un rango (ej: \"$2.800.000\", NUNCA \"$2.800.000 - $3.200.000\"). El rango ya existe en floor_local/ceiling_local — este campo es el número puntual recomendado.",
     "pretension_recomendada_usd": "string — mismo criterio: UN SOLO NÚMERO, nunca un rango.",
-    "floor_local": "string — SIEMPRE el P25 del rango de mercado (ajustado por nivel de confianza si aplica). Nunca otro percentil.",
-    "ceiling_local": "string — SIEMPRE el P75 del rango de mercado (ajustado por nivel de confianza si aplica). Nunca otro percentil.",
-    "explicacion_floor_ceiling": "string — debe nombrar explícitamente P25 para floor_local y P75 para ceiling_local, coherente con esos campos — nunca otro percentil distinto al que de verdad corresponde.",
+    "floor_local": "string � SIEMPRE el P25 del rango de mercado. MODO E OBLIGATORIO: nunca null, nunca vacio, siempre un monto concreto en la moneda del reporte.",
+    "ceiling_local": "string � SIEMPRE el P75 del rango de mercado. MODO E OBLIGATORIO: nunca null, nunca vacio, siempre un monto concreto en la moneda del reporte.",
     // CAMPO EXCLUSIVO DE MODO C: incluir SOLO si modo === "C". En Modos A, B y D OMITIR completamente la clave del JSON (no enviar null, no enviar string vacío, no enviar la clave).
     "respuesta_antes_de_conocer_rol": "string — SOLO EN MODO C, OMITIR EN A/B/D",
     "argumento_1_mercado": "string — con datos específicos del perfil",
