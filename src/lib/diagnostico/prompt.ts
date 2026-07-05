@@ -243,7 +243,7 @@ CORRECCIÓN 6 — COMPA-RATIO
 
 El compa-ratio es la métrica estándar que usan los profesionales de RRHH para evaluar posicionamiento salarial. Incluirlo en el reporte eleva su credibilidad ante cualquier gerente de compensaciones.
 
-Definición: compa-ratio = salario actual del usuario ÷ P50 del mercado para su perfil
+Definición: compa-ratio = salario actual del usuario ÷ P50 del mercado para su perfil. EXCEPCIÓN MODO E: compa-ratio = (valor del contrato + comisiones) × factor de equivalencia ÷ P50 del mercado de empleados en relación de dependencia. NUNCA dividir el valor bruto del contrato por el P50 en Modo E.
 
 Interpretación:
 - 1.00 = exactamente en el P50 del mercado
@@ -1862,6 +1862,7 @@ REENCUADRE DE SECCIÓN 5 (antes "pretensión salarial"):
 — No usar "Tu pretensión salarial" ni "Cuánto pedir"
 — El campo analisis_floor_ceiling (o el campo narrativo equivalente) debe abrir con una idea como: "Cuando tengas que plantear esto con tu empleador, no vas a decir 'según el mercado' — vas a decir un número. Este es el que podés defender."
 — Floor y ceiling se mantienen conceptualmente (mínimo aceptable / techo), pero el texto que los explica nunca debe usar "tarifa" — usar "valor de tu contrato" o "lo que cobrás".
+— Para Modo E, los campos floor y ceiling del JSON de seccion_5 son OBLIGATORIOS — nunca dejarlos vacíos ni null. Floor = P25 del mercado para el perfil. Ceiling = P75 del mercado para el perfil. Estos valores deben aparecer como strings con el monto en la moneda del reporte — por ejemplo 'USD 2.600' y 'USD 3.800'.
 
 REENCUADRE DE SECCIÓN 2 (el gráfico principal, percentiles y posicionamiento):
 Aplica la Corrección 11, Paso 2, que ya existe y dice que el posicionamiento se determina sobre el equivalente en relación de dependencia, no sobre la facturación bruta — esta sección NUNCA debe comparar el valor crudo del contrato directamente contra el mercado.
@@ -1882,7 +1883,8 @@ En Modo E no corresponde comparar línea por línea contra un paquete de benefic
 — Para Modo E, si el usuario declaró bono: mostrarlo en seccion_3 como componente ANUAL con su valor total anual (ej: 'USD 5.000 anuales'). NUNCA prorratearlo mensualmente. NUNCA sumarlo al total mensual. El total mensual de seccion_3 incluye SOLO: contrato base + comisiones mensuales + vacaciones prorrateadas + remoto. El bono aparece como fila separada debajo del total con una nota que dice que es anual y no está incluido en el total mensual.
 — En la columna 'mercado_tipico' de seccion_3 para Modo E, NUNCA usar los términos 'tarifa contractor', 'tarifa de contractor' ni 'tarifa contractor nivel real'. Siempre expresar el valor de mercado en términos de mercado de empleados en relación de dependencia — por ejemplo: 'USD 3.800 (P50 mercado empleados, nivel inferido)' o 'Variable según estructura de empleados en relación de dependencia para el nivel equivalente'.
 — Para Modo E, cuando el usuario declaró bono, el campo descripcion de la fila de bono en seccion_3 debe decir exactamente: "Declarado por el usuario — [monto] anuales, prorrateado mensualmente para comparabilidad con mercado de empleados en relación de dependencia."
-— Para Modo E, el primer componente de tabla_compensacion debe llamarse "Contrato base mensual" — NUNCA "Tarifa base del contrato" ni ninguna variante que contenga la palabra "tarifa".`;
+— Para Modo E, el primer componente de tabla_compensacion debe llamarse "Contrato base mensual" — NUNCA "Tarifa base del contrato" ni ninguna variante que contenga la palabra "tarifa".
+— En seccion_3, el componente que representa el valor base del contrato debe llamarse exactamente 'Contrato base mensual' — NUNCA 'Tarifa base del contrato', 'Tarifa mensual', 'Tarifa base' ni ninguna variante con la palabra tarifa.`;
       }
       return "";
     } catch (e) {
