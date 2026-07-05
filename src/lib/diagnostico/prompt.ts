@@ -399,7 +399,7 @@ Descuento por: self-employment tax, ausencia de benefits del empleador
 
 Otros países: × 0.65 como estimación conservadora
 
-BASE DE CÁLCULO (X): el contrato mensual declarado + comisiones mensuales promedio si las declaró + pago adicional ocasional promedio si lo declaró. Sumar TODOS los componentes que el usuario haya declarado antes de aplicar el factor — no usar solo el contrato base si hay otros montos declarados.
+BASE DE CÁLCULO (X): el contrato mensual declarado + comisiones mensuales promedio si las declaró. El bono NO se suma a la base de cálculo mensual — es un componente anual separado. Sumar TODOS los componentes mensuales que el usuario haya declarado antes de aplicar el factor — no usar solo el contrato base si hay comisiones declaradas.
 
 Declarar explícitamente en el reporte:
 "Tu facturación de [X, la suma de todos los componentes declarados] mensual equivale a un salario bruto de aproximadamente [X × factor] en relación de dependencia — considerando las cargas, beneficios y costos operativos que asumes tú en lugar de un empleador (AR/UY: 'asumís vos')."
@@ -460,7 +460,7 @@ Si el usuario declaró situación laboral = contractor:
   Objeción 2: "No tenemos presupuesto para ese ajuste este año"
   Objeción 3: "¿Podés justificar ese valor con el impacto que generás?"
 - El SBTA no aplica para contractors — reemplazar por "facturación anual proyectada"
-- El bono variable SÍ puede existir para contractors de Modo E — el empleador puede contemplar un componente variable equivalente al bono que daría a un empleado en relación de dependencia, especialmente cuando el alcance del rol equivale a un Manager o Senior Manager con reporte directo a C-Level y funciones con impacto en resultados de negocio. Si el usuario declaró "pago adicional ocasional" en el formulario, tomarlo como bono variable informal y mencionarlo en el análisis. Si no hay dato declarado, en el campo bono_target indicar: 'Para un contractor con relación exclusiva y funciones equivalentes a Manager/Senior Manager, el mercado de empleados contempla un bono del 15-25% del salario anual bruto. Al negociar el ajuste de tu contrato, podés incluir este componente como pago adicional por resultados — es un argumento válido y habitual en contratos de este tipo.' NO decir "No aplica para contractor" — nunca.
+- El bono SÍ puede existir para contractors de Modo E — el empleador puede contemplar un bono equivalente al que daría a un empleado en relación de dependencia, especialmente cuando el alcance del rol equivale a un Manager o Senior Manager con reporte directo a C-Level. Si el usuario declaró bono con monto: mostrarlo en seccion_3 como componente ANUAL separado, nunca prorratearlo mensualmente, nunca sumarlo al total mensual. Si no declaró bono: en bono_target indicar: 'Para un contractor con relación exclusiva y funciones equivalentes a Manager/Senior Manager, el mercado de empleados contempla un bono del 15-25% del salario anual bruto. Al negociar el ajuste de tu contrato, podés plantear este componente como pago adicional por resultados — es un argumento válido y habitual en contratos de este tipo.' NO decir 'No aplica para contractor' — nunca.
 - NO calcular aguinaldo/SAC para contractors — no corresponde
 - En seccion_2, el campo sbta_usuario debe decir "Facturación anual proyectada: [monto × 12]" no "SBTA"
 
