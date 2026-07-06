@@ -934,7 +934,9 @@ function ResultadoPage() {
               <Eyebrow>{isEN ? "NEXT" : "SIGUIENTE"}</Eyebrow>
               <p className="font-display text-2xl text-hueso">{str(s8.nivel_siguiente)}</p>
               <p className="font-body text-sm text-hueso/70 mt-2">{str(s8.rango_nivel_siguiente_local)}</p>
-              <p className="font-body text-xs text-hueso/55 mt-1">{isEN ? "Jump:" : "Salto:"} {str(s8.diferencia_porcentual_salto)}</p>
+        {!!s8.interpretacion_brecha_objetivo && (
+          <p className="font-body text-xs text-hueso/55 mt-1">{str(s8.interpretacion_brecha_objetivo)}</p>
+        )}
             </Card>
           </div>
 
