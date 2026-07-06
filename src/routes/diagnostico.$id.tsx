@@ -775,16 +775,19 @@ function ResultadoPage() {
             const usdEsPrimaria = monedaDeclaradaS5 === "USD";
             const grande = usdEsPrimaria ? s5.pretension_recomendada_usd : s5.pretension_recomendada_local;
             return (
-              <div className="text-center py-6">
-                <p className="font-display text-5xl md:text-6xl text-hueso">{str(grande)}</p>
-              </div>
+              <>
+                <div className="text-center py-6">
+                  <p className="font-display text-5xl md:text-6xl text-hueso">{str(grande)}</p>
+                </div>
+                <Card>
+                  <KV k={isEN ? "Floor (minimum acceptable)" : "Floor (mínimo aceptable)"}
+                    v={str(usdEsPrimaria ? s2.p25_usd : s2.p25_local)} />
+                  <KV k="Ceiling"
+                    v={str(usdEsPrimaria ? s2.p75_usd : s2.p75_local)} />
+                </Card>
+              </>
             );
           })()}
-
-          <Card>
-            <KV k={isEN ? "Floor (minimum acceptable)" : "Floor (mínimo aceptable)"} v={str(s5.floor_local)} />
-            <KV k="Ceiling" v={str(s5.ceiling_local)} />
-          </Card>
 
           <P muted>{str(s5.explicacion_floor_ceiling)}</P>
 
