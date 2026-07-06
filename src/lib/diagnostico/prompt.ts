@@ -1241,7 +1241,8 @@ La estructura exacta del JSON es:
     "nivel_actual": "string",
     "nivel_siguiente": "string",
     "rango_nivel_siguiente_local": "string",
-    "diferencia_porcentual_salto": "string",
+    "p50_nivel_siguiente_local": "string - NUNCA null, NUNCA vacio. Un solo numero limpio (ej: \"$5.200.000\"), nunca un rango. Es el P50 de mercado para el nivel jerarquico inmediato superior al declarado, misma metodologia y fuentes que el P50 de seccion_2.",
+    "p50_nivel_siguiente_usd": "string - mismo criterio en USD.",
     "criterios_para_el_salto": [
       {
         "criterio": "string",
@@ -1589,7 +1590,8 @@ Generá ÚNICAMENTE las claves "seccion_5", "seccion_6", "seccion_7", "seccion_8
     "nivel_actual": "string",
     "nivel_siguiente": "string",
     "rango_nivel_siguiente_local": "string",
-    "diferencia_porcentual_salto": "string",
+    "p50_nivel_siguiente_local": "string - NUNCA null, NUNCA vacio. Un solo numero limpio (ej: \"$5.200.000\"), nunca un rango. Es el P50 de mercado para el nivel jerarquico inmediato superior al declarado, misma metodologia y fuentes que el P50 de seccion_2.",
+    "p50_nivel_siguiente_usd": "string - mismo criterio en USD.",
     "criterios_para_el_salto": [
       { "criterio": "string", "estrategia_concreta": "string" }
     ],

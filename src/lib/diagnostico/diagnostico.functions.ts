@@ -782,6 +782,55 @@ function applyUsdConversion(
 
 
 
+type Zona = "rojo" | "amarillo" | "verde";
+
+function zonaDeRatio(ratio: number): Zona {
+  if (ratio < 0.80 || ratio > 1.20) return "rojo";
+  if (ratio < 0.90 || ratio > 1.10) return "amarillo";
+  return "verde";
+}
+
+function interpretacionCompaRatio(ratio: number, zona: Zona, base: number, p50: number): string {
+  const pct = Math.round(Math.abs(1 - ratio) * 100);
+  const direccion = ratio < 1 ? "por debajo" : "por encima";
+  const diferencia = formatLocal(Math.abs(p50 - base));
+  const intro = "Tu compa-ratio es " + ratio.toFixed(2) + ". Eso significa que ganas " + pct + "% (" + diferencia + " mensuales) " + direccion + " del punto medio exacto del mercado para tu perfil.";
+  if (zona === "rojo") return intro + " Estas fuera del rango esperado incluso en las estructuras salariales mas flexibles del mercado - no existe una banda salarial estandar, angosta o ancha, que te ubique dentro de rango en este punto.";
+  if (zona === "amarillo") return intro + " Dependiendo de que tan ancha sea la banda salarial de tu empleador, esto puede ubicarte por debajo del rango esperado o todavia dentro de el, en su punto mas bajo.";
+  return intro + " Estas dentro del rango esperado de mercado para tu perfil.";
+}
+
+function interpretacionBrechaObjetivo(zona: Zona): string {
+  if (zona === "verde") return "Ya estas cobrando como alguien del nivel siguiente. El salto que te falta es de titulo y alcance, no de plata.";
+  if (zona === "amarillo") return "Hay una brecha real pero no descabellada - el salto de nivel probablemente venga con un ajuste de compensacion moderado.";
+  return "La brecha es grande - cuando llegue el momento de negociar el salto, vas a necesitar argumentar un salto de compensacion fuerte, no incremental.";
+}
+
+function corregirCompaRatio(parsed: Record<string, unknown>, modo: unknown): void {
+  const s2 = parsed.seccion_2 as Record<string, unknown> | undefined;
+  if (!s2) return;
+
+  const base = modo === "E"
+    ? parseLocalAmount((parsed.freelance as Record<string, unknown> | undefined)?.equivalente_relacion_dependencia)
+    : parseLocalAmount(s2.salario_actual_local);
+  const p50 = parseLocalAmount(s2.p50_local);
+  if (base == null || p50 == null || p50 === 0) return;
+
+  const ratio = base / p50;
+  const zona = zonaDeRatio(ratio);
+  s2.compa_ratio = ratio.toFixed(2);
+  s2.interpretacion_compa_ratio = interpretacionCompaRatio(ratio, zona, base, p50);
+
+  if (modo === "D") {
+    const s8 = parsed.seccion_8 as Record<string, unknown> | undefined;
+    const p50Siguiente = parseLocalAmount(s8?.p50_nivel_siguiente_local);
+    if (s8 && p50Siguiente != null && p50Siguiente !== 0) {
+      const zonaObjetivo = zonaDeRatio(base / p50Siguiente);
+      s8.interpretacion_brecha_objetivo = interpretacionBrechaObjetivo(zonaObjetivo);
+    }
+  }
+}
+
 export const generateDiagnostico = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ id: z.string().uuid() }).parse(input))
   .handler(async ({ data }) => {
@@ -863,6 +912,7 @@ export const generateDiagnostico = createServerFn({ method: "POST" })
     // El modelo solo trabaja en moneda local; acá rellenamos los campos *_usd.
     applyUsdConversion(parsed, tipoCambio, usdOnly, primaryIsUsd);
     corregirSalarioDeclarado(parsed, record, currency, usdOnly, tipoCambio);
+    corregirCompaRatio(parsed, record.modo);
 
     const nivelConfianza = (parsed.seccion_1 as Record<string, unknown> | undefined)?.nivel_confianza;
 
