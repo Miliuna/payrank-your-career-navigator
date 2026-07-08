@@ -242,6 +242,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         plan: data.plan,
         plan_name: data.planName,
       },
+      ...(mode === "payment" ? { invoice_creation: { enabled: true } } : {}),
     });
 
     if (!session.url) throw new Error("Stripe no devolvió URL de checkout");
