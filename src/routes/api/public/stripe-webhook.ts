@@ -116,6 +116,32 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
             console.error('Error actualizando diagnóstico:', diagError);
             // No devolvemos 500: el pago ya quedó registrado, no queremos reintento infinito.
           }
+
+          // PLUS incluye 3 PayRank (el que se acaba de generar cuenta como el
+          // primero). Se genera un código personal con los 2 usos restantes,
+          // válido por 12 meses desde la fecha de esta compra.
+          if (session.metadata?.plan === 'pack3') {
+            const codigo = `PAYRANK-PLUS-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+            const ahora = new Date();
+            const vence = new Date(ahora);
+            vence.setFullYear(vence.getFullYear() + 1);
+
+            const { error: codigoError } = await supabaseAdmin
+              .from('codigos_acceso')
+              .insert({
+                codigo,
+                tipo: 'plus_credito',
+                usos_maximos: 3,
+                usos_actuales: 1,
+                activo: true,
+                expires_at: vence.toISOString(),
+                email,
+              });
+
+            if (codigoError) {
+              console.error('Error generando código PLUS:', codigoError);
+            }
+          }
         }
 
         return new Response(JSON.stringify({ received: true }), {
