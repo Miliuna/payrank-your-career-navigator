@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TerminosCondicionesRouteImport } from './routes/terminos-condiciones'
+import { Route as RecuperarCodigoRouteImport } from './routes/recuperar-codigo'
 import { Route as PoliticaPrivacidadRouteImport } from './routes/politica-privacidad'
 import { Route as PlanesRouteImport } from './routes/planes'
 import { Route as ModoFRouteImport } from './routes/modo-f'
@@ -32,6 +33,11 @@ import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/
 const TerminosCondicionesRoute = TerminosCondicionesRouteImport.update({
   id: '/terminos-condiciones',
   path: '/terminos-condiciones',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarCodigoRoute = RecuperarCodigoRouteImport.update({
+  id: '/recuperar-codigo',
+  path: '/recuperar-codigo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PoliticaPrivacidadRoute = PoliticaPrivacidadRouteImport.update({
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/modo-f': typeof ModoFRoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
+  '/recuperar-codigo': typeof RecuperarCodigoRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/modo-f': typeof ModoFRoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
+  '/recuperar-codigo': typeof RecuperarCodigoRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
@@ -176,6 +184,7 @@ export interface FileRoutesById {
   '/modo-f': typeof ModoFRoute
   '/planes': typeof PlanesRoute
   '/politica-privacidad': typeof PoliticaPrivacidadRoute
+  '/recuperar-codigo': typeof RecuperarCodigoRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
@@ -199,6 +208,7 @@ export interface FileRouteTypes {
     | '/modo-f'
     | '/planes'
     | '/politica-privacidad'
+    | '/recuperar-codigo'
     | '/terminos-condiciones'
     | '/beta/$token'
     | '/diagnostico/$id'
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/modo-f'
     | '/planes'
     | '/politica-privacidad'
+    | '/recuperar-codigo'
     | '/terminos-condiciones'
     | '/beta/$token'
     | '/diagnostico/$id'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/modo-f'
     | '/planes'
     | '/politica-privacidad'
+    | '/recuperar-codigo'
     | '/terminos-condiciones'
     | '/beta/$token'
     | '/diagnostico/$id'
@@ -263,6 +275,7 @@ export interface RootRouteChildren {
   ModoFRoute: typeof ModoFRoute
   PlanesRoute: typeof PlanesRoute
   PoliticaPrivacidadRoute: typeof PoliticaPrivacidadRoute
+  RecuperarCodigoRoute: typeof RecuperarCodigoRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
   BetaTokenRoute: typeof BetaTokenRoute
   DiagnosticoIdRoute: typeof DiagnosticoIdRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/terminos-condiciones'
       fullPath: '/terminos-condiciones'
       preLoaderRoute: typeof TerminosCondicionesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-codigo': {
+      id: '/recuperar-codigo'
+      path: '/recuperar-codigo'
+      fullPath: '/recuperar-codigo'
+      preLoaderRoute: typeof RecuperarCodigoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/politica-privacidad': {
@@ -423,6 +443,7 @@ const rootRouteChildren: RootRouteChildren = {
   ModoFRoute: ModoFRoute,
   PlanesRoute: PlanesRoute,
   PoliticaPrivacidadRoute: PoliticaPrivacidadRoute,
+  RecuperarCodigoRoute: RecuperarCodigoRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
   BetaTokenRoute: BetaTokenRoute,
   DiagnosticoIdRoute: DiagnosticoIdRoute,
