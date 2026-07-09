@@ -260,7 +260,11 @@ function PaywallPage() {
                 </p>
               )}
             </div>
-
+            <p className="mt-2 font-body text-xs text-hueso/55">
+              <Link to="/recuperar-codigo" className="underline hover:text-hueso">
+                {isEN ? "Lost your code?" : "¿Perdiste tu código?"}
+              </Link>
+            </p>
 
 
 
