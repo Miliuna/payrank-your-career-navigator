@@ -2,6 +2,62 @@ import { createFileRoute } from '@tanstack/react-router';
 import Stripe from 'stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client.server';
 
+async function sendPlusCodeEmail(args: { email: string; codigo: string; vence: Date }): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('[sendPlusCodeEmail] RESEND_API_KEY no configurada, skip');
+    return;
+  }
+  const fechaVence = args.vence.toLocaleDateString('es-AR', { year: 'numeric', month: 'long', day: 'numeric' });
+  const subject = 'Tu código PayRank PLUS';
+  const heading = 'Ya usaste 1 de tus 3 PayRank';
+  const body = `Te quedan 2, para usar cuando quieras hasta el ${fechaVence}. Guardá este código — lo vas a necesitar la próxima vez que generes tu PayRank, en vez de pagar de nuevo.`;
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:0;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;padding:40px 32px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <tr><td style="text-align:center;padding-bottom:24px;">
+          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;color:#111;">PayRank</div>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:16px;">
+          <h1 style="font-size:22px;font-weight:600;margin:0;color:#111;">${heading}</h1>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:28px;">
+          <p style="font-size:16px;line-height:1.5;color:#444;margin:0;">${body}</p>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:8px;">
+          <div style="display:inline-block;background:#f5f5f7;color:#111;font-weight:700;font-size:20px;letter-spacing:1px;padding:14px 28px;border-radius:10px;">${args.codigo}</div>
+        </td></tr>
+      </table>
+      <p style="font-size:12px;color:#888;margin:24px 0 0;text-align:center;">
+        PayRank LLC · <a href="https://payrank.co" style="color:#888;text-decoration:none;">payrank.co</a> · <a href="mailto:hello@payrank.co" style="color:#888;text-decoration:none;">hello@payrank.co</a>
+      </p>
+    </td></tr>
+  </table>
+</body></html>`;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'PayRank <hello@payrank.co>',
+      to: [args.email],
+      subject,
+      html,
+    }),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text();
+    console.error(`[sendPlusCodeEmail] Resend ${res.status}: ${txt.slice(0, 300)}`);
+  }
+}
+
 // Stripe SDK configurado para correr en Cloudflare Workers (fetch + Web Crypto).
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -135,11 +191,13 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
                 usos_actuales: 1,
                 activo: true,
                 expires_at: vence.toISOString(),
-                email,
+                email: email.toLowerCase(),
               });
 
             if (codigoError) {
               console.error('Error generando código PLUS:', codigoError);
+            } else {
+              await sendPlusCodeEmail({ email: email.toLowerCase(), codigo, vence });
             }
           }
         }
