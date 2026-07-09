@@ -336,6 +336,110 @@ async function sendWaitlistConfirmationEmail(args: { email: string; codigo: stri
   }
 }
 
+async function sendCodeReminderEmail(args: { email: string; codigos: Array<{ codigo: string; usosRestantes: number; expiresAt: string | null }> }): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[sendCodeReminderEmail] RESEND_API_KEY no configurada, skip");
+    return;
+  }
+  const subject = "Tu código PayRank";
+  const heading = "Acá está tu código";
+  const listaHtml = args.codigos.map((c) => {
+    const fecha = c.expiresAt
+      ? new Date(c.expiresAt).toLocaleDateString("es-AR", { year: "numeric", month: "long", day: "numeric" })
+      : null;
+    const detalle = fecha
+      ? `${c.usosRestantes} uso${c.usosRestantes === 1 ? "" : "s"} restante${c.usosRestantes === 1 ? "" : "s"} · válido hasta el ${fecha}`
+      : `${c.usosRestantes} uso${c.usosRestantes === 1 ? "" : "s"} restante${c.usosRestantes === 1 ? "" : "s"}`;
+    return `<div style="margin-bottom:16px;">
+      <div style="display:inline-block;background:#f5f5f7;color:#111;font-weight:700;font-size:20px;letter-spacing:1px;padding:14px 28px;border-radius:10px;">${c.codigo}</div>
+      <p style="font-size:13px;color:#888;margin:8px 0 0;">${detalle}</p>
+    </div>`;
+  }).join("");
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:0;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;padding:40px 32px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <tr><td style="text-align:center;padding-bottom:24px;">
+          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;color:#111;">PayRank</div>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:24px;">
+          <h1 style="font-size:22px;font-weight:600;margin:0;color:#111;">${heading}</h1>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:8px;">
+          ${listaHtml}
+        </td></tr>
+      </table>
+      <p style="font-size:12px;color:#888;margin:24px 0 0;text-align:center;">
+        PayRank LLC · <a href="https://payrank.co" style="color:#888;text-decoration:none;">payrank.co</a> · <a href="mailto:hello@payrank.co" style="color:#888;text-decoration:none;">hello@payrank.co</a>
+      </p>
+    </td></tr>
+  </table>
+</body></html>`;
+
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: "PayRank <hello@payrank.co>",
+      to: [args.email],
+      subject,
+      html,
+    }),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text();
+    console.error(`[sendCodeReminderEmail] Resend ${res.status}: ${txt.slice(0, 300)}`);
+  }
+}
+
+export const reenviarCodigoAcceso = createServerFn({ method: "POST" })
+  .inputValidator((input) => z.object({ email: z.string().email() }).parse(input))
+  .handler(async ({ data }) => {
+    const email = data.email.trim().toLowerCase();
+
+    const { data: rows, error } = await supabaseAdmin
+      .from("codigos_acceso" as never)
+      .select("codigo, usos_maximos, usos_actuales, activo, expires_at, email")
+      .eq("email", email)
+      .eq("activo", true);
+    if (error) throw new Error(error.message);
+
+    const validos = (
+      (rows as Array<{
+        codigo: string;
+        usos_maximos: number;
+        usos_actuales: number;
+        activo: boolean;
+        expires_at: string | null;
+        email: string | null;
+      }> | null) ?? []
+    ).filter((c) => {
+      if (c.usos_actuales >= c.usos_maximos) return false;
+      if (c.expires_at && new Date(c.expires_at).getTime() < Date.now()) return false;
+      return true;
+    });
+
+    if (validos.length > 0) {
+      await sendCodeReminderEmail({
+        email,
+        codigos: validos.map((c) => ({
+          codigo: c.codigo,
+          usosRestantes: c.usos_maximos - c.usos_actuales,
+          expiresAt: c.expires_at,
+        })),
+      });
+    }
+
+    return { ok: true };
+  });
+
 export const registrarWaitlistModoE = createServerFn({ method: "POST" })
   .inputValidator((input) => z.object({ email: z.string().email() }).parse(input))
   .handler(async ({ data }) => {
