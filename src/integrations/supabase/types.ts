@@ -52,6 +52,7 @@ export type Database = {
           activo: boolean
           codigo: string
           created_at: string
+          email: string | null
           expires_at: string | null
           id: string
           tipo: string
@@ -62,6 +63,7 @@ export type Database = {
           activo?: boolean
           codigo: string
           created_at?: string
+          email?: string | null
           expires_at?: string | null
           id?: string
           tipo?: string
@@ -72,6 +74,7 @@ export type Database = {
           activo?: boolean
           codigo?: string
           created_at?: string
+          email?: string | null
           expires_at?: string | null
           id?: string
           tipo?: string
