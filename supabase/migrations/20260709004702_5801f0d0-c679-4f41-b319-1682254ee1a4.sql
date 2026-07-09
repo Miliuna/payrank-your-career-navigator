@@ -1,0 +1,1 @@
+ALTER TABLE public.codigos_acceso ADD COLUMN IF NOT EXISTS email text;
