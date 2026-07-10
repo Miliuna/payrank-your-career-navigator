@@ -77,7 +77,7 @@ function PoliticaPrivacidad() {
               <><strong className="font-normal text-tinta">Información profesional:</strong> industria, nivel jerárquico, funciones, experiencia, formación y certificaciones.</>,
               <><strong className="font-normal text-tinta">Información de compensación:</strong> salario actual o anterior, beneficios recibidos.</>,
               <><strong className="font-normal text-tinta">Documentos opcionales:</strong> CV, descriptivo de puesto, recibo de sueldo o aviso de empleo. Estos documentos se procesan para extraer datos estructurados y no se almacenan como archivos.</>,
-              <><strong className="font-normal text-tinta">Información de contacto:</strong> mail y WhatsApp si lo proporcionás voluntariamente.</>,
+              <><strong className="font-normal text-tinta">Información de contacto:</strong> mail.</>,
               <><strong className="font-normal text-tinta">Información de género:</strong> solo si elegís incluirla para el análisis de brecha salarial. Es completamente opcional.</>,
               <><strong className="font-normal text-tinta">Información de pago:</strong> procesada directamente por Stripe. PayRank no almacena datos de tarjetas de crédito.</>,
             ]}
@@ -87,7 +87,7 @@ function PoliticaPrivacidad() {
           <List
             items={[
               "Para generar tu PayRank con criterio compensológico real.",
-              "Para enviarte tu reporte por mail y WhatsApp si lo solicitaste.",
+              "Para enviarte tu reporte por mail.",
               "Para mejorar la precisión de futuros diagnósticos mediante datos agregados y completamente anonimizados.",
               "Para publicar el PayRank Industry Report trimestral — un informe de mercado construido con datos anonimizados de todos los usuarios que dieron su consentimiento explícito.",
               "Para enviarte alertas de mercado si contrataste el plan PRO.",
@@ -192,7 +192,7 @@ function PrivacyPolicyEN() {
               <><strong className="font-normal text-tinta">Professional information:</strong> industry, hierarchical level, functions, experience, education, and certifications.</>,
               <><strong className="font-normal text-tinta">Compensation information:</strong> current or previous salary, benefits received.</>,
               <><strong className="font-normal text-tinta">Optional documents:</strong> CV, job description, pay stub, or job posting. These documents are processed to extract structured data and are not stored as files.</>,
-              <><strong className="font-normal text-tinta">Contact information:</strong> email and WhatsApp if you voluntarily provide them.</>,
+              <><strong className="font-normal text-tinta">Contact information:</strong> email.</>,
               <><strong className="font-normal text-tinta">Gender information:</strong> only if you choose to include it for the gender pay gap analysis. Completely optional.</>,
               <><strong className="font-normal text-tinta">Payment information:</strong> processed directly by Stripe. PayRank does not store credit card data.</>,
             ]}
@@ -202,7 +202,7 @@ function PrivacyPolicyEN() {
           <List
             items={[
               "To generate your PayRank using real compensation criteria.",
-              "To send you your report by email and WhatsApp if requested.",
+              "To send you your report by email.",
               "To improve the accuracy of future diagnostics using fully anonymized and aggregated data.",
               "To publish the quarterly PayRank Industry Report — a market report built with anonymized data from users who gave explicit consent.",
               "To send market alerts if you subscribed to the PRO plan.",

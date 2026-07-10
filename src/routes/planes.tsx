@@ -38,7 +38,8 @@ const COPY_ES: PlanCopy[] = [
   {
     nombre: "GO",
     italic: "Para cuando tenés una conversación puntual por delante.",
-    descripcion: "Un PayRank completo. Sin vencimiento.",
+    descripcion:
+      "1 PayRank completo.\n\nCuando ya sabés qué necesitás resolver — una negociación puntual, una decisión que no puede esperar — un PayRank te da el número exacto para esa conversación.",
     cta: "EMPEZAR CON GO",
     plan: "unico",
     destacada: false,
@@ -47,7 +48,7 @@ const COPY_ES: PlanCopy[] = [
     nombre: "PLUS",
     italic: "Para cuando estás en movimiento.",
     descripcion:
-      "Tres PayRank completos. Sin vencimiento.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
+      "3 PayRank, para usar en los próximos 12 meses.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
     cta: "EMPEZAR CON PLUS",
     plan: "pack3",
     destacada: true,
@@ -57,7 +58,7 @@ const COPY_ES: PlanCopy[] = [
     nombre: "PRO",
     italic: "Para cuando el mercado no para — y vos tampoco.",
     descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
+      "Hasta 12 por año.\n\nTu revisión anual, tu próxima entrevista, el salto de carrera que no esperabas — PRO te da el número correcto en cada una, durante todo el año.",
     cta: "EMPEZAR CON PRO",
     plan: "anual",
     destacada: false,
@@ -68,7 +69,8 @@ const COPY_EN: PlanCopy[] = [
   {
     nombre: "GO",
     italic: "For when you have one key conversation ahead.",
-    descripcion: "1 PayRank. Any situation. No expiration.",
+    descripcion:
+      "1 PayRank.\n\nWhen you already know what you need to solve — a specific negotiation, a decision that can't wait — a PayRank gives you the exact number for that conversation.",
     cta: "START WITH GO",
     plan: "unico",
     destacada: false,
@@ -77,7 +79,7 @@ const COPY_EN: PlanCopy[] = [
     nombre: "PLUS",
     italic: "For when you're in motion.",
     descripcion:
-      "3 PayRanks. Any situation. No expiration. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
+      "3 PayRanks, to use anytime within the next 12 months. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
     cta: "START WITH PLUS",
     plan: "pack3",
     destacada: true,
@@ -87,7 +89,7 @@ const COPY_EN: PlanCopy[] = [
     nombre: "PRO",
     italic: "For when your career doesn't take a year off.",
     descripcion:
-      "Unlimited PayRanks + automatic market updates when your sector moves — so you never negotiate with stale data.",
+      "Up to 12 a year.\n\nYour annual review, your next interview, the career leap you didn't see coming — PRO gives you the right number for each one, all year long.",
     cta: "START WITH PRO",
     plan: "anual",
     destacada: false,

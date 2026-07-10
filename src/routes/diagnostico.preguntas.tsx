@@ -2246,21 +2246,6 @@ function P18Genero({ r, setR }: Props) {
 function P19Contacto({ r, setR }: Props) {
   const { lang } = useLang();
   const isEN = lang === "EN";
-  const paisSel = r.pais === "Otro" ? r.paisOtro : r.pais;
-  const phonePlaceholder = ((): string => {
-    switch ((paisSel ?? "").toLowerCase()) {
-      case "argentina": return "+54 9 11 XXXX XXXX";
-      case "méxico":
-      case "mexico": return "+52 1 55 XXXX XXXX";
-      case "chile": return "+56 9 XXXX XXXX";
-      case "colombia": return "+57 3XX XXX XXXX";
-      case "españa":
-      case "espana": return "+34 6XX XXX XXX";
-      case "estados unidos":
-      case "usa": return "+1 (XXX) XXX-XXXX";
-      default: return "+[code] number";
-    }
-  })();
   return (
     <>
       <QuestionTitle>{isEN ? "How do we contact you?" : "¿Cómo te contactamos?"}</QuestionTitle>
@@ -2277,20 +2262,6 @@ function P19Contacto({ r, setR }: Props) {
             {isEN
               ? "To receive your complete PayRank and access your report at any time. For any questions write us at hello@payrank.co"
               : "Para recibir tu PayRank completo y acceder a tu reporte en cualquier momento. Ante cualquier consulta escribinos a hello@payrank.co"}
-          </p>
-        </div>
-        <div>
-          <p className="font-ui text-[10px] text-hueso/50 mb-3">{isEN ? "WHATSAPP (OPTIONAL)" : "WHATSAPP (OPCIONAL)"}</p>
-          <TextInput
-            type="tel"
-            placeholder={phonePlaceholder}
-            value={r.whatsapp ?? ""}
-            onChange={(e) => setR({ whatsapp: e.target.value })}
-          />
-          <p className="font-body text-xs text-hueso/45 mt-2">
-            {isEN
-              ? "Optional. If you leave it, you'll also receive your PayRank via WhatsApp."
-              : "Opcional. Si lo dejás, también recibís tu PayRank por WhatsApp."}
           </p>
         </div>
       </div>
