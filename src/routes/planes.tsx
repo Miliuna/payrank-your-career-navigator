@@ -339,7 +339,7 @@ function PlanesEN({ region, ready }: { region: Region; ready: boolean }) {
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">You're evaluating an offer or comparing total compensation</td>
-                    <td className="py-4 px-4"> apples-to-apples comparison across salary, benefits, and equity</td>
+                    <td className="py-4 px-4">An apples-to-apples comparison across salary, benefits, and equity</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">You're switching roles, industries, or countries</td>
