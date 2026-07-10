@@ -1138,7 +1138,6 @@ La estructura exacta del JSON es:
     "porcentaje_gana_mas": "string â€” el X% de los profesionales con tu perfil gana mÃ¡s que tÃº hoy (en Argentina/Uruguay: 'que vos hoy')",
     "posicionamiento": "Bajo mercado/En mercado/Sobre mercado",
     "compa_ratio": "string — número con dos decimales, ej: 0.87. MODO E OBLIGATORIO: calcular como (contrato_base + comisiones) × factor_equivalencia ÷ P50_mercado_empleados — NUNCA valor bruto ÷ P50",
-    "interpretacion_compa_ratio": "string â€” en lenguaje humano",
     "erosion_salarial_detectada": true,
     "descripcion_erosion": "string o null",
     "diagnostico_especifico": "string â€” 2-3 pÃ¡rrafos con datos concretos del perfil",
