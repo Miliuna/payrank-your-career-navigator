@@ -49,7 +49,8 @@ const planesES = [
     precio: "USD 29",
     sufijo: undefined as string | undefined,
     italic: "Para cuando tenés una conversación puntual por delante.",
-    descripcion: "Un PayRank completo. Sin vencimiento.",
+    descripcion:
+      "1 PayRank completo.\n\nCuando ya sabés qué necesitás resolver — una negociación puntual, una decisión que no puede esperar — un PayRank te da el número exacto para esa conversación.",
     cta: "EMPEZAR CON GO",
     plan: "unico" as const,
     destacada: false,
@@ -60,7 +61,7 @@ const planesES = [
     sufijo: undefined as string | undefined,
     italic: "Para cuando estás en movimiento.",
     descripcion:
-      "Tres PayRank completos. Sin vencimiento.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
+      "3 PayRank, para usar en los próximos 12 meses.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
     cta: "EMPEZAR CON PLUS",
     plan: "pack3" as const,
     destacada: true,
@@ -72,7 +73,7 @@ const planesES = [
     sufijo: "/año",
     italic: "Para cuando el mercado no para — y vos tampoco.",
     descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
+      "Hasta 12 por año.\n\nTu revisión anual, tu próxima entrevista, el salto de carrera que no esperabas — PRO te da el número correcto en cada una, durante todo el año.",
     cta: "EMPEZAR CON PRO",
     plan: "anual" as const,
     destacada: false,
