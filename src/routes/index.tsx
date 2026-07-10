@@ -417,55 +417,33 @@ function LandingES() {
             })}
           </div>
 
-          {/* Tabla comparativa */}
+          <p className="font-body text-sm text-hueso/50 mt-8">
+            ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
+          </p>
+
           <div className="mt-24 border-t border-hueso/20 pt-16">
-            <p className="font-ui text-[10px] text-hueso/60 mb-8">EN DETALLE</p>
-            <div className="overflow-x-auto">
-              <table className="w-full font-body text-sm">
-                <thead>
-                  <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/3"></th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">GO</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PLUS</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PRO</th>
-                  </tr>
-                </thead>
-                <tbody className="text-hueso">
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Precio</td>
-                    <td className="py-4 px-4">{PRICING[region].unico.display}</td>
-                    <td className="py-4 px-4">{PRICING[region].pack3.display}</td>
-                    <td className="py-4 px-4">
-                      {PRICING[region].anual.display}/año
-                    </td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>
-                    <td className="py-4 px-4">1</td>
-                    <td className="py-4 px-4">3</td>
-                    <td className="py-4 px-4">Hasta 12 por año (1 por mes)</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Análisis completo</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                  </tr>
-                  <tr>
-                    <td className="py-4 pr-4 text-hueso/70">Alertas cuando tu mercado se mueve</td>
-                    <td className="py-4 px-4">Email</td>
-                    <td className="py-4 px-4">Email + 1 update gratis</td>
-                    <td className="py-4 px-4">Update automática</td>
-                  </tr>
-                </tbody>
-              </table>
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">SEGÚN TU SITUACIÓN</p>
+
+            <p className="font-display-italic text-xl md:text-2xl text-hueso mb-14 max-w-3xl">
+              Hasta ahora, tomabas estas decisiones a ciegas. PayRank te da el dato que te faltaba, antes de negociar, aceptar o dar el salto.
+            </p>
+
+            <div className="flex flex-col divide-y divide-hueso/15">
+              {[
+                { n: "01", situacion: "Evaluás si tu sueldo es competitivo", incluye: "Tu número exacto + argumentos de negociación + impacto de IA en tu rol" },
+                { n: "02", situacion: "Vas a pedir un aumento o una revisión salarial", incluye: "Script según el tipo de negociación (inflación, funciones nuevas, cambio de nivel)" },
+                { n: "03", situacion: "Estás en búsqueda activa o con una oferta sobre la mesa", incluye: "Tu rango de expectativa salarial para la entrevista — y si ya tenés oferta, el veredicto: aceptar, negociar o rechazar" },
+                { n: "04", situacion: "Pensás en tu próximo salto de carrera", incluye: "Tu CV antes/después + hoja de ruta según hacia dónde vas" },
+                { n: "05", situacion: "Evaluás tu competitividad como contractor", incluye: "Tu equivalente real de mercado, considerando lo que debería poder cubrir tu contrato" },
+                { n: "06", situacion: "Querés definir tu tarifa por hora o proyecto (próximamente)", incluye: "Tu tarifa recomendada con argumento de mercado — sumate a la lista de espera" },
+              ].map((row) => (
+                <div key={row.n} className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr] gap-4 md:gap-8 py-8 items-start">
+                  <p className="font-display text-3xl md:text-4xl text-[#C4BFB8]">{row.n}</p>
+                  <p className="font-body text-lg md:text-xl text-hueso leading-snug">{row.situacion}</p>
+                  <p className="font-body text-base text-hueso/80 leading-relaxed">{row.incluye}</p>
+                </div>
+              ))}
             </div>
-            <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
-              La mayoría de quienes están en búsqueda activa o atravesando una negociación terminan necesitando más de un PayRank. El plan PLUS está diseñado para eso.
-            </p>
-            <p className="font-body text-sm text-hueso/50 mt-4">
-              ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
-            </p>
           </div>
         </div>
       </section>
