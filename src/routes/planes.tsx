@@ -311,52 +311,55 @@ function PlanesEN({ region, ready }: { region: Region; ready: boolean }) {
             })}
           </div>
 
+          <p className="font-body text-sm text-hueso/50 mt-8">
+            Have a referral code? Enter it at checkout for 15% off your first PayRank.
+          </p>
+
           <div className="mt-24 border-t border-hueso/20 pt-16">
-            <p className="font-ui text-[10px] text-hueso/60 mb-8">IN DETAIL</p>
+            <p className="font-ui text-[10px] text-hueso/60 mb-4">BASED ON YOUR SITUATION</p>
+            <p className="font-display-italic text-base text-hueso/70 mb-8 max-w-2xl">
+              PayRank is designed for the moments where "what the market pays" actually matters to your next decision.
+            </p>
             <div className="overflow-x-auto">
               <table className="w-full font-body text-sm">
                 <thead>
                   <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/3"></th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">GO</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PLUS</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PRO</th>
+                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/2">YOUR SITUATION TODAY</th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso/60">YOUR PAYRANK INCLUDES</th>
                   </tr>
                 </thead>
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Price</td>
-                    <td className="py-4 px-4">{prices.unico.display}</td>
-                    <td className="py-4 px-4">{prices.pack3.display}</td>
-                    <td className="py-4 px-4">{prices.anual.display}{prices.anual.suffix ?? ""}</td>
+                    <td className="py-4 pr-4 text-hueso/70">You don't know what your role is worth in the market</td>
+                    <td className="py-4 px-4">A precise, personalized salary benchmark</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">PayRanks included</td>
-                    <td className="py-4 px-4">1</td>
-                    <td className="py-4 px-4">3</td>
-                    <td className="py-4 px-4">Unlimited</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're preparing for a performance review or raise conversation</td>
+                    <td className="py-4 px-4">A structured argument backed by your market data</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Full analysis</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're evaluating an offer or comparing total compensation</td>
+                    <td className="py-4 px-4">An apples-to-apples comparison across salary, benefits, and equity</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">You're switching roles, industries, or countries</td>
+                    <td className="py-4 px-4">A realistic target range for your new context</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">You're planning your next career move</td>
+                    <td className="py-4 px-4">A clear picture of where you stand and what's attainable</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">You need to negotiate without starting from zero</td>
+                    <td className="py-4 px-4">Talking points and a defensible number</td>
                   </tr>
                   <tr>
-                    <td className="py-4 pr-4 text-hueso/70">Alerts when your market moves</td>
-                    <td className="py-4 px-4">Email</td>
-                    <td className="py-4 px-4">Email + 1 free update</td>
-                    <td className="py-4 px-4">Automatic update</td>
+                    <td className="py-4 pr-4 text-hueso/70">You want to set your hourly or project rate (coming soon)</td>
+                    <td className="py-4 px-4">Your recommended rate with market backing — join the waitlist</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
-              Most professionals working a job search or negotiation end up needing more than one PayRank. PLUS is built for that.
-            </p>
-            <p className="font-body text-sm text-hueso/50 mt-4">
-              Have a referral code? Enter it at checkout for 15% off your first PayRank.
-            </p>
           </div>
         </div>
       </section>
