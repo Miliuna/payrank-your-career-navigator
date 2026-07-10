@@ -84,7 +84,6 @@ const planesES = [
 const affirmationsEN = [
   "Your company ran a salary benchmark on your role.\nThat number shaped your last raise.\nAnd the one before that.",
   "That offer on the table didn't come from thin air.\nThey benchmarked your profile before they wrote it.",
-  "The gender pay gap in your industry isn't a statistic.\nIt's a monthly number with your name on it.",
   "Walking into any salary conversation without\nmarket data isn't negotiating. It's guessing.",
 ];
 
@@ -719,32 +718,38 @@ function LandingEN() {
         </div>
       </section>
 
-      {/* 3-step process */}
+      {/* 4-step process */}
       <section className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28 border-t border-hueso/15">
         <div className="mx-auto max-w-6xl">
           <p className="font-ui text-[10px] text-hueso/60 mb-4">THE PROCESS</p>
           <h2 className="font-display text-3xl md:text-5xl mb-14">
-            Three minutes. Your <span className="font-display-italic">exact number.</span>
+            Four steps. One <span className="font-display-italic">exact number.</span>
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
               {
                 n: "01",
-                titulo: "Your profile in seconds",
-                texto: "Answer 4 questions. The AI infers the rest — your industry, scope, seniority level — without asking for what it can already figure out.",
-                tag: "AI-ASSISTED",
+                titulo: "Choose what you need to solve.",
+                texto: "A raise, a new offer, a promotion, or setting your rate. Pick the scenario that matches your next move.",
+                tag: "TAILORED TO YOU",
               },
               {
                 n: "02",
-                titulo: "PayRank runs the analysis",
-                texto: "We apply the same compensation adjustments used by global consultancies — scope, leadership, languages, AI adoption — against real market data.",
-                tag: "GLOBAL CONSULTING METHODOLOGY",
+                titulo: "Complete your profile.",
+                texto: "Answer a few focused questions. The AI infers the rest — your industry, scope, seniority, and the factors that actually move compensation.",
+                tag: "AI-ASSISTED",
               },
               {
                 n: "03",
-                titulo: "Your complete report",
-                texto: "Market position, gender gap if it applies, total compensation range, and the exact argument for your next conversation — in under three minutes.",
+                titulo: "PayRank® Professional Salary Intelligence",
+                texto: "We apply the same compensation adjustments used by global consultancies — scope, leadership, languages, AI adoption — against real market data.",
+                tag: "PAYRANK METHODOLOGY",
+              },
+              {
+                n: "04",
+                titulo: "Get your complete diagnostic.",
+                texto: "Your real market position, and the concrete argument for your next conversation — whether you negotiate, accept, or decide your next step.",
                 tag: "READY TO USE IMMEDIATELY",
               },
             ].map((c) => (
@@ -833,53 +838,56 @@ function LandingEN() {
             })}
           </div>
 
+          <p className="font-body text-sm text-hueso/50 mt-16">
+            Have a referral code? Enter it at checkout for 15% off your first PayRank.
+          </p>
+
           {/* Comparison table */}
           <div className="mt-24 border-t border-hueso/20 pt-16">
-            <p className="font-ui text-[10px] text-hueso/60 mb-8">IN DETAIL</p>
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">BASED ON YOUR SITUATION</p>
+            <p className="font-display-italic text-base text-hueso/70 mb-8 max-w-2xl">
+              Until now, you made salary decisions with partial information. PayRank gives you the missing half.
+            </p>
             <div className="overflow-x-auto">
               <table className="w-full font-body text-sm">
                 <thead>
                   <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/3"></th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">GO</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PLUS</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PRO</th>
+                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/2">YOUR SITUATION TODAY</th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">YOUR PAYRANK INCLUDES</th>
                   </tr>
                 </thead>
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Price</td>
-                    <td className="py-4 px-4">{PRICING[region].unico.display}</td>
-                    <td className="py-4 px-4">{PRICING[region].pack3.display}</td>
-                    <td className="py-4 px-4">{PRICING[region].anual.display}/yr</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're evaluating whether your salary is competitive</td>
+                    <td className="py-4 px-4">Your market position and the gap, if there is one</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">PayRanks included</td>
-                    <td className="py-4 px-4">1</td>
-                    <td className="py-4 px-4">3</td>
-                    <td className="py-4 px-4">Unlimited</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're about to ask for a raise or negotiate an offer</td>
+                    <td className="py-4 px-4">A concrete compensation target and negotiation argument</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Full analysis</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're deciding between two offers</td>
+                    <td className="py-4 px-4">An apples-to-apples comparison of total value</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">You're preparing for a promotion conversation</td>
+                    <td className="py-4 px-4">The market value of the next level for your profile</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">You're considering a career move</td>
+                    <td className="py-4 px-4">The salary impact of switching industry, scope, or location</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">You want to plan your long-term income trajectory</td>
+                    <td className="py-4 px-4">A clear picture of where your profile can go</td>
                   </tr>
                   <tr>
-                    <td className="py-4 pr-4 text-hueso/70">Alerts when your market moves</td>
-                    <td className="py-4 px-4">Email</td>
-                    <td className="py-4 px-4">Email + 1 free update</td>
-                    <td className="py-4 px-4">Automatic update</td>
+                    <td className="py-4 pr-4 text-hueso/70">You want to set your hourly or project rate (coming soon)</td>
+                    <td className="py-4 px-4">Your recommended rate with market backing — join the waitlist</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
-              Most professionals working a job search or negotiation end up needing more than one PayRank. PLUS is built for that.
-            </p>
-            <p className="font-body text-sm text-hueso/50 mt-4">
-              Have a referral code? Enter it at checkout for 15% off your first PayRank.
-            </p>
           </div>
         </div>
       </section>
