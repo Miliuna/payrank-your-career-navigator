@@ -150,9 +150,8 @@ function LandingES() {
             PROFESSIONAL SALARY INTELLIGENCE
           </p>
           <h1 className="font-display text-[2.75rem] leading-[1.05] md:text-7xl md:leading-[1.02] tracking-tight text-hueso mb-8">
-            ¿Cuánto <span className="font-display-italic">valés</span><br />
-            realmente en<br />
-            el mercado?
+            ¿Cuánto valés <span className="font-display-italic">realmente</span><br />
+            en el mercado?
           </h1>
           <p className="font-body text-lg md:text-xl text-hueso/70 max-w-2xl mb-14 leading-relaxed">
             No solo tu puesto. Tu experiencia, tus habilidades, tu trayectoria y tu potencial.
