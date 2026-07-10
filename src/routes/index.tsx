@@ -39,8 +39,7 @@ export const Route = createFileRoute("/")({
 
 const preguntasES = [
   "Tu experiencia y tu trayectoria pueden valer más de lo que te pagan. Necesitás saberlo.",
-  "Todos los puestos tienen un valor de mercado. ¿Sabés cuánto vale el tuyo?",
-  "Puede existir una brecha de género en tu industria que te está costando dinero cada mes sin que lo sepas.",
+  "Tu empresa ya sabe exactamente cuánto deberías ganar. Vos, hasta hoy, no.",
   "Con el número correcto y los argumentos correctos, la conversación que tenés por delante cambia completamente.",
 ];
 
@@ -298,32 +297,38 @@ function LandingES() {
         </div>
       </section>
 
-      {/* Proceso en 3 pasos */}
+      {/* Proceso en 4 pasos */}
       <section className="bg-tinta text-hueso px-5 md:px-10 py-20 md:py-28 border-t border-hueso/15">
         <div className="mx-auto max-w-6xl">
           <p className="font-ui text-[10px] text-hueso/60 mb-4">EL PROCESO</p>
           <h2 className="font-display text-3xl md:text-5xl mb-14">
-            Tres minutos. El <span className="font-display-italic">número exacto.</span>
+            Cuatro pasos. Un <span className="font-display-italic">número exacto.</span>
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[
               {
                 n: "01",
-                titulo: "Tu perfil en segundos",
-                texto: "Respondés 4 preguntas. La IA deduce el resto — industria, alcance, nivel de seniority — sin que tengas que explicar nada que ya se puede inferir.",
-                tag: "ASISTIDO POR IA",
+                titulo: "Elegís qué necesitás resolver.",
+                texto: "Una conversación por delante, una oferta en evaluación, o tu posición en el mercado. Elegís el objetivo y el idioma de tu diagnóstico.",
+                tag: "A TU MEDIDA",
               },
               {
                 n: "02",
-                titulo: "PayRank procesa",
-                texto: "Aplicamos los ajustes compensológicos que usan las consultoras globales — alcance, liderazgo, idiomas, adopción de IA — sobre la base de datos de mercado.",
-                tag: "METODOLOGÍA DE CONSULTORA GLOBAL",
+                titulo: "Completás tu perfil.",
+                texto: "Respondés las preguntas clave sobre tu rol, experiencia, alcance y habilidades. La IA asiste el proceso para que sea rápido y preciso.",
+                tag: "ASISTIDO POR IA",
               },
               {
                 n: "03",
-                titulo: "Tu diagnóstico completo",
-                texto: "Posición en el mercado, brecha de género si aplica, compensación total y el argumento exacto para tu próxima conversación — en menos de tres minutos.",
+                titulo: "PayRank® Professional Salary Intelligence",
+                texto: "Nuestra metodología aplica ajustes compensológicos reales sobre datos de mercado para calcular tu valor objetivo y tu posición relativa.",
+                tag: "METODOLOGÍA PAYRANK",
+              },
+              {
+                n: "04",
+                titulo: "Obtené tu diagnóstico completo.",
+                texto: "Tu posición real en el mercado, y el argumento concreto para tu próxima conversación — negociar, aceptar o decidir tu próximo paso.",
                 tag: "ACCIONABLE DE INMEDIATO",
               },
             ].map((c) => (
