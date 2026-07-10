@@ -182,52 +182,53 @@ function PlanesES({ region, ready }: { region: Region; ready: boolean }) {
             })}
           </div>
 
+          <p className="font-body text-sm text-hueso/50 mt-8">
+            ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
+          </p>
+
           <div className="mt-24 border-t border-hueso/20 pt-16">
-            <p className="font-ui text-[10px] text-hueso/60 mb-8">EN DETALLE</p>
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">SEGÚN TU SITUACIÓN</p>
+
+            <p className="font-display-italic text-xl md:text-2xl text-hueso mb-10 max-w-3xl">
+              Hasta ahora, tomabas estas decisiones a ciegas. PayRank te da el dato que te faltaba, antes de negociar, aceptar o dar el salto.
+            </p>
+
             <div className="overflow-x-auto">
               <table className="w-full font-body text-sm">
                 <thead>
                   <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/3"></th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">GO</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PLUS</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PRO</th>
+                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-2/5">TU SITUACIÓN HOY</th>
+                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso/60">TU PAYRANK INCLUYE</th>
                   </tr>
                 </thead>
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Precio</td>
-                    <td className="py-4 px-4">{prices.unico.display}</td>
-                    <td className="py-4 px-4">{prices.pack3.display}</td>
-                    <td className="py-4 px-4">{prices.anual.display}{prices.anual.suffix ?? ""}</td>
+                    <td className="py-4 pr-4 text-hueso/70">Evaluás si tu sueldo es competitivo</td>
+                    <td className="py-4 px-4">Tu número exacto + argumentos de negociación + impacto de IA en tu rol</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>
-                    <td className="py-4 px-4">1</td>
-                    <td className="py-4 px-4">3</td>
-                    <td className="py-4 px-4">Hasta 12 por año (1 por mes)</td>
+                    <td className="py-4 pr-4 text-hueso/70">Vas a pedir un aumento o una revisión salarial</td>
+                    <td className="py-4 px-4">Script según el tipo de negociación (inflación, funciones nuevas, cambio de nivel)</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Análisis completo</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
+                    <td className="py-4 pr-4 text-hueso/70">Estás en búsqueda activa o con una oferta sobre la mesa</td>
+                    <td className="py-4 px-4">Tu rango de expectativa salarial para la entrevista — y si ya tenés oferta, el veredicto: aceptar, negociar o rechazar</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">Pensás en tu próximo salto de carrera</td>
+                    <td className="py-4 px-4">Tu CV antes/después + hoja de ruta según hacia dónde vas</td>
+                  </tr>
+                  <tr className="border-b border-hueso/20">
+                    <td className="py-4 pr-4 text-hueso/70">Evaluás tu competitividad como contractor</td>
+                    <td className="py-4 px-4">Tu equivalente real de mercado, considerando lo que debería poder cubrir tu contrato</td>
                   </tr>
                   <tr>
-                    <td className="py-4 pr-4 text-hueso/70">Alertas cuando tu mercado se mueve</td>
-                    <td className="py-4 px-4">Email</td>
-                    <td className="py-4 px-4">Email + 1 update gratis</td>
-                    <td className="py-4 px-4">Update automática</td>
+                    <td className="py-4 pr-4 text-hueso/70">Querés definir tu tarifa por hora o proyecto (próximamente)</td>
+                    <td className="py-4 px-4">Tu tarifa recomendada con argumento de mercado — sumate a la lista de espera</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
-              La mayoría de quienes están en búsqueda activa o atravesando una negociación terminan necesitando más de un PayRank. El plan PLUS está diseñado para eso.
-            </p>
-            <p className="font-body text-sm text-hueso/50 mt-4">
-              ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
-            </p>
           </div>
         </div>
       </section>
@@ -311,47 +312,41 @@ function PlanesEN({ region, ready }: { region: Region; ready: boolean }) {
             })}
           </div>
 
-          <p className="font-body text-sm text-hueso/50 mt-8">
-            Have a referral code? Enter it at checkout for 15% off your first PayRank.
-          </p>
-
           <div className="mt-24 border-t border-hueso/20 pt-16">
-            <p className="font-ui text-[10px] text-hueso/60 mb-4">BASED ON YOUR SITUATION</p>
-            <p className="font-display-italic text-base text-hueso/70 mb-8 max-w-2xl">
-              PayRank is designed for the moments where "what the market pays" actually matters to your next decision.
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">BASED ON YOUR SITUATION</p>
+
+            <p className="font-display-italic text-xl md:text-2xl text-hueso mb-10 max-w-3xl">
+              Until now, you made these decisions blind. PayRank gives you the data you were missing — before you negotiate, accept, or take the leap.
             </p>
+
             <div className="overflow-x-auto">
               <table className="w-full font-body text-sm">
                 <thead>
                   <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/2">YOUR SITUATION TODAY</th>
+                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-2/5">YOUR SITUATION TODAY</th>
                     <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso/60">YOUR PAYRANK INCLUDES</th>
                   </tr>
                 </thead>
                 <tbody className="text-hueso">
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You don't know what your role is worth in the market</td>
-                    <td className="py-4 px-4">A precise, personalized salary benchmark</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're checking if your pay is competitive</td>
+                    <td className="py-4 px-4">Your exact number + negotiation arguments + AI's impact on your role</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're preparing for a performance review or raise conversation</td>
-                    <td className="py-4 px-4">A structured argument backed by your market data</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're asking for a raise or a salary review</td>
+                    <td className="py-4 px-4">A script based on your negotiation type (inflation, expanded responsibilities, level change)</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're evaluating an offer or comparing total compensation</td>
-                    <td className="py-4 px-4">An apples-to-apples comparison across salary, benefits, and equity</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're switching roles, industries, or countries</td>
-                    <td className="py-4 px-4">A realistic target range for your new context</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're job searching or have an offer on the table</td>
+                    <td className="py-4 px-4">Your target salary range for the interview — and if you already have an offer, the verdict: accept, negotiate, or walk away</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
                     <td className="py-4 pr-4 text-hueso/70">You're planning your next career move</td>
-                    <td className="py-4 px-4">A clear picture of where you stand and what's attainable</td>
+                    <td className="py-4 px-4">Your resume before/after + a roadmap based on where you're headed</td>
                   </tr>
                   <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You need to negotiate without starting from zero</td>
-                    <td className="py-4 px-4">Talking points and a defensible number</td>
+                    <td className="py-4 pr-4 text-hueso/70">You're checking your competitiveness as a contractor</td>
+                    <td className="py-4 px-4">Your real market equivalent, based on what your contract should actually cover</td>
                   </tr>
                   <tr>
                     <td className="py-4 pr-4 text-hueso/70">You want to set your hourly or project rate (coming soon)</td>
