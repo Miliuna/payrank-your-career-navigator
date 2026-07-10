@@ -49,7 +49,8 @@ const planesES = [
     precio: "USD 29",
     sufijo: undefined as string | undefined,
     italic: "Para cuando tenés una conversación puntual por delante.",
-    descripcion: "Un PayRank completo. Sin vencimiento.",
+    descripcion:
+      "1 PayRank completo.\n\nCuando ya sabés qué necesitás resolver — una negociación puntual, una decisión que no puede esperar — un PayRank te da el número exacto para esa conversación.",
     cta: "EMPEZAR CON GO",
     plan: "unico" as const,
     destacada: false,
@@ -60,7 +61,7 @@ const planesES = [
     sufijo: undefined as string | undefined,
     italic: "Para cuando estás en movimiento.",
     descripcion:
-      "Tres PayRank completos. Sin vencimiento.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
+      "3 PayRank, para usar en los próximos 12 meses.\n\nLa mayoría de los procesos de búsqueda o negociación requieren más de uno — uno para saber cuánto valés, otro para preparar la entrevista, otro cuando llegue la oferta.",
     cta: "EMPEZAR CON PLUS",
     plan: "pack3" as const,
     destacada: true,
@@ -72,7 +73,7 @@ const planesES = [
     sufijo: "/año",
     italic: "Para cuando el mercado no para — y vos tampoco.",
     descripcion:
-      "Hasta 12 PayRanks por año (1 por mes). Más actualización automática cuando tu mercado se mueva — para que nunca negocies con información vieja.",
+      "Hasta 12 por año.\n\nTu revisión anual, tu próxima entrevista, el salto de carrera que no esperabas — PRO te da el número correcto en cada una, durante todo el año.",
     cta: "EMPEZAR CON PRO",
     plan: "anual" as const,
     destacada: false,
@@ -93,7 +94,8 @@ const planesEN = [
     precio: "USD 39",
     sufijo: undefined as string | undefined,
     italic: "For when you have one key conversation ahead.",
-    descripcion: "1 PayRank. Any situation. No expiration.",
+    descripcion:
+      "1 PayRank.\n\nWhen you already know what you need to solve — a specific negotiation, a decision that can't wait — a PayRank gives you the exact number for that conversation.",
     cta: "START WITH GO",
     plan: "unico" as const,
     destacada: false,
@@ -104,7 +106,7 @@ const planesEN = [
     sufijo: undefined as string | undefined,
     italic: "For when you're in motion.",
     descripcion:
-      "3 PayRanks. Any situation. No expiration. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
+      "3 PayRanks, to use anytime within the next 12 months. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
     cta: "START WITH PLUS",
     plan: "pack3" as const,
     destacada: true,
@@ -116,7 +118,7 @@ const planesEN = [
     sufijo: "/yr",
     italic: "For when your career doesn't take a year off.",
     descripcion:
-      "Unlimited PayRanks + automatic market updates when your sector moves — so you never negotiate with stale data.",
+      "Up to 12 a year.\n\nYour annual review, your next interview, the career leap you didn't see coming — PRO gives you the right number for each one, all year long.",
     cta: "START WITH PRO",
     plan: "anual" as const,
     destacada: false,
@@ -148,9 +150,8 @@ function LandingES() {
             PROFESSIONAL SALARY INTELLIGENCE
           </p>
           <h1 className="font-display text-[2.75rem] leading-[1.05] md:text-7xl md:leading-[1.02] tracking-tight text-hueso mb-8">
-            ¿Cuánto <span className="font-display-italic">valés</span><br />
-            realmente en<br />
-            el mercado?
+            ¿Cuánto valés <span className="font-display-italic">realmente</span><br />
+            en el mercado?
           </h1>
           <p className="font-body text-lg md:text-xl text-hueso/70 max-w-2xl mb-14 leading-relaxed">
             No solo tu puesto. Tu experiencia, tus habilidades, tu trayectoria y tu potencial.
@@ -416,55 +417,33 @@ function LandingES() {
             })}
           </div>
 
-          {/* Tabla comparativa */}
+          <p className="font-body text-sm text-hueso/50 mt-8">
+            ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
+          </p>
+
           <div className="mt-24 border-t border-hueso/20 pt-16">
-            <p className="font-ui text-[10px] text-hueso/60 mb-8">EN DETALLE</p>
-            <div className="overflow-x-auto">
-              <table className="w-full font-body text-sm">
-                <thead>
-                  <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/3"></th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">GO</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PLUS</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">PRO</th>
-                  </tr>
-                </thead>
-                <tbody className="text-hueso">
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Precio</td>
-                    <td className="py-4 px-4">{PRICING[region].unico.display}</td>
-                    <td className="py-4 px-4">{PRICING[region].pack3.display}</td>
-                    <td className="py-4 px-4">
-                      {PRICING[region].anual.display}/año
-                    </td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">PayRank incluidos</td>
-                    <td className="py-4 px-4">1</td>
-                    <td className="py-4 px-4">3</td>
-                    <td className="py-4 px-4">Hasta 12 por año (1 por mes)</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">Análisis completo</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                    <td className="py-4 px-4">✓</td>
-                  </tr>
-                  <tr>
-                    <td className="py-4 pr-4 text-hueso/70">Alertas cuando tu mercado se mueve</td>
-                    <td className="py-4 px-4">Email</td>
-                    <td className="py-4 px-4">Email + 1 update gratis</td>
-                    <td className="py-4 px-4">Update automática</td>
-                  </tr>
-                </tbody>
-              </table>
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">SEGÚN TU SITUACIÓN</p>
+
+            <p className="font-display-italic text-xl md:text-2xl text-hueso mb-14 max-w-3xl">
+              Hasta ahora, tomabas estas decisiones a ciegas. PayRank te da el dato que te faltaba, antes de negociar, aceptar o dar el salto.
+            </p>
+
+            <div className="flex flex-col divide-y divide-hueso/15">
+              {[
+                { n: "01", situacion: "Evaluás si tu sueldo es competitivo", incluye: "Tu número exacto + argumentos de negociación + impacto de IA en tu rol" },
+                { n: "02", situacion: "Vas a pedir un aumento o una revisión salarial", incluye: "Script según el tipo de negociación (inflación, funciones nuevas, cambio de nivel)" },
+                { n: "03", situacion: "Estás en búsqueda activa o con una oferta sobre la mesa", incluye: "Tu rango de expectativa salarial para la entrevista — y si ya tenés oferta, el veredicto: aceptar, negociar o rechazar" },
+                { n: "04", situacion: "Pensás en tu próximo salto de carrera", incluye: "Tu CV antes/después + hoja de ruta según hacia dónde vas" },
+                { n: "05", situacion: "Evaluás tu competitividad como contractor", incluye: "Tu equivalente real de mercado, considerando lo que debería poder cubrir tu contrato" },
+                { n: "06", situacion: "Querés definir tu tarifa por hora o proyecto (próximamente)", incluye: "Tu tarifa recomendada con argumento de mercado — sumate a la lista de espera" },
+              ].map((row) => (
+                <div key={row.n} className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr] gap-4 md:gap-8 py-8 items-start">
+                  <p className="font-display text-3xl md:text-4xl text-[#C4BFB8]">{row.n}</p>
+                  <p className="font-body text-lg md:text-xl text-hueso leading-snug">{row.situacion}</p>
+                  <p className="font-body text-base text-hueso/80 leading-relaxed">{row.incluye}</p>
+                </div>
+              ))}
             </div>
-            <p className="font-display-italic text-base text-hueso/70 mt-8 max-w-2xl">
-              La mayoría de quienes están en búsqueda activa o atravesando una negociación terminan necesitando más de un PayRank. El plan PLUS está diseñado para eso.
-            </p>
-            <p className="font-body text-sm text-hueso/50 mt-4">
-              ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
-            </p>
           </div>
         </div>
       </section>
@@ -842,51 +821,28 @@ function LandingEN() {
             Have a referral code? Enter it at checkout for 15% off your first PayRank.
           </p>
 
-          {/* Comparison table */}
           <div className="mt-24 border-t border-hueso/20 pt-16">
             <p className="font-ui text-[10px] text-hueso/60 mb-8">BASED ON YOUR SITUATION</p>
-            <p className="font-display-italic text-base text-hueso/70 mb-8 max-w-2xl">
-              Until now, you made salary decisions with partial information. PayRank gives you the missing half.
+
+            <p className="font-display-italic text-xl md:text-2xl text-hueso mb-14 max-w-3xl">
+              Until now, you made these decisions blind. PayRank gives you the data you were missing — before you negotiate, accept, or take the leap.
             </p>
-            <div className="overflow-x-auto">
-              <table className="w-full font-body text-sm">
-                <thead>
-                  <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-1/2">YOUR SITUATION TODAY</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso">YOUR PAYRANK INCLUDES</th>
-                  </tr>
-                </thead>
-                <tbody className="text-hueso">
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're evaluating whether your salary is competitive</td>
-                    <td className="py-4 px-4">Your market position and the gap, if there is one</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're about to ask for a raise or negotiate an offer</td>
-                    <td className="py-4 px-4">A concrete compensation target and negotiation argument</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're deciding between two offers</td>
-                    <td className="py-4 px-4">An apples-to-apples comparison of total value</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're preparing for a promotion conversation</td>
-                    <td className="py-4 px-4">The market value of the next level for your profile</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're considering a career move</td>
-                    <td className="py-4 px-4">The salary impact of switching industry, scope, or location</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You want to plan your long-term income trajectory</td>
-                    <td className="py-4 px-4">A clear picture of where your profile can go</td>
-                  </tr>
-                  <tr>
-                    <td className="py-4 pr-4 text-hueso/70">You want to set your hourly or project rate (coming soon)</td>
-                    <td className="py-4 px-4">Your recommended rate with market backing — join the waitlist</td>
-                  </tr>
-                </tbody>
-              </table>
+
+            <div className="flex flex-col divide-y divide-hueso/15">
+              {[
+                { n: "01", situacion: "You're checking if your pay is competitive", incluye: "Your exact number + negotiation arguments + AI's impact on your role" },
+                { n: "02", situacion: "You're asking for a raise or a salary review", incluye: "A script based on your negotiation type (inflation, expanded responsibilities, level change)" },
+                { n: "03", situacion: "You're job searching or have an offer on the table", incluye: "Your target salary range for the interview — and if you already have an offer, the verdict: accept, negotiate, or walk away" },
+                { n: "04", situacion: "You're planning your next career move", incluye: "Your resume before/after + a roadmap based on where you're headed" },
+                { n: "05", situacion: "You're checking your competitiveness as a contractor", incluye: "Your real market equivalent, based on what your contract should actually cover" },
+                { n: "06", situacion: "You want to set your hourly or project rate (coming soon)", incluye: "Your recommended rate with market backing — join the waitlist" },
+              ].map((row) => (
+                <div key={row.n} className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr] gap-4 md:gap-8 py-8 items-start">
+                  <p className="font-display text-3xl md:text-4xl text-[#C4BFB8]">{row.n}</p>
+                  <p className="font-body text-lg md:text-xl text-hueso leading-snug">{row.situacion}</p>
+                  <p className="font-body text-base text-hueso/80 leading-relaxed">{row.incluye}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
