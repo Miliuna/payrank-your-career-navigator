@@ -29,7 +29,6 @@ import { Route as DiagnosticoConsentimientosRouteImport } from './routes/diagnos
 import { Route as DiagnosticoIdRouteImport } from './routes/diagnostico.$id'
 import { Route as BetaTokenRouteImport } from './routes/beta.$token'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
-import { Route as ApiPublicStripeLivemodeCheckRouteImport } from './routes/api/public/stripe-livemode-check'
 
 const TerminosCondicionesRoute = TerminosCondicionesRouteImport.update({
   id: '/terminos-condiciones',
@@ -132,12 +131,6 @@ const ApiPublicStripeWebhookRoute = ApiPublicStripeWebhookRouteImport.update({
   path: '/api/public/stripe-webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicStripeLivemodeCheckRoute =
-  ApiPublicStripeLivemodeCheckRouteImport.update({
-    id: '/api/public/stripe-livemode-check',
-    path: '/api/public/stripe-livemode-check',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -159,7 +152,6 @@ export interface FileRoutesByFullPath {
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
   '/diagnostico/validacion': typeof DiagnosticoValidacionRoute
   '/ref/$codigo': typeof RefCodigoRoute
-  '/api/public/stripe-livemode-check': typeof ApiPublicStripeLivemodeCheckRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesByTo {
@@ -182,7 +174,6 @@ export interface FileRoutesByTo {
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
   '/diagnostico/validacion': typeof DiagnosticoValidacionRoute
   '/ref/$codigo': typeof RefCodigoRoute
-  '/api/public/stripe-livemode-check': typeof ApiPublicStripeLivemodeCheckRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRoutesById {
@@ -206,7 +197,6 @@ export interface FileRoutesById {
   '/diagnostico/upload': typeof DiagnosticoUploadRoute
   '/diagnostico/validacion': typeof DiagnosticoValidacionRoute
   '/ref/$codigo': typeof RefCodigoRoute
-  '/api/public/stripe-livemode-check': typeof ApiPublicStripeLivemodeCheckRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
 }
 export interface FileRouteTypes {
@@ -231,7 +221,6 @@ export interface FileRouteTypes {
     | '/diagnostico/upload'
     | '/diagnostico/validacion'
     | '/ref/$codigo'
-    | '/api/public/stripe-livemode-check'
     | '/api/public/stripe-webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -254,7 +243,6 @@ export interface FileRouteTypes {
     | '/diagnostico/upload'
     | '/diagnostico/validacion'
     | '/ref/$codigo'
-    | '/api/public/stripe-livemode-check'
     | '/api/public/stripe-webhook'
   id:
     | '__root__'
@@ -277,7 +265,6 @@ export interface FileRouteTypes {
     | '/diagnostico/upload'
     | '/diagnostico/validacion'
     | '/ref/$codigo'
-    | '/api/public/stripe-livemode-check'
     | '/api/public/stripe-webhook'
   fileRoutesById: FileRoutesById
 }
@@ -301,7 +288,6 @@ export interface RootRouteChildren {
   DiagnosticoUploadRoute: typeof DiagnosticoUploadRoute
   DiagnosticoValidacionRoute: typeof DiagnosticoValidacionRoute
   RefCodigoRoute: typeof RefCodigoRoute
-  ApiPublicStripeLivemodeCheckRoute: typeof ApiPublicStripeLivemodeCheckRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
 }
 
@@ -447,13 +433,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicStripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/stripe-livemode-check': {
-      id: '/api/public/stripe-livemode-check'
-      path: '/api/public/stripe-livemode-check'
-      fullPath: '/api/public/stripe-livemode-check'
-      preLoaderRoute: typeof ApiPublicStripeLivemodeCheckRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -477,19 +456,8 @@ const rootRouteChildren: RootRouteChildren = {
   DiagnosticoUploadRoute: DiagnosticoUploadRoute,
   DiagnosticoValidacionRoute: DiagnosticoValidacionRoute,
   RefCodigoRoute: RefCodigoRoute,
-  ApiPublicStripeLivemodeCheckRoute: ApiPublicStripeLivemodeCheckRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
