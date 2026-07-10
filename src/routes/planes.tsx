@@ -299,41 +299,21 @@ function PlanesEN({ region, ready }: { region: Region; ready: boolean }) {
               Until now, you made these decisions blind. PayRank gives you the data you were missing — before you negotiate, accept, or take the leap.
             </p>
 
-            <div className="overflow-x-auto">
-              <table className="w-full font-body text-sm">
-                <thead>
-                  <tr className="border-b border-hueso/20">
-                    <th className="text-left py-4 pr-4 font-ui text-[10px] text-hueso/60 w-2/5">YOUR SITUATION TODAY</th>
-                    <th className="text-left py-4 px-4 font-ui text-[10px] text-hueso/60">YOUR PAYRANK INCLUDES</th>
-                  </tr>
-                </thead>
-                <tbody className="text-hueso">
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're checking if your pay is competitive</td>
-                    <td className="py-4 px-4">Your exact number + negotiation arguments + AI's impact on your role</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're asking for a raise or a salary review</td>
-                    <td className="py-4 px-4">A script based on your negotiation type (inflation, expanded responsibilities, level change)</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're job searching or have an offer on the table</td>
-                    <td className="py-4 px-4">Your target salary range for the interview — and if you already have an offer, the verdict: accept, negotiate, or walk away</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're planning your next career move</td>
-                    <td className="py-4 px-4">Your resume before/after + a roadmap based on where you're headed</td>
-                  </tr>
-                  <tr className="border-b border-hueso/20">
-                    <td className="py-4 pr-4 text-hueso/70">You're checking your competitiveness as a contractor</td>
-                    <td className="py-4 px-4">Your real market equivalent, based on what your contract should actually cover</td>
-                  </tr>
-                  <tr>
-                    <td className="py-4 pr-4 text-hueso/70">You want to set your hourly or project rate (coming soon)</td>
-                    <td className="py-4 px-4">Your recommended rate with market backing — join the waitlist</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="flex flex-col divide-y divide-hueso/15">
+              {[
+                { n: "01", situacion: "You're checking if your pay is competitive", incluye: "Your exact number + negotiation arguments + AI's impact on your role" },
+                { n: "02", situacion: "You're asking for a raise or a salary review", incluye: "A script based on your negotiation type (inflation, expanded responsibilities, level change)" },
+                { n: "03", situacion: "You're job searching or have an offer on the table", incluye: "Your target salary range for the interview — and if you already have an offer, the verdict: accept, negotiate, or walk away" },
+                { n: "04", situacion: "You're planning your next career move", incluye: "Your resume before/after + a roadmap based on where you're headed" },
+                { n: "05", situacion: "You're checking your competitiveness as a contractor", incluye: "Your real market equivalent, based on what your contract should actually cover" },
+                { n: "06", situacion: "You want to set your hourly or project rate (coming soon)", incluye: "Your recommended rate with market backing — join the waitlist" },
+              ].map((row) => (
+                <div key={row.n} className="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr] gap-4 md:gap-8 py-8 items-start">
+                  <p className="font-display text-3xl md:text-4xl text-[#C4BFB8]">{row.n}</p>
+                  <p className="font-body text-lg md:text-xl text-hueso leading-snug">{row.situacion}</p>
+                  <p className="font-body text-base text-hueso/80 leading-relaxed">{row.incluye}</p>
+                </div>
+              ))}
             </div>
           </div>
         </div>
