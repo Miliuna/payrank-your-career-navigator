@@ -94,7 +94,8 @@ const planesEN = [
     precio: "USD 39",
     sufijo: undefined as string | undefined,
     italic: "For when you have one key conversation ahead.",
-    descripcion: "1 PayRank. Any situation. No expiration.",
+    descripcion:
+      "1 PayRank.\n\nWhen you already know what you need to solve — a specific negotiation, a decision that can't wait — a PayRank gives you the exact number for that conversation.",
     cta: "START WITH GO",
     plan: "unico" as const,
     destacada: false,
@@ -105,7 +106,7 @@ const planesEN = [
     sufijo: undefined as string | undefined,
     italic: "For when you're in motion.",
     descripcion:
-      "3 PayRanks. Any situation. No expiration. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
+      "3 PayRanks, to use anytime within the next 12 months. Save 20%.\n\nMost job searches and negotiations require more than one — one to know your number, one to prep for the interview, one when the offer lands.",
     cta: "START WITH PLUS",
     plan: "pack3" as const,
     destacada: true,
@@ -117,7 +118,7 @@ const planesEN = [
     sufijo: "/yr",
     italic: "For when your career doesn't take a year off.",
     descripcion:
-      "Unlimited PayRanks + automatic market updates when your sector moves — so you never negotiate with stale data.",
+      "Up to 12 a year.\n\nYour annual review, your next interview, the career leap you didn't see coming — PRO gives you the right number for each one, all year long.",
     cta: "START WITH PRO",
     plan: "anual" as const,
     destacada: false,
