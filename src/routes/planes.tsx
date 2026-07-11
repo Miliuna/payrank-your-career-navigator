@@ -190,7 +190,7 @@ function PlanesES({ region, ready }: { region: Region; ready: boolean }) {
             <div className="bg-hueso text-tinta border border-niebla p-8 md:p-12">
               <p className="font-ui text-[10px] text-piedra mb-8">SEGÚN TU SITUACIÓN</p>
 
-              <p className="font-display-italic text-xl md:text-2xl text-tinta mb-14 max-w-3xl">
+              <p className="font-display-italic text-3xl md:text-5xl text-tinta mb-14 max-w-3xl">
                 Hasta ahora, tomabas estas decisiones a ciegas. PayRank te da el dato que te faltaba, antes de negociar, aceptar o dar el salto.
               </p>
 
@@ -298,7 +298,7 @@ function PlanesEN({ region, ready }: { region: Region; ready: boolean }) {
             <div className="bg-hueso text-tinta border border-niebla p-8 md:p-12">
               <p className="font-ui text-[10px] text-piedra mb-8">BASED ON YOUR SITUATION</p>
 
-              <p className="font-display-italic text-xl md:text-2xl text-tinta mb-14 max-w-3xl">
+              <p className="font-display-italic text-3xl md:text-5xl text-tinta mb-14 max-w-3xl">
                 Until now, you made these decisions blind. PayRank gives you the data you were missing — before you negotiate, accept, or take the leap.
               </p>
 
