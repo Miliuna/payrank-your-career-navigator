@@ -187,14 +187,14 @@ function PlanesES({ region, ready }: { region: Region; ready: boolean }) {
           </p>
 
           <div className="mt-24 border-t border-hueso/20 pt-16">
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">SEGÚN TU SITUACIÓN</p>
+
+            <p className="font-display-italic text-3xl md:text-5xl text-hueso mb-14 max-w-5xl">
+              Hasta ahora, tomabas estas decisiones a ciegas.<br />
+              PayRank te da el dato que te faltaba.
+            </p>
+
             <div className="bg-hueso text-tinta border border-niebla p-8 md:p-12">
-              <p className="font-ui text-[10px] text-piedra mb-8">SEGÚN TU SITUACIÓN</p>
-
-              <p className="font-display-italic text-3xl md:text-5xl text-tinta mb-14 max-w-5xl">
-                Hasta ahora, tomabas estas decisiones a ciegas.<br />
-                PayRank te da el dato que te faltaba.
-              </p>
-
               <div className="flex flex-col divide-y divide-niebla">
                 {[
                   { n: "01", situacion: "Evaluás si tu sueldo es competitivo", incluye: "Tu número exacto + argumentos de negociación + impacto de IA en tu rol" },
@@ -296,14 +296,14 @@ function PlanesEN({ region, ready }: { region: Region; ready: boolean }) {
           </div>
 
           <div className="mt-24 border-t border-hueso/20 pt-16">
+            <p className="font-ui text-[10px] text-hueso/60 mb-8">BASED ON YOUR SITUATION</p>
+
+            <p className="font-display-italic text-3xl md:text-5xl text-hueso mb-14 max-w-5xl">
+              Until now, you made these decisions blind.<br />
+              PayRank gives you the data you were missing.
+            </p>
+
             <div className="bg-hueso text-tinta border border-niebla p-8 md:p-12">
-              <p className="font-ui text-[10px] text-piedra mb-8">BASED ON YOUR SITUATION</p>
-
-              <p className="font-display-italic text-3xl md:text-5xl text-tinta mb-14 max-w-5xl">
-                Until now, you made these decisions blind.<br />
-                PayRank gives you the data you were missing.
-              </p>
-
               <div className="flex flex-col divide-y divide-niebla">
                 {[
                   { n: "01", situacion: "You're checking if your pay is competitive", incluye: "Your exact number + negotiation arguments + AI's impact on your role" },
