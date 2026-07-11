@@ -39,7 +39,7 @@ const COPY_ES: PlanCopy[] = [
     nombre: "GO",
     italic: "Para cuando tenés una conversación puntual por delante.",
     descripcion:
-      "1 PayRank completo.\n\nCuando ya sabés qué necesitás resolver — una negociación puntual, una decisión que no puede esperar — un PayRank te da el número exacto para esa conversación.",
+      "1 PayRank.\n\nCuando ya sabés qué necesitás resolver — una negociación puntual, una decisión que no puede esperar — un PayRank te da el número exacto para esa conversación.",
     cta: "EMPEZAR CON GO",
     plan: "unico",
     destacada: false,
