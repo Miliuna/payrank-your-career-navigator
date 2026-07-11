@@ -457,32 +457,23 @@ function LandingES() {
           </h2>
           <div className="grid md:grid-cols-2 gap-10 mt-8">
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">1</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Compartís tu link único</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Cada PayRank completado incluye un link personal de referido que podés compartir con colegas o en redes.
-                  </p>
-                </div>
+              <div>
+                <p className="font-body font-semibold text-tinta mb-1">Compartís tu link único</p>
+                <p className="font-body text-sm text-piedra leading-relaxed">
+                  Cada PayRank completado incluye un link personal de referido que podés compartir con colegas o en redes.
+                </p>
               </div>
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">2</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Ellos obtienen 15% de descuento</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Cada persona que haga su PayRank usando tu link recibe 15% de descuento automático en su primer análisis.
-                  </p>
-                </div>
+              <div>
+                <p className="font-body font-semibold text-tinta mb-1">Ellos obtienen 15% de descuento</p>
+                <p className="font-body text-sm text-piedra leading-relaxed">
+                  Cada persona que haga su PayRank usando tu link recibe 15% de descuento automático en su primer análisis.
+                </p>
               </div>
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">3</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Con 3 referidos, el próximo es gratis</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Cuando tres personas completan su PayRank usando tu link, tu próximo análisis no te cuesta nada.
-                  </p>
-                </div>
+              <div>
+                <p className="font-body font-semibold text-tinta mb-1">Con 3 referidos, el próximo es gratis</p>
+                <p className="font-body text-sm text-piedra leading-relaxed">
+                  Cuando tres personas completan su PayRank usando tu link, tu próximo análisis no te cuesta nada.
+                </p>
               </div>
             </div>
             <div className="flex flex-col justify-center">
@@ -852,37 +843,28 @@ function LandingEN() {
       <section className="bg-hueso text-tinta px-5 md:px-10 py-16 md:py-20">
         <div className="mx-auto max-w-4xl border-t border-niebla pt-16">
           <p className="font-ui text-[10px] text-piedra mb-4">REFER A COLLEAGUE</p>
-          <h2 className="font-display text-3xl md:text-4xl mb-6">
+          <h2 className="font-display text-3xl md:text-5xl mb-6">
             Share it. Your next one <span className="font-display-italic">is on us.</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-10 mt-8">
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">1</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Share your unique link</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Every completed PayRank includes a personal referral link you can share with colleagues or on LinkedIn.
-                  </p>
-                </div>
+              <div>
+                <p className="font-body font-semibold text-tinta mb-1">Share your unique link</p>
+                <p className="font-body text-sm text-piedra leading-relaxed">
+                  Every completed PayRank includes a personal referral link you can share with colleagues or on LinkedIn.
+                </p>
               </div>
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">2</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">They get 15% off</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Anyone who runs their PayRank with your link gets an automatic 15% discount on their first report.
-                  </p>
-                </div>
+              <div>
+                <p className="font-body font-semibold text-tinta mb-1">They get 15% off</p>
+                <p className="font-body text-sm text-piedra leading-relaxed">
+                  Anyone who runs their PayRank with your link gets an automatic 15% discount on their first report.
+                </p>
               </div>
-              <div className="flex items-start gap-4">
-                <span className="font-display text-4xl text-piedra leading-none">3</span>
-                <div>
-                  <p className="font-body font-semibold text-tinta mb-1">Three referrals, yours is free</p>
-                  <p className="font-body text-sm text-piedra leading-relaxed">
-                    Once three people complete their PayRank through your link, your next one costs nothing.
-                  </p>
-                </div>
+              <div>
+                <p className="font-body font-semibold text-tinta mb-1">Three referrals, yours is free</p>
+                <p className="font-body text-sm text-piedra leading-relaxed">
+                  Once three people complete their PayRank through your link, your next one costs nothing.
+                </p>
               </div>
             </div>
             <div className="flex flex-col justify-center">
