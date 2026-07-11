@@ -186,12 +186,9 @@ function LandingES() {
         <div className="mx-auto max-w-6xl">
           <p className="font-ui text-[10px] text-piedra mb-4">POR QUÉ IMPORTA LA FUENTE</p>
           <h2 className="font-display text-3xl md:text-5xl mb-6">
-            Por qué importa la <span className="font-display-italic">fuente</span>
+            Lo que encontrás gratis. Lo que necesitás saber.
           </h2>
-          <p className="font-body text-lg md:text-xl text-piedra mb-6 max-w-2xl leading-relaxed">
-            Lo que encontrás gratis.<br />Lo que necesitás saber.
-          </p>
-          <p className="font-body text-base text-tinta/80 mb-14 max-w-2xl leading-relaxed">
+          <p className="font-body text-lg md:text-xl text-tinta/80 mb-14 max-w-2xl leading-relaxed">
             Toda la información salarial disponible hoy tiene el mismo problema: te muestra lo que otros quieren que veas, no lo que tu perfil vale en el mercado.
           </p>
 
@@ -589,12 +586,9 @@ function LandingEN() {
         <div className="mx-auto max-w-6xl">
           <p className="font-ui text-[10px] text-piedra mb-4">WHY THE SOURCE MATTERS</p>
           <h2 className="font-display text-3xl md:text-5xl mb-6">
-            Why the <span className="font-display-italic">source</span> matters
+            What you find for free. What you actually need.
           </h2>
-          <p className="font-body text-lg md:text-xl text-piedra mb-6 max-w-2xl leading-relaxed">
-            What you find for free.<br />What you actually need.
-          </p>
-          <p className="font-body text-base text-tinta/80 mb-14 max-w-2xl leading-relaxed">
+          <p className="font-body text-lg md:text-xl text-tinta/80 mb-14 max-w-2xl leading-relaxed">
             Every salary data source available today has the same problem: it shows you what
             others want you to see — not what your profile is actually worth in the market.
           </p>
