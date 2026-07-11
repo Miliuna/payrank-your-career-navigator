@@ -267,15 +267,15 @@ export const getPaymentStatus = createServerFn({ method: "GET" })
 
 // ---------- Confirmar acceso beta (consume token) ----------
 
-// Modo E todavía no existe — cuando alguien declara que cobra "por proyecto" (sin
+// Modo F todavía no existe — cuando alguien declara que cobra "por proyecto" (sin
 // cadencia mensual estable), Modo A no le aplica con honestidad. En vez de generar
-// un reporte de calidad dudosa, capturamos el mail para avisar cuando Modo E esté listo.
+// un reporte de calidad dudosa, capturamos el mail para avisar cuando Modo F esté listo.
 function generarCodigoDescuento(): string {
   // Sin caracteres ambiguos (0/O, 1/I/L) para que sea fácil de leer y tipear.
   const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
   let code = "";
   for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
-  return `MODOE-${code}`;
+  return `MODOF-${code}`;
 }
 
 async function sendWaitlistConfirmationEmail(args: { email: string; codigo: string; isEN: boolean }): Promise<void> {
