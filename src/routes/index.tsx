@@ -426,7 +426,8 @@ function LandingES() {
               <p className="font-ui text-[10px] text-piedra mb-8">SEGÚN TU SITUACIÓN</p>
 
               <p className="font-display-italic text-3xl md:text-5xl text-tinta mb-14 max-w-3xl">
-                Hasta ahora, tomabas estas decisiones a ciegas. PayRank te da el dato que te faltaba, antes de negociar, aceptar o dar el salto.
+                Hasta ahora, tomabas estas decisiones a ciegas.<br />
+                PayRank te da el dato que te faltaba.
               </p>
 
               <div className="flex flex-col divide-y divide-niebla">
@@ -828,7 +829,8 @@ function LandingEN() {
               <p className="font-ui text-[10px] text-piedra mb-8">BASED ON YOUR SITUATION</p>
 
               <p className="font-display-italic text-3xl md:text-5xl text-tinta mb-14 max-w-3xl">
-                Until now, you made these decisions blind. PayRank gives you the data you were missing — before you negotiate, accept, or take the leap.
+                Until now, you made these decisions blind.<br />
+                PayRank gives you the data you were missing.
               </p>
 
               <div className="flex flex-col divide-y divide-niebla">
