@@ -391,7 +391,7 @@ function LandingES() {
                       </span>
                     )}
                   </div>
-                  <p className={`font-display-italic text-base mb-10 ${d ? "text-hueso" : "text-tinta"}`}>
+                  <p className={`font-display-italic text-base mb-10 min-h-12 ${d ? "text-hueso" : "text-tinta"}`}>
                     {plan.italic}
                   </p>
                   <p className={`font-body text-sm leading-relaxed mb-10 whitespace-pre-line ${d ? "text-hueso/80" : "text-piedra"}`}>
@@ -791,7 +791,7 @@ function LandingEN() {
                       </span>
                     )}
                   </div>
-                  <p className={`font-display-italic text-base mb-10 ${d ? "text-hueso" : "text-tinta"}`}>
+                  <p className={`font-display-italic text-base mb-10 min-h-12 ${d ? "text-hueso" : "text-tinta"}`}>
                     {plan.italic}
                   </p>
                   <p className={`font-body text-sm leading-relaxed mb-10 whitespace-pre-line ${d ? "text-hueso/80" : "text-piedra"}`}>
