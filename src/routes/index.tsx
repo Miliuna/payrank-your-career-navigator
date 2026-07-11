@@ -186,12 +186,9 @@ function LandingES() {
         <div className="mx-auto max-w-6xl">
           <p className="font-ui text-[10px] text-piedra mb-4">POR QUÉ IMPORTA LA FUENTE</p>
           <h2 className="font-display text-3xl md:text-5xl mb-6">
-            Por qué importa la <span className="font-display-italic">fuente</span>
+            Lo que encontrás gratis. Lo que necesitás saber.
           </h2>
-          <p className="font-body text-lg md:text-xl text-piedra mb-6 max-w-2xl leading-relaxed">
-            Lo que encontrás gratis.<br />Lo que necesitás saber.
-          </p>
-          <p className="font-body text-base text-tinta/80 mb-14 max-w-2xl leading-relaxed">
+          <p className="font-body text-lg md:text-xl text-tinta/80 mb-14 max-w-2xl leading-relaxed">
             Toda la información salarial disponible hoy tiene el mismo problema: te muestra lo que otros quieren que veas, no lo que tu perfil vale en el mercado.
           </p>
 
