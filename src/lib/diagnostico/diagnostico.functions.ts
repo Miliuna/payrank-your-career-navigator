@@ -235,11 +235,11 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     // (evita que alguien setee cualquier cosa en localStorage para robarse el descuento).
     let referidoValido = false;
     const refCode = diagRow?.referido_por?.trim();
-    if (refCode) {
+    if (refCode && /^[0-9a-f]{8}$/i.test(refCode)) {
       const { data: refMatch } = await supabaseAdmin
         .from("diagnosticos" as never)
         .select("id")
-        .ilike("link_unico", `${refCode}-%`)
+        .ilike("link_unico", `${refCode}%`)
         .limit(1)
         .maybeSingle();
       referidoValido = !!refMatch;

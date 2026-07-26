@@ -297,12 +297,12 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
                 pagados = unicos.size;
               }
 
-              if (pagados >= 3) {
+              if (pagados >= 3 && /^[0-9a-f]{8}$/i.test(code)) {
                 // Email del referente = dueño del link_unico cuyo prefijo es `code`
                 const { data: refOwner } = await supabaseAdmin
                   .from('diagnosticos')
                   .select('mail')
-                  .ilike('link_unico', `${code}-%`)
+                  .ilike('link_unico', `${code}%`)
                   .not('mail', 'is', null)
                   .limit(1)
                   .maybeSingle();
