@@ -27,6 +27,7 @@ import { Route as DiagnosticoPaywallRouteImport } from './routes/diagnostico.pay
 import { Route as DiagnosticoInferenciaRouteImport } from './routes/diagnostico.inferencia'
 import { Route as DiagnosticoConsentimientosRouteImport } from './routes/diagnostico.consentimientos'
 import { Route as DiagnosticoIdRouteImport } from './routes/diagnostico.$id'
+import { Route as CanjearCodigoRouteImport } from './routes/canjear.$codigo'
 import { Route as BetaTokenRouteImport } from './routes/beta.$token'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api/public/stripe-webhook'
 
@@ -121,6 +122,11 @@ const DiagnosticoIdRoute = DiagnosticoIdRouteImport.update({
   path: '/diagnostico/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CanjearCodigoRoute = CanjearCodigoRouteImport.update({
+  id: '/canjear/$codigo',
+  path: '/canjear/$codigo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BetaTokenRoute = BetaTokenRouteImport.update({
   id: '/beta/$token',
   path: '/beta/$token',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/recuperar-codigo': typeof RecuperarCodigoRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
+  '/canjear/$codigo': typeof CanjearCodigoRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/consentimientos': typeof DiagnosticoConsentimientosRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/recuperar-codigo': typeof RecuperarCodigoRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
+  '/canjear/$codigo': typeof CanjearCodigoRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/consentimientos': typeof DiagnosticoConsentimientosRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
@@ -187,6 +195,7 @@ export interface FileRoutesById {
   '/recuperar-codigo': typeof RecuperarCodigoRoute
   '/terminos-condiciones': typeof TerminosCondicionesRoute
   '/beta/$token': typeof BetaTokenRoute
+  '/canjear/$codigo': typeof CanjearCodigoRoute
   '/diagnostico/$id': typeof DiagnosticoIdRoute
   '/diagnostico/consentimientos': typeof DiagnosticoConsentimientosRoute
   '/diagnostico/inferencia': typeof DiagnosticoInferenciaRoute
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/recuperar-codigo'
     | '/terminos-condiciones'
     | '/beta/$token'
+    | '/canjear/$codigo'
     | '/diagnostico/$id'
     | '/diagnostico/consentimientos'
     | '/diagnostico/inferencia'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/recuperar-codigo'
     | '/terminos-condiciones'
     | '/beta/$token'
+    | '/canjear/$codigo'
     | '/diagnostico/$id'
     | '/diagnostico/consentimientos'
     | '/diagnostico/inferencia'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/recuperar-codigo'
     | '/terminos-condiciones'
     | '/beta/$token'
+    | '/canjear/$codigo'
     | '/diagnostico/$id'
     | '/diagnostico/consentimientos'
     | '/diagnostico/inferencia'
@@ -278,6 +290,7 @@ export interface RootRouteChildren {
   RecuperarCodigoRoute: typeof RecuperarCodigoRoute
   TerminosCondicionesRoute: typeof TerminosCondicionesRoute
   BetaTokenRoute: typeof BetaTokenRoute
+  CanjearCodigoRoute: typeof CanjearCodigoRoute
   DiagnosticoIdRoute: typeof DiagnosticoIdRoute
   DiagnosticoConsentimientosRoute: typeof DiagnosticoConsentimientosRoute
   DiagnosticoInferenciaRoute: typeof DiagnosticoInferenciaRoute
@@ -419,6 +432,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiagnosticoIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/canjear/$codigo': {
+      id: '/canjear/$codigo'
+      path: '/canjear/$codigo'
+      fullPath: '/canjear/$codigo'
+      preLoaderRoute: typeof CanjearCodigoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/beta/$token': {
       id: '/beta/$token'
       path: '/beta/$token'
@@ -446,6 +466,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecuperarCodigoRoute: RecuperarCodigoRoute,
   TerminosCondicionesRoute: TerminosCondicionesRoute,
   BetaTokenRoute: BetaTokenRoute,
+  CanjearCodigoRoute: CanjearCodigoRoute,
   DiagnosticoIdRoute: DiagnosticoIdRoute,
   DiagnosticoConsentimientosRoute: DiagnosticoConsentimientosRoute,
   DiagnosticoInferenciaRoute: DiagnosticoInferenciaRoute,
@@ -461,3 +482,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
