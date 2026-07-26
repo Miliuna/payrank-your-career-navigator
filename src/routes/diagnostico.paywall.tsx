@@ -60,8 +60,6 @@ function PaywallPage() {
   const isEN = lang === "EN";
   const [busy, setBusy] = React.useState(false);
   const [err, setErr] = React.useState<string | null>(null);
-  const [referido, setReferido] = React.useState("");
-  const [referidoEstado, setReferidoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
   const [codigoAcceso, setCodigoAcceso] = React.useState("");
   const [codigoEstado, setCodigoEstado] = React.useState<"idle" | "ok" | "invalid">("idle");
   const [codigoBusy, setCodigoBusy] = React.useState(false);
@@ -109,10 +107,6 @@ function PaywallPage() {
     }
   };
 
-  const aplicarReferido = () => {
-    setReferidoEstado(referido.trim().length >= 4 ? "ok" : "invalid");
-  };
-
   const aplicarCodigoAcceso = async () => {
     const codigo = codigoAcceso.trim();
     if (!codigo) {
@@ -134,6 +128,42 @@ function PaywallPage() {
       setCodigoBusy(false);
     }
   };
+
+  // Canje 1-clic: si el usuario llegó desde /canjear/<codigo>, el código quedó
+  // en localStorage. Lo autoaplicamos una sola vez al montar el paywall.
+  const autoCanjeHecho = React.useRef(false);
+  React.useEffect(() => {
+    if (autoCanjeHecho.current) return;
+    let codigoGratis = "";
+    try {
+      codigoGratis = (window.localStorage.getItem("payrank.codigoAccesoGratis") ?? "").trim();
+    } catch {
+      /* localStorage no disponible */
+    }
+    if (!codigoGratis) return;
+    autoCanjeHecho.current = true;
+    setCodigoAcceso(codigoGratis); // reflejarlo en el input para que se vea
+    (async () => {
+      setCodigoBusy(true);
+      setErr(null);
+      try {
+        await applyCode({ data: { id, codigo: codigoGratis } });
+        setCodigoEstado("ok");
+        try {
+          window.localStorage.removeItem("payrank.codigoAccesoGratis");
+        } catch {
+          /* noop */
+        }
+        await navigate({ to: "/diagnostico/procesando", search: { id } });
+      } catch (e) {
+        setCodigoEstado("invalid");
+        console.warn("[canjear] auto-aplicar rechazado:", e);
+      } finally {
+        setCodigoBusy(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="min-h-screen bg-hueso text-tinta">
@@ -197,37 +227,6 @@ function PaywallPage() {
                 </li>
               ))}
             </ul>
-
-            <div className="mb-6">
-              <label className="font-ui text-[10px] text-hueso/55 block mb-2">
-                {isEN ? "DO YOU HAVE A REFERRAL CODE?" : "¿TENÉS UN CÓDIGO DE REFERIDO?"}
-              </label>
-              <div className="flex gap-2">
-                <input
-                  value={referido}
-                  onChange={(e) => { setReferido(e.target.value); setReferidoEstado("idle"); }}
-                  placeholder={isEN ? "Your code" : "Tu código"}
-                  className="flex-1 bg-hueso/5 border border-hueso/20 px-3 py-2 font-body text-sm text-hueso placeholder:text-hueso/40 focus:outline-none focus:border-hueso/60"
-                />
-                <button
-                  type="button"
-                  onClick={aplicarReferido}
-                  className="px-4 py-2 border border-hueso/30 font-ui text-[10px] text-hueso hover:bg-hueso hover:text-tinta transition-colors"
-                >
-                  {isEN ? "Apply" : "Aplicar"}
-                </button>
-              </div>
-              {referidoEstado === "ok" && (
-                <p className="mt-2 font-body text-xs" style={{ color: "#2E4A6E" }}>
-                  {isEN ? "15% discount applied ✓" : "15% de descuento aplicado ✓"}
-                </p>
-              )}
-              {referidoEstado === "invalid" && (
-                <p className="mt-2 font-body text-xs text-hueso/55">
-                  {isEN ? "Invalid code." : "Código no válido."}
-                </p>
-              )}
-            </div>
 
             <div className="mb-6">
               <label className="font-ui text-[10px] text-hueso/55 block mb-2">

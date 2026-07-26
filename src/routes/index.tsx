@@ -415,7 +415,7 @@ function LandingES() {
           </div>
 
           <p className="font-body text-sm text-hueso/50 mt-8">
-            ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
+            ¿Alguien te pasó su link de referido? El 15% de descuento se aplica automático al abrir tu PayRank desde ese link.
           </p>
 
           <div className="mt-24 border-t border-hueso/20 pt-16">
@@ -806,7 +806,7 @@ function LandingEN() {
           </div>
 
           <p className="font-body text-sm text-hueso/50 mt-16">
-            Have a referral code? Enter it at checkout for 15% off your first PayRank.
+            Got a referral link? The 15% discount is applied automatically when you start your PayRank from that link.
           </p>
 
           <div className="mt-24 border-t border-hueso/20 pt-16">

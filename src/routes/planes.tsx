@@ -183,7 +183,7 @@ function PlanesES({ region, ready }: { region: Region; ready: boolean }) {
           </div>
 
           <p className="font-body text-sm text-hueso/50 mt-8">
-            ¿Tenés un código de referido? Ingresalo en el checkout para obtener 15% de descuento en tu primer PayRank.
+            ¿Alguien te pasó su link de referido? El 15% de descuento se aplica automático al abrir tu PayRank desde ese link.
           </p>
 
           <div className="mt-24 border-t border-hueso/20 pt-16">
