@@ -12,7 +12,9 @@ function stripeTestMode() {
 }
 
 function getStripe() {
-  const key = stripeTestMode() ? process.env.STRIPE_TEST_API_KEY! : process.env.STRIPE_SECRET_KEY!;
+  const key = stripeTestMode()
+    ? process.env.STRIPE_TEST_API_KEY!
+    : (process.env.STRIPE_LIVE_API_KEY ?? process.env.STRIPE_SECRET_KEY!);
   return new Stripe(key, {
     httpClient: Stripe.createFetchHttpClient(),
   });
