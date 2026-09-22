@@ -472,7 +472,13 @@ export const reenviarCodigoAcceso = createServerFn({ method: "POST" })
       });
     }
 
-    return { ok: true };
+    const total = (rows as unknown[] | null)?.length ?? 0;
+    // `motivo` explica al usuario por qué no le va a llegar nada, en vez de
+    // mostrarle "revisá tu casilla" cuando nunca se envió un mail.
+    const motivo: "enviado" | "sin_codigos" | "agotados" =
+      validos.length > 0 ? "enviado" : total > 0 ? "agotados" : "sin_codigos";
+
+    return { ok: true, enviados: validos.length, motivo };
   });
 
 export const registrarWaitlistModoE = createServerFn({ method: "POST" })
