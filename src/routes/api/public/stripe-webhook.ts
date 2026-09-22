@@ -140,7 +140,9 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
           return new Response('Missing stripe-signature header', { status: 400 });
         }
 
-        const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+        const webhookSecret = stripeTestMode() && process.env.STRIPE_TEST_WEBHOOK_SECRET
+          ? process.env.STRIPE_TEST_WEBHOOK_SECRET
+          : process.env.STRIPE_WEBHOOK_SECRET;
         if (!webhookSecret) {
           console.error('STRIPE_WEBHOOK_SECRET no está configurado');
           return new Response('Server misconfigured', { status: 500 });
