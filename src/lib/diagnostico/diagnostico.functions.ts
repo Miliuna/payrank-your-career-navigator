@@ -71,10 +71,12 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     : "";
 
   return {
-    // TEMPORAL: hardcodeado hasta que Stripe esté activo.
-    tipo_usuario: "beta_gratuito",
-    pago_confirmado: true,
-    monto_pagado_usd: 0,
+    // El pago se confirma SOLO vía webhook de Stripe, un código de acceso
+    // válido (applyAccessCode) o un token beta validado en el servidor.
+    // Nunca por defecto al crear el registro.
+    tipo_usuario: null,
+    pago_confirmado: false,
+    monto_pagado_usd: null,
     modo: input.modo ?? null,
     plan_elegido: input.plan ?? null,
     pais_rol: (pais as string) ?? null,
