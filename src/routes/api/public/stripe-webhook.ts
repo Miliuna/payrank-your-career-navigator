@@ -118,8 +118,15 @@ async function sendReferralFreeCodeEmail(args: { email: string; codigo: string; 
 }
 
 // Stripe SDK configurado para correr en Cloudflare Workers (fetch + Web Crypto).
+// TEST MODE (solo dev): en producción (NODE_ENV=production) siempre se usan
+// las credenciales reales; las de prueba solo aplican en el entorno de desarrollo.
+function stripeTestMode() {
+  return process.env.NODE_ENV !== 'production' && !!process.env.STRIPE_TEST_API_KEY;
+}
+
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  const key = stripeTestMode() ? process.env.STRIPE_TEST_API_KEY! : process.env.STRIPE_SECRET_KEY!;
+  return new Stripe(key, {
     httpClient: Stripe.createFetchHttpClient(),
   });
 }
