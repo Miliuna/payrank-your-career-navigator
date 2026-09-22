@@ -1,5 +1,7 @@
 # Roadmap
 
-- [ ] Restaurar clave de Stripe de producción: usuario rota la clave en Stripe y la carga vía update_secret (STRIPE_SECRET_KEY) — bloqueado: esperando que el usuario genere la nueva clave sk_live_
-- [ ] Confirmar que STRIPE_REFERIDO_COUPON_ID existe en modo live de Stripe (el cupón 0a04tnDV se creó en test) — si no, crearlo y actualizar el secreto
-- [ ] Publicar a payrank.co una vez restaurada la clave live
+- [x] Clave live de Stripe guardada (STRIPE_LIVE_API_KEY) y código apuntado a ella en producción
+- [x] Cupón live de referidos guardado (STRIPE_LIVE_COUPON_ID = 4zOyfgyM) y usado en producción
+- [ ] Verificar STRIPE_WEBHOOK_SECRET corresponde al endpoint live en Stripe (https://payrank.co/api/public/stripe-webhook) — esperando confirmación del usuario
+- [ ] Publicar a payrank.co
+
