@@ -222,13 +222,29 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     const mode: Stripe.Checkout.SessionCreateParams.Mode =
       data.plan === "anual" ? "subscription" : "payment";
 
-    // Get customer email from diagnostic to prefill checkout
+    // Get customer email + referral from diagnostic to prefill checkout / aplicar cupón
     const { data: diag } = await supabaseAdmin
       .from("diagnosticos" as never)
-      .select("mail")
+      .select("mail, referido_por")
       .eq("id", data.id)
       .maybeSingle();
-    const customerEmail = (diag as { mail?: string | null } | null)?.mail || undefined;
+    const diagRow = diag as { mail?: string | null; referido_por?: string | null } | null;
+    const customerEmail = diagRow?.mail || undefined;
+
+    // Validar el código de referido contra un link_unico real antes de dar el 15% off
+    // (evita que alguien setee cualquier cosa en localStorage para robarse el descuento).
+    let referidoValido = false;
+    const refCode = diagRow?.referido_por?.trim();
+    if (refCode && /^[0-9a-f]{8}$/i.test(refCode)) {
+      const { data: refMatch } = await supabaseAdmin
+        .from("diagnosticos" as never)
+        .select("id")
+        .ilike("link_unico", `${refCode}%`)
+        .limit(1)
+        .maybeSingle();
+      referidoValido = !!refMatch;
+    }
+    const couponId = process.env.STRIPE_REFERIDO_COUPON_ID;
 
     const session = await stripe.checkout.sessions.create({
       mode,
@@ -242,6 +258,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         plan: data.plan,
         plan_name: data.planName,
       },
+      ...(referidoValido && couponId ? { discounts: [{ coupon: couponId }] } : {}),
       ...(mode === "payment" ? { invoice_creation: { enabled: true } } : {}),
     });
 
@@ -524,7 +541,7 @@ export const applyAccessCode = createServerFn({ method: "POST" })
       .update({
         pago_confirmado: true,
         monto_pagado_usd: 0,
-        tipo_usuario: c.tipo === "beta" ? "beta_gratuito" : `acceso_${c.tipo}`,
+        tipo_usuario: (c.tipo === "beta" || c.tipo === "referido_gratis") ? "beta_gratuito" : `acceso_${c.tipo}`,
         codigo_acceso_usado: c.codigo,
         plan_elegido: "codigo_acceso",
       } as never)

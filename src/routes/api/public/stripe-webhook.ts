@@ -58,6 +58,65 @@ async function sendPlusCodeEmail(args: { email: string; codigo: string; vence: D
   }
 }
 
+async function sendReferralFreeCodeEmail(args: { email: string; codigo: string; appUrl: string }): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('[sendReferralFreeCodeEmail] RESEND_API_KEY no configurada, skip');
+    return;
+  }
+  const canjearUrl = `${args.appUrl.replace(/\/+$/, '')}/canjear/${args.codigo}`;
+  const subject = 'Tu próximo PayRank es gratis';
+  const heading = 'Tres personas hicieron su PayRank con tu link';
+  const body = 'El próximo es tuyo — gratis. Usá este código o tocá el botón para canjearlo directo.';
+
+  const html = `<!doctype html>
+<html><body style="margin:0;padding:0;background:#f5f5f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f7;padding:40px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#ffffff;border-radius:16px;padding:40px 32px;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+        <tr><td style="text-align:center;padding-bottom:24px;">
+          <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;color:#111;">PayRank</div>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:16px;">
+          <h1 style="font-size:22px;font-weight:600;margin:0;color:#111;">${heading}</h1>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:28px;">
+          <p style="font-size:16px;line-height:1.5;color:#444;margin:0;">${body}</p>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:20px;">
+          <div style="display:inline-block;background:#f5f5f7;color:#111;font-weight:700;font-size:20px;letter-spacing:1px;padding:14px 28px;border-radius:10px;">${args.codigo}</div>
+        </td></tr>
+        <tr><td style="text-align:center;padding-bottom:8px;">
+          <a href="${canjearUrl}" style="display:inline-block;background:#111;color:#ffffff;font-weight:600;font-size:16px;text-decoration:none;padding:14px 32px;border-radius:10px;">Canjear mi PayRank gratis</a>
+        </td></tr>
+      </table>
+      <p style="font-size:12px;color:#888;margin:24px 0 0;text-align:center;">
+        PayRank LLC · <a href="https://payrank.co" style="color:#888;text-decoration:none;">payrank.co</a> · <a href="mailto:hello@payrank.co" style="color:#888;text-decoration:none;">hello@payrank.co</a>
+      </p>
+    </td></tr>
+  </table>
+</body></html>`;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'PayRank <hello@payrank.co>',
+      to: [args.email],
+      subject,
+      html,
+    }),
+  });
+
+  if (!res.ok) {
+    const txt = await res.text();
+    console.error(`[sendReferralFreeCodeEmail] Resend ${res.status}: ${txt.slice(0, 300)}`);
+  }
+}
+
 // Stripe SDK configurado para correr en Cloudflare Workers (fetch + Web Crypto).
 function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -199,6 +258,95 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
             } else {
               await sendPlusCodeEmail({ email: email.toLowerCase(), codigo, vence });
             }
+          }
+
+          // Referidos: si este diagnóstico vino de un link de referido, contamos
+          // cuántos referidos de ese código YA pagaron de verdad (señal = tabla
+          // `pagos`, NO `diagnosticos.pago_confirmado` que está hardcodeado en true).
+          // Al llegar a 3, premiamos al referente con UN PayRank gratis (una sola vez).
+          // Todo en try/catch: nunca devolvemos 500 por esto (el pago ya está registrado).
+          try {
+            const { data: refRow } = await supabaseAdmin
+              .from('diagnosticos')
+              .select('referido_por')
+              .eq('id', clientReferenceId)
+              .maybeSingle();
+            const code = (refRow as { referido_por?: string | null } | null)?.referido_por?.trim();
+
+            if (code) {
+              // a) ids de diagnósticos referidos por ese código
+              const { data: refDiags } = await supabaseAdmin
+                .from('diagnosticos')
+                .select('id')
+                .eq('referido_por', code);
+              const ids = (refDiags as { id: string }[] | null)?.map((d) => d.id) ?? [];
+
+              // b) pagos reales sobre esos ids, deduplicando diagnostico_id
+              let pagados = 0;
+              if (ids.length > 0) {
+                const { data: pagosRows } = await supabaseAdmin
+                  .from('pagos')
+                  .select('diagnostico_id')
+                  .eq('status', 'paid')
+                  .in('diagnostico_id', ids);
+                const unicos = new Set(
+                  (pagosRows as { diagnostico_id: string | null }[] | null)
+                    ?.map((p) => p.diagnostico_id)
+                    .filter((x): x is string => !!x) ?? [],
+                );
+                pagados = unicos.size;
+              }
+
+              if (pagados >= 3 && /^[0-9a-f]{8}$/i.test(code)) {
+                // Email del referente = dueño del link_unico cuyo prefijo es `code`
+                const { data: refOwner } = await supabaseAdmin
+                  .from('diagnosticos')
+                  .select('mail')
+                  .ilike('link_unico', `${code}%`)
+                  .not('mail', 'is', null)
+                  .limit(1)
+                  .maybeSingle();
+                const referenteEmail = (refOwner as { mail?: string | null } | null)?.mail?.toLowerCase();
+
+                if (referenteEmail) {
+                  // Idempotencia: no premiar dos veces al mismo referente (v1: una vez al llegar a 3)
+                  const { data: yaPremiado } = await supabaseAdmin
+                    .from('codigos_acceso')
+                    .select('id')
+                    .eq('tipo', 'referido_gratis')
+                    .eq('email', referenteEmail)
+                    .limit(1)
+                    .maybeSingle();
+
+                  if (!yaPremiado) {
+                    const codigoRef = `PAYRANK-REF-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+                    const venceRef = new Date();
+                    venceRef.setFullYear(venceRef.getFullYear() + 1);
+
+                    const { error: refCodeError } = await supabaseAdmin
+                      .from('codigos_acceso')
+                      .insert({
+                        codigo: codigoRef,
+                        tipo: 'referido_gratis',
+                        usos_maximos: 1,
+                        usos_actuales: 0,
+                        activo: true,
+                        expires_at: venceRef.toISOString(),
+                        email: referenteEmail,
+                      });
+
+                    if (refCodeError) {
+                      console.error('Error generando código de referido gratis:', refCodeError);
+                    } else {
+                      const appUrl = process.env.PUBLIC_APP_URL ?? 'https://payrank.co';
+                      await sendReferralFreeCodeEmail({ email: referenteEmail, codigo: codigoRef, appUrl });
+                    }
+                  }
+                }
+              }
+            }
+          } catch (refErr) {
+            console.error('[referidos] error en conteo/crédito:', refErr);
           }
         }
 
