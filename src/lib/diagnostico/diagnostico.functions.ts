@@ -227,8 +227,14 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const stripe = getStripe();
+    const testMode = stripeTestMode();
+    // En modo test los price IDs de producción no existen: usamos un precio de prueba
+    // (solo plan GO) para poder validar el mecanismo end-to-end.
+    const priceId = testMode && process.env.STRIPE_TEST_PRICE_GO
+      ? process.env.STRIPE_TEST_PRICE_GO
+      : data.priceId;
     const mode: Stripe.Checkout.SessionCreateParams.Mode =
-      data.plan === "anual" ? "subscription" : "payment";
+      !testMode && data.plan === "anual" ? "subscription" : "payment";
 
     // Get customer email + referral from diagnostic to prefill checkout / aplicar cupón
     const { data: diag } = await supabaseAdmin
