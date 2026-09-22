@@ -4,8 +4,16 @@ import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, SYSTEM_PROMPT_B_MODO_C, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
+// TEST MODE (solo dev): si existe STRIPE_TEST_API_KEY y NO estamos en producción,
+// usamos la clave de prueba. En el build publicado (NODE_ENV=production) siempre
+// se usa STRIPE_SECRET_KEY, así que producción nunca queda en modo test.
+function stripeTestMode() {
+  return process.env.NODE_ENV !== "production" && !!process.env.STRIPE_TEST_API_KEY;
+}
+
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  const key = stripeTestMode() ? process.env.STRIPE_TEST_API_KEY! : process.env.STRIPE_SECRET_KEY!;
+  return new Stripe(key, {
     httpClient: Stripe.createFetchHttpClient(),
   });
 }
@@ -219,8 +227,14 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const stripe = getStripe();
+    const testMode = stripeTestMode();
+    // En modo test los price IDs de producción no existen: usamos un precio de prueba
+    // (solo plan GO) para poder validar el mecanismo end-to-end.
+    const priceId = testMode && process.env.STRIPE_TEST_PRICE_GO
+      ? process.env.STRIPE_TEST_PRICE_GO
+      : data.priceId;
     const mode: Stripe.Checkout.SessionCreateParams.Mode =
-      data.plan === "anual" ? "subscription" : "payment";
+      !testMode && data.plan === "anual" ? "subscription" : "payment";
 
     // Get customer email + referral from diagnostic to prefill checkout / aplicar cupón
     const { data: diag } = await supabaseAdmin
@@ -248,7 +262,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
 
     const session = await stripe.checkout.sessions.create({
       mode,
-      line_items: [{ price: data.priceId, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: 1 }],
       client_reference_id: data.id,
       customer_email: customerEmail,
       success_url: `${data.origin}/diagnostico/procesando?id=${data.id}`,
