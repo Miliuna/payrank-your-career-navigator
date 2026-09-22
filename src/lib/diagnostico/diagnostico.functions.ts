@@ -4,8 +4,16 @@ import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, SYSTEM_PROMPT_B_MODO_C, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
+// TEST MODE (solo dev): si existe STRIPE_TEST_API_KEY y NO estamos en producción,
+// usamos la clave de prueba. En el build publicado (NODE_ENV=production) siempre
+// se usa STRIPE_SECRET_KEY, así que producción nunca queda en modo test.
+function stripeTestMode() {
+  return process.env.NODE_ENV !== "production" && !!process.env.STRIPE_TEST_API_KEY;
+}
+
 function getStripe() {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  const key = stripeTestMode() ? process.env.STRIPE_TEST_API_KEY! : process.env.STRIPE_SECRET_KEY!;
+  return new Stripe(key, {
     httpClient: Stripe.createFetchHttpClient(),
   });
 }
