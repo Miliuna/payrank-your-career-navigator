@@ -96,11 +96,20 @@ function RecuperarCodigoPage() {
                 </div>
               </form>
             ) : (
-              <p className="font-body text-sm" style={{ color: "#2E4A6E" }}>
-                {isEN
-                  ? "If that email has active codes, check your inbox in a few minutes."
-                  : "Si ese mail tiene códigos activos, revisá tu casilla en unos minutos."}
-              </p>
+              <div>
+                <p className="font-body text-sm" style={{ color: "#2E4A6E" }}>
+                  {mensaje}
+                </p>
+                {motivo !== "enviado" && (
+                  <button
+                    type="button"
+                    onClick={() => setEstado("idle")}
+                    className="mt-4 px-4 py-2 border border-hueso/30 font-ui text-[10px] text-hueso hover:bg-hueso hover:text-tinta transition-colors"
+                  >
+                    {isEN ? "TRY ANOTHER EMAIL" : "PROBAR OTRO MAIL"}
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>
