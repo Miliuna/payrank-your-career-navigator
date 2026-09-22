@@ -260,7 +260,9 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         .maybeSingle();
       referidoValido = !!refMatch;
     }
-    const couponId = process.env.STRIPE_REFERIDO_COUPON_ID;
+    const couponId = stripeTestMode()
+      ? process.env.STRIPE_REFERIDO_COUPON_ID
+      : (process.env.STRIPE_LIVE_COUPON_ID ?? process.env.STRIPE_REFERIDO_COUPON_ID);
 
     const session = await stripe.checkout.sessions.create({
       mode,
