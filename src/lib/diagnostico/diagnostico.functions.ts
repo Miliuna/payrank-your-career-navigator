@@ -262,7 +262,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
 
     const session = await stripe.checkout.sessions.create({
       mode,
-      line_items: [{ price: data.priceId, quantity: 1 }],
+      line_items: [{ price: priceId, quantity: 1 }],
       client_reference_id: data.id,
       customer_email: customerEmail,
       success_url: `${data.origin}/diagnostico/procesando?id=${data.id}`,
