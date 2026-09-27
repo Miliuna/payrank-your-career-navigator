@@ -3,6 +3,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { isLiveHost } from "@/lib/stripe-live-host";
+import { PRICING } from "@/lib/pricing";
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, SYSTEM_PROMPT_B_MODO_C, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
 // TEST/LIVE se decide por el dominio real del pedido (header Host), no por cómo
@@ -230,7 +231,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     z.object({
       id: z.string().uuid(),
       plan: z.enum(["unico", "pack3", "anual"]),
-      priceId: z.string().min(1).max(128),
+      region: z.enum(["LATAM", "ESPANA", "INTERNACIONAL"]),
       planName: z.string().min(1).max(64),
       origin: z.string().url(),
     }).parse(input),
@@ -242,7 +243,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     // (solo plan GO) para poder validar el mecanismo end-to-end.
     const priceId = testMode && process.env.STRIPE_TEST_PRICE_GO
       ? process.env.STRIPE_TEST_PRICE_GO
-      : data.priceId;
+      : PRICING[data.region][data.plan].stripePriceId;
     const mode: Stripe.Checkout.SessionCreateParams.Mode =
       !testMode && data.plan === "anual" ? "subscription" : "payment";
 

@@ -80,10 +80,9 @@ function PaywallPage() {
     setBusy(true);
     try {
       const selected = state.plan;
-      const priceId = PRICING[region][selected].stripePriceId;
       const planName = PLAN_NOMBRE[selected];
       const { url } = await checkout({
-        data: { id, plan: selected, priceId, planName, origin: window.location.origin },
+        data: { id, plan: selected, region, planName, origin: window.location.origin },
       });
       window.location.href = url;
     } catch (e) {
