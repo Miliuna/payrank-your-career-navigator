@@ -2,17 +2,23 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { isLiveHost } from "@/lib/stripe-live-host";
 import { SYSTEM_PROMPT, SYSTEM_PROMPT_B, SYSTEM_PROMPT_B_MODO_C, buildUserPromptPartA, buildUserPromptPartB } from "./prompt";
 
-// TEST MODE (solo dev): si existe STRIPE_TEST_API_KEY y NO estamos en producción,
-// usamos la clave de prueba. En el build publicado (NODE_ENV=production) siempre
-// se usa STRIPE_SECRET_KEY, así que producción nunca queda en modo test.
-function stripeTestMode() {
-  return process.env.NODE_ENV !== "production" && !!process.env.STRIPE_TEST_API_KEY;
+// TEST/LIVE se decide por el dominio real del pedido (header Host), no por cómo
+// se compiló la app. Fail-safe: si el host no es payrank.co/www.payrank.co, o no
+// se puede determinar (incluido cualquier error al leerlo), usamos TEST.
+async function stripeTestMode() {
+  try {
+    const { getRequestHeader } = await import("@tanstack/react-start/server");
+    return !isLiveHost(getRequestHeader("host"));
+  } catch {
+    return true;
+  }
 }
 
-function getStripe() {
-  const key = stripeTestMode()
+function getStripe(testMode: boolean) {
+  const key = testMode
     ? process.env.STRIPE_TEST_API_KEY!
     : (process.env.STRIPE_LIVE_API_KEY ?? process.env.STRIPE_SECRET_KEY!);
   return new Stripe(key, {
@@ -230,8 +236,8 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     }).parse(input),
   )
   .handler(async ({ data }) => {
-    const stripe = getStripe();
-    const testMode = stripeTestMode();
+    const testMode = await stripeTestMode();
+    const stripe = getStripe(testMode);
     // En modo test los price IDs de producción no existen: usamos un precio de prueba
     // (solo plan GO) para poder validar el mecanismo end-to-end.
     const priceId = testMode && process.env.STRIPE_TEST_PRICE_GO
@@ -262,7 +268,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         .maybeSingle();
       referidoValido = !!refMatch;
     }
-    const couponId = stripeTestMode()
+    const couponId = testMode
       ? process.env.STRIPE_REFERIDO_COUPON_ID
       : (process.env.STRIPE_LIVE_COUPON_ID ?? process.env.STRIPE_REFERIDO_COUPON_ID);
 

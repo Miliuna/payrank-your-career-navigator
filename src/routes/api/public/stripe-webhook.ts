@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import Stripe from 'stripe';
 import { supabaseAdmin } from '@/integrations/supabase/client.server';
+import { isLiveHost } from '@/lib/stripe-live-host';
 
 async function sendPlusCodeEmail(args: { email: string; codigo: string; vence: Date }): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -118,14 +119,15 @@ async function sendReferralFreeCodeEmail(args: { email: string; codigo: string; 
 }
 
 // Stripe SDK configurado para correr en Cloudflare Workers (fetch + Web Crypto).
-// TEST MODE (solo dev): en producción (NODE_ENV=production) siempre se usan
-// las credenciales reales; las de prueba solo aplican en el entorno de desarrollo.
-function stripeTestMode() {
-  return process.env.NODE_ENV !== 'production' && !!process.env.STRIPE_TEST_API_KEY;
+// TEST/LIVE se decide por el dominio real del pedido (header Host), no por cómo
+// se compiló la app. Fail-safe: si el host no es payrank.co/www.payrank.co, o no
+// se puede determinar, usamos TEST.
+function stripeTestMode(host: string | null) {
+  return !isLiveHost(host);
 }
 
-function getStripe() {
-  const key = stripeTestMode()
+function getStripe(testMode: boolean) {
+  const key = testMode
     ? process.env.STRIPE_TEST_API_KEY!
     : (process.env.STRIPE_LIVE_API_KEY ?? process.env.STRIPE_SECRET_KEY!);
   return new Stripe(key, {
@@ -137,12 +139,14 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const testMode = stripeTestMode(request.headers.get('host'));
+
         const signature = request.headers.get('stripe-signature');
         if (!signature) {
           return new Response('Missing stripe-signature header', { status: 400 });
         }
 
-        const webhookSecret = stripeTestMode() && process.env.STRIPE_TEST_WEBHOOK_SECRET
+        const webhookSecret = testMode && process.env.STRIPE_TEST_WEBHOOK_SECRET
           ? process.env.STRIPE_TEST_WEBHOOK_SECRET
           : process.env.STRIPE_WEBHOOK_SECRET;
         if (!webhookSecret) {
@@ -151,7 +155,7 @@ export const Route = createFileRoute('/api/public/stripe-webhook')({
         }
 
         const rawBody = await request.text();
-        const stripe = getStripe();
+        const stripe = getStripe(testMode);
 
         let event: Stripe.Event;
         try {
