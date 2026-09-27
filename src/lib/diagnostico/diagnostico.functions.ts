@@ -74,7 +74,7 @@ function mapStateToRow(input: z.infer<typeof createDiagnosticoSchema>) {
     // El pago se confirma SOLO vía webhook de Stripe, un código de acceso
     // válido (applyAccessCode) o un token beta validado en el servidor.
     // Nunca por defecto al crear el registro.
-    tipo_usuario: null,
+    tipo_usuario: "pago",
     pago_confirmado: false,
     monto_pagado_usd: null,
     modo: input.modo ?? null,
