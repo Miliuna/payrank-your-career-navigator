@@ -1111,7 +1111,7 @@ export const getDiagnostico = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { data: row, error } = await supabaseAdmin
       .from("diagnosticos" as never)
-      .select("*")
+      .select("id, resultado_json, pais_rol, moneda_reporte, moneda_actual, tipo_cambio_utilizado, situacion_laboral, plan_elegido, link_unico, created_at")
       .eq("id", data.id)
       .single();
     if (error || !row) throw new Error(error?.message ?? "Diagnóstico no encontrado");
